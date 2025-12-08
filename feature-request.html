@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Request new features and vote on ideas for TripPortier.">
+    <title>Feature Requests - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="feature-request.html">Request Feature</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+                <li><a href="terms.html">Terms</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Feature Requests</h1>
+        <p>Help shape the future of TripPortier! Submit ideas and vote on features you'd love to see.</p>
+    </header>
+
+    <!-- Content -->
+    <main class="page-content" style="max-width: 1000px;">
+        <!-- Submit Form -->
+        <div class="feature-request-form">
+            <h2 style="margin-bottom: 1.5rem;">Submit a Feature Request</h2>
+            <form id="featureForm" onsubmit="submitFeature(event)">
+                <div class="form-group">
+                    <label for="featureTitle">Feature Title *</label>
+                    <input type="text" id="featureTitle" name="title" required placeholder="Brief title for your feature idea">
+                </div>
+                <div class="form-group">
+                    <label for="featureCategory">Category</label>
+                    <select id="featureCategory" name="category">
+                        <option value="packing">Packing Lists</option>
+                        <option value="flights">Flight Tracking</option>
+                        <option value="esim">eSIM & Data</option>
+                        <option value="trips">Trip Planning</option>
+                        <option value="social">Social & Sharing</option>
+                        <option value="ui">User Interface</option>
+                        <option value="integrations">Integrations</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="featureDescription">Description *</label>
+                    <textarea id="featureDescription" name="description" required placeholder="Describe your feature idea in detail. What problem does it solve? How would it work?"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="featureEmail">Your Email (optional)</label>
+                    <input type="email" id="featureEmail" name="email" placeholder="We'll notify you when we implement this">
+                </div>
+                <button type="submit" class="btn-submit">Submit Feature Request</button>
+            </form>
+            <div id="formSuccess" style="display: none; padding: 1rem; background: #d1fae5; color: #065f46; border-radius: 8px; margin-top: 1rem;">
+                Thank you! Your feature request has been submitted. We review all suggestions regularly.
+            </div>
+        </div>
+
+        <!-- Feature Requests List -->
+        <h2 style="margin: 3rem 0 1.5rem;">Popular Feature Requests</h2>
+        <p style="color: var(--gray); margin-bottom: 2rem;">Vote for features you'd like to see! Click the arrow to upvote.</p>
+
+        <div class="feature-list" id="featureList">
+            <!-- Feature 1 -->
+            <div class="feature-request-card" data-id="1">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(1)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-1">47</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Android Version</h3>
+                    <p>Release TripPortier for Android devices so more travelers can use the app.</p>
+                    <span class="feature-tag">Other</span>
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-request-card" data-id="2">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(2)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-2">38</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Hotel Booking Integration</h3>
+                    <p>Add ability to search and book hotels directly within the app, with confirmation details added to the itinerary.</p>
+                    <span class="feature-tag">Integrations</span>
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-request-card" data-id="3">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(3)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-3">32</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Apple Watch App</h3>
+                    <p>Quick access to flight info, packing list progress, and trip countdown on Apple Watch.</p>
+                    <span class="feature-tag">Integrations</span>
+                </div>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-request-card" data-id="4">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(4)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-4">28</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Trip Budget Tracker</h3>
+                    <p>Track expenses during trips, set budgets, and get spending insights by category.</p>
+                    <span class="feature-tag">Trip Planning</span>
+                </div>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-request-card" data-id="5">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(5)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-5">24</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Document Scanner</h3>
+                    <p>Scan and store travel documents (passport, visas, tickets) with secure cloud backup.</p>
+                    <span class="feature-tag">Trip Planning</span>
+                </div>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-request-card" data-id="6">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(6)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-6">21</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Widgets for Home Screen</h3>
+                    <p>iOS home screen widgets showing upcoming trips, packing progress, or flight countdown.</p>
+                    <span class="feature-tag">User Interface</span>
+                </div>
+            </div>
+
+            <!-- Feature 7 -->
+            <div class="feature-request-card" data-id="7">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(7)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-7">19</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Packing List Photos</h3>
+                    <p>Add photos to packing items to remember exactly which items you packed.</p>
+                    <span class="feature-tag">Packing Lists</span>
+                </div>
+            </div>
+
+            <!-- Feature 8 -->
+            <div class="feature-request-card" data-id="8">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(8)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-8">17</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Public Transportation Info</h3>
+                    <p>Show local public transit options, metro maps, and transportation tips for destinations.</p>
+                    <span class="feature-tag">Trip Planning</span>
+                </div>
+            </div>
+
+            <!-- Feature 9 -->
+            <div class="feature-request-card" data-id="9">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(9)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-9">15</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Train Tracking</h3>
+                    <p>Track train journeys similar to flights, with platform info and delay notifications.</p>
+                    <span class="feature-tag">Integrations</span>
+                </div>
+            </div>
+
+            <!-- Feature 10 -->
+            <div class="feature-request-card" data-id="10">
+                <div class="vote-section">
+                    <button class="vote-btn" onclick="upvote(10)" aria-label="Upvote">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 15l-6-6-6 6"/>
+                        </svg>
+                    </button>
+                    <span class="vote-count" id="votes-10">12</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Visa Requirements Checker</h3>
+                    <p>Automatic visa requirement lookup based on your passport and destination country.</p>
+                    <span class="feature-tag">Trip Planning</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implemented Features -->
+        <h2 style="margin: 3rem 0 1.5rem;">Recently Implemented</h2>
+        <p style="color: var(--gray); margin-bottom: 2rem;">Features we've built based on your feedback!</p>
+
+        <div class="feature-list">
+            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+                <div class="vote-section">
+                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>eSIM Data Plans</h3>
+                    <p>Buy and activate instant mobile data for 200+ countries directly in the app.</p>
+                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
+                </div>
+            </div>
+
+            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+                <div class="vote-section">
+                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Real-time Flight Tracking</h3>
+                    <p>Track flights with live updates, gate changes, and smart departure notifications.</p>
+                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
+                </div>
+            </div>
+
+            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+                <div class="vote-section">
+                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
+                </div>
+                <div class="feature-request-content">
+                    <h3>Trip Sharing</h3>
+                    <p>Share trips with friends and family to collaborate on planning.</p>
+                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>App</h4>
+                <ul>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

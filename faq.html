@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TripPortier FAQ - Frequently asked questions about our travel app.">
+    <title>FAQ - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="feature-request.html">Request Feature</a></li>
+                <li><a href="privacy.html">Privacy</a></li>
+                <li><a href="terms.html">Terms</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1>Frequently Asked Questions</h1>
+        <p>Find answers to common questions about TripPortier</p>
+    </header>
+
+    <!-- Content -->
+    <main class="page-content">
+        <div class="faq-list">
+            <!-- General Questions -->
+            <h2 style="margin-bottom: 1.5rem;">General</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What is TripPortier?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>TripPortier is an all-in-one travel companion app that helps you plan and organize your trips. It features smart AI-powered packing lists, real-time flight tracking, eSIM data plans for international travel, weather forecasts, and trip sharing with friends and family.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Is TripPortier free to use?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes! TripPortier offers a generous free tier that includes basic packing lists, single-destination trips, and essential features. For power travelers, Trip Plus unlocks multi-destination trips, AI smart suggestions, calendar integration, extended weather forecasts, and more.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What devices is TripPortier available on?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>TripPortier is currently available for iOS devices (iPhone and iPad) running iOS 17.6 or later. Download it from the App Store. An Android version is planned for the future.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account & Subscription -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">Account & Subscription</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I create an account?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>You can create an account using:</p>
+                        <ul>
+                            <li>Sign in with Apple (recommended for privacy)</li>
+                            <li>Sign in with Google</li>
+                            <li>Email and password</li>
+                        </ul>
+                        <p>Your account syncs your trips across all your devices automatically.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What's included in Trip Plus?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Trip Plus unlocks premium features including:</p>
+                        <ul>
+                            <li>Multi-destination trips with unlimited stops</li>
+                            <li>AI-powered smart packing suggestions</li>
+                            <li>Calendar integration for trip events</li>
+                            <li>Custom packing templates</li>
+                            <li>Extended weather forecasts (+5 days)</li>
+                            <li>Offline weather data</li>
+                            <li>Power outlet & currency info</li>
+                            <li>Travel statistics and insights</li>
+                            <li>5% bonus on eSIM rewards</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I cancel my subscription?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>To cancel your Trip Plus subscription:</p>
+                        <ol>
+                            <li>Open the Settings app on your iPhone</li>
+                            <li>Tap your name at the top</li>
+                            <li>Tap "Subscriptions"</li>
+                            <li>Select TripPortier</li>
+                            <li>Tap "Cancel Subscription"</li>
+                        </ol>
+                        <p>You'll continue to have access to Plus features until the end of your billing period.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I restore my purchases on a new device?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Go to Settings in the app and tap "Restore Purchases". Make sure you're signed in with the same Apple ID you used for the original purchase. Your subscription will be restored automatically.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Packing Lists -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">Packing Lists</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do smart packing suggestions work?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Our AI analyzes your trip details including:</p>
+                        <ul>
+                            <li>Destination(s) and local climate</li>
+                            <li>Weather forecast for your travel dates</li>
+                            <li>Trip type (business, leisure, adventure, etc.)</li>
+                            <li>Trip duration</li>
+                            <li>Activities you've planned</li>
+                        </ul>
+                        <p>Based on this, it suggests relevant items you might need, from rain gear for wet destinations to formal attire for business trips.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Can I create custom packing templates?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes! Trip Plus subscribers can create and save custom packing templates. Build your perfect list once, then apply it to future trips with one tap. Great for frequent travelers who have their packing routine down.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Can I share packing lists with others?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Absolutely! You can share entire trips with friends and family. They can view the itinerary, see the packing list, and even collaborate on what to bring. Perfect for group trips where you want to coordinate who's bringing what.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Flight Tracking -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">Flight Tracking</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How does flight tracking work?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Add your flight number and date, and we'll track it using real-time data from FlightAware. You'll get updates on:</p>
+                        <ul>
+                            <li>Departure and arrival times</li>
+                            <li>Gate changes</li>
+                            <li>Delays and cancellations</li>
+                            <li>Terminal and baggage claim info</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What notifications will I receive?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>TripPortier sends smart notifications including:</p>
+                        <ul>
+                            <li><strong>Day-of-flight reminder:</strong> Morning summary of your flight</li>
+                            <li><strong>Leave for airport:</strong> Based on estimated travel time</li>
+                            <li><strong>Gate changes:</strong> When your gate is updated</li>
+                            <li><strong>Delays:</strong> If departure time changes significantly</li>
+                            <li><strong>Boarding time:</strong> When it's time to head to the gate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How accurate is the flight data?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>We use FlightAware, a leading flight tracking service, for real-time data. While highly accurate, always verify critical information with your airline. Flight data is updated every 20 minutes when your flight is active.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- eSIM -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">eSIM Data Plans</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What is an eSIM?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>An eSIM (embedded SIM) is a digital SIM that allows you to activate a cellular plan without a physical SIM card. It's built into newer smartphones and lets you add a data plan instantly - perfect for international travel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Is my phone eSIM compatible?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Most recent iPhones support eSIM, including:</p>
+                        <ul>
+                            <li>iPhone XS and newer</li>
+                            <li>iPhone SE (2nd generation and newer)</li>
+                        </ul>
+                        <p>Your phone must be carrier-unlocked for eSIM to work with international data plans. Check with your carrier if you're unsure.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I install and activate an eSIM?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>After purchase, your eSIM is delivered instantly in the app:</p>
+                        <ol>
+                            <li>Go to "My eSIMs" in the app</li>
+                            <li>Tap your new eSIM</li>
+                            <li>Follow the installation instructions</li>
+                            <li>Once installed, activate it when you arrive at your destination</li>
+                        </ol>
+                        <p>We recommend installing before you travel (while on WiFi) so it's ready when you land.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What countries are covered?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Our eSIM partner Airalo offers data plans for 200+ countries and regions worldwide. We offer:</p>
+                        <ul>
+                            <li><strong>Local plans:</strong> Single-country coverage</li>
+                            <li><strong>Regional plans:</strong> Cover multiple countries (Europe, Asia, etc.)</li>
+                            <li><strong>Global plans:</strong> Worldwide coverage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    What is the eSIM rewards program?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Earn cashback on every eSIM purchase! Rewards range from 3-10% based on your loyalty level. Trip Plus members get an additional 5% bonus. Refer friends to earn $3 per successful referral. Credits can be applied to future purchases and expire after 18 months.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data & Privacy -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">Data & Privacy</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How is my data protected?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>We take your privacy seriously:</p>
+                        <ul>
+                            <li>All data is encrypted in transit and at rest</li>
+                            <li>We use Firebase/Google Cloud with enterprise-grade security</li>
+                            <li>We never sell your personal information</li>
+                            <li>Payment details are handled by Stripe - we never see your card</li>
+                        </ul>
+                        <p>Read our full <a href="privacy.html">Privacy Policy</a> for details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Can I delete my account and data?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes. Go to Settings > Account > Delete Account. This will permanently delete your account and all associated data including trips, packing lists, and eSIM order history. This action cannot be undone.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    Does the app work offline?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Yes! Your trips, packing lists, and itinerary are cached locally so you can access them without internet. Trip Plus members also get offline weather data. Some features like real-time flight updates and eSIM purchases require an internet connection.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Troubleshooting -->
+            <h2 style="margin: 2.5rem 0 1.5rem;">Troubleshooting</h2>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    I'm not receiving flight notifications
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Check these settings:</p>
+                        <ol>
+                            <li>Open iPhone Settings > TripPortier > Notifications</li>
+                            <li>Ensure notifications are enabled</li>
+                            <li>Check that "Allow Notifications" is on</li>
+                            <li>Make sure your flight is added correctly with the right date</li>
+                        </ol>
+                        <p>Also ensure Background App Refresh is enabled for TripPortier.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    My eSIM isn't working
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>Try these steps:</p>
+                        <ol>
+                            <li>Ensure your phone is carrier-unlocked</li>
+                            <li>Check that the eSIM is set as the data line in Settings > Cellular</li>
+                            <li>Enable Data Roaming for the eSIM line</li>
+                            <li>Restart your phone</li>
+                            <li>Make sure you're in a covered area</li>
+                        </ol>
+                        <p>If issues persist, contact us via WhatsApp with your order details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="toggleFaq(this)">
+                    How do I contact support?
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <div class="faq-answer-content">
+                        <p>We're here to help! Reach us via:</p>
+                        <ul>
+                            <li><strong>WhatsApp:</strong> <a href="https://wa.me/41765125678">+41 76 512 5678</a> (fastest response)</li>
+                            <li><strong>Email:</strong> <a href="mailto:info@tripportier.com">info@tripportier.com</a></li>
+                        </ul>
+                        <p>We typically respond within 24 hours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>App</h4>
+                <ul>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
