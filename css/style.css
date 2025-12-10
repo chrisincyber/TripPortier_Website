@@ -246,6 +246,47 @@ body {
     color: var(--gray);
 }
 
+/* Featured Card (AI Itinerary) */
+.feature-card.featured {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card.featured::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(10%, 10%); }
+}
+
+.feature-card.featured h3 {
+    color: white;
+}
+
+.feature-card.featured p {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.feature-card.featured .feature-icon {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+}
+
+.feature-card.featured:hover {
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+}
+
 /* Page Styles */
 .page-header {
     padding: 8rem 2rem 4rem;
