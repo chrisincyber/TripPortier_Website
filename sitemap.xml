@@ -8,15 +8,21 @@
     </url>
     <url>
         <loc>https://tripportier.com/privacy.html</loc>
-        <lastmod>2024-12-08</lastmod>
+        <lastmod>2024-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     <url>
         <loc>https://tripportier.com/terms.html</loc>
-        <lastmod>2024-12-08</lastmod>
+        <lastmod>2024-12-13</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/attributions.html</loc>
+        <lastmod>2024-12-13</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
     </url>
     <url>
         <loc>https://tripportier.com/faq.html</loc>
