@@ -19,11 +19,11 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#features">Features</a></li>
+                <li><a href="airport-transfers.html">Airport Transfers</a></li>
                 <li><a href="faq.html">FAQ</a></li>
                 <li><a href="feature-request.html">Request Feature</a></li>
                 <li><a href="privacy.html">Privacy</a></li>
                 <li><a href="terms.html">Terms</a></li>
-                <li><a href="attributions.html">Attributions</a></li>
             </ul>
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +36,7 @@
     <!-- Page Header -->
     <header class="page-header">
         <h1>Privacy Policy</h1>
-        <p>Last updated: December 13, 2024</p>
+        <p>Last updated: December 20, 2024</p>
     </header>
 
     <!-- Content -->
@@ -50,6 +50,7 @@
             <li><strong>Account Information:</strong> Email address, name, and profile picture when you create an account or sign in with Google/Apple.</li>
             <li><strong>Trip Data:</strong> Trip destinations, dates, packing lists, and itinerary items you create.</li>
             <li><strong>Flight Information:</strong> Flight numbers and travel dates you enter for flight tracking.</li>
+            <li><strong>Forwarded Emails:</strong> When using Email Import, booking confirmation emails you forward to your unique TripPortier email address, including email content and attachments.</li>
             <li><strong>Payment Information:</strong> When purchasing eSIMs or subscriptions, payment processing is handled by Stripe. We do not store your credit card details.</li>
         </ul>
 
@@ -118,11 +119,23 @@
             <li>The AI does not have access to real-time information unless explicitly integrated (e.g., weather data).</li>
         </ul>
 
+        <h3>4.4 AI Email Import</h3>
+        <p>When you use the Email Import feature to forward booking confirmation emails:</p>
+        <ul>
+            <li><strong>Email Reception:</strong> Emails are received by Amazon Simple Email Service (SES) and securely transmitted to our processing system.</li>
+            <li><strong>AI Processing:</strong> Email content and attachments are analyzed by Google Gemini AI to extract booking details (type, dates, times, locations, confirmation numbers, prices).</li>
+            <li><strong>Data Extraction:</strong> Only relevant booking information is extracted and stored; we do not store the full email content permanently.</li>
+            <li><strong>Attachment Storage:</strong> PDF attachments (e.g., booking confirmations, tickets) are stored in Firebase Storage and linked to your itinerary items.</li>
+            <li><strong>Retention:</strong> Pending bookings are retained for up to 30 days. Once you accept or reject a booking, the temporary data is deleted.</li>
+            <li><strong>No Training:</strong> Your forwarded emails are not used to train AI models.</li>
+        </ul>
+
         <h2>5. Third-Party Services</h2>
         <p>We use the following third-party services:</p>
         <ul>
             <li><strong>Firebase/Google:</strong> Authentication, database, analytics, and cloud functions</li>
-            <li><strong>Google Gemini:</strong> AI-powered features including travel assistant, packing suggestions, and local insights</li>
+            <li><strong>Google Gemini:</strong> AI-powered features including travel assistant, packing suggestions, local insights, and email booking extraction</li>
+            <li><strong>Amazon SES:</strong> Email reception for the Email Import feature</li>
             <li><strong>FlightAware:</strong> Real-time flight tracking data</li>
             <li><strong>Airalo:</strong> eSIM provisioning and management</li>
             <li><strong>Stripe:</strong> Secure payment processing</li>

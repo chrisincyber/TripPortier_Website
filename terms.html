@@ -19,11 +19,11 @@
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#features">Features</a></li>
+                <li><a href="airport-transfers.html">Airport Transfers</a></li>
                 <li><a href="faq.html">FAQ</a></li>
                 <li><a href="feature-request.html">Request Feature</a></li>
                 <li><a href="privacy.html">Privacy</a></li>
                 <li><a href="terms.html">Terms</a></li>
-                <li><a href="attributions.html">Attributions</a></li>
             </ul>
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -36,7 +36,7 @@
     <!-- Page Header -->
     <header class="page-header">
         <h1>Terms of Service</h1>
-        <p>Last updated: December 17, 2024</p>
+        <p>Last updated: December 20, 2024</p>
     </header>
 
     <!-- Content -->
@@ -57,6 +57,8 @@
             <li>Trip sharing with friends and family</li>
             <li>AI-powered travel assistant and recommendations</li>
             <li>AI-generated packing suggestions and local insights</li>
+            <li>AI Email Import: Forward booking confirmation emails to automatically extract and create itinerary items</li>
+            <li>Airport transfer booking services worldwide</li>
             <li>Offline access to trips with local data caching (premium feature)</li>
             <li>Travel statistics and achievements system</li>
             <li>Customizable travel insights dashboard</li>
@@ -161,6 +163,7 @@
             <li><strong>Weather APIs:</strong> Weather data is provided by third-party services</li>
             <li><strong>Google Gemini:</strong> AI features are powered by Google's Gemini AI service</li>
             <li><strong>12Go Asia:</strong> Transport booking services (trains, buses, ferries, transfers, flights) for Asia are provided through 12Go Asia</li>
+            <li><strong>WelcomeTransfers:</strong> Worldwide airport transfer services are provided through WelcomeTransfers</li>
         </ul>
         <p>We are not responsible for the content, accuracy, or practices of these third-party services.</p>
 
@@ -177,6 +180,18 @@
             <li>For any booking-related issues, please contact 12Go Asia's customer support directly</li>
         </ul>
         <p>This feature is currently in beta. Service availability and features may change without notice.</p>
+
+        <h3>7.2 Airport Transfer Services (Worldwide)</h3>
+        <p>Airport transfer booking features are provided through our partnership with WelcomeTransfers. By using these services:</p>
+        <ul>
+            <li>All bookings are processed and fulfilled by WelcomeTransfers, not TripPortier</li>
+            <li>You are entering into a direct contractual relationship with WelcomeTransfers and the respective transfer operators</li>
+            <li>Payment for transfer bookings is processed by WelcomeTransfers</li>
+            <li>Booking confirmations and travel documents are issued by WelcomeTransfers</li>
+            <li>Refunds, cancellations, and changes are handled according to WelcomeTransfers' policies</li>
+            <li>TripPortier acts solely as an intermediary providing access to WelcomeTransfers' platform and is not responsible for booking fulfillment, delays, cancellations, or service quality</li>
+            <li>For any booking-related issues, please contact WelcomeTransfers' customer support directly</li>
+        </ul>
 
         <h2>8. Flight Tracking Disclaimer</h2>
         <p>Flight tracking information is provided for informational purposes only. While we strive for accuracy:</p>
@@ -224,7 +239,46 @@
             <li>Your queries and trip data are processed by third-party AI services (see Privacy Policy)</li>
         </ul>
 
-        <h2>11. Limitation of Liability</h2>
+        <h2>11. AI Email Import Service</h2>
+        <h3>11.1 How It Works</h3>
+        <p>TripPortier provides an AI-powered email forwarding service that allows you to automatically create itinerary items from booking confirmation emails:</p>
+        <ul>
+            <li>You receive a unique email address (e.g., yourname@import.tripportier.com)</li>
+            <li>Forward booking confirmation emails (flights, hotels, restaurants, activities) to this address</li>
+            <li>AI analyzes the email content and attachments to extract booking details</li>
+            <li>Extracted bookings appear in your app for review and approval before being added to your trips</li>
+        </ul>
+
+        <h3>11.2 Email Processing</h3>
+        <p>By using the Email Import feature, you consent to the following:</p>
+        <ul>
+            <li>Emails you forward are received and processed by our secure email service (Amazon SES)</li>
+            <li>Email content and attachments (PDFs, images) are analyzed by AI (Google Gemini) to extract booking information</li>
+            <li>Extracted data includes: booking type, confirmation numbers, dates, times, locations, prices, and provider details</li>
+            <li>PDF attachments from emails are stored securely in Firebase Storage for attachment to your itinerary items</li>
+            <li>We retain pending booking data for up to 30 days; after processing, only the extracted itinerary item is stored</li>
+            <li>Original emails are not permanently stored after processing</li>
+        </ul>
+
+        <h3>11.3 Data Accuracy</h3>
+        <p>AI extraction may not be 100% accurate:</p>
+        <ul>
+            <li>Always review extracted booking details before accepting them into your trip</li>
+            <li>You can edit any extracted fields (title, dates, times, locations) before confirmation</li>
+            <li>We display a confidence indicator to help you gauge extraction reliability</li>
+            <li>We are not responsible for errors in AI-extracted booking information</li>
+        </ul>
+
+        <h3>11.4 Acceptable Use</h3>
+        <p>When using Email Import, you agree:</p>
+        <ul>
+            <li>Only forward emails that you have the right to share (your own booking confirmations)</li>
+            <li>Do not forward emails containing sensitive personal information beyond booking details</li>
+            <li>Do not use the service to process spam, malicious content, or unauthorized communications</li>
+            <li>Your unique email address is personal and should not be shared publicly</li>
+        </ul>
+
+        <h2>12. Limitation of Liability</h2>
         <p>To the maximum extent permitted by law:</p>
         <ul>
             <li>The App is provided "as is" without warranties of any kind</li>
@@ -233,25 +287,25 @@
             <li>Our total liability shall not exceed the amount you paid us in the past 12 months</li>
         </ul>
 
-        <h2>12. Indemnification</h2>
+        <h2>13. Indemnification</h2>
         <p>You agree to defend, indemnify, and hold harmless TripPortier and its officers, directors, employees, and agents from any claims, damages, losses, or expenses arising from your use of the App or violation of these Terms.</p>
 
-        <h2>13. Changes to Terms</h2>
+        <h2>14. Changes to Terms</h2>
         <p>We reserve the right to modify these Terms at any time. We will notify you of significant changes through the App or via email. Your continued use of the App after changes constitutes acceptance of the modified Terms.</p>
 
-        <h2>14. Governing Law</h2>
+        <h2>15. Governing Law</h2>
         <p>These Terms shall be governed by and construed in accordance with the laws of Switzerland, without regard to its conflict of law provisions.</p>
 
-        <h2>15. Dispute Resolution</h2>
+        <h2>16. Dispute Resolution</h2>
         <p>Any disputes arising from these Terms or your use of the App shall first be attempted to be resolved through good-faith negotiation. If negotiation fails, disputes shall be resolved through binding arbitration in accordance with Swiss arbitration rules.</p>
 
-        <h2>16. Severability</h2>
+        <h2>17. Severability</h2>
         <p>If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect.</p>
 
-        <h2>17. Entire Agreement</h2>
+        <h2>18. Entire Agreement</h2>
         <p>These Terms, together with our Privacy Policy, constitute the entire agreement between you and TripPortier regarding your use of the App.</p>
 
-        <h2>18. Contact Us</h2>
+        <h2>19. Contact Us</h2>
         <p>If you have any questions about these Terms, please contact us:</p>
         <ul>
             <li><strong>Email:</strong> <a href="mailto:info@tripportier.com">info@tripportier.com</a></li>
