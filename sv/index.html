@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +8,11 @@
     <meta property="og:title" content="TripPortier - Your Travel Platform">
     <meta property="og:description" content="Book travel services and plan trips with the most powerful AI itinerary tool.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tripportier.com">
-    <title>TripPortier - Travel Smarter</title>
+    <meta property="og:url" content="https://tripportier.com/sv/">
+    <link rel="canonical" href="https://tripportier.com/sv/">
 
-    <!-- Hreflang Tags for International SEO -->
-    <link rel="alternate" hreflang="en" href="https://tripportier.com/en/">
+    <!-- hreflang tags for SEO -->
+    <link rel="alternate" hreflang="en" href="https://tripportier.com/sv/">
     <link rel="alternate" hreflang="de" href="https://tripportier.com/de/">
     <link rel="alternate" hreflang="fr" href="https://tripportier.com/fr/">
     <link rel="alternate" hreflang="es" href="https://tripportier.com/es/">
@@ -30,10 +30,11 @@
     <link rel="alternate" hreflang="fi" href="https://tripportier.com/fi/">
     <link rel="alternate" hreflang="th" href="https://tripportier.com/th/">
     <link rel="alternate" hreflang="tr" href="https://tripportier.com/tr/">
-    <link rel="alternate" hreflang="x-default" href="https://tripportier.com/en/">
+    <link rel="alternate" hreflang="x-default" href="https://tripportier.com/">
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <title>TripPortier - Res Smartare</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -41,6 +42,82 @@
         /* Modern Font */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Language Switcher */
+        .lang-switcher {
+            position: relative;
+            margin-left: 1rem;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .lang-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: rgba(15, 15, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px;
+            min-width: 180px;
+            max-height: 400px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .lang-switcher:hover .lang-dropdown,
+        .lang-dropdown:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .lang-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .lang-option.active {
+            background: rgba(99, 102, 241, 0.2);
+            color: #a78bfa;
+        }
+
+        .lang-flag {
+            font-size: 1.25rem;
         }
 
         /* Animated Gradient Background */
@@ -127,13 +204,6 @@
             display: block;
         }
 
-        .hero-title-gradient {
-            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
         /* Typing Animation */
         .typing-container {
             display: inline-flex;
@@ -185,7 +255,7 @@
             }
         }
 
-        /* Booking Cards - Primary Focus */
+        /* Booking Cards */
         .booking-cards {
             display: flex;
             flex-direction: column;
@@ -234,10 +304,6 @@
             background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
         }
 
-        .booking-card-icon.esim {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-
         .booking-card-content {
             flex: 1;
         }
@@ -265,7 +331,7 @@
             transform: translateX(4px);
         }
 
-        /* App Download - Secondary */
+        /* App Download */
         .app-section {
             display: flex;
             align-items: center;
@@ -496,7 +562,7 @@
             margin: 0;
         }
 
-        /* Features Section - Compact */
+        /* Features Section */
         .features-compact {
             padding: 100px 2rem;
             background: linear-gradient(180deg, #f8fafc 0%, white 100%);
@@ -714,6 +780,13 @@
             .features-grid-new {
                 grid-template-columns: repeat(2, 1fr);
             }
+
+            .lang-switcher {
+                position: absolute;
+                right: 60px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
         }
 
         @media (max-width: 600px) {
@@ -761,7 +834,7 @@
             }
         }
 
-        /* Hide old nav for cleaner look */
+        /* Navbar */
         .navbar {
             background: transparent;
             box-shadow: none;
@@ -783,6 +856,54 @@
         .logo {
             color: white;
         }
+
+        .nav-container {
+            position: relative;
+        }
+
+        /* Footer Language Links */
+        .footer-languages {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .footer-lang-title {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-lang-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem 1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .footer-lang {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.875rem;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .footer-lang:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-lang.active {
+            color: #a78bfa;
+            background: rgba(167, 139, 250, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -790,16 +911,46 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                <img src="../assets/images/logo.png" alt="TripPortier Logo">
                 TripPortier
             </a>
             <ul class="nav-links">
                 <li><a href="#services">Services</a></li>
                 <li><a href="#features">Features</a></li>
-                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="../airport-transfers.html">Transfers</a></li>
                 <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
-                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="../faq.html">FAQ</a></li>
             </ul>
+
+            <!-- Language Switcher -->
+            <div class="lang-switcher" id="language-switcher">
+                <button class="lang-btn">
+                    <span class="lang-flag">&#127468;&#127463;</span>
+                    <span class="current-lang">English</span>
+                    <span>&#9662;</span>
+                </button>
+                <div class="lang-dropdown">
+                    <a href="/en/" class="lang-option" data-lang="en"><span class="lang-flag">&#127468;&#127463;</span> English</a>
+                    <a href="/de/" class="lang-option" data-lang="de"><span class="lang-flag">&#127465;&#127466;</span> Deutsch</a>
+                    <a href="/fr/" class="lang-option" data-lang="fr"><span class="lang-flag">&#127467;&#127479;</span> Français</a>
+                    <a href="/es/" class="lang-option" data-lang="es"><span class="lang-flag">&#127466;&#127480;</span> Español</a>
+                    <a href="/it/" class="lang-option" data-lang="it"><span class="lang-flag">&#127470;&#127481;</span> Italiano</a>
+                    <a href="/nl/" class="lang-option" data-lang="nl"><span class="lang-flag">&#127475;&#127473;</span> Nederlands</a>
+                    <a href="/pt-BR/" class="lang-option" data-lang="pt-BR"><span class="lang-flag">&#127463;&#127479;</span> Português</a>
+                    <a href="/ja/" class="lang-option" data-lang="ja"><span class="lang-flag">&#127471;&#127477;</span> 日本語</a>
+                    <a href="/ko/" class="lang-option" data-lang="ko"><span class="lang-flag">&#127472;&#127479;</span> 한국어</a>
+                    <a href="/zh-Hans/" class="lang-option" data-lang="zh-Hans"><span class="lang-flag">&#127464;&#127475;</span> 简体中文</a>
+                    <a href="/zh-Hant/" class="lang-option" data-lang="zh-Hant"><span class="lang-flag">&#127481;&#127484;</span> 繁體中文</a>
+                    <a href="/ar/" class="lang-option" data-lang="ar"><span class="lang-flag">&#127480;&#127462;</span> العربية</a>
+                    <a href="/sv/" class="lang-option active" data-lang="sv"><span class="lang-flag">&#127480;&#127466;</span> Svenska</a>
+                    <a href="/da/" class="lang-option" data-lang="da"><span class="lang-flag">&#127465;&#127472;</span> Dansk</a>
+                    <a href="/nb/" class="lang-option" data-lang="nb"><span class="lang-flag">&#127475;&#127476;</span> Norsk</a>
+                    <a href="/fi/" class="lang-option" data-lang="fi"><span class="lang-flag">&#127467;&#127470;</span> Suomi</a>
+                    <a href="/th/" class="lang-option" data-lang="th"><span class="lang-flag">&#127481;&#127469;</span> ไทย</a>
+                    <a href="/tr/" class="lang-option" data-lang="tr"><span class="lang-flag">&#127481;&#127479;</span> Türkçe</a>
+                </div>
+            </div>
+
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -814,19 +965,19 @@
             <div class="hero-text">
                 <div class="hero-badge">
                     <span class="hero-badge-dot"></span>
-                    AI-Powered Travel Platform
+                    AI-driven Reseplattform
                 </div>
                 <h1 class="hero-title">
-                    <span class="hero-title-line">Travel the world</span>
-                    <span class="hero-title-line">like a <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span></span></span>
+                    <span class="hero-title-line">Res världen runt</span>
+                    <span class="hero-title-line">som en <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span></span></span>
                 </h1>
                 <p class="hero-subtitle">
                     Get eSIM data for your destination, book transfers, enjoy real-time flight tracking, and plan your perfect trip with our AI-powered itinerary tool. Everything you need in one place.
                 </p>
 
-                <!-- Booking Cards - Primary Action -->
+                <!-- Booking Cards -->
                 <div class="booking-cards" id="services">
-                    <a href="airport-transfers.html" class="booking-card">
+                    <a href="../airport-transfers.html" class="booking-card">
                         <div class="booking-card-icon transfers">&#128663;</div>
                         <div class="booking-card-content">
                             <h4>Airport Transfers</h4>
@@ -844,7 +995,7 @@
                     </a>
                 </div>
 
-                <!-- App Download - Secondary -->
+                <!-- App Download -->
                 <div class="app-section">
                     <a href="https://apps.apple.com/app/tripportier" class="app-download-btn">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -861,9 +1012,9 @@
 
             <div class="hero-visual">
                 <div class="phone-showcase">
-                    <img src="assets/images/phone-left.png" alt="TripPortier App" class="phone phone-left">
-                    <img src="assets/images/phone-center.png" alt="TripPortier App" class="phone phone-center">
-                    <img src="assets/images/phone-right.png" alt="TripPortier App" class="phone phone-right">
+                    <img src="../assets/images/phone-left.png" alt="TripPortier App" class="phone phone-left">
+                    <img src="../assets/images/phone-center.png" alt="TripPortier App" class="phone phone-center">
+                    <img src="../assets/images/phone-right.png" alt="TripPortier App" class="phone phone-right">
                 </div>
                 <div class="float-element float-1">
                     <span>&#10024;</span> AI Itinerary Ready
@@ -881,7 +1032,7 @@
     <!-- Social Proof -->
     <section class="social-proof">
         <div class="social-proof-container">
-            <p class="social-proof-title">Loved by travelers worldwide</p>
+            <p class="social-proof-title">Älskad av resenärer världen över</p>
             <div class="testimonials">
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
@@ -924,7 +1075,7 @@
     <section class="features-compact" id="features">
         <div class="features-compact-container">
             <div class="features-compact-header">
-                <h2>Everything for your trip</h2>
+                <h2>Allt för din resa</h2>
                 <p>From planning to packing to booking - TripPortier handles it all with powerful AI assistance.</p>
             </div>
             <div class="features-grid-new">
@@ -1025,7 +1176,7 @@
     <!-- CTA Section -->
     <section class="cta-section">
         <div class="cta-container">
-            <h2 class="cta-title">Start your next adventure</h2>
+            <h2 class="cta-title">Börja ditt nästa äventyr</h2>
             <p class="cta-subtitle">Book transfers, plan with AI, and travel smarter with TripPortier.</p>
             <div class="cta-buttons">
                 <a href="https://apps.apple.com/app/tripportier" class="cta-btn-primary">
@@ -1034,7 +1185,7 @@
                     </svg>
                     Download Free
                 </a>
-                <a href="airport-transfers.html" class="cta-btn-secondary">
+                <a href="../airport-transfers.html" class="cta-btn-secondary">
                     Book a Transfer &#8594;
                 </a>
             </div>
@@ -1051,7 +1202,7 @@
             <div class="footer-section">
                 <h4>Services</h4>
                 <ul>
-                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="../airport-transfers.html">Airport Transfers</a></li>
                     <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                     <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
@@ -1059,20 +1210,46 @@
             <div class="footer-section">
                 <h4>Support</h4>
                 <ul>
-                    <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="../faq.html">FAQ</a></li>
+                    <li><a href="../feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Legal</h4>
                 <ul>
-                    <li><a href="privacy.html">Privacy Policy</a></li>
-                    <li><a href="terms.html">Terms of Service</a></li>
-                    <li><a href="attributions.html">Attributions</a></li>
+                    <li><a href="../privacy.html">Privacy Policy</a></li>
+                    <li><a href="../terms.html">Terms of Service</a></li>
+                    <li><a href="../attributions.html">Attributions</a></li>
                 </ul>
             </div>
         </div>
+
+        <!-- Language Links -->
+        <div class="footer-languages">
+            <p class="footer-lang-title">Tillgänglig på 18 språk</p>
+            <div class="footer-lang-grid">
+                <a href="/en/" class="footer-lang">English</a>
+                <a href="/de/" class="footer-lang">Deutsch</a>
+                <a href="/fr/" class="footer-lang">Français</a>
+                <a href="/es/" class="footer-lang">Español</a>
+                <a href="/it/" class="footer-lang">Italiano</a>
+                <a href="/nl/" class="footer-lang">Nederlands</a>
+                <a href="/pt-BR/" class="footer-lang">Português</a>
+                <a href="/ja/" class="footer-lang">日本語</a>
+                <a href="/ko/" class="footer-lang">한국어</a>
+                <a href="/zh-Hans/" class="footer-lang">简体中文</a>
+                <a href="/zh-Hant/" class="footer-lang">繁體中文</a>
+                <a href="/ar/" class="footer-lang">العربية</a>
+                <a href="/sv/" class="footer-lang active">Svenska</a>
+                <a href="/da/" class="footer-lang">Dansk</a>
+                <a href="/nb/" class="footer-lang">Norsk</a>
+                <a href="/fi/" class="footer-lang">Suomi</a>
+                <a href="/th/" class="footer-lang">ไทย</a>
+                <a href="/tr/" class="footer-lang">Türkçe</a>
+            </div>
+        </div>
+
         <div class="footer-bottom">
             <p>&copy; 2025 TripPortier. All rights reserved.</p>
         </div>
@@ -1085,35 +1262,11 @@
         </svg>
     </a>
 
-    <script src="js/main.js"></script>
-    <script src="js/i18n.js"></script>
-    <script>
-        // Language Detection and Redirect
-        (function() {
-            // Check if user has a saved preference or detect their language
-            const savedLang = localStorage.getItem('tripportier-lang');
-            if (savedLang && TripPortierI18n.supportedLanguages.includes(savedLang)) {
-                // Redirect to saved language
-                window.location.href = '/' + savedLang + '/';
-                return;
-            }
-
-            // Auto-detect and redirect (optional - can be disabled for SEO crawlers)
-            const isBot = /bot|crawl|spider|slurp|googlebot|bingbot/i.test(navigator.userAgent);
-            if (!isBot) {
-                const detectedLang = TripPortierI18n.getBestLanguage();
-                if (detectedLang !== 'en') {
-                    window.location.href = '/' + detectedLang + '/';
-                } else {
-                    // Default to English
-                    window.location.href = '/en/';
-                }
-            }
-        })();
-    </script>
+    <script src="../js/main.js"></script>
+    <script src="../js/i18n.js"></script>
     <script>
         // Typing Animation
-        const words = ['Pro', 'Local', 'VIP', 'Explorer', 'Adventurer'];
+        const words = ['Proffs', 'Lokalbo', 'VIP', 'Upptäckare', 'Äventyrare'];
         let wordIndex = 0;
         let charIndex = 0;
         let isDeleting = false;
@@ -1133,18 +1286,17 @@
             let typeSpeed = isDeleting ? 80 : 120;
 
             if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000; // Pause at end
+                typeSpeed = 2000;
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500; // Pause before next word
+                typeSpeed = 500;
             }
 
             setTimeout(type, typeSpeed);
         }
 
-        // Start typing animation
         setTimeout(type, 1000);
 
         // Navbar scroll effect
@@ -1156,6 +1308,9 @@
                 navbar.classList.remove('scrolled');
             }
         });
+
+        // Save language preference
+        TripPortierI18n.saveLanguage('sv');
     </script>
 </body>
 </html>
