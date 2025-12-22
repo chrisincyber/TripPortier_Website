@@ -212,22 +212,18 @@
         }
 
         .typing-text {
-            display: inline-block;
+            display: inline;
             background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            position: relative;
-            min-width: 200px;
         }
 
-        .typing-text::after {
-            content: '|';
-            position: absolute;
-            right: -10px;
+        .typing-cursor {
+            display: inline;
             color: #a78bfa;
             animation: blink 1s infinite;
-            -webkit-text-fill-color: #a78bfa;
+            margin-left: 2px;
         }
 
         @keyframes blink {
@@ -969,10 +965,10 @@
                 </div>
                 <h1 class="hero-title">
                     <span class="hero-title-line">環遊世界</span>
-                    <span class="hero-title-line">像 <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span></span></span>
+                    <span class="hero-title-line">像 <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span><span class="typing-cursor">|</span></span></span>
                 </h1>
                 <p class="hero-subtitle">
-                    Get eSIM data for your destination, book transfers, enjoy real-time flight tracking, and plan your perfect trip with our AI-powered itinerary tool. Everything you need in one place.
+                    eSIM數據。機場接送。航班追蹤。AI規劃。你需要的一切 — 一個應用。
                 </p>
 
                 <!-- Booking Cards -->
