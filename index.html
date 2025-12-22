@@ -3,32 +3,773 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TripPortier - Your ultimate travel companion app. Smart packing lists, flight tracking, eSIM data, and more.">
-    <meta name="keywords" content="travel app, packing list, flight tracker, esim, trip planner">
-    <meta property="og:title" content="TripPortier - Smart Travel Companion">
-    <meta property="og:description" content="Plan smarter trips with AI-powered packing lists, real-time flight tracking, and instant eSIM data.">
+    <meta name="description" content="TripPortier - Book airport transfers, Asia transport, and plan your trips with AI. The smartest travel companion.">
+    <meta name="keywords" content="travel app, airport transfer, asia transport, trip planner, AI itinerary">
+    <meta property="og:title" content="TripPortier - Your Travel Platform">
+    <meta property="og:description" content="Book travel services and plan trips with the most powerful AI itinerary tool.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://tripportier.com">
-    <title>TripPortier - Smart Travel Companion</title>
+    <title>TripPortier - Travel Smarter</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Font */
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Animated Gradient Background */
+        .hero-new {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+        }
+
+        .hero-new::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.2) 0%, transparent 50%);
+            animation: aurora 15s ease-in-out infinite;
+        }
+
+        @keyframes aurora {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+
+        .hero-container-new {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 2rem 80px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hero-text {
+            color: white;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            animation: fadeInUp 0.6s ease 0.1s backwards;
+        }
+
+        .hero-title-line {
+            display: block;
+        }
+
+        .hero-title-gradient {
+            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Typing Animation */
+        .typing-container {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+
+        .typing-text {
+            display: inline-block;
+            background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .typing-text::after {
+            content: '|';
+            position: absolute;
+            right: -10px;
+            color: #a78bfa;
+            animation: blink 1s infinite;
+            -webkit-text-fill-color: #a78bfa;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.7;
+            animation: fadeInUp 0.6s ease 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Booking Cards - Primary Focus */
+        .booking-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.6s ease 0.3s backwards;
+        }
+
+        .booking-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .booking-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(8px);
+        }
+
+        .booking-card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .booking-card-icon.transfers {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+
+        .booking-card-icon.asia {
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+        }
+
+        .booking-card-icon.esim {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .booking-card-content {
+            flex: 1;
+        }
+
+        .booking-card-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .booking-card-content p {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+        }
+
+        .booking-card-arrow {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .booking-card:hover .booking-card-arrow {
+            color: white;
+            transform: translateX(4px);
+        }
+
+        /* App Download - Secondary */
+        .app-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.6s ease 0.4s backwards;
+        }
+
+        .app-download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 24px;
+            background: white;
+            color: #1a1a3e;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .app-download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-download-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .app-info {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        .app-info strong {
+            color: white;
+            display: block;
+            font-weight: 600;
+        }
+
+        /* Phone Display */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .phone-showcase {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 600px;
+        }
+
+        .phone-showcase .phone {
+            position: absolute;
+            width: 240px;
+            height: auto;
+            border-radius: 36px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .phone-showcase .phone-left {
+            left: 0;
+            top: 80px;
+            transform: rotate(-12deg) translateZ(0);
+            z-index: 1;
+            opacity: 0.9;
+        }
+
+        .phone-showcase .phone-center {
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%) translateZ(0);
+            z-index: 3;
+            width: 280px;
+        }
+
+        .phone-showcase .phone-right {
+            right: 0;
+            top: 80px;
+            transform: rotate(12deg) translateZ(0);
+            z-index: 2;
+            opacity: 0.9;
+        }
+
+        .phone-showcase:hover .phone-left {
+            transform: rotate(-15deg) translateX(-20px) translateZ(0);
+        }
+
+        .phone-showcase:hover .phone-right {
+            transform: rotate(15deg) translateX(20px) translateZ(0);
+        }
+
+        .phone-showcase:hover .phone-center {
+            transform: translateX(-50%) translateY(-15px) translateZ(0);
+            box-shadow: 0 70px 140px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Floating Elements */
+        .float-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+            z-index: 10;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .float-element.float-1 {
+            top: 10%;
+            right: 5%;
+            animation-delay: 0s;
+        }
+
+        .float-element.float-2 {
+            bottom: 20%;
+            left: 0;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Social Proof Section */
+        .social-proof {
+            padding: 80px 2rem;
+            background: white;
+        }
+
+        .social-proof-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .social-proof-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #6366f1;
+            margin-bottom: 2rem;
+        }
+
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .testimonial-card {
+            background: #f8fafc;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .testimonial-stars {
+            color: #fbbf24;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-text {
+            font-size: 1rem;
+            color: #475569;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .testimonial-author-info h5 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .testimonial-author-info p {
+            font-size: 0.8125rem;
+            color: #94a3b8;
+            margin: 0;
+        }
+
+        /* Features Section - Compact */
+        .features-compact {
+            padding: 100px 2rem;
+            background: linear-gradient(180deg, #f8fafc 0%, white 100%);
+        }
+
+        .features-compact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-compact-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .features-compact-header h2 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .features-compact-header p {
+            font-size: 1.125rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid-new {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+
+        .feature-card-new {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card-new:hover {
+            border-color: #6366f1;
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .feature-card-new .icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, #ede9fe, #fae8ff);
+        }
+
+        .feature-card-new h4 {
+            font-size: 1.0625rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card-new p {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 100px 2rem;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
+        }
+
+        .cta-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: white;
+            color: #4c1d95;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.0625rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.0625rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-container-new {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding-top: 100px;
+            }
+
+            .hero-visual {
+                order: -1;
+            }
+
+            .phone-showcase {
+                height: 450px;
+                max-width: 400px;
+            }
+
+            .phone-showcase .phone {
+                width: 180px;
+            }
+
+            .phone-showcase .phone-center {
+                width: 220px;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .booking-cards {
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .app-section {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .float-element {
+                display: none;
+            }
+
+            .testimonials {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid-new {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-container-new {
+                padding: 80px 1.5rem 60px;
+            }
+
+            .hero-title {
+                font-size: 2.25rem;
+            }
+
+            .phone-showcase {
+                height: 350px;
+                max-width: 300px;
+            }
+
+            .phone-showcase .phone {
+                width: 140px;
+            }
+
+            .phone-showcase .phone-center {
+                width: 170px;
+            }
+
+            .phone-showcase .phone-left,
+            .phone-showcase .phone-right {
+                top: 60px;
+            }
+
+            .booking-card {
+                padding: 1rem;
+            }
+
+            .features-grid-new {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Hide old nav for cleaner look */
+        .navbar {
+            background: transparent;
+            box-shadow: none;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        .logo {
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="assets/images/logo.png" alt="TripPortier Logo">
                 TripPortier
             </a>
             <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
+                <li><a href="#services">Services</a></li>
                 <li><a href="#features">Features</a></li>
-                <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                 <li><a href="faq.html">FAQ</a></li>
-                <li><a href="feature-request.html">Request Feature</a></li>
-                <li><a href="privacy.html">Privacy</a></li>
-                <li><a href="terms.html">Terms</a></li>
             </ul>
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -39,145 +780,182 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1>Travel Smarter, Pack Better</h1>
-                <p>Your ultimate travel companion with AI-powered packing lists, real-time flight tracking, instant eSIM data, and smart trip planning.</p>
-                <div class="hero-buttons">
-                    <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+    <section class="hero-new">
+        <div class="hero-container-new">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    AI-Powered Travel Platform
+                </div>
+                <h1 class="hero-title">
+                    <span class="hero-title-line">Travel the world</span>
+                    <span class="hero-title-line">like a <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span></span></span>
+                </h1>
+                <p class="hero-subtitle">
+                    Book airport transfers, explore Asia by train, and plan your perfect trip with our AI-powered itinerary tool. Everything you need in one place.
+                </p>
+
+                <!-- Booking Cards - Primary Action -->
+                <div class="booking-cards" id="services">
+                    <a href="airport-transfers.html" class="booking-card">
+                        <div class="booking-card-icon transfers">&#128663;</div>
+                        <div class="booking-card-content">
+                            <h4>Airport Transfers</h4>
+                            <p>Private cars & shuttles worldwide</p>
+                        </div>
+                        <span class="booking-card-arrow">&#8594;</span>
+                    </a>
+                    <a href="https://asiatransport.tripportier.com" target="_blank" class="booking-card">
+                        <div class="booking-card-icon asia">&#128646;</div>
+                        <div class="booking-card-content">
+                            <h4>Asia Transport</h4>
+                            <p>Trains, buses & ferries across Asia</p>
+                        </div>
+                        <span class="booking-card-arrow">&#8594;</span>
+                    </a>
+                </div>
+
+                <!-- App Download - Secondary -->
+                <div class="app-section">
+                    <a href="https://apps.apple.com/app/tripportier" class="app-download-btn">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                         </svg>
-                        Download on App Store
+                        Download App
                     </a>
-                    <a href="#features" class="btn btn-secondary">Learn More</a>
+                    <div class="app-info">
+                        <strong>Free on App Store</strong>
+                        AI Itinerary & Packing Lists
+                    </div>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="assets/images/app-screenshot.png" alt="TripPortier App Screenshot">
+
+            <div class="hero-visual">
+                <div class="phone-showcase">
+                    <img src="assets/images/phone-left.png" alt="TripPortier App" class="phone phone-left">
+                    <img src="assets/images/phone-center.png" alt="TripPortier App" class="phone phone-center">
+                    <img src="assets/images/phone-right.png" alt="TripPortier App" class="phone phone-right">
+                </div>
+                <div class="float-element float-1">
+                    <span>&#10024;</span> AI Itinerary Ready
+                </div>
+                <div class="float-element float-2">
+                    <span>&#127758;</span> 200+ Countries
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="social-proof-container">
+            <p class="social-proof-title">Loved by travelers worldwide</p>
+            <div class="testimonials">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"The AI itinerary feature saved me hours of planning. It knew exactly what I wanted to see in Tokyo!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">S</div>
+                        <div class="testimonial-author-info">
+                            <h5>Sarah M.</h5>
+                            <p>Tokyo, Japan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"Booking my airport transfer was so easy. Driver was waiting with my name - perfect start to my vacation!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">M</div>
+                        <div class="testimonial-author-info">
+                            <h5>Michael T.</h5>
+                            <p>Barcelona, Spain</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"The packing list feature is genius. It suggested items based on the weather - never forgot anything!"</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">E</div>
+                        <div class="testimonial-author-info">
+                            <h5>Emma K.</h5>
+                            <p>Switzerland</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="section-container">
-            <div class="section-header">
-                <h2>Everything You Need for Perfect Trips</h2>
-                <p>From smart packing suggestions to real-time flight updates, TripPortier has you covered.</p>
+    <section class="features-compact" id="features">
+        <div class="features-compact-container">
+            <div class="features-compact-header">
+                <h2>Everything for your trip</h2>
+                <p>From planning to packing to booking - TripPortier handles it all with powerful AI assistance.</p>
             </div>
-            <div class="features-grid">
-                <div class="feature-card featured">
-                    <div class="feature-icon">&#10024;</div>
-                    <h3>AI Itinerary Planner</h3>
-                    <p>Get personalized day-by-day itineraries generated by AI. Choose your travel style, companions, and let AI craft the perfect trip with Google Maps links, ratings, and reviews.</p>
+            <div class="features-grid-new">
+                <div class="feature-card-new">
+                    <div class="icon">&#10024;</div>
+                    <h4>AI Itinerary</h4>
+                    <p>Get personalized day-by-day plans with Google Maps integration.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#127890;</div>
-                    <h3>Smart Packing Lists</h3>
-                    <p>AI-powered suggestions based on your destination, weather, and trip type. Never forget essentials again.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#127890;</div>
+                    <h4>Smart Packing</h4>
+                    <p>Weather-based suggestions so you never forget essentials.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#9992;</div>
-                    <h3>Flight Tracking</h3>
-                    <p>Real-time flight status, gate changes, delays, and "leave for airport" notifications.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#9992;</div>
+                    <h4>Flight Tracking</h4>
+                    <p>Real-time updates, delays, and gate change notifications.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128241;</div>
-                    <h3>eSIM Data</h3>
-                    <p>Instant mobile data in 200+ countries. Buy and activate eSIMs directly in the app.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#128241;</div>
+                    <h4>eSIM Data</h4>
+                    <p>Instant mobile data in 200+ countries from the app.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#127758;</div>
-                    <h3>Multi-Destination Trips</h3>
-                    <p>Plan complex itineraries with multiple stops. Keep everything organized in one place.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#128663;</div>
+                    <h4>Transfers</h4>
+                    <p>Book airport pickups with professional drivers.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#127780;</div>
-                    <h3>Weather Forecasts</h3>
-                    <p>14-day weather forecasts for all your destinations to help you pack appropriately.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#129302;</div>
+                    <h4>AI Assistant</h4>
+                    <p>Chat with AI for local insights and recommendations.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128101;</div>
-                    <h3>Trip Sharing</h3>
-                    <p>Share trips with friends and family. Collaborate on packing lists and itineraries.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#128181;</div>
+                    <h4>Budget Tracking</h4>
+                    <p>Set budgets and track expenses across your trip.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128197;</div>
-                    <h3>Calendar Integration</h3>
-                    <p>Sync your trips with your calendar. Get reminders for packing and departure.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128274;</div>
-                    <h3>Offline Access</h3>
-                    <p>Access your packing lists and trip details even without internet connection.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128176;</div>
-                    <h3>Currency Info</h3>
-                    <p>Local currency information and power outlet types for your destinations.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#129302;</div>
-                    <h3>AI Travel Assistant</h3>
-                    <p>Chat with AI to get personalized travel recommendations, local insights, and itinerary suggestions.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128203;</div>
-                    <h3>Itinerary Planning</h3>
-                    <p>Plan your day-by-day activities with smart scheduling, time slots, and budget tracking per item.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128193;</div>
-                    <h3>Document Storage</h3>
-                    <p>Store boarding passes, reservations, and travel documents all in one place.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#9745;</div>
-                    <h3>Travel To-Do Lists</h3>
-                    <p>Create checklists for pre-trip tasks, things to book, and items to remember.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128161;</div>
-                    <h3>Local Insights</h3>
-                    <p>Discover hidden gems, restaurants, and attractions with AI-powered local recommendations.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128181;</div>
-                    <h3>Budget Tracking</h3>
-                    <p>Set trip budgets and track expenses across all your itinerary items.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128231;</div>
-                    <h3>AI Email Import</h3>
-                    <p>Forward booking confirmation emails and let AI automatically create itinerary items. Flights, hotels, restaurants, and activities are extracted instantly.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#128663;</div>
-                    <h3>Airport Transfers</h3>
-                    <p>Book airport transfers worldwide. Private cars, shared shuttles, and taxi services from airport to hotel and back.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#127760;</div>
-                    <h3>18 Languages</h3>
-                    <p>Available in English, German, French, Spanish, Italian, Dutch, Portuguese, Japanese, Korean, Chinese (Simplified & Traditional), Arabic, Swedish, Danish, Norwegian, Finnish, Thai, and Turkish.</p>
+                <div class="feature-card-new">
+                    <div class="icon">&#128101;</div>
+                    <h4>Trip Sharing</h4>
+                    <p>Collaborate with friends on itineraries and packing.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Download Section -->
-    <section style="padding: 6rem 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-align: center;">
-        <div class="section-container">
-            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Travel Smarter?</h2>
-            <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem;">Download TripPortier today and transform how you plan your trips.</p>
-            <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="font-size: 1.125rem;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                </svg>
-                Download Free on App Store
-            </a>
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="cta-container">
+            <h2 class="cta-title">Start your next adventure</h2>
+            <p class="cta-subtitle">Book transfers, plan with AI, and travel smarter with TripPortier.</p>
+            <div class="cta-buttons">
+                <a href="https://apps.apple.com/app/tripportier" class="cta-btn-primary">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    Download Free
+                </a>
+                <a href="airport-transfers.html" class="cta-btn-secondary">
+                    Book a Transfer &#8594;
+                </a>
+            </div>
         </div>
     </section>
 
@@ -189,17 +967,18 @@
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
             </div>
             <div class="footer-section">
-                <h4>App</h4>
+                <h4>Services</h4>
                 <ul>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
-                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Support</h4>
                 <ul>
                     <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
                 </ul>
             </div>
@@ -225,5 +1004,51 @@
     </a>
 
     <script src="js/main.js"></script>
+    <script>
+        // Typing Animation
+        const words = ['Pro', 'Local', 'VIP', 'Explorer', 'Adventurer'];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.getElementById('typing-text');
+
+        function type() {
+            const currentWord = words[wordIndex];
+
+            if (isDeleting) {
+                typingElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 80 : 120;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000; // Pause at end
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500; // Pause before next word
+            }
+
+            setTimeout(type, typeSpeed);
+        }
+
+        // Start typing animation
+        setTimeout(type, 1000);
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
