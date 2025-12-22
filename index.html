@@ -378,6 +378,12 @@
             animation-delay: 1s;
         }
 
+        .float-element.float-3 {
+            bottom: 5%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
@@ -674,7 +680,8 @@
                 flex-wrap: wrap;
             }
 
-            .float-element {
+            .float-element,
+            .float-element.float-3 {
                 display: none;
             }
 
@@ -792,7 +799,7 @@
                     <span class="hero-title-line">like a <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span></span></span>
                 </h1>
                 <p class="hero-subtitle">
-                    Book airport transfers, explore Asia by train, and plan your perfect trip with our AI-powered itinerary tool. Everything you need in one place.
+                    Get eSIM data for your destination, book transfers, enjoy real-time flight tracking, and plan your perfect trip with our AI-powered itinerary tool. Everything you need in one place.
                 </p>
 
                 <!-- Booking Cards - Primary Action -->
@@ -824,8 +831,8 @@
                         Download App
                     </a>
                     <div class="app-info">
-                        <strong>Free on App Store</strong>
-                        AI Itinerary & Packing Lists
+                        <strong>Download for Free on App Store</strong>
+                        Android coming soon
                     </div>
                 </div>
             </div>
@@ -841,6 +848,9 @@
                 </div>
                 <div class="float-element float-2">
                     <span>&#127758;</span> 200+ Countries
+                </div>
+                <div class="float-element float-3">
+                    <span>&#9992;</span> Boarding for your flight starts now
                 </div>
             </div>
         </div>
@@ -898,43 +908,93 @@
             <div class="features-grid-new">
                 <div class="feature-card-new">
                     <div class="icon">&#10024;</div>
-                    <h4>AI Itinerary</h4>
-                    <p>Get personalized day-by-day plans with Google Maps integration.</p>
+                    <h4>AI Itinerary Planner</h4>
+                    <p>Personalized day-by-day plans with Google Maps, ratings & reviews.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#127890;</div>
-                    <h4>Smart Packing</h4>
-                    <p>Weather-based suggestions so you never forget essentials.</p>
+                    <h4>Smart Packing Lists</h4>
+                    <p>AI suggestions based on destination, weather & trip type.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#9992;</div>
                     <h4>Flight Tracking</h4>
-                    <p>Real-time updates, delays, and gate change notifications.</p>
+                    <p>Real-time status, gate changes, delays & departure alerts.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#128241;</div>
                     <h4>eSIM Data</h4>
-                    <p>Instant mobile data in 200+ countries from the app.</p>
+                    <p>Instant mobile data in 200+ countries directly from the app.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#128663;</div>
-                    <h4>Transfers</h4>
-                    <p>Book airport pickups with professional drivers.</p>
+                    <h4>Airport Transfers</h4>
+                    <p>Book private cars & shuttles with professional drivers.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#129302;</div>
-                    <h4>AI Assistant</h4>
-                    <p>Chat with AI for local insights and recommendations.</p>
+                    <h4>AI Travel Assistant</h4>
+                    <p>Chat with AI for local insights, tips & recommendations.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128231;</div>
+                    <h4>AI Email Import</h4>
+                    <p>Forward booking emails and auto-create itinerary items.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#127758;</div>
+                    <h4>Multi-Destination</h4>
+                    <p>Plan complex trips with multiple stops in one place.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#127780;</div>
+                    <h4>Weather Forecasts</h4>
+                    <p>14-day forecasts for all destinations to pack smart.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#128181;</div>
                     <h4>Budget Tracking</h4>
-                    <p>Set budgets and track expenses across your trip.</p>
+                    <p>Set trip budgets and track expenses per item.</p>
                 </div>
                 <div class="feature-card-new">
                     <div class="icon">&#128101;</div>
                     <h4>Trip Sharing</h4>
-                    <p>Collaborate with friends on itineraries and packing.</p>
+                    <p>Share trips with friends and collaborate on planning.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128197;</div>
+                    <h4>Calendar Sync</h4>
+                    <p>Sync trips to your calendar with departure reminders.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128193;</div>
+                    <h4>Document Storage</h4>
+                    <p>Store boarding passes, reservations & travel docs.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#9745;</div>
+                    <h4>Travel To-Do Lists</h4>
+                    <p>Checklists for pre-trip tasks and things to book.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128274;</div>
+                    <h4>Offline Access</h4>
+                    <p>Access packing lists and trip details without internet.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128176;</div>
+                    <h4>Currency Info</h4>
+                    <p>Local currency and power outlet info for destinations.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#128161;</div>
+                    <h4>Local Insights</h4>
+                    <p>Hidden gems, restaurants & attractions with AI.</p>
+                </div>
+                <div class="feature-card-new">
+                    <div class="icon">&#127760;</div>
+                    <h4>18 Languages</h4>
+                    <p>Available in English, German, French, Spanish & more.</p>
                 </div>
             </div>
         </div>
