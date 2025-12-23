@@ -187,15 +187,13 @@
 
 .trips-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 380px));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-  justify-content: start;
 }
 
-/* Active trip - full width, max 1 per row on most screens */
+/* Active and upcoming trips - same grid, fills available space */
 .trips-grid-active {
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  max-width: 500px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 /* Past trips - compact grid, more items per row */
@@ -498,18 +496,14 @@
   }
 }
 
-/* Large screens - limit card width */
+/* Large screens - limit card width for better proportions */
 @media (min-width: 1400px) {
-  .trips-grid {
-    grid-template-columns: repeat(3, 380px);
-  }
-
+  .trips-grid,
   .trips-grid-active {
-    grid-template-columns: 1fr;
-    max-width: 500px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 400px));
   }
 
   .trips-grid-past {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 220px));
   }
 }
