@@ -7,7 +7,8 @@ class TripsManager {
   constructor() {
     this.trips = [];
     this.imageCache = new Map();
-    this.pexelsApiKey = ''; // Will be loaded from Firebase
+    // Same API key as iOS app (PexelsService.swift)
+    this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
 
     // DOM elements
     this.loadingEl = document.getElementById('trips-loading');
@@ -96,6 +97,15 @@ class TripsManager {
 
     // Sort by start date (newest first for upcoming, oldest first for past)
     this.trips.sort((a, b) => a.startDate - b.startDate);
+
+    // Log loaded trips for debugging
+    console.log(`Loaded ${this.trips.length} trips from Firebase:`, this.trips.map(t => ({
+      id: t.id,
+      name: t.name,
+      destination: t.destination,
+      startDate: t.startDate.toLocaleDateString(),
+      endDate: t.endDate.toLocaleDateString()
+    })));
   }
 
   parseDate(value) {
@@ -306,6 +316,11 @@ class TripsManager {
     // Load background image
     this.loadBackgroundImage(card, trip);
 
+    // Add click handler to navigate to trip detail
+    card.addEventListener('click', () => {
+      window.location.href = `/trip-detail.html?id=${trip.id}`;
+    });
+
     return card;
   }
 
@@ -338,25 +353,13 @@ class TripsManager {
       return;
     }
 
-    // Load Pexels API key if not loaded
-    if (!this.pexelsApiKey) {
-      try {
-        const db = firebase.firestore();
-        const configDoc = await db.collection('config').doc('api_keys').get();
-        if (configDoc.exists) {
-          this.pexelsApiKey = configDoc.data().pexels || '';
-        }
-      } catch (error) {
-        console.warn('Could not load Pexels API key');
-        return;
-      }
-    }
-
     if (!this.pexelsApiKey) return;
 
     try {
+      // Same query format as iOS app: "{location} travel landscape"
+      const searchQuery = `${query} travel landscape`;
       const response = await fetch(
-        `https://api.pexels.com/v1/search?query=${encodeURIComponent(query)}&per_page=1&orientation=landscape`,
+        `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=1&orientation=landscape`,
         {
           headers: {
             'Authorization': this.pexelsApiKey
@@ -368,7 +371,8 @@ class TripsManager {
 
       const data = await response.json();
       if (data.photos && data.photos.length > 0) {
-        const imageUrl = data.photos[0].src.large;
+        // Use large2x for better quality (same as iOS app)
+        const imageUrl = data.photos[0].src.large2x || data.photos[0].src.large;
         this.imageCache.set(query, imageUrl);
         this.setCardImage(card, imageUrl);
       }

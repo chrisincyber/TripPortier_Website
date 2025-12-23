@@ -1,0 +1,580 @@
+/**
+ * TripPortier Trip Detail Page Styles
+ * Full-screen trip view similar to iOS app
+ */
+
+/* ============================================
+   Base Layout
+   ============================================ */
+
+.trip-detail-body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8fafc;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================
+   Back Button
+   ============================================ */
+
+.trip-back-btn {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.trip-back-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.05);
+}
+
+.trip-back-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+
+.trip-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+}
+
+.trip-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: trip-spin 0.8s linear infinite;
+}
+
+@keyframes trip-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.trip-loading p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+/* ============================================
+   Error State
+   ============================================ */
+
+.trip-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.trip-error-icon {
+  width: 80px;
+  height: 80px;
+  background: #fef2f2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.trip-error-icon svg {
+  width: 40px;
+  height: 40px;
+  color: #ef4444;
+}
+
+.trip-error h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.75rem;
+}
+
+.trip-error p {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.trip-error-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trip-error-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+/* ============================================
+   Trip Content Container
+   ============================================ */
+
+.trip-content {
+  min-height: 100vh;
+}
+
+/* ============================================
+   Cover Photo Section
+   ============================================ */
+
+.trip-cover {
+  position: relative;
+  height: 55vh;
+  min-height: 400px;
+  max-height: 500px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #4c1d95 0%, #6366f1 50%, #0ea5e9 100%);
+}
+
+.trip-cover-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.trip-cover-gradient {
+  display: none;
+}
+
+.trip-cover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    transparent 30%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.6) 80%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+}
+
+.trip-cover-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 2rem;
+  color: white;
+}
+
+/* Status Badge */
+.trip-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  margin-bottom: 1rem;
+}
+
+.trip-status-badge.active .trip-status-dot {
+  background: #22c55e;
+  animation: pulse-status 2s ease-in-out infinite;
+}
+
+.trip-status-badge.upcoming .trip-status-dot {
+  background: #f59e0b;
+}
+
+.trip-status-badge.past .trip-status-dot {
+  background: #94a3b8;
+}
+
+.trip-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+@keyframes pulse-status {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.trip-status-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* Trip Title & Info */
+.trip-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  line-height: 1.1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.trip-destination {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  opacity: 0.95;
+}
+
+.trip-dates {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* ============================================
+   Main Content Area
+   ============================================ */
+
+.trip-main {
+  padding: 1.5rem;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-top: -2rem;
+  position: relative;
+  z-index: 10;
+}
+
+.trip-section {
+  margin-bottom: 2rem;
+}
+
+.trip-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1rem;
+}
+
+/* ============================================
+   Weather Section
+   ============================================ */
+
+.trip-weather-section {
+  margin-bottom: 1.5rem;
+}
+
+.trip-weather-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.trip-weather-icon {
+  font-size: 2.5rem;
+}
+
+.trip-weather-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.trip-weather-temp {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.trip-weather-desc {
+  font-size: 0.875rem;
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+/* ============================================
+   Essentials Grid
+   ============================================ */
+
+.trip-essentials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.trip-essential-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.trip-essential-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+
+.trip-essential-icon svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.trip-essential-icon.emoji {
+  background: #f1f5f9;
+  font-size: 1.5rem;
+}
+
+.trip-essential-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.trip-essential-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* ============================================
+   Quick Actions
+   ============================================ */
+
+.trip-actions-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trip-action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: white;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trip-action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.trip-action-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.trip-action-icon svg {
+  width: 22px;
+  height: 22px;
+  color: white;
+}
+
+.trip-action-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.trip-action-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.trip-action-subtitle {
+  font-size: 0.8125rem;
+  color: #64748b;
+}
+
+.trip-action-arrow {
+  width: 20px;
+  height: 20px;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+/* ============================================
+   App Download CTA
+   ============================================ */
+
+.trip-app-cta {
+  margin-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.trip-app-cta-content {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+}
+
+.trip-app-cta-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.trip-app-cta-content p {
+  font-size: 0.9375rem;
+  opacity: 0.9;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.trip-app-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.75rem;
+  background: white;
+  color: #1e293b;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trip-app-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .trip-cover {
+    height: 50vh;
+    min-height: 350px;
+  }
+
+  .trip-cover-content {
+    padding: 1.5rem;
+  }
+
+  .trip-title {
+    font-size: 2rem;
+  }
+
+  .trip-destination {
+    font-size: 1.125rem;
+  }
+
+  .trip-main {
+    padding: 1rem;
+    margin-top: -1.5rem;
+  }
+
+  .trip-essentials-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .trip-cover {
+    height: 45vh;
+    min-height: 300px;
+  }
+
+  .trip-title {
+    font-size: 1.75rem;
+  }
+
+  .trip-essential-card {
+    padding: 1rem;
+  }
+
+  .trip-essential-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .trip-essential-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ============================================
+   Desktop Enhancements
+   ============================================ */
+
+@media (min-width: 768px) {
+  .trip-back-btn {
+    top: 1.5rem;
+    left: 1.5rem;
+  }
+
+  .trip-cover-content {
+    max-width: 600px;
+    padding: 2.5rem;
+  }
+}

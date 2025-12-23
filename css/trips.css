@@ -192,9 +192,16 @@
   justify-content: start;
 }
 
-/* Active trip can be slightly wider on desktop */
+/* Active trip - full width, max 1 per row on most screens */
 .trips-grid-active {
-  grid-template-columns: repeat(auto-fill, minmax(340px, 400px));
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  max-width: 500px;
+}
+
+/* Past trips - compact grid, more items per row */
+.trips-grid-past {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
+  gap: 1rem;
 }
 
 /* ============================================
@@ -222,20 +229,54 @@
   min-height: 400px;
 }
 
-/* Upcoming and past trip cards */
-.trip-card-upcoming,
-.trip-card-past {
+/* Upcoming trip cards */
+.trip-card-upcoming {
   aspect-ratio: auto;
   min-height: 360px;
 }
 
-/* Past trip cards are slightly faded */
+/* Past trip cards - compact style like iOS someday trips */
 .trip-card-past {
-  opacity: 0.85;
+  min-height: 140px;
+  max-height: 160px;
+  border-radius: 12px;
 }
 
 .trip-card-past:hover {
-  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.trip-card-past .trip-card-overlay {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.trip-card-past .trip-card-content {
+  padding: 0.75rem;
+  gap: 0.25rem;
+}
+
+.trip-card-past .trip-card-name {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.trip-card-past .trip-card-info {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+.trip-card-past .trip-card-context {
+  display: none;
 }
 
 /* Card Background Image */
@@ -401,22 +442,35 @@
     margin: 0 auto;
   }
 
+  /* Past trips - 2 columns on mobile */
+  .trips-grid-past {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 100%;
+  }
+
   .trip-card-active {
     min-height: 380px;
   }
 
-  .trip-card-upcoming,
-  .trip-card-past {
+  .trip-card-upcoming {
     min-height: 340px;
+  }
+
+  .trip-card-past {
+    min-height: 120px;
+    max-height: 140px;
   }
 
   .trip-card-name {
     font-size: 1.375rem;
   }
 
-  .trip-card-upcoming .trip-card-name,
-  .trip-card-past .trip-card-name {
+  .trip-card-upcoming .trip-card-name {
     font-size: 1.25rem;
+  }
+
+  .trip-card-past .trip-card-name {
+    font-size: 0.875rem;
   }
 
   .trips-section-title {
@@ -446,8 +500,16 @@
 
 /* Large screens - limit card width */
 @media (min-width: 1400px) {
-  .trips-grid,
-  .trips-grid-active {
+  .trips-grid {
     grid-template-columns: repeat(3, 380px);
+  }
+
+  .trips-grid-active {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .trips-grid-past {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 200px));
   }
 }
