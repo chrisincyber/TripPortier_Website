@@ -383,6 +383,14 @@ class AuthUI {
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
 
+    // Skip adding Sign In button on account page (it has its own Sign In UI)
+    const isAccountPage = window.location.pathname.includes('account.html');
+    if (!user && isAccountPage) {
+      // Also update mobile menu
+      this.updateMobileMenu(user, profile);
+      return;
+    }
+
     // Create new auth element
     const authLi = document.createElement('li');
     authLi.className = 'nav-auth';
