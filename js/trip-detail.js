@@ -28,9 +28,9 @@ class TripDetailManager {
   init() {
     // Get trip ID from URL
     const urlParams = new URLSearchParams(window.location.search);
-    const tripId = urlParams.get('id');
+    this.tripId = urlParams.get('id');
 
-    if (!tripId) {
+    if (!this.tripId) {
       this.showError();
       return;
     }
@@ -40,13 +40,14 @@ class TripDetailManager {
     this.setupPlanSubtabs();
     this.setupAIOverlay();
     this.setupQuickActions();
+    this.setupAddItemForms();
 
     // Wait for auth to be ready
     if (window.tripPortierAuth) {
       window.tripPortierAuth.addListener((user) => {
         if (user) {
           this.userId = user.uid;
-          this.loadTrip(user.uid, tripId);
+          this.loadTrip(user.uid, this.tripId);
         } else {
           this.showError();
         }
@@ -409,12 +410,12 @@ class TripDetailManager {
 
     // Group items by category
     const itemsByCategory = {};
-    items.forEach(item => {
+    items.forEach((item, index) => {
       const category = item.category || 'Other';
       if (!itemsByCategory[category]) {
         itemsByCategory[category] = [];
       }
-      itemsByCategory[category].push(item);
+      itemsByCategory[category].push({ ...item, originalIndex: index });
     });
 
     // Render categories
@@ -435,6 +436,9 @@ class TripDetailManager {
         </div>
       `;
     }).join('');
+
+    // Add click handlers to packing items
+    this.setupPackingItemClickHandlers();
   }
 
   renderPackingItem(item) {
@@ -442,7 +446,7 @@ class TripDetailManager {
     const quantity = item.quantity || 1;
 
     return `
-      <div class="packing-item ${isPacked ? 'packed' : ''}">
+      <div class="packing-item ${isPacked ? 'packed' : ''}" data-index="${item.originalIndex}">
         <div class="packing-item-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             ${isPacked ? '<path d="M20 6L9 17l-5-5"/>' : '<circle cx="12" cy="12" r="10"/>'}
@@ -452,6 +456,49 @@ class TripDetailManager {
         ${quantity > 1 ? `<span class="packing-item-qty">x${quantity}</span>` : ''}
       </div>
     `;
+  }
+
+  setupPackingItemClickHandlers() {
+    const packingItems = document.querySelectorAll('.packing-item');
+    packingItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.dataset.index, 10);
+        this.togglePackingItem(index);
+      });
+    });
+  }
+
+  async togglePackingItem(index) {
+    if (!this.trip.packingItems[index]) return;
+
+    // Toggle the isPacked state
+    this.trip.packingItems[index].isPacked = !this.trip.packingItems[index].isPacked;
+
+    // Re-render the list
+    this.renderPackingList();
+
+    // Save to Firestore
+    await this.savePackingItemsToFirestore();
+  }
+
+  async savePackingItemsToFirestore() {
+    if (!this.userId || !this.tripId) return;
+
+    try {
+      const db = firebase.firestore();
+      await db
+        .collection('users')
+        .doc(this.userId)
+        .collection('trips')
+        .doc(this.tripId)
+        .update({
+          packingItems: this.trip.packingItems,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      console.log('Packing items saved to Firestore');
+    } catch (error) {
+      console.error('Error saving packing items:', error);
+    }
   }
 
   getCategoryIcon(category) {
@@ -481,8 +528,9 @@ class TripDetailManager {
 
     emptyState.style.display = 'none';
 
-    // Sort: incomplete first, then by date
-    const sortedItems = [...items].sort((a, b) => {
+    // Sort: incomplete first, then by date, keeping track of original indices
+    const indexedItems = items.map((item, index) => ({ ...item, originalIndex: index }));
+    const sortedItems = [...indexedItems].sort((a, b) => {
       if (a.isCompleted !== b.isCompleted) {
         return a.isCompleted ? 1 : -1;
       }
@@ -495,6 +543,9 @@ class TripDetailManager {
     });
 
     container.innerHTML = sortedItems.map(item => this.renderTodoItem(item)).join('');
+
+    // Add click handlers to todo items
+    this.setupTodoItemClickHandlers();
   }
 
   renderTodoItem(item) {
@@ -503,7 +554,7 @@ class TripDetailManager {
     const dueDateStr = dueDate ? dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
 
     return `
-      <div class="todo-item ${isCompleted ? 'completed' : ''}">
+      <div class="todo-item ${isCompleted ? 'completed' : ''}" data-index="${item.originalIndex}">
         <div class="todo-item-check">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             ${isCompleted ? '<path d="M20 6L9 17l-5-5"/>' : '<circle cx="12" cy="12" r="10"/>'}
@@ -516,6 +567,49 @@ class TripDetailManager {
         ${dueDateStr ? `<span class="todo-item-due">${dueDateStr}</span>` : ''}
       </div>
     `;
+  }
+
+  setupTodoItemClickHandlers() {
+    const todoItems = document.querySelectorAll('.todo-item');
+    todoItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const index = parseInt(item.dataset.index, 10);
+        this.toggleTodoItem(index);
+      });
+    });
+  }
+
+  async toggleTodoItem(index) {
+    if (!this.trip.todos[index]) return;
+
+    // Toggle the isCompleted state
+    this.trip.todos[index].isCompleted = !this.trip.todos[index].isCompleted;
+
+    // Re-render the list
+    this.renderTodos();
+
+    // Save to Firestore
+    await this.saveTodosToFirestore();
+  }
+
+  async saveTodosToFirestore() {
+    if (!this.userId || !this.tripId) return;
+
+    try {
+      const db = firebase.firestore();
+      await db
+        .collection('users')
+        .doc(this.userId)
+        .collection('trips')
+        .doc(this.tripId)
+        .update({
+          todos: this.trip.todos,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      console.log('Todos saved to Firestore');
+    } catch (error) {
+      console.error('Error saving todos:', error);
+    }
   }
 
   renderBudget() {
@@ -747,6 +841,118 @@ class TripDetailManager {
     } catch (error) {
       console.warn('Pexels API error:', error);
     }
+  }
+
+  // ============================================
+  // Add Item Forms
+  // ============================================
+
+  setupAddItemForms() {
+    // Packing item form
+    const packingInput = document.getElementById('packing-item-input');
+    const packingCategory = document.getElementById('packing-category-select');
+    const addPackingBtn = document.getElementById('add-packing-btn');
+
+    if (packingInput && addPackingBtn) {
+      const addPackingItem = () => {
+        const name = packingInput.value.trim();
+        const category = packingCategory ? packingCategory.value : 'Other';
+
+        if (name) {
+          this.addPackingItem(name, category);
+          packingInput.value = '';
+        }
+      };
+
+      addPackingBtn.addEventListener('click', addPackingItem);
+      packingInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          addPackingItem();
+        }
+      });
+    }
+
+    // Todo item form
+    const todoInput = document.getElementById('todo-item-input');
+    const addTodoBtn = document.getElementById('add-todo-btn');
+
+    if (todoInput && addTodoBtn) {
+      const addTodoItem = () => {
+        const title = todoInput.value.trim();
+
+        if (title) {
+          this.addTodoItem(title);
+          todoInput.value = '';
+        }
+      };
+
+      addTodoBtn.addEventListener('click', addTodoItem);
+      todoInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          addTodoItem();
+        }
+      });
+    }
+  }
+
+  async addPackingItem(name, category) {
+    if (!this.trip) return;
+
+    // Initialize packingItems array if needed
+    if (!this.trip.packingItems) {
+      this.trip.packingItems = [];
+    }
+
+    // Generate a unique ID
+    const id = `packing_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Create new packing item
+    const newItem = {
+      id: id,
+      name: name,
+      category: category,
+      isPacked: false,
+      quantity: 1,
+      createdAt: new Date().toISOString()
+    };
+
+    // Add to array
+    this.trip.packingItems.push(newItem);
+
+    // Re-render the list
+    this.renderPackingList();
+
+    // Save to Firestore
+    await this.savePackingItemsToFirestore();
+  }
+
+  async addTodoItem(title) {
+    if (!this.trip) return;
+
+    // Initialize todos array if needed
+    if (!this.trip.todos) {
+      this.trip.todos = [];
+    }
+
+    // Generate a unique ID
+    const id = `todo_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Create new todo item
+    const newItem = {
+      id: id,
+      title: title,
+      isCompleted: false,
+      createdAt: new Date().toISOString()
+    };
+
+    // Add to array
+    this.trip.todos.push(newItem);
+
+    // Re-render the list
+    this.renderTodos();
+
+    // Save to Firestore
+    await this.saveTodosToFirestore();
   }
 
   showLoading() {

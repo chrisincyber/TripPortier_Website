@@ -1487,3 +1487,139 @@
     right: calc(50% - 280px);
   }
 }
+
+/* ============================================
+   Add Item Forms
+   ============================================ */
+
+.add-item-form {
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.add-item-input-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.add-item-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.add-item-input:focus {
+  border-color: #6366f1;
+}
+
+.add-item-input::placeholder {
+  color: #94a3b8;
+}
+
+.add-item-select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  background: white;
+  color: #475569;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  min-width: 120px;
+}
+
+.add-item-select:focus {
+  border-color: #6366f1;
+}
+
+.add-item-btn {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  flex-shrink: 0;
+}
+
+.add-item-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+}
+
+.add-item-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.add-item-btn svg {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+/* Interactive Packing Items */
+.packing-item {
+  cursor: pointer;
+  transition: opacity 0.2s, background-color 0.15s;
+  padding: 0.625rem 0.5rem;
+  margin: 0 -0.5rem;
+  border-radius: 8px;
+}
+
+.packing-item:hover {
+  background-color: #f8fafc;
+}
+
+.packing-item:active {
+  background-color: #f1f5f9;
+}
+
+/* Interactive Todo Items */
+.todo-item {
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.todo-item:hover {
+  transform: translateX(2px);
+}
+
+.todo-item:active {
+  transform: scale(0.99);
+}
+
+/* Responsive adjustments for add forms */
+@media (max-width: 480px) {
+  .add-item-input-row {
+    flex-wrap: wrap;
+  }
+
+  .add-item-input {
+    width: 100%;
+    flex: none;
+  }
+
+  .add-item-select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .add-item-btn {
+    width: 44px;
+  }
+}

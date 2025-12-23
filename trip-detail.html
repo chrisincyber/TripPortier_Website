@@ -262,6 +262,28 @@
                 <!-- Packing List Sub-tab -->
                 <div id="subtab-packing" class="plan-subtab-content active">
                     <div class="packing-container" id="packing-container">
+                        <!-- Add Item Form -->
+                        <div class="add-item-form" id="add-packing-form">
+                            <div class="add-item-input-row">
+                                <input type="text" id="packing-item-input" placeholder="Add packing item..." class="add-item-input">
+                                <select id="packing-category-select" class="add-item-select">
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Toiletries">Toiletries</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Documents">Documents</option>
+                                    <option value="Health">Health</option>
+                                    <option value="Accessories">Accessories</option>
+                                    <option value="Shoes">Shoes</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <button id="add-packing-btn" class="add-item-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="packing-empty" id="packing-empty">
                             <div class="packing-empty-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -269,11 +291,8 @@
                                     <path d="M9 14l2 2 4-4"/>
                                 </svg>
                             </div>
-                            <h3>Packing List</h3>
-                            <p>Create and manage your packing list with the app for AI-powered suggestions.</p>
-                            <a href="https://apps.apple.com/app/tripportier" class="packing-add-btn" target="_blank">
-                                Open App
-                            </a>
+                            <h3>Packing List Empty</h3>
+                            <p>Add items to pack for your trip using the form above.</p>
                         </div>
                         <!-- Packing categories will be rendered here -->
                         <div id="packing-categories"></div>
@@ -283,6 +302,18 @@
                 <!-- To-Do Sub-tab -->
                 <div id="subtab-todos" class="plan-subtab-content">
                     <div class="todos-container" id="todos-container">
+                        <!-- Add Todo Form -->
+                        <div class="add-item-form" id="add-todo-form">
+                            <div class="add-item-input-row">
+                                <input type="text" id="todo-item-input" placeholder="Add to-do item..." class="add-item-input">
+                                <button id="add-todo-btn" class="add-item-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="todos-empty" id="todos-empty">
                             <div class="todos-empty-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -290,11 +321,8 @@
                                     <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
                                 </svg>
                             </div>
-                            <h3>To-Do List</h3>
-                            <p>Keep track of things to do before and during your trip.</p>
-                            <a href="https://apps.apple.com/app/tripportier" class="todos-add-btn" target="_blank">
-                                Open App
-                            </a>
+                            <h3>To-Do List Empty</h3>
+                            <p>Add tasks to complete before and during your trip.</p>
                         </div>
                         <!-- Todos will be rendered here -->
                         <div id="todos-list"></div>
