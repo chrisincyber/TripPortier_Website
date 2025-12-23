@@ -89,6 +89,12 @@ class AuthUI {
     const isSignIn = this.mode === 'signin';
 
     return `
+    <!-- Sign In / Sign Up Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab ${isSignIn ? 'active' : ''}" onclick="window.authUI.switchMode('signin')">Sign In</button>
+      <button class="auth-tab ${!isSignIn ? 'active' : ''}" onclick="window.authUI.switchMode('signup')">Sign Up</button>
+    </div>
+
     <div class="auth-header">
       <img src="assets/images/logo.png" alt="TripPortier" class="auth-logo">
       <h2>${isSignIn ? 'Welcome Back' : 'Create Account'}</h2>
