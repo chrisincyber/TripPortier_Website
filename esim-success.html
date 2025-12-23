@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your eSIM is ready! Scan the QR code to activate.">
+    <title>eSIM Ready - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .success-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .success-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+        }
+
+        .success-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            color: #059669;
+        }
+
+        .success-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-hero p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+        }
+
+        /* Loading State */
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #059669;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* eSIM Details Section */
+        .esim-section {
+            padding: 3rem 2rem 4rem;
+            background: #f8fafc;
+        }
+
+        .esim-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .esim-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .esim-card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .esim-card-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .esim-card-header p {
+            color: #64748b;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .qr-code {
+            max-width: 250px;
+            height: auto;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+        }
+
+        .qr-instructions {
+            margin-top: 1.5rem;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .esim-details {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+            text-align: right;
+            word-break: break-all;
+        }
+
+        /* Installation Instructions */
+        .install-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .install-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1.5rem;
+        }
+
+        .install-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .install-step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .install-step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content strong {
+            display: block;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .step-content span {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            min-width: 200px;
+            padding: 1rem 2rem;
+            background: white;
+            color: #1e293b;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #059669;
+            color: #059669;
+        }
+
+        /* Email Confirmation */
+        .email-notice {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .email-notice svg {
+            width: 24px;
+            height: 24px;
+            color: #059669;
+            flex-shrink: 0;
+        }
+
+        .email-notice p {
+            color: #166534;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .email-notice strong {
+            display: block;
+            color: #14532d;
+        }
+
+        /* Error State */
+        .error-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .error-icon svg {
+            width: 40px;
+            height: 40px;
+            color: #dc2626;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .success-hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .esim-card, .install-card {
+                padding: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary, .btn-secondary {
+                min-width: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#features">Features</a></li>
+                <li><a href="esim.html">eSIM</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+            </ul>
+            <a href="account.html" class="nav-signin-btn">Sign In</a>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Success Hero -->
+    <header class="success-hero">
+        <div class="success-hero-content">
+            <div class="success-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <h1>Your eSIM is Ready!</h1>
+            <p>Scan the QR code below to activate your eSIM</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="esim-section">
+        <div class="esim-container">
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-container">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading your eSIM details...</p>
+            </div>
+
+            <!-- Error State (hidden by default) -->
+            <div id="errorState" style="display: none;">
+                <div class="error-container">
+                    <div class="error-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <h2 class="error-title">Order Processing</h2>
+                    <p class="error-message" id="errorMessage">Your order is still being processed. Please wait a moment and refresh the page.</p>
+                    <button class="btn-primary" onclick="location.reload()">Refresh Page</button>
+                </div>
+            </div>
+
+            <!-- Success State (hidden by default) -->
+            <div id="successState" style="display: none;">
+                <!-- Email Notice -->
+                <div class="email-notice">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <p>
+                        <strong>Confirmation sent to <span id="customerEmail">your email</span></strong>
+                        Please save this page or screenshot the QR code for offline access.
+                    </p>
+                </div>
+
+                <!-- eSIM Card -->
+                <div class="esim-card">
+                    <div class="esim-card-header">
+                        <h2 id="packageTitle">eSIM Package</h2>
+                        <p id="packageSubtitle">Your eSIM for international travel</p>
+                    </div>
+
+                    <div class="qr-container">
+                        <img id="qrCode" class="qr-code" src="" alt="eSIM QR Code">
+                        <p class="qr-instructions">Scan this QR code with your phone's camera or go to Settings &gt; Cellular &gt; Add eSIM</p>
+                    </div>
+
+                    <div class="esim-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Package</span>
+                            <span class="detail-value" id="detailPackage">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Data</span>
+                            <span class="detail-value" id="detailData">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Validity</span>
+                            <span class="detail-value" id="detailValidity">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">ICCID</span>
+                            <span class="detail-value" id="detailIccid">-</span>
+                        </div>
+                        <div class="detail-row" id="smdpRow" style="display: none;">
+                            <span class="detail-label">SM-DP+ Address</span>
+                            <span class="detail-value" id="detailSmdp">-</span>
+                        </div>
+                        <div class="detail-row" id="activationRow" style="display: none;">
+                            <span class="detail-label">Activation Code</span>
+                            <span class="detail-value" id="detailActivation">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Installation Instructions -->
+                <div class="install-card">
+                    <h3>How to Install Your eSIM</h3>
+                    <ol class="install-steps">
+                        <li class="install-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <strong>Open Camera App</strong>
+                                <span>Point your phone's camera at the QR code above</span>
+                            </div>
+                        </li>
+                        <li class="install-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <strong>Tap the Notification</strong>
+                                <span>A notification will appear - tap to add the eSIM</span>
+                            </div>
+                        </li>
+                        <li class="install-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <strong>Confirm Installation</strong>
+                                <span>Follow the on-screen prompts to complete setup</span>
+                            </div>
+                        </li>
+                        <li class="install-step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <strong>Activate When Ready</strong>
+                                <span>Your data plan activates when you first connect in your destination</span>
+                            </div>
+                        </li>
+                    </ol>
+
+                    <div class="action-buttons">
+                        <a href="#" id="directInstallBtn" class="btn-primary" style="display: none;">
+                            Install on This Device
+                        </a>
+                        <a href="esim.html" class="btn-secondary">
+                            Browse More eSIMs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>App</h4>
+                <ul>
+                    <li><a href="index.html#features">Features</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Firebase Functions URL
+        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
+
+        // Get session ID from URL
+        function getSessionId() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('session_id');
+        }
+
+        // Fetch order details
+        async function fetchOrderDetails() {
+            const sessionId = getSessionId();
+
+            if (!sessionId) {
+                showError('No order session found. Please check your email for the order confirmation.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${FUNCTIONS_URL}/getEsimOrderBySession?session_id=${encodeURIComponent(sessionId)}`);
+                const data = await response.json();
+
+                if (data.success && data.order) {
+                    showSuccess(data.order);
+                } else if (data.status === 'processing') {
+                    // Order still processing, retry after delay
+                    setTimeout(fetchOrderDetails, 3000);
+                } else {
+                    showError(data.error || 'Order not found');
+                }
+            } catch (error) {
+                console.error('Error fetching order:', error);
+                showError('Failed to load order details. Please try refreshing the page.');
+            }
+        }
+
+        // Show success state with order details
+        function showSuccess(order) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+
+            // Update email
+            document.getElementById('customerEmail').textContent = order.email || 'your email';
+
+            // Update package details
+            document.getElementById('packageTitle').textContent = order.packageName || 'eSIM Package';
+            document.getElementById('packageSubtitle').textContent = `Your eSIM for ${order.countryTitle || 'international travel'}`;
+
+            // Update QR code
+            const qrImg = document.getElementById('qrCode');
+            if (order.qrCodeUrl) {
+                qrImg.src = order.qrCodeUrl;
+            } else {
+                // Hide QR and show message
+                qrImg.alt = 'QR Code will be sent to your email';
+                qrImg.style.display = 'none';
+                document.querySelector('.qr-instructions').textContent = 'Your eSIM QR code is being prepared. Please check your email.';
+            }
+
+            // Update details
+            document.getElementById('detailPackage').textContent = order.packageName || '-';
+            document.getElementById('detailData').textContent = order.data || '-';
+            document.getElementById('detailValidity').textContent = order.days ? `${order.days} days` : '-';
+            document.getElementById('detailIccid').textContent = order.iccid || '-';
+
+            // Show LPA (SM-DP+ Address) if available
+            if (order.lpa) {
+                document.getElementById('smdpRow').style.display = 'flex';
+                // Parse LPA format: LPA:1$smdp.address$activationCode
+                const lpaParts = order.lpa.split('$');
+                if (lpaParts.length >= 2) {
+                    document.getElementById('detailSmdp').textContent = lpaParts[1];
+                    if (lpaParts.length >= 3 && lpaParts[2]) {
+                        document.getElementById('activationRow').style.display = 'flex';
+                        document.getElementById('detailActivation').textContent = lpaParts[2];
+                    }
+                }
+            }
+
+            // Show direct install button for iOS (if on mobile)
+            if (order.directApple && /iPhone|iPad|iPod/.test(navigator.userAgent)) {
+                const directBtn = document.getElementById('directInstallBtn');
+                directBtn.href = order.directApple;
+                directBtn.style.display = 'block';
+            }
+        }
+
+        // Show error state
+        function showError(message) {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('successState').style.display = 'none';
+            document.getElementById('errorMessage').textContent = message;
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', fetchOrderDetails);
+    </script>
+</body>
+</html>
