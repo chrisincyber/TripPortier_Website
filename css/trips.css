@@ -1,0 +1,453 @@
+/**
+ * TripPortier Trips Page Styles
+ * My Trips grid layout and trip card components
+ */
+
+/* ============================================
+   Page Header
+   ============================================ */
+
+.trips-header {
+  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+  padding: 8rem 2rem 3rem;
+  color: white;
+  text-align: center;
+}
+
+.trips-header-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.trips-header-content p {
+  font-size: 1.125rem;
+  opacity: 0.9;
+  margin: 0;
+}
+
+/* ============================================
+   Main Container
+   ============================================ */
+
+.trips-main {
+  min-height: 60vh;
+  padding: 2rem;
+  background: #f8fafc;
+}
+
+.trips-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+
+.trips-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+}
+
+.trips-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: trips-spin 0.8s linear infinite;
+}
+
+@keyframes trips-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.trips-loading p {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+/* ============================================
+   Empty States
+   ============================================ */
+
+.trips-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.trips-empty-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.trips-empty-icon svg {
+  width: 40px;
+  height: 40px;
+  color: white;
+}
+
+.trips-empty h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.75rem;
+}
+
+.trips-empty p {
+  color: #64748b;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+  line-height: 1.5;
+}
+
+.trips-signin-btn,
+.trips-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.trips-signin-btn:hover,
+.trips-download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+/* ============================================
+   Section Titles
+   ============================================ */
+
+.trips-section {
+  margin-bottom: 3rem;
+}
+
+.trips-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 1.25rem;
+}
+
+/* Live Indicator */
+.live-indicator {
+  width: 10px;
+  height: 10px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+@keyframes pulse-live {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+/* ============================================
+   Trips Grid
+   ============================================ */
+
+.trips-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 380px));
+  gap: 1.5rem;
+  justify-content: start;
+}
+
+/* Active trip can be slightly wider on desktop */
+.trips-grid-active {
+  grid-template-columns: repeat(auto-fill, minmax(340px, 400px));
+}
+
+/* ============================================
+   Trip Card
+   ============================================ */
+
+.trip-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1e293b;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.trip-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+/* Active trip card is taller */
+.trip-card-active {
+  aspect-ratio: auto;
+  min-height: 400px;
+}
+
+/* Upcoming and past trip cards */
+.trip-card-upcoming,
+.trip-card-past {
+  aspect-ratio: auto;
+  min-height: 360px;
+}
+
+/* Past trip cards are slightly faded */
+.trip-card-past {
+  opacity: 0.85;
+}
+
+.trip-card-past:hover {
+  opacity: 1;
+}
+
+/* Card Background Image */
+.trip-card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Fallback gradient when no image */
+.trip-card-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #4c1d95 0%, #6366f1 50%, #0ea5e9 100%);
+}
+
+/* Dark overlay for text readability */
+.trip-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 30%,
+    rgba(0, 0, 0, 0.4) 60%,
+    rgba(0, 0, 0, 0.75) 100%
+  );
+}
+
+/* Card Content */
+.trip-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Active trip has more padding */
+.trip-card-active .trip-card-content {
+  padding: 1.5rem;
+}
+
+/* Badge Row */
+.trip-card-badges {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Live Badge */
+.trip-card-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 0.5rem 0.875rem;
+  border-radius: 50px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.trip-card-live-dot {
+  width: 8px;
+  height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  animation: pulse-live 2s ease-in-out infinite;
+}
+
+/* Trip Name */
+.trip-card-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.trip-card-upcoming .trip-card-name,
+.trip-card-past .trip-card-name {
+  font-size: 1.375rem;
+}
+
+/* Trip Info (dates, countdown) */
+.trip-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  opacity: 0.95;
+}
+
+.trip-card-info-dot {
+  opacity: 0.6;
+}
+
+/* Day counter for active trip */
+.trip-card-day-counter {
+  font-size: 1rem;
+  font-weight: 500;
+  opacity: 0.95;
+}
+
+/* Context Badge */
+.trip-card-context {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  margin-top: 0.25rem;
+  width: fit-content;
+}
+
+.trip-card-context-icon {
+  font-size: 0.875rem;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+  .trips-header {
+    padding: 6rem 1.5rem 2rem;
+  }
+
+  .trips-header-content h1 {
+    font-size: 2rem;
+  }
+
+  .trips-main {
+    padding: 1.5rem 1rem;
+  }
+
+  /* Single column on mobile - phone-sized tiles */
+  .trips-grid,
+  .trips-grid-active {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .trip-card-active {
+    min-height: 380px;
+  }
+
+  .trip-card-upcoming,
+  .trip-card-past {
+    min-height: 340px;
+  }
+
+  .trip-card-name {
+    font-size: 1.375rem;
+  }
+
+  .trip-card-upcoming .trip-card-name,
+  .trip-card-past .trip-card-name {
+    font-size: 1.25rem;
+  }
+
+  .trips-section-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .trips-header-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .trips-empty-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .trips-empty-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .trips-empty h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Large screens - limit card width */
+@media (min-width: 1400px) {
+  .trips-grid,
+  .trips-grid-active {
+    grid-template-columns: repeat(3, 380px);
+  }
+}

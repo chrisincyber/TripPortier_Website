@@ -96,7 +96,7 @@ class AuthUI {
     </div>
 
     <div class="auth-header">
-      <img src="assets/images/logo.png" alt="TripPortier" class="auth-logo">
+      <img src="/assets/images/logo.png" alt="TripPortier" class="auth-logo">
       <h2>${isSignIn ? 'Welcome Back' : 'Create Account'}</h2>
       <p>${isSignIn ? 'Sign in to access your trips and settings' : 'Join TripPortier to sync your travel data'}</p>
     </div>
@@ -170,7 +170,7 @@ class AuthUI {
   createResetPasswordHTML() {
     return `
     <div class="auth-header">
-      <img src="assets/images/logo.png" alt="TripPortier" class="auth-logo">
+      <img src="/assets/images/logo.png" alt="TripPortier" class="auth-logo">
       <h2>Reset Password</h2>
       <p>Enter your email and we'll send you a reset link</p>
     </div>
@@ -389,12 +389,25 @@ class AuthUI {
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
 
+    // Remove existing My Trips link
+    const existingTripsLink = navLinks.querySelector('.nav-trips-link');
+    if (existingTripsLink) existingTripsLink.remove();
+
     // Skip adding Sign In button on account page (it has its own Sign In UI)
     const isAccountPage = window.location.pathname.includes('account.html');
     if (!user && isAccountPage) {
       // Also update mobile menu
       this.updateMobileMenu(user, profile);
       return;
+    }
+
+    // Add My Trips nav link if user is logged in
+    if (user) {
+      const tripsLi = document.createElement('li');
+      tripsLi.className = 'nav-trips-link';
+      const isTripsPage = window.location.pathname.includes('trips.html');
+      tripsLi.innerHTML = `<a href="/trips.html" ${isTripsPage ? 'class="active"' : ''}>My Trips</a>`;
+      navLinks.appendChild(tripsLi);
     }
 
     // Create new auth element
@@ -424,7 +437,13 @@ class AuthUI {
               <div class="nav-user-menu-name">${displayName}</div>
               <div class="nav-user-menu-email">${email}</div>
             </div>
-            <a href="account.html">
+            <a href="/trips.html">
+              <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"></path>
+              </svg>
+              My Trips
+            </a>
+            <a href="/account.html">
               <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                 <circle cx="12" cy="7" r="4"></circle>
@@ -483,7 +502,8 @@ class AuthUI {
             <div class="mobile-user-email">${email}</div>
           </div>
         </div>
-        <a href="account.html" class="mobile-signin-btn" style="background: #f3f4f6; color: #374151;">My Account</a>
+        <a href="/trips.html" class="mobile-signin-btn" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">My Trips</a>
+        <a href="/account.html" class="mobile-signin-btn" style="background: #f3f4f6; color: #374151; margin-top: 0.5rem;">My Account</a>
         <button class="mobile-signout-btn" onclick="window.tripPortierAuth.signOut()">Sign Out</button>
       `;
     } else {

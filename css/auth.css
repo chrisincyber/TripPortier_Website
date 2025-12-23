@@ -458,6 +458,28 @@
   transform: rotate(180deg);
 }
 
+/* Transparent navbar state - white text for user button */
+.navbar:not(.scrolled) .nav-user-btn {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.navbar:not(.scrolled) .nav-user-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar:not(.scrolled) .nav-user-chevron {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Scrolled navbar state - dark text for user button */
+.navbar.scrolled .nav-user-btn {
+  color: #1e293b;
+}
+
+.navbar.scrolled .nav-user-chevron {
+  color: #64748b;
+}
+
 .nav-user-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -507,8 +529,8 @@
   gap: 0.75rem;
   width: 100%;
   padding: 0.75rem 1rem;
-  color: #374151;
-  text-decoration: none;
+  color: #374151 !important;
+  text-decoration: none !important;
   border-radius: 8px;
   transition: background 0.2s ease;
   font-size: 0.9375rem;
