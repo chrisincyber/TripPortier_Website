@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Global eSIM data plans covering 100+ countries. Perfect for multi-destination trips. One eSIM, worldwide coverage.">
+    <title>Worldwide eSIM - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Global Hero */
+        .global-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .global-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(2%, 2%); }
+        }
+
+        .global-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .global-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .global-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .global-hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .stats-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 2rem;
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(124, 58, 237, 0.2);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #7c3aed;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        /* Packages Section */
+        .packages-section {
+            padding: 4rem 2rem;
+            background: #f8fafc;
+        }
+
+        .packages-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .packages-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .packages-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .packages-header p {
+            color: #64748b;
+            font-size: 1.125rem;
+        }
+
+        /* Package Cards */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(124, 58, 237, 0.15);
+            border-color: #7c3aed;
+        }
+
+        .package-card.featured {
+            border-color: #7c3aed;
+            background: linear-gradient(180deg, rgba(124, 58, 237, 0.03) 0%, white 100%);
+        }
+
+        .package-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .package-data {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .package-validity {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem;
+        }
+
+        .package-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 0;
+            color: #475569;
+            font-size: 1rem;
+        }
+
+        .package-features li::before {
+            content: '\2713';
+            color: #7c3aed;
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .package-price {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .package-price-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #7c3aed;
+        }
+
+        .package-price-currency {
+            font-size: 1.125rem;
+            color: #64748b;
+        }
+
+        .package-btn {
+            width: 100%;
+            padding: 1.125rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 1.0625rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .package-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.35);
+        }
+
+        /* Coverage Map Section */
+        .coverage-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .coverage-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .coverage-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .coverage-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .coverage-header p {
+            color: #64748b;
+        }
+
+        .regions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .region-card {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .region-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .region-countries {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .region-country {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            background: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.8125rem;
+            color: #475569;
+        }
+
+        .region-country img {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .region-more {
+            background: #e2e8f0;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        /* Benefits Grid */
+        .benefits-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+        }
+
+        .benefits-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .benefits-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(124, 58, 237, 0.08);
+        }
+
+        .benefit-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-card p {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* App CTA */
+        .app-cta {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .app-cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .app-cta p {
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1.125rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .global-hero h1 {
+                font-size: 2rem;
+            }
+
+            .global-hero p {
+                font-size: 1rem;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .package-data {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .modal-package-summary {
+            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-package-summary h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-package-summary p {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .modal-package-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7c3aed;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        }
+
+        .modal-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .modal-divider::before,
+        .modal-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .app-download-hint {
+            text-align: center;
+            padding: 1rem;
+            background: #faf5ff;
+            border-radius: 12px;
+        }
+
+        .app-download-hint p {
+            color: #6b21a8;
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-download-hint a {
+            color: #7c3aed;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .app-download-hint a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="esim.html" class="active">eSIM Data</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Global Hero -->
+    <section class="global-hero">
+        <div class="global-hero-content">
+            <a href="esim.html" class="back-link">
+                <span>&#8592;</span> Back to all destinations
+            </a>
+            <div class="global-icon">&#127758;</div>
+            <h1>Worldwide eSIM</h1>
+            <p>One eSIM for your entire journey. Data coverage in 100+ countries across all continents.</p>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Countries Covered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Continents</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">4G/LTE</div>
+                <div class="stat-label">Speed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="packages-section">
+        <div class="packages-container">
+            <div class="packages-header">
+                <h2>Global Data Plans</h2>
+                <p>Perfect for multi-destination trips and frequent travelers</p>
+            </div>
+            <div class="packages-grid" id="packagesGrid">
+                <div class="package-card" onclick="selectPackage(1)">
+                    <div class="package-data">1 GB</div>
+                    <div class="package-validity">7 days validity</div>
+                    <ul class="package-features">
+                        <li>100+ countries worldwide</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$9.00</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+
+                <div class="package-card featured" onclick="selectPackage(2)">
+                    <div class="package-data">5 GB</div>
+                    <div class="package-validity">30 days validity</div>
+                    <ul class="package-features">
+                        <li>100+ countries worldwide</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                        <li>Best value for trips</li>
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$35.00</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+
+                <div class="package-card" onclick="selectPackage(3)">
+                    <div class="package-data">10 GB</div>
+                    <div class="package-validity">30 days validity</div>
+                    <ul class="package-features">
+                        <li>100+ countries worldwide</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                        <li>Perfect for heavy use</li>
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$59.00</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coverage Section -->
+    <section class="coverage-section">
+        <div class="coverage-container">
+            <div class="coverage-header">
+                <h2>Worldwide Coverage</h2>
+                <p>Stay connected across all major destinations</p>
+            </div>
+            <div class="regions-grid">
+                <div class="region-card">
+                    <h3>&#127466;&#127482; Europe</h3>
+                    <div class="region-countries">
+                        <span class="region-country"><img src="https://flagcdn.com/w40/gb.png" alt="UK">UK</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/fr.png" alt="France">France</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/de.png" alt="Germany">Germany</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/it.png" alt="Italy">Italy</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/es.png" alt="Spain">Spain</span>
+                        <span class="region-country region-more">+34 more</span>
+                    </div>
+                </div>
+                <div class="region-card">
+                    <h3>&#127470;&#127475; Asia Pacific</h3>
+                    <div class="region-countries">
+                        <span class="region-country"><img src="https://flagcdn.com/w40/jp.png" alt="Japan">Japan</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/kr.png" alt="Korea">Korea</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/th.png" alt="Thailand">Thailand</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/sg.png" alt="Singapore">Singapore</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/au.png" alt="Australia">Australia</span>
+                        <span class="region-country region-more">+20 more</span>
+                    </div>
+                </div>
+                <div class="region-card">
+                    <h3>&#127482;&#127480; Americas</h3>
+                    <div class="region-countries">
+                        <span class="region-country"><img src="https://flagcdn.com/w40/us.png" alt="USA">USA</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/ca.png" alt="Canada">Canada</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/mx.png" alt="Mexico">Mexico</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/br.png" alt="Brazil">Brazil</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/ar.png" alt="Argentina">Argentina</span>
+                        <span class="region-country region-more">+15 more</span>
+                    </div>
+                </div>
+                <div class="region-card">
+                    <h3>&#127462;&#127466; Middle East & Africa</h3>
+                    <div class="region-countries">
+                        <span class="region-country"><img src="https://flagcdn.com/w40/ae.png" alt="UAE">UAE</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/sa.png" alt="Saudi">Saudi</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/eg.png" alt="Egypt">Egypt</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/za.png" alt="S. Africa">S. Africa</span>
+                        <span class="region-country"><img src="https://flagcdn.com/w40/ma.png" alt="Morocco">Morocco</span>
+                        <span class="region-country region-more">+20 more</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits-section">
+        <div class="benefits-container">
+            <div class="benefits-header">
+                <h2>Why Go Global?</h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#127758;</div>
+                    <h3>True Global Coverage</h3>
+                    <p>One eSIM works across continents. No need to switch SIMs between countries.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#9992;&#65039;</div>
+                    <h3>Multi-Destination Trips</h3>
+                    <p>Perfect for round-the-world trips and visiting multiple countries.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#128176;</div>
+                    <h3>Cost Effective</h3>
+                    <p>More affordable than buying separate eSIMs for each country you visit.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#9889;</div>
+                    <h3>Instant Connectivity</h3>
+                    <p>Connect immediately upon landing, no matter where in the world.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App CTA -->
+    <section class="app-cta">
+        <h2>Your Travel Companion</h2>
+        <p>Download TripPortier to manage your global eSIM, track data usage across countries, and top-up anytime, anywhere.</p>
+        <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="background: white; color: #7c3aed;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h3>Purchase Global eSIM</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-package-summary">
+                    <h4 id="modalPackageName">5 GB - 30 Days</h4>
+                    <p>Worldwide Coverage - 100+ Countries</p>
+                    <div class="modal-package-price" id="modalPackagePrice">$35.00</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="emailInput">Email Address</label>
+                    <input type="email" id="emailInput" placeholder="your@email.com" required>
+                </div>
+
+                <button class="modal-btn" onclick="proceedToCheckout()">
+                    Continue to Payment
+                </button>
+
+                <div class="modal-divider">or</div>
+
+                <div class="app-download-hint">
+                    <p>Get the best experience with the TripPortier app</p>
+                    <a href="https://apps.apple.com/app/tripportier">Download App &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Package data
+        const packages = [
+            { id: 1, data: '1 GB', days: 7, price: 9.00 },
+            { id: 2, data: '5 GB', days: 30, price: 35.00 },
+            { id: 3, data: '10 GB', days: 30, price: 59.00 }
+        ];
+
+        let selectedPackage = null;
+
+        // Select package
+        function selectPackage(packageId) {
+            selectedPackage = packages.find(p => p.id === packageId);
+            if (selectedPackage) {
+                document.getElementById('modalPackageName').textContent =
+                    `${selectedPackage.data} - ${selectedPackage.days} Days`;
+                document.getElementById('modalPackagePrice').textContent =
+                    `$${selectedPackage.price.toFixed(2)}`;
+                openModal();
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('purchaseModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('purchaseModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on outside click
+        document.getElementById('purchaseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Proceed to checkout
+        function proceedToCheckout() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // For now, redirect to app store
+            alert('Checkout coming soon! For now, please use the TripPortier app to purchase eSIMs.');
+            window.open('https://apps.apple.com/app/tripportier', '_blank');
+        }
+    </script>
+</body>
+</html>

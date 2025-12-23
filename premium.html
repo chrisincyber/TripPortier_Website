@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Upgrade to TripPortier+ - Unlock AI itinerary planning, flight tracking, and more.">
+    <title>TripPortier+ - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .premium-page {
+            min-height: 100vh;
+            background: var(--theme-bg);
+        }
+
+        .premium-header {
+            background: var(--theme-hero-gradient);
+            padding: 8rem 2rem 6rem;
+            color: white;
+            text-align: center;
+        }
+
+        .premium-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .premium-header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .web-discount-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+        }
+
+        .pricing-section {
+            max-width: 900px;
+            margin: -3rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .pricing-card {
+            background: var(--theme-card-bg, white);
+            border-radius: 20px;
+            box-shadow: var(--theme-card-shadow, 0 10px 40px rgba(0, 0, 0, 0.1));
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-card.recommended {
+            border: 2px solid #6366f1;
+        }
+
+        .pricing-card.recommended::before {
+            content: 'Best Value';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 0 18px 0 12px;
+        }
+
+        .pricing-card-header {
+            padding: 2rem 2rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .pricing-card-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--theme-text, #1e293b);
+            margin-bottom: 0.5rem;
+        }
+
+        .price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0.25rem;
+        }
+
+        .price-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--theme-primary, #6366f1);
+        }
+
+        .price-period {
+            font-size: 1rem;
+            color: var(--theme-text-secondary, #64748b);
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--theme-text-muted, #94a3b8);
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .savings-badge.web-promo {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 0.8125rem;
+            padding: 0.375rem 1rem;
+        }
+
+        /* Web Discount Popup */
+        .web-discount-popup {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .web-discount-popup-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .web-discount-popup-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .web-discount-popup-content h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem;
+        }
+
+        .web-discount-popup-content p {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .web-discount-popup-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            color: white;
+            opacity: 0.6;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .web-discount-popup-close:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            .web-discount-popup {
+                left: 1rem;
+                right: 1rem;
+                transform: none;
+                bottom: 1rem;
+            }
+        }
+
+        .pricing-card-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .pricing-card-body ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+        }
+
+        .pricing-card-body li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: var(--theme-text, #1e293b);
+            font-size: 0.9375rem;
+        }
+
+        .pricing-card-body li svg {
+            width: 20px;
+            height: 20px;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .subscribe-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .subscribe-btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .subscribe-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .subscribe-btn-secondary {
+            background: var(--theme-bg-secondary, #f1f5f9);
+            color: var(--theme-text, #1e293b);
+        }
+
+        .subscribe-btn-secondary:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .features-section {
+            max-width: 900px;
+            margin: 0 auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .features-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--theme-text, #1e293b);
+            margin-bottom: 2rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--theme-card-bg, white);
+            border-radius: 16px;
+            box-shadow: var(--theme-card-shadow, 0 4px 20px rgba(0, 0, 0, 0.08));
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .feature-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .feature-icon.blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .feature-icon.purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+        .feature-icon.green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .feature-icon.orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .feature-icon.pink { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+        .feature-icon.cyan { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+
+        .feature-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--theme-text, #1e293b);
+            margin-bottom: 0.25rem;
+        }
+
+        .feature-content p {
+            font-size: 0.875rem;
+            color: var(--theme-text-secondary, #64748b);
+            margin: 0;
+        }
+
+        .already-premium {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .already-premium h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 0.5rem;
+        }
+
+        .already-premium p {
+            color: #15803d;
+            margin-bottom: 1.5rem;
+        }
+
+        .already-premium a {
+            display: inline-block;
+            background: #166534;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .premium-header h1 {
+                font-size: 2rem;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="premium-page">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <img src="assets/images/logo.png" alt="TripPortier Logo">
+                    TripPortier
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    <li><a href="premium.html" class="active">Premium</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                </ul>
+                <div class="nav-auth" id="nav-auth"></div>
+                <button class="mobile-menu" onclick="toggleMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="premium-header">
+            <h1>Upgrade to TripPortier+</h1>
+            <p>Unlock the full power of TripPortier with AI-powered features, flight tracking, and more.</p>
+            <div class="web-discount-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                Use code <strong>TRIPPORTIER10</strong> for 10% off!
+            </div>
+        </header>
+
+        <!-- Pricing Section -->
+        <section class="pricing-section">
+            <!-- Already Premium Message (hidden by default) -->
+            <div class="already-premium" id="already-premium" style="display: none;">
+                <h2>You're Already Premium!</h2>
+                <p id="premium-expiry">Your subscription is active.</p>
+                <a href="account.html">View Your Account</a>
+            </div>
+
+            <!-- Pricing Cards (shown for non-subscribers) -->
+            <div class="pricing-cards" id="pricing-cards">
+                <!-- Monthly Plan -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <h3>Monthly</h3>
+                        <div class="price">
+                            <span class="price-amount">$5.99</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <div class="savings-badge">Billed monthly</div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Unlimited trips
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                AI-powered suggestions
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Real-time flight tracking
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Cancel anytime
+                            </li>
+                        </ul>
+                        <button class="subscribe-btn subscribe-btn-secondary" onclick="subscribeMonthly()">
+                            Subscribe Monthly
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Yearly Plan (Recommended) -->
+                <div class="pricing-card recommended">
+                    <div class="pricing-card-header">
+                        <h3>Yearly</h3>
+                        <div class="price">
+                            <span class="price-amount">$69.99</span>
+                            <span class="price-period">/year</span>
+                        </div>
+                        <div class="savings-badge">Save $2/month vs monthly</div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Everything in Monthly
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                AI destination assistant
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Local insights & tips
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Use promo code at checkout
+                            </li>
+                        </ul>
+                        <button class="subscribe-btn subscribe-btn-primary" onclick="subscribeYearly()">
+                            Subscribe Yearly
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2>What's Included in TripPortier+</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon blue">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Flight Tracking</h4>
+                        <p>Real-time flight status, delays, and gate changes</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon purple">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>AI Suggestions</h4>
+                        <p>Smart packing recommendations based on your trip</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon green">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>AI Assistant</h4>
+                        <p>Ask questions about your destination</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon orange">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Local Insights</h4>
+                        <p>Culture tips, visa info & local knowledge</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon pink">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Unlimited Trips</h4>
+                        <p>Create as many trips as you need</p>
+                    </div>
+                </div>
+
+                <div class="feature-item">
+                    <div class="feature-icon cyan">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Travel Stats</h4>
+                        <p>Visualize your travel history</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Web Discount Popup -->
+        <div class="web-discount-popup" id="web-discount-popup" style="display: none;">
+            <button class="web-discount-popup-close" onclick="closeDiscountPopup()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="web-discount-popup-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="web-discount-popup-content">
+                <h4>Use code TRIPPORTIER10 for 10% off!</h4>
+                <p>Enter the promo code at checkout to save.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>TripPortier</h4>
+                    <p>Your AI-powered travel companion for stress-free adventures.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="esim.html">eSIM Data</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Download</h4>
+                    <ul>
+                        <li><a href="https://apps.apple.com/app/tripportier">iOS App</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TripPortier. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/subscription.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Subscribe functions
+        function subscribeMonthly() {
+            window.subscriptionManager.subscribe('monthly');
+        }
+
+        function subscribeYearly() {
+            window.subscriptionManager.subscribe('yearly');
+        }
+
+        // Check subscription status on page load
+        async function checkSubscriptionStatus() {
+            // Wait for auth to be ready
+            window.tripPortierAuth.addListener(async (user) => {
+                if (user) {
+                    const status = await window.subscriptionManager.getSubscriptionStatus(user.uid);
+                    if (status.isSubscribed) {
+                        // Show already premium message
+                        document.getElementById('already-premium').style.display = 'block';
+                        document.getElementById('pricing-cards').style.display = 'none';
+
+                        // Show expiry date
+                        const expiry = status.subscription.expirationDate;
+                        if (expiry) {
+                            document.getElementById('premium-expiry').textContent =
+                                `Your ${status.subscription.planName || 'Premium'} subscription renews on ${window.subscriptionManager.formatExpirationDate(expiry)}.`;
+                        }
+                    } else {
+                        // Show pricing cards
+                        document.getElementById('already-premium').style.display = 'none';
+                        document.getElementById('pricing-cards').style.display = 'grid';
+                    }
+                } else {
+                    // Not logged in - show pricing
+                    document.getElementById('already-premium').style.display = 'none';
+                    document.getElementById('pricing-cards').style.display = 'grid';
+                }
+            });
+        }
+
+        // Promo code popup functions
+        function showDiscountPopup() {
+            const popup = document.getElementById('web-discount-popup');
+            if (popup && !sessionStorage.getItem('discountPopupDismissed')) {
+                popup.style.display = 'flex';
+            }
+        }
+
+        function closeDiscountPopup() {
+            const popup = document.getElementById('web-discount-popup');
+            if (popup) {
+                popup.style.display = 'none';
+                sessionStorage.setItem('discountPopupDismissed', 'true');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSubscriptionStatus();
+            // Show popup after 2 seconds
+            setTimeout(showDiscountPopup, 2000);
+        });
+    </script>
+</body>
+</html>

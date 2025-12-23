@@ -4,7 +4,7 @@
     --primary: #6366f1;
     --primary-dark: #4f46e5;
     --secondary: #06b6d4;
-    --accent: #f59e0b;
+    --accent: #8b5cf6;
     --dark: #1e293b;
     --light: #f8fafc;
     --gray: #64748b;
@@ -290,7 +290,7 @@ body {
 /* Page Styles */
 .page-header {
     padding: 8rem 2rem 4rem;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
     color: white;
     text-align: center;
 }

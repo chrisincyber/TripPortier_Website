@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buy regional eSIM data for multiple countries. One eSIM for your entire trip across Europe, Asia, and more.">
+    <title>Regional eSIM Plans - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Region Hero */
+        .region-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .region-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(2%, 2%); }
+        }
+
+        .region-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .region-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .region-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .region-hero p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* Countries Covered */
+        .countries-covered {
+            padding: 2rem 2rem 0;
+            background: #f8fafc;
+        }
+
+        .countries-covered-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .countries-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .countries-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .country-flags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .country-flag-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: #475569;
+        }
+
+        .country-flag-item img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .see-all-countries {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6366f1;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .see-all-countries:hover {
+            text-decoration: underline;
+        }
+
+        /* Packages Section */
+        .packages-section {
+            padding: 3rem 2rem 4rem;
+            background: #f8fafc;
+        }
+
+        .packages-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .packages-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .packages-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .packages-header p {
+            color: #64748b;
+        }
+
+        /* Package Cards */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-color: #6366f1;
+        }
+
+        .package-card.popular {
+            border-color: #6366f1;
+        }
+
+        .package-card.popular::before {
+            content: 'Best Value';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .package-data {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .package-validity {
+            color: #64748b;
+            font-size: 0.9375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+        }
+
+        .package-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: #475569;
+            font-size: 0.9375rem;
+        }
+
+        .package-features li::before {
+            content: '\2713';
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .package-price {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .package-price-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6366f1;
+        }
+
+        .package-price-currency {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .package-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .package-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(30, 41, 59, 0.3);
+        }
+
+        /* Benefits */
+        .benefits-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .benefits-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .benefits-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            text-align: center;
+        }
+
+        .benefit-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .benefit-card p {
+            color: #64748b;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        /* App CTA */
+        .app-cta {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .app-cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .app-cta p {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .region-hero h1 {
+                font-size: 2rem;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Modal styles (same as country page) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .modal-package-summary {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-package-summary h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-package-summary p {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .modal-package-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .modal-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .modal-divider::before,
+        .modal-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .app-download-hint {
+            text-align: center;
+            padding: 1rem;
+            background: #ede9fe;
+            border-radius: 12px;
+        }
+
+        .app-download-hint p {
+            color: #4c1d95;
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-download-hint a {
+            color: #8b5cf6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .app-download-hint a:hover {
+            text-decoration: underline;
+        }
+
+        /* All countries modal */
+        .countries-modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .countries-list-full {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="esim.html" class="active">eSIM Data</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Region Hero -->
+    <section class="region-hero">
+        <div class="region-hero-content">
+            <a href="esim.html" class="back-link">
+                <span>&#8592;</span> Back to all destinations
+            </a>
+            <div class="region-icon" id="regionIcon">&#127758;</div>
+            <h1 id="regionName">Loading...</h1>
+            <p id="regionSubtitle">One eSIM for multiple countries</p>
+        </div>
+    </section>
+
+    <!-- Countries Covered -->
+    <section class="countries-covered">
+        <div class="countries-covered-container">
+            <div class="countries-card">
+                <h3 id="countriesTitle">Countries Covered</h3>
+                <div class="country-flags-grid" id="countriesGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <button class="see-all-countries" id="seeAllBtn" onclick="showAllCountries()">
+                    See all countries &#8594;
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="packages-section">
+        <div class="packages-container">
+            <div class="packages-header">
+                <h2>Choose Your Data Plan</h2>
+                <p>Use data across all covered countries with a single eSIM</p>
+            </div>
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits -->
+    <section class="benefits-section">
+        <div class="benefits-container">
+            <div class="benefits-header">
+                <h2>Why Choose Regional eSIM?</h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#127758;</div>
+                    <h3>Multi-Country Coverage</h3>
+                    <p>One eSIM works across all countries in the region</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#128176;</div>
+                    <h3>Better Value</h3>
+                    <p>Cheaper than buying separate eSIMs for each country</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#9889;</div>
+                    <h3>Seamless Roaming</h3>
+                    <p>Automatically connects as you cross borders</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#128241;</div>
+                    <h3>Simple Setup</h3>
+                    <p>One installation, works everywhere in the region</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App CTA -->
+    <section class="app-cta">
+        <h2>Manage Your eSIMs in the App</h2>
+        <p>Download TripPortier to track data usage, see which country you're connected to, and top-up anytime.</p>
+        <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="background: #6366f1; color: white;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h3>Purchase eSIM</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-package-summary">
+                    <h4 id="modalPackageName">5GB - 30 Days</h4>
+                    <p id="modalPackageRegion">Europe</p>
+                    <div class="modal-package-price" id="modalPackagePrice">$15.00</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="emailInput">Email Address</label>
+                    <input type="email" id="emailInput" placeholder="your@email.com" required>
+                </div>
+
+                <button class="modal-btn" onclick="proceedToCheckout()">
+                    Continue to Payment
+                </button>
+
+                <div class="modal-divider">or</div>
+
+                <div class="app-download-hint">
+                    <p>Get the best experience with the TripPortier app</p>
+                    <a href="https://apps.apple.com/app/tripportier">Download App &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Countries Modal -->
+    <div class="modal-overlay" id="countriesModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeCountriesModal()">&times;</button>
+            <div class="modal-header">
+                <h3 id="countriesModalTitle">Countries Covered</h3>
+            </div>
+            <div class="modal-body countries-modal-body">
+                <div class="countries-list-full" id="countriesListFull">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Regional data
+        const regionData = {
+            'europe': {
+                name: 'Europe',
+                icon: '&#127466;&#127482;',
+                subtitle: '39 countries in one eSIM',
+                countries: [
+                    { code: 'AT', name: 'Austria' }, { code: 'BE', name: 'Belgium' }, { code: 'BG', name: 'Bulgaria' },
+                    { code: 'HR', name: 'Croatia' }, { code: 'CY', name: 'Cyprus' }, { code: 'CZ', name: 'Czech Republic' },
+                    { code: 'DK', name: 'Denmark' }, { code: 'EE', name: 'Estonia' }, { code: 'FI', name: 'Finland' },
+                    { code: 'FR', name: 'France' }, { code: 'DE', name: 'Germany' }, { code: 'GR', name: 'Greece' },
+                    { code: 'HU', name: 'Hungary' }, { code: 'IS', name: 'Iceland' }, { code: 'IE', name: 'Ireland' },
+                    { code: 'IT', name: 'Italy' }, { code: 'LV', name: 'Latvia' }, { code: 'LI', name: 'Liechtenstein' },
+                    { code: 'LT', name: 'Lithuania' }, { code: 'LU', name: 'Luxembourg' }, { code: 'MT', name: 'Malta' },
+                    { code: 'NL', name: 'Netherlands' }, { code: 'NO', name: 'Norway' }, { code: 'PL', name: 'Poland' },
+                    { code: 'PT', name: 'Portugal' }, { code: 'RO', name: 'Romania' }, { code: 'SK', name: 'Slovakia' },
+                    { code: 'SI', name: 'Slovenia' }, { code: 'ES', name: 'Spain' }, { code: 'SE', name: 'Sweden' },
+                    { code: 'CH', name: 'Switzerland' }, { code: 'UA', name: 'Ukraine' }, { code: 'GB', name: 'UK' },
+                    { code: 'AL', name: 'Albania' }, { code: 'BA', name: 'Bosnia' }, { code: 'ME', name: 'Montenegro' },
+                    { code: 'MK', name: 'North Macedonia' }, { code: 'RS', name: 'Serbia' }, { code: 'TR', name: 'Turkey' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 5.00, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 11.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 15.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 25.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 42.00, popular: false }
+                ]
+            },
+            'asia': {
+                name: 'Asia',
+                icon: '&#127470;&#127475;',
+                subtitle: '26 countries in one eSIM',
+                countries: [
+                    { code: 'CN', name: 'China' }, { code: 'HK', name: 'Hong Kong' }, { code: 'IN', name: 'India' },
+                    { code: 'ID', name: 'Indonesia' }, { code: 'JP', name: 'Japan' }, { code: 'KR', name: 'South Korea' },
+                    { code: 'MY', name: 'Malaysia' }, { code: 'PH', name: 'Philippines' }, { code: 'SG', name: 'Singapore' },
+                    { code: 'TW', name: 'Taiwan' }, { code: 'TH', name: 'Thailand' }, { code: 'VN', name: 'Vietnam' },
+                    { code: 'KH', name: 'Cambodia' }, { code: 'LA', name: 'Laos' }, { code: 'MM', name: 'Myanmar' },
+                    { code: 'BD', name: 'Bangladesh' }, { code: 'LK', name: 'Sri Lanka' }, { code: 'NP', name: 'Nepal' },
+                    { code: 'PK', name: 'Pakistan' }, { code: 'KZ', name: 'Kazakhstan' }, { code: 'UZ', name: 'Uzbekistan' },
+                    { code: 'MO', name: 'Macau' }, { code: 'MV', name: 'Maldives' }, { code: 'BN', name: 'Brunei' },
+                    { code: 'MN', name: 'Mongolia' }, { code: 'TJ', name: 'Tajikistan' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 5.00, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 10.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 14.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 24.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 40.00, popular: false }
+                ]
+            },
+            'north-america': {
+                name: 'North America',
+                icon: '&#127482;&#127480;',
+                subtitle: 'USA, Canada & Mexico',
+                countries: [
+                    { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'MX', name: 'Mexico' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 6.00, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 12.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 18.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 30.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 50.00, popular: false }
+                ]
+            },
+            'latin-america': {
+                name: 'Latin America',
+                icon: '&#127463;&#127479;',
+                subtitle: '17 countries in one eSIM',
+                countries: [
+                    { code: 'AR', name: 'Argentina' }, { code: 'BO', name: 'Bolivia' }, { code: 'BR', name: 'Brazil' },
+                    { code: 'CL', name: 'Chile' }, { code: 'CO', name: 'Colombia' }, { code: 'CR', name: 'Costa Rica' },
+                    { code: 'DO', name: 'Dominican Republic' }, { code: 'EC', name: 'Ecuador' }, { code: 'SV', name: 'El Salvador' },
+                    { code: 'GT', name: 'Guatemala' }, { code: 'HN', name: 'Honduras' }, { code: 'NI', name: 'Nicaragua' },
+                    { code: 'PA', name: 'Panama' }, { code: 'PY', name: 'Paraguay' }, { code: 'PE', name: 'Peru' },
+                    { code: 'UY', name: 'Uruguay' }, { code: 'VE', name: 'Venezuela' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 5.50, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 11.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 16.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 28.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 45.00, popular: false }
+                ]
+            },
+            'mena': {
+                name: 'Middle East',
+                icon: '&#127462;&#127466;',
+                subtitle: '12 countries in one eSIM',
+                countries: [
+                    { code: 'AE', name: 'UAE' }, { code: 'SA', name: 'Saudi Arabia' }, { code: 'QA', name: 'Qatar' },
+                    { code: 'KW', name: 'Kuwait' }, { code: 'OM', name: 'Oman' }, { code: 'BH', name: 'Bahrain' },
+                    { code: 'JO', name: 'Jordan' }, { code: 'IL', name: 'Israel' }, { code: 'LB', name: 'Lebanon' },
+                    { code: 'EG', name: 'Egypt' }, { code: 'MA', name: 'Morocco' }, { code: 'TN', name: 'Tunisia' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 6.00, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 13.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 18.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 32.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 55.00, popular: false }
+                ]
+            },
+            'africa': {
+                name: 'Africa',
+                icon: '&#127487;&#127462;',
+                subtitle: '25 countries in one eSIM',
+                countries: [
+                    { code: 'ZA', name: 'South Africa' }, { code: 'EG', name: 'Egypt' }, { code: 'MA', name: 'Morocco' },
+                    { code: 'KE', name: 'Kenya' }, { code: 'NG', name: 'Nigeria' }, { code: 'GH', name: 'Ghana' },
+                    { code: 'TZ', name: 'Tanzania' }, { code: 'ET', name: 'Ethiopia' }, { code: 'UG', name: 'Uganda' },
+                    { code: 'RW', name: 'Rwanda' }, { code: 'SN', name: 'Senegal' }, { code: 'CI', name: "Ivory Coast" },
+                    { code: 'CM', name: 'Cameroon' }, { code: 'AO', name: 'Angola' }, { code: 'MZ', name: 'Mozambique' },
+                    { code: 'ZM', name: 'Zambia' }, { code: 'ZW', name: 'Zimbabwe' }, { code: 'BW', name: 'Botswana' },
+                    { code: 'NA', name: 'Namibia' }, { code: 'MU', name: 'Mauritius' }, { code: 'TN', name: 'Tunisia' },
+                    { code: 'DZ', name: 'Algeria' }, { code: 'MW', name: 'Malawi' }, { code: 'GA', name: 'Gabon' },
+                    { code: 'CG', name: 'Congo' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 7.00, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 15.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 22.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 38.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 65.00, popular: false }
+                ]
+            },
+            'oceania': {
+                name: 'Oceania',
+                icon: '&#127462;&#127482;',
+                subtitle: 'Australia, New Zealand & more',
+                countries: [
+                    { code: 'AU', name: 'Australia' }, { code: 'NZ', name: 'New Zealand' }, { code: 'FJ', name: 'Fiji' },
+                    { code: 'PG', name: 'Papua New Guinea' }, { code: 'NC', name: 'New Caledonia' }, { code: 'GU', name: 'Guam' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 6.50, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 14.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 20.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 35.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 60.00, popular: false }
+                ]
+            },
+            'caribbean': {
+                name: 'Caribbean',
+                icon: '&#127471;&#127474;',
+                subtitle: '21 countries in one eSIM',
+                countries: [
+                    { code: 'JM', name: 'Jamaica' }, { code: 'BS', name: 'Bahamas' }, { code: 'BB', name: 'Barbados' },
+                    { code: 'TT', name: 'Trinidad & Tobago' }, { code: 'DO', name: 'Dominican Republic' },
+                    { code: 'PR', name: 'Puerto Rico' }, { code: 'CU', name: 'Cuba' }, { code: 'HT', name: 'Haiti' },
+                    { code: 'AW', name: 'Aruba' }, { code: 'CW', name: 'Curacao' }, { code: 'KY', name: 'Cayman Islands' },
+                    { code: 'VI', name: 'US Virgin Islands' }, { code: 'AG', name: 'Antigua' }, { code: 'LC', name: 'Saint Lucia' },
+                    { code: 'GD', name: 'Grenada' }, { code: 'VC', name: 'St. Vincent' }, { code: 'DM', name: 'Dominica' },
+                    { code: 'KN', name: 'St. Kitts' }, { code: 'TC', name: 'Turks & Caicos' }, { code: 'BM', name: 'Bermuda' },
+                    { code: 'MQ', name: 'Martinique' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 7.50, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 16.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 24.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 42.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 70.00, popular: false }
+                ]
+            },
+            'eu-uk': {
+                name: 'Europe + UK',
+                icon: '&#127466;&#127482;',
+                subtitle: '40 countries including UK',
+                countries: [
+                    { code: 'GB', name: 'United Kingdom' }, { code: 'AT', name: 'Austria' }, { code: 'BE', name: 'Belgium' },
+                    { code: 'BG', name: 'Bulgaria' }, { code: 'HR', name: 'Croatia' }, { code: 'CY', name: 'Cyprus' },
+                    { code: 'CZ', name: 'Czech Republic' }, { code: 'DK', name: 'Denmark' }, { code: 'EE', name: 'Estonia' },
+                    { code: 'FI', name: 'Finland' }, { code: 'FR', name: 'France' }, { code: 'DE', name: 'Germany' },
+                    { code: 'GR', name: 'Greece' }, { code: 'HU', name: 'Hungary' }, { code: 'IS', name: 'Iceland' },
+                    { code: 'IE', name: 'Ireland' }, { code: 'IT', name: 'Italy' }, { code: 'LV', name: 'Latvia' },
+                    { code: 'LI', name: 'Liechtenstein' }, { code: 'LT', name: 'Lithuania' }, { code: 'LU', name: 'Luxembourg' },
+                    { code: 'MT', name: 'Malta' }, { code: 'NL', name: 'Netherlands' }, { code: 'NO', name: 'Norway' },
+                    { code: 'PL', name: 'Poland' }, { code: 'PT', name: 'Portugal' }, { code: 'RO', name: 'Romania' },
+                    { code: 'SK', name: 'Slovakia' }, { code: 'SI', name: 'Slovenia' }, { code: 'ES', name: 'Spain' },
+                    { code: 'SE', name: 'Sweden' }, { code: 'CH', name: 'Switzerland' }, { code: 'UA', name: 'Ukraine' },
+                    { code: 'AL', name: 'Albania' }, { code: 'BA', name: 'Bosnia' }, { code: 'ME', name: 'Montenegro' },
+                    { code: 'MK', name: 'North Macedonia' }, { code: 'RS', name: 'Serbia' }, { code: 'TR', name: 'Turkey' },
+                    { code: 'GI', name: 'Gibraltar' }
+                ],
+                packages: [
+                    { id: 1, data: '1 GB', days: 7, price: 5.50, popular: false },
+                    { id: 2, data: '3 GB', days: 15, price: 12.00, popular: false },
+                    { id: 3, data: '5 GB', days: 30, price: 17.00, popular: true },
+                    { id: 4, data: '10 GB', days: 30, price: 28.00, popular: false },
+                    { id: 5, data: '20 GB', days: 30, price: 48.00, popular: false }
+                ]
+            }
+        };
+
+        let currentRegion = null;
+        let selectedPackage = null;
+
+        // Get region from URL
+        function getRegionCode() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('region') || 'europe';
+        }
+
+        // Initialize page
+        function initPage() {
+            const code = getRegionCode();
+            const region = regionData[code];
+
+            if (region) {
+                currentRegion = { code, ...region };
+                document.getElementById('regionIcon').innerHTML = region.icon;
+                document.getElementById('regionName').textContent = region.name;
+                document.getElementById('regionSubtitle').textContent = region.subtitle;
+                document.title = `${region.name} eSIM - TripPortier`;
+                document.getElementById('countriesTitle').textContent = `${region.countries.length} Countries Covered`;
+
+                // Render countries preview (first 12)
+                renderCountriesPreview(region.countries);
+
+                // Render packages
+                renderPackages(region.packages);
+            } else {
+                window.location.href = 'esim.html';
+            }
+        }
+
+        // Render countries preview
+        function renderCountriesPreview(countries) {
+            const grid = document.getElementById('countriesGrid');
+            const preview = countries.slice(0, 12);
+            grid.innerHTML = preview.map(c => `
+                <div class="country-flag-item">
+                    <img src="https://flagcdn.com/w40/${c.code.toLowerCase()}.png" alt="${c.name}" onerror="this.style.display='none'">
+                    <span>${c.name}</span>
+                </div>
+            `).join('');
+
+            // Show/hide "see all" button
+            document.getElementById('seeAllBtn').style.display = countries.length > 12 ? 'inline-flex' : 'none';
+        }
+
+        // Render packages
+        function renderPackages(packages) {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = packages.map(pkg => `
+                <div class="package-card ${pkg.popular ? 'popular' : ''}" onclick="selectPackage(${pkg.id})">
+                    <div class="package-data">${pkg.data}</div>
+                    <div class="package-validity">${pkg.days} days validity</div>
+                    <ul class="package-features">
+                        <li>Works in all covered countries</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+            `).join('');
+        }
+
+        // Show all countries modal
+        function showAllCountries() {
+            if (!currentRegion) return;
+            document.getElementById('countriesModalTitle').textContent = `${currentRegion.name} - ${currentRegion.countries.length} Countries`;
+            document.getElementById('countriesListFull').innerHTML = currentRegion.countries.map(c => `
+                <div class="country-flag-item">
+                    <img src="https://flagcdn.com/w40/${c.code.toLowerCase()}.png" alt="${c.name}" onerror="this.style.display='none'">
+                    <span>${c.name}</span>
+                </div>
+            `).join('');
+            document.getElementById('countriesModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCountriesModal() {
+            document.getElementById('countriesModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Select package
+        function selectPackage(packageId) {
+            selectedPackage = currentRegion.packages.find(p => p.id === packageId);
+            if (selectedPackage && currentRegion) {
+                document.getElementById('modalPackageName').textContent =
+                    `${selectedPackage.data} - ${selectedPackage.days} Days`;
+                document.getElementById('modalPackageRegion').textContent = currentRegion.name;
+                document.getElementById('modalPackagePrice').textContent =
+                    `$${selectedPackage.price.toFixed(2)}`;
+                openModal();
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('purchaseModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('purchaseModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modals on outside click
+        document.getElementById('purchaseModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+        document.getElementById('countriesModal').addEventListener('click', function(e) {
+            if (e.target === this) closeCountriesModal();
+        });
+
+        // Proceed to checkout
+        function proceedToCheckout() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+            alert('Checkout coming soon! For now, please use the TripPortier app to purchase eSIMs.');
+            window.open('https://apps.apple.com/app/tripportier', '_blank');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

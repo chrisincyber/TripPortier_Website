@@ -9,11 +9,13 @@
     <meta property="og:description" content="Book reliable airport transfers worldwide. Private cars, shared shuttles, and taxi services from airport to hotel.">
     <title>Airport Transfers - TripPortier</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <style>
         .transfer-hero {
             padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 50%, #3d7ab5 100%);
+            background: var(--theme-hero-gradient);
             color: white;
             text-align: center;
         }
@@ -63,7 +65,7 @@
             align-items: center;
             gap: 0.75rem;
             padding: 1.25rem 2.5rem;
-            background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
             color: white;
             text-decoration: none;
             border-radius: 12px;
@@ -92,7 +94,7 @@
         .benefit-icon {
             width: 70px;
             height: 70px;
-            background: linear-gradient(135deg, #1e3a5f 0%, #3d7ab5 100%);
+            background: linear-gradient(135deg, #4c1d95 0%, #6366f1 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -142,7 +144,7 @@
         }
         .app-cta {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
             color: white;
             text-align: center;
         }
@@ -169,13 +171,11 @@
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
-                <li><a href="index.html#features">Features</a></li>
-                <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                <li><a href="esim.html">eSIM Data</a></li>
+                <li><a href="airport-transfers.html" class="active">Transfers</a></li>
                 <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="premium.html">Premium</a></li>
                 <li><a href="faq.html">FAQ</a></li>
-                <li><a href="feature-request.html">Request Feature</a></li>
-                <li><a href="privacy.html">Privacy</a></li>
-                <li><a href="terms.html">Terms</a></li>
             </ul>
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -273,11 +273,11 @@
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
             </div>
             <div class="footer-section">
-                <h4>App</h4>
+                <h4>Services</h4>
                 <ul>
-                    <li><a href="index.html#features">Features</a></li>
-                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
-                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -308,6 +308,15 @@
         </svg>
     </a>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buy eSIM data for your travel destination. Instant activation, affordable prices, no roaming fees.">
+    <title>eSIM Data Plans - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Country Hero */
+        .country-hero {
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .country-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(2%, 2%); }
+        }
+
+        .country-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .country-flag-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            margin-bottom: 1.5rem;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .country-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .country-hero p {
+            font-size: 1.125rem;
+            opacity: 0.95;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        /* Packages Section */
+        .packages-section {
+            padding: 3rem 2rem 4rem;
+            background: #f8fafc;
+        }
+
+        .packages-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .packages-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .packages-header h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .packages-header p {
+            color: #64748b;
+        }
+
+        /* Package Cards */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .package-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .package-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-color: #6366f1;
+        }
+
+        .package-card.popular {
+            border-color: #6366f1;
+        }
+
+        .package-card.popular::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .package-data {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .package-validity {
+            color: #64748b;
+            font-size: 0.9375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .package-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+        }
+
+        .package-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            color: #475569;
+            font-size: 0.9375rem;
+        }
+
+        .package-features li::before {
+            content: '✓';
+            color: #22c55e;
+            font-weight: 700;
+        }
+
+        .package-price {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .package-price-amount {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #6366f1;
+        }
+
+        .package-price-currency {
+            font-size: 1rem;
+            color: #64748b;
+        }
+
+        .package-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .package-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .how-it-works-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .how-it-works h2 {
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 3rem;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-card {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-card p {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Coverage Info */
+        .coverage-section {
+            padding: 3rem 2rem;
+            background: #f8fafc;
+        }
+
+        .coverage-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .coverage-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .coverage-item {
+            text-align: center;
+        }
+
+        .coverage-icon {
+            font-size: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .coverage-item h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.25rem;
+        }
+
+        .coverage-item p {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+
+        /* App CTA */
+        .app-cta {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .app-cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .app-cta p {
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Loading State */
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 1rem;
+            color: #64748b;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .country-hero h1 {
+                font-size: 2rem;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Purchase Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .modal-package-summary {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-package-summary h4 {
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-package-summary p {
+            color: #64748b;
+            font-size: 0.9375rem;
+        }
+
+        .modal-package-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #6366f1;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .modal-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .modal-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .modal-divider::before,
+        .modal-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .app-download-hint {
+            text-align: center;
+            padding: 1rem;
+            background: #ede9fe;
+            border-radius: 12px;
+        }
+
+        .app-download-hint p {
+            color: #4c1d95;
+            font-size: 0.9375rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .app-download-hint a {
+            color: #8b5cf6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .app-download-hint a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="esim.html" class="active">eSIM Data</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Country Hero -->
+    <section class="country-hero">
+        <div class="country-hero-content">
+            <a href="esim.html" class="back-link">
+                <span>&#8592;</span> Back to all destinations
+            </a>
+            <img id="countryFlag" src="" alt="" class="country-flag-large">
+            <h1 id="countryName">Loading...</h1>
+            <p id="countrySubtitle">eSIM data plans available</p>
+        </div>
+    </section>
+
+    <!-- Packages Section -->
+    <section class="packages-section">
+        <div class="packages-container">
+            <div class="packages-header">
+                <h2>Choose Your Data Plan</h2>
+                <p>All plans include instant activation and 24/7 support</p>
+            </div>
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Loading state -->
+                <div class="loading-spinner" id="loadingState">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Loading packages...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="how-it-works-container">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Choose Plan</h3>
+                    <p>Select the data package that fits your travel needs</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Get QR Code</h3>
+                    <p>Receive your eSIM QR code instantly via email</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Scan & Install</h3>
+                    <p>Scan the code to install the eSIM on your device</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Stay Connected</h3>
+                    <p>Activate when you arrive and enjoy fast data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coverage Info -->
+    <section class="coverage-section">
+        <div class="coverage-container">
+            <div class="coverage-card">
+                <div class="coverage-item">
+                    <div class="coverage-icon">&#128241;</div>
+                    <h4>Data Only</h4>
+                    <p>Mobile data for browsing, apps & maps</p>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-icon">&#9889;</div>
+                    <h4>4G/LTE Speed</h4>
+                    <p>Fast speeds on local networks</p>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-icon">&#128274;</div>
+                    <h4>No Roaming</h4>
+                    <p>Fixed price, no surprise charges</p>
+                </div>
+                <div class="coverage-item">
+                    <div class="coverage-icon">&#127760;</div>
+                    <h4>Keep Your Number</h4>
+                    <p>Works alongside your regular SIM</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App CTA -->
+    <section class="app-cta">
+        <h2>Manage Your eSIMs in the App</h2>
+        <p>Download TripPortier to track data usage, get activation reminders, and earn TripCoins rewards on every purchase.</p>
+        <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="background: white; color: #8b5cf6;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div class="modal-header">
+                <h3>Purchase eSIM</h3>
+            </div>
+            <div class="modal-body">
+                <div class="modal-package-summary">
+                    <h4 id="modalPackageName">5GB - 30 Days</h4>
+                    <p id="modalPackageCountry">Japan</p>
+                    <div class="modal-package-price" id="modalPackagePrice">$12.00</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="emailInput">Email Address</label>
+                    <input type="email" id="emailInput" placeholder="your@email.com" required>
+                </div>
+
+                <button class="modal-btn" onclick="proceedToCheckout()">
+                    Continue to Payment
+                </button>
+
+                <div class="modal-divider">or</div>
+
+                <div class="app-download-hint">
+                    <p>Get the best experience with the TripPortier app</p>
+                    <a href="https://apps.apple.com/app/tripportier">Download App &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script>
+        // Country data mapping
+        const countryData = {
+            'US': { name: 'United States', flag: 'https://flagcdn.com/w160/us.png' },
+            'JP': { name: 'Japan', flag: 'https://flagcdn.com/w160/jp.png' },
+            'TH': { name: 'Thailand', flag: 'https://flagcdn.com/w160/th.png' },
+            'GB': { name: 'United Kingdom', flag: 'https://flagcdn.com/w160/gb.png' },
+            'FR': { name: 'France', flag: 'https://flagcdn.com/w160/fr.png' },
+            'IT': { name: 'Italy', flag: 'https://flagcdn.com/w160/it.png' },
+            'ES': { name: 'Spain', flag: 'https://flagcdn.com/w160/es.png' },
+            'DE': { name: 'Germany', flag: 'https://flagcdn.com/w160/de.png' },
+            'AU': { name: 'Australia', flag: 'https://flagcdn.com/w160/au.png' },
+            'KR': { name: 'South Korea', flag: 'https://flagcdn.com/w160/kr.png' },
+            'SG': { name: 'Singapore', flag: 'https://flagcdn.com/w160/sg.png' },
+            'AE': { name: 'UAE', flag: 'https://flagcdn.com/w160/ae.png' },
+            'CN': { name: 'China', flag: 'https://flagcdn.com/w160/cn.png' },
+            'HK': { name: 'Hong Kong', flag: 'https://flagcdn.com/w160/hk.png' },
+            'TW': { name: 'Taiwan', flag: 'https://flagcdn.com/w160/tw.png' },
+            'VN': { name: 'Vietnam', flag: 'https://flagcdn.com/w160/vn.png' },
+            'MY': { name: 'Malaysia', flag: 'https://flagcdn.com/w160/my.png' },
+            'ID': { name: 'Indonesia', flag: 'https://flagcdn.com/w160/id.png' },
+            'PH': { name: 'Philippines', flag: 'https://flagcdn.com/w160/ph.png' },
+            'IN': { name: 'India', flag: 'https://flagcdn.com/w160/in.png' },
+            'NZ': { name: 'New Zealand', flag: 'https://flagcdn.com/w160/nz.png' },
+            'CA': { name: 'Canada', flag: 'https://flagcdn.com/w160/ca.png' },
+            'MX': { name: 'Mexico', flag: 'https://flagcdn.com/w160/mx.png' },
+            'BR': { name: 'Brazil', flag: 'https://flagcdn.com/w160/br.png' },
+            'AR': { name: 'Argentina', flag: 'https://flagcdn.com/w160/ar.png' },
+            'NL': { name: 'Netherlands', flag: 'https://flagcdn.com/w160/nl.png' },
+            'BE': { name: 'Belgium', flag: 'https://flagcdn.com/w160/be.png' },
+            'CH': { name: 'Switzerland', flag: 'https://flagcdn.com/w160/ch.png' },
+            'AT': { name: 'Austria', flag: 'https://flagcdn.com/w160/at.png' },
+            'PT': { name: 'Portugal', flag: 'https://flagcdn.com/w160/pt.png' },
+            'GR': { name: 'Greece', flag: 'https://flagcdn.com/w160/gr.png' },
+            'TR': { name: 'Turkey', flag: 'https://flagcdn.com/w160/tr.png' },
+            'EG': { name: 'Egypt', flag: 'https://flagcdn.com/w160/eg.png' },
+            'ZA': { name: 'South Africa', flag: 'https://flagcdn.com/w160/za.png' },
+            'SE': { name: 'Sweden', flag: 'https://flagcdn.com/w160/se.png' },
+            'NO': { name: 'Norway', flag: 'https://flagcdn.com/w160/no.png' },
+            'DK': { name: 'Denmark', flag: 'https://flagcdn.com/w160/dk.png' },
+            'FI': { name: 'Finland', flag: 'https://flagcdn.com/w160/fi.png' },
+            'PL': { name: 'Poland', flag: 'https://flagcdn.com/w160/pl.png' },
+            'CZ': { name: 'Czech Republic', flag: 'https://flagcdn.com/w160/cz.png' },
+            'HU': { name: 'Hungary', flag: 'https://flagcdn.com/w160/hu.png' },
+            'RO': { name: 'Romania', flag: 'https://flagcdn.com/w160/ro.png' },
+            'IE': { name: 'Ireland', flag: 'https://flagcdn.com/w160/ie.png' },
+            'IS': { name: 'Iceland', flag: 'https://flagcdn.com/w160/is.png' },
+            'HR': { name: 'Croatia', flag: 'https://flagcdn.com/w160/hr.png' },
+            'SI': { name: 'Slovenia', flag: 'https://flagcdn.com/w160/si.png' },
+            'SK': { name: 'Slovakia', flag: 'https://flagcdn.com/w160/sk.png' },
+            'BG': { name: 'Bulgaria', flag: 'https://flagcdn.com/w160/bg.png' },
+            'RS': { name: 'Serbia', flag: 'https://flagcdn.com/w160/rs.png' },
+            'UA': { name: 'Ukraine', flag: 'https://flagcdn.com/w160/ua.png' },
+            'RU': { name: 'Russia', flag: 'https://flagcdn.com/w160/ru.png' },
+            'SA': { name: 'Saudi Arabia', flag: 'https://flagcdn.com/w160/sa.png' },
+            'QA': { name: 'Qatar', flag: 'https://flagcdn.com/w160/qa.png' },
+            'KW': { name: 'Kuwait', flag: 'https://flagcdn.com/w160/kw.png' },
+            'OM': { name: 'Oman', flag: 'https://flagcdn.com/w160/om.png' },
+            'JO': { name: 'Jordan', flag: 'https://flagcdn.com/w160/jo.png' },
+            'IL': { name: 'Israel', flag: 'https://flagcdn.com/w160/il.png' },
+            'MA': { name: 'Morocco', flag: 'https://flagcdn.com/w160/ma.png' },
+            'KE': { name: 'Kenya', flag: 'https://flagcdn.com/w160/ke.png' },
+            'LK': { name: 'Sri Lanka', flag: 'https://flagcdn.com/w160/lk.png' },
+            'MV': { name: 'Maldives', flag: 'https://flagcdn.com/w160/mv.png' },
+            'KH': { name: 'Cambodia', flag: 'https://flagcdn.com/w160/kh.png' },
+            'MT': { name: 'Malta', flag: 'https://flagcdn.com/w160/mt.png' },
+            'CY': { name: 'Cyprus', flag: 'https://flagcdn.com/w160/cy.png' },
+            'LU': { name: 'Luxembourg', flag: 'https://flagcdn.com/w160/lu.png' },
+            'EE': { name: 'Estonia', flag: 'https://flagcdn.com/w160/ee.png' },
+            'LV': { name: 'Latvia', flag: 'https://flagcdn.com/w160/lv.png' },
+            'LT': { name: 'Lithuania', flag: 'https://flagcdn.com/w160/lt.png' },
+            'AL': { name: 'Albania', flag: 'https://flagcdn.com/w160/al.png' },
+            'MO': { name: 'Macau', flag: 'https://flagcdn.com/w160/mo.png' },
+            'DZ': { name: 'Algeria', flag: 'https://flagcdn.com/w160/dz.png' },
+            'CL': { name: 'Chile', flag: 'https://flagcdn.com/w160/cl.png' },
+            'CO': { name: 'Colombia', flag: 'https://flagcdn.com/w160/co.png' },
+            'PE': { name: 'Peru', flag: 'https://flagcdn.com/w160/pe.png' },
+            'PK': { name: 'Pakistan', flag: 'https://flagcdn.com/w160/pk.png' },
+            'KZ': { name: 'Kazakhstan', flag: 'https://flagcdn.com/w160/kz.png' },
+            'AF': { name: 'Afghanistan', flag: 'https://flagcdn.com/w160/af.png' }
+        };
+
+        // Sample packages (will be replaced with API data)
+        const samplePackages = [
+            { id: 1, data: '1 GB', days: 7, price: 4.50, popular: false },
+            { id: 2, data: '3 GB', days: 15, price: 8.00, popular: false },
+            { id: 3, data: '5 GB', days: 30, price: 12.00, popular: true },
+            { id: 4, data: '10 GB', days: 30, price: 19.00, popular: false },
+            { id: 5, data: '20 GB', days: 30, price: 32.00, popular: false },
+            { id: 6, data: 'Unlimited', days: 7, price: 25.00, popular: false }
+        ];
+
+        let currentCountry = null;
+        let selectedPackage = null;
+
+        // Get country code from URL
+        function getCountryCode() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('code') || 'US';
+        }
+
+        // Initialize page
+        function initPage() {
+            const code = getCountryCode();
+            const country = countryData[code];
+
+            if (country) {
+                currentCountry = { code, ...country };
+                document.getElementById('countryFlag').src = country.flag;
+                document.getElementById('countryFlag').alt = country.name;
+                document.getElementById('countryName').textContent = country.name;
+                document.getElementById('countrySubtitle').textContent = `eSIM data plans for ${country.name}`;
+                document.title = `${country.name} eSIM - TripPortier`;
+
+                // Update meta description
+                document.querySelector('meta[name="description"]').content =
+                    `Buy eSIM data for ${country.name}. Instant activation, affordable prices, no roaming fees.`;
+
+                // Load packages
+                loadPackages();
+            } else {
+                // Country not found, redirect to main eSIM page
+                window.location.href = 'esim.html';
+            }
+        }
+
+        // Load packages (simulated - will connect to Firebase)
+        function loadPackages() {
+            // Simulate API delay
+            setTimeout(() => {
+                renderPackages(samplePackages);
+            }, 500);
+        }
+
+        // Render packages
+        function renderPackages(packages) {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = packages.map(pkg => `
+                <div class="package-card ${pkg.popular ? 'popular' : ''}" onclick="selectPackage(${pkg.id})">
+                    <div class="package-data">${pkg.data}</div>
+                    <div class="package-validity">${pkg.days} days validity</div>
+                    <ul class="package-features">
+                        <li>4G/LTE data speeds</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+            `).join('');
+        }
+
+        // Select package
+        function selectPackage(packageId) {
+            selectedPackage = samplePackages.find(p => p.id === packageId);
+            if (selectedPackage && currentCountry) {
+                document.getElementById('modalPackageName').textContent =
+                    `${selectedPackage.data} - ${selectedPackage.days} Days`;
+                document.getElementById('modalPackageCountry').textContent = currentCountry.name;
+                document.getElementById('modalPackagePrice').textContent =
+                    `$${selectedPackage.price.toFixed(2)}`;
+                openModal();
+            }
+        }
+
+        // Modal functions
+        function openModal() {
+            document.getElementById('purchaseModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('purchaseModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal on outside click
+        document.getElementById('purchaseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Proceed to checkout
+        function proceedToCheckout() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // For now, redirect to app store
+            // In production, this would initiate Stripe checkout
+            alert('Checkout coming soon! For now, please use the TripPortier app to purchase eSIMs.');
+            window.open('https://apps.apple.com/app/tripportier', '_blank');
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initPage);
+    </script>
+</body>
+</html>

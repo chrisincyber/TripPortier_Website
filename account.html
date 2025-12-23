@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your TripPortier account - view profile, settings, and sign out.">
+    <title>My Account - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .account-page {
+            min-height: 100vh;
+            background: var(--theme-bg);
+        }
+
+        .account-header {
+            background: var(--theme-hero-gradient);
+            padding: 8rem 2rem 4rem;
+            color: white;
+            text-align: center;
+        }
+
+        .account-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .account-header p {
+            opacity: 0.9;
+            font-size: 1.125rem;
+        }
+
+        .account-content {
+            max-width: 600px;
+            margin: -3rem auto 4rem;
+            padding: 0 1.5rem;
+        }
+
+        .account-card {
+            background: var(--theme-card-bg, white);
+            border-radius: 20px;
+            box-shadow: var(--theme-card-shadow, 0 10px 40px rgba(0, 0, 0, 0.1));
+            overflow: hidden;
+        }
+
+        .account-profile {
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .account-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .account-avatar-placeholder {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin: 0 auto 1.5rem;
+        }
+
+        .account-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--theme-text, #1e293b);
+            margin-bottom: 0.25rem;
+        }
+
+        .account-email {
+            color: var(--theme-text-secondary, #64748b);
+            font-size: 1rem;
+        }
+
+        .account-info {
+            padding: 1.5rem 2rem;
+        }
+
+        .account-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--theme-border, #f1f5f9);
+        }
+
+        .account-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-info-label {
+            color: var(--theme-text-secondary, #64748b);
+            font-size: 0.9375rem;
+        }
+
+        .account-info-value {
+            color: var(--theme-text, #1e293b);
+            font-weight: 500;
+            font-size: 0.9375rem;
+        }
+
+        .account-actions {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .account-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            margin-bottom: 0.75rem;
+        }
+
+        .account-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .account-btn-primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .account-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .account-btn-secondary {
+            background: var(--theme-bg-secondary, #f1f5f9);
+            color: var(--theme-text-secondary, #475569);
+        }
+
+        .account-btn-secondary:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .account-btn-danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .account-btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        .account-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Loading state */
+        .account-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .account-loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Not logged in state */
+        .account-guest {
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .account-guest-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--theme-bg-secondary, #f1f5f9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+
+        .account-guest-icon svg {
+            width: 40px;
+            height: 40px;
+            color: var(--theme-text-muted, #94a3b8);
+        }
+
+        .account-guest h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--theme-text, #1e293b);
+            margin-bottom: 0.5rem;
+        }
+
+        .account-guest p {
+            color: var(--theme-text-secondary, #64748b);
+            margin-bottom: 2rem;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* App promo */
+        /* Cashback Card */
+        .cashback-card {
+            background: var(--theme-card-bg, white);
+            border-radius: 20px;
+            box-shadow: var(--theme-card-shadow, 0 10px 40px rgba(0, 0, 0, 0.1));
+            margin-top: 1.5rem;
+            overflow: hidden;
+        }
+
+        .cashback-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 1.5rem 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cashback-balance {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .cashback-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .cashback-level {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .cashback-info {
+            padding: 1.5rem 2rem;
+        }
+
+        .cashback-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--theme-border, #f1f5f9);
+        }
+
+        .cashback-row:last-child {
+            border-bottom: none;
+        }
+
+        .cashback-row-label {
+            color: var(--theme-text-secondary, #64748b);
+            font-size: 0.9375rem;
+        }
+
+        .cashback-row-value {
+            color: var(--theme-text, #1e293b);
+            font-weight: 600;
+            font-size: 0.9375rem;
+        }
+
+        .cashback-progress {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .cashback-progress-label {
+            font-size: 0.8125rem;
+            color: var(--theme-text-secondary, #64748b);
+            margin-bottom: 0.5rem;
+        }
+
+        .cashback-progress-bar {
+            height: 8px;
+            background: var(--theme-bg-tertiary, #e2e8f0);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .cashback-progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .cashback-referral {
+            background: var(--theme-bg-secondary, #f8fafc);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .cashback-referral-code {
+            font-family: monospace;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--theme-primary, #6366f1);
+            letter-spacing: 0.1em;
+        }
+
+        .cashback-copy-btn {
+            background: var(--theme-primary, #6366f1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cashback-copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Subscription Section */
+        .subscription-section {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .subscription-section h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--theme-text-secondary, #64748b);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .subscription-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--theme-bg-secondary, #f8fafc);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .subscription-status.active {
+            background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
+        }
+
+        .subscription-status-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .subscription-status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .subscription-status-icon.free {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .subscription-status-icon.free svg {
+            color: var(--theme-text-muted, #94a3b8);
+        }
+
+        .subscription-status-icon.premium {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        .subscription-status-icon.premium svg {
+            color: white;
+        }
+
+        .subscription-status-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .subscription-status-text h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--theme-text, #1e293b);
+            margin: 0 0 0.125rem;
+        }
+
+        .subscription-status-text p {
+            font-size: 0.8125rem;
+            color: var(--theme-text-secondary, #64748b);
+            margin: 0;
+        }
+
+        .subscription-status-text.active h4 {
+            color: #166534;
+        }
+
+        .subscription-status-text.active p {
+            color: #15803d;
+        }
+
+        .subscription-upgrade-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .subscription-upgrade-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .app-promo {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .app-promo h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .app-promo p {
+            opacity: 0.8;
+            font-size: 0.9375rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .app-promo-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: white;
+            color: #1e1b4b;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .app-promo-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .account-header {
+                padding: 6rem 1.5rem 3rem;
+            }
+
+            .account-header h1 {
+                font-size: 2rem;
+            }
+
+            .account-content {
+                margin-top: -2rem;
+            }
+
+            .account-profile {
+                padding: 2rem 1.5rem;
+            }
+
+            .account-info,
+            .account-actions {
+                padding: 1.25rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="account-page">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="esim.html">eSIM Data</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="premium.html">Premium</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Account Header -->
+    <header class="account-header">
+        <h1>My Account</h1>
+        <p>Manage your TripPortier profile</p>
+    </header>
+
+    <!-- Account Content -->
+    <main class="account-content">
+        <div class="account-card" id="account-card">
+            <!-- Loading State (shown initially) -->
+            <div class="account-loading" id="account-loading">
+                <div class="account-loading-spinner"></div>
+                <p style="color: #64748b;">Loading your account...</p>
+            </div>
+
+            <!-- Guest State (shown when not logged in) -->
+            <div class="account-guest" id="account-guest" style="display: none;">
+                <div class="account-guest-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <h2>Sign in to continue</h2>
+                <p>Create an account or sign in to access your profile and sync your data across devices.</p>
+                <button class="account-btn account-btn-primary" onclick="window.authUI.showModal('signin')">
+                    Sign In
+                </button>
+            </div>
+
+            <!-- Logged In State -->
+            <div id="account-content" style="display: none;">
+                <div class="account-profile">
+                    <div id="account-avatar-container"></div>
+                    <div class="account-name" id="account-name">-</div>
+                    <div class="account-email" id="account-email">-</div>
+                </div>
+
+                <div class="account-info">
+                    <div class="account-info-row">
+                        <span class="account-info-label">Member since</span>
+                        <span class="account-info-value" id="account-member-since">-</span>
+                    </div>
+                    <div class="account-info-row">
+                        <span class="account-info-label">Account ID</span>
+                        <span class="account-info-value" id="account-uid" style="font-family: monospace; font-size: 0.8rem;">-</span>
+                    </div>
+                </div>
+
+                <!-- Subscription Section -->
+                <div class="subscription-section" id="subscription-section">
+                    <h3>Subscription</h3>
+                    <div class="subscription-status" id="subscription-status">
+                        <div class="subscription-status-info">
+                            <div class="subscription-status-icon free" id="subscription-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                            </div>
+                            <div class="subscription-status-text" id="subscription-text">
+                                <h4 id="subscription-plan-name">Free Plan</h4>
+                                <p id="subscription-details">Upgrade to unlock all features</p>
+                            </div>
+                        </div>
+                        <a href="premium.html" class="subscription-upgrade-btn" id="subscription-action">
+                            Upgrade
+                        </a>
+                    </div>
+                </div>
+
+                <div class="account-actions">
+                    <a href="https://apps.apple.com/app/tripportier" class="account-btn account-btn-secondary">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        Open in App for Full Features
+                    </a>
+                    <button class="account-btn account-btn-danger" onclick="signOutUser()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cashback Card (shown when logged in) -->
+        <div class="cashback-card" id="cashback-card" style="display: none;">
+            <div class="cashback-header">
+                <div>
+                    <div class="cashback-label">Your Cashback Balance</div>
+                    <div class="cashback-balance" id="cashback-balance">$0.00</div>
+                </div>
+                <div class="cashback-level" id="cashback-level">Explorer</div>
+            </div>
+            <div class="cashback-info">
+                <div class="cashback-row">
+                    <span class="cashback-row-label">Current Level Cashback</span>
+                    <span class="cashback-row-value" id="cashback-percentage">3%</span>
+                </div>
+                <div class="cashback-row">
+                    <span class="cashback-row-label">Total eSIM Spend</span>
+                    <span class="cashback-row-value" id="total-spend">$0.00</span>
+                </div>
+                <div class="cashback-progress" id="level-progress-section">
+                    <div class="cashback-progress-label">
+                        <span id="progress-label">Spend $25 more to reach Adventurer (5%)</span>
+                    </div>
+                    <div class="cashback-progress-bar">
+                        <div class="cashback-progress-fill" id="progress-fill" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="cashback-referral">
+                <div>
+                    <div class="cashback-row-label">Your Referral Code</div>
+                    <div class="cashback-referral-code" id="referral-code">--------</div>
+                </div>
+                <button class="cashback-copy-btn" onclick="copyReferralCode()">Copy</button>
+            </div>
+        </div>
+
+        <!-- App Promo -->
+        <div class="app-promo">
+            <h3>Get the Full Experience</h3>
+            <p>Download the TripPortier app to access all features including AI itinerary planning, flight tracking, and more.</p>
+            <a href="https://apps.apple.com/app/tripportier" class="app-promo-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                Download on App Store
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/subscription.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Reward level configuration (matching iOS app)
+        const REWARD_LEVELS = {
+            explorer: { name: 'Explorer', percentage: '3%', minSpend: 0 },
+            adventurer: { name: 'Adventurer', percentage: '5%', minSpend: 25 },
+            globetrotter: { name: 'Globetrotter', percentage: '6%', minSpend: 75 },
+            pioneer: { name: 'Pioneer', percentage: '7%', minSpend: 100 },
+            ambassador: { name: 'Ambassador', percentage: '10%', minSpend: 150 }
+        };
+
+        const LEVEL_ORDER = ['explorer', 'adventurer', 'globetrotter', 'pioneer', 'ambassador'];
+
+        function getNextLevel(currentLevel) {
+            const idx = LEVEL_ORDER.indexOf(currentLevel.toLowerCase());
+            if (idx >= 0 && idx < LEVEL_ORDER.length - 1) {
+                return REWARD_LEVELS[LEVEL_ORDER[idx + 1]];
+            }
+            return null;
+        }
+
+        // Account page logic
+        function updateAccountUI(user, profile) {
+            const loadingEl = document.getElementById('account-loading');
+            const guestEl = document.getElementById('account-guest');
+            const contentEl = document.getElementById('account-content');
+            const cashbackCard = document.getElementById('cashback-card');
+
+            loadingEl.style.display = 'none';
+
+            if (user) {
+                guestEl.style.display = 'none';
+                contentEl.style.display = 'block';
+
+                // Update avatar
+                const avatarContainer = document.getElementById('account-avatar-container');
+                const avatarURL = profile?.profileImageURL || user.photoURL;
+                const displayName = profile?.displayName || user.displayName || user.email.split('@')[0];
+                const initial = displayName.charAt(0).toUpperCase();
+
+                if (avatarURL) {
+                    avatarContainer.innerHTML = `<img src="${avatarURL}" alt="${displayName}" class="account-avatar">`;
+                } else {
+                    avatarContainer.innerHTML = `<div class="account-avatar-placeholder">${initial}</div>`;
+                }
+
+                // Update name and email
+                document.getElementById('account-name').textContent = displayName;
+                document.getElementById('account-email').textContent = user.email;
+
+                // Update member since
+                if (profile?.memberSince) {
+                    const memberDate = profile.memberSince.toDate();
+                    document.getElementById('account-member-since').textContent = memberDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                } else if (user.metadata?.creationTime) {
+                    const creationDate = new Date(user.metadata.creationTime);
+                    document.getElementById('account-member-since').textContent = creationDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                }
+
+                // Update UID (shortened)
+                const uid = user.uid;
+                document.getElementById('account-uid').textContent = uid.substring(0, 8) + '...';
+
+                // Fetch and display cashback data
+                fetchCashbackData(user.uid);
+
+                // Fetch and display subscription status
+                fetchSubscriptionData(user.uid);
+            } else {
+                guestEl.style.display = 'block';
+                contentEl.style.display = 'none';
+                cashbackCard.style.display = 'none';
+            }
+        }
+
+        async function fetchCashbackData(userId) {
+            const cashbackCard = document.getElementById('cashback-card');
+
+            try {
+                const doc = await window.firebaseDb.collection('esimRewards').doc(userId).get();
+
+                if (doc.exists) {
+                    const data = doc.data();
+                    updateCashbackUI(data);
+                    cashbackCard.style.display = 'block';
+                } else {
+                    // No rewards data yet - show card with default values
+                    updateCashbackUI({
+                        totalCredits: 0,
+                        totalSpend: 0,
+                        level: 'Explorer',
+                        referralCode: '--------'
+                    });
+                    cashbackCard.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching cashback data:', error);
+                // Show card with default values on error
+                cashbackCard.style.display = 'block';
+            }
+        }
+
+        function updateCashbackUI(data) {
+            const balance = data.totalCredits || 0;
+            const spend = data.totalSpend || 0;
+            const level = (data.level || 'Explorer').toLowerCase();
+            const levelConfig = REWARD_LEVELS[level] || REWARD_LEVELS.explorer;
+            const referralCode = data.referralCode || '--------';
+
+            // Update balance
+            document.getElementById('cashback-balance').textContent = `$${balance.toFixed(2)}`;
+
+            // Update level
+            document.getElementById('cashback-level').textContent = levelConfig.name;
+            document.getElementById('cashback-percentage').textContent = levelConfig.percentage;
+
+            // Update total spend
+            document.getElementById('total-spend').textContent = `$${spend.toFixed(2)}`;
+
+            // Update referral code
+            document.getElementById('referral-code').textContent = referralCode;
+
+            // Update progress to next level
+            const nextLevel = getNextLevel(level);
+            const progressSection = document.getElementById('level-progress-section');
+
+            if (nextLevel) {
+                const currentMin = levelConfig.minSpend;
+                const nextMin = nextLevel.minSpend;
+                const range = nextMin - currentMin;
+                const progress = Math.max(0, spend - currentMin);
+                const percentage = Math.min(100, (progress / range) * 100);
+                const remaining = Math.max(0, nextMin - spend);
+
+                document.getElementById('progress-label').textContent =
+                    `Spend $${remaining.toFixed(0)} more to reach ${nextLevel.name} (${nextLevel.percentage})`;
+                document.getElementById('progress-fill').style.width = `${percentage}%`;
+                progressSection.style.display = 'block';
+            } else {
+                // Max level reached
+                document.getElementById('progress-label').textContent = 'You\'ve reached the highest level!';
+                document.getElementById('progress-fill').style.width = '100%';
+            }
+        }
+
+        async function fetchSubscriptionData(userId) {
+            try {
+                if (!window.subscriptionManager) {
+                    console.warn('Subscription manager not loaded');
+                    return;
+                }
+
+                const { isSubscribed, subscription } = await window.subscriptionManager.getSubscriptionStatus(userId);
+                updateSubscriptionUI(isSubscribed, subscription);
+            } catch (error) {
+                console.error('Error fetching subscription data:', error);
+                // Show free plan on error
+                updateSubscriptionUI(false, null);
+            }
+        }
+
+        function updateSubscriptionUI(isSubscribed, subscription) {
+            const statusEl = document.getElementById('subscription-status');
+            const iconEl = document.getElementById('subscription-icon');
+            const textEl = document.getElementById('subscription-text');
+            const planNameEl = document.getElementById('subscription-plan-name');
+            const detailsEl = document.getElementById('subscription-details');
+            const actionEl = document.getElementById('subscription-action');
+
+            if (isSubscribed && subscription) {
+                // Premium state
+                statusEl.classList.add('active');
+                iconEl.classList.remove('free');
+                iconEl.classList.add('premium');
+                textEl.classList.add('active');
+
+                // Update icon to crown/star
+                iconEl.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                `;
+
+                // Update plan name
+                const planName = window.subscriptionManager.getPlanName(subscription.planId);
+                planNameEl.textContent = planName;
+
+                // Update details with expiration
+                const expirationStr = window.subscriptionManager.formatExpirationDate(subscription.expirationDate);
+                const platformStr = window.subscriptionManager.getPlatformName(subscription.platform);
+
+                if (subscription.status === 'cancelled') {
+                    detailsEl.textContent = `Expires ${expirationStr} (cancelled)`;
+                } else {
+                    detailsEl.textContent = `Renews ${expirationStr} • via ${platformStr}`;
+                }
+
+                // Update action button
+                actionEl.textContent = 'Manage';
+                actionEl.href = 'premium.html';
+            } else {
+                // Free state
+                statusEl.classList.remove('active');
+                iconEl.classList.remove('premium');
+                iconEl.classList.add('free');
+                textEl.classList.remove('active');
+
+                // Reset icon to lock
+                iconEl.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                `;
+
+                planNameEl.textContent = 'Free Plan';
+                detailsEl.textContent = 'Upgrade to unlock all features';
+                actionEl.textContent = 'Upgrade';
+                actionEl.href = 'premium.html';
+            }
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('referral-code').textContent;
+            if (code && code !== '--------') {
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.querySelector('.cashback-copy-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy:', err);
+                });
+            }
+        }
+
+        async function signOutUser() {
+            if (confirm('Are you sure you want to sign out?')) {
+                await window.tripPortierAuth.signOut();
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Listen to auth state
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.tripPortierAuth) {
+                window.tripPortierAuth.addListener(updateAccountUI);
+            }
+        });
+    </script>
+</body>
+</html>

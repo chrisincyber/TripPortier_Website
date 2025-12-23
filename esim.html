@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Buy travel eSIM data for 200+ countries. Instant activation, no physical SIM needed. Stay connected worldwide with TripPortier.">
+    <meta name="keywords" content="eSIM, travel SIM, international data, roaming, prepaid SIM, travel data">
+    <meta property="og:title" content="Travel eSIM Data - TripPortier">
+    <meta property="og:description" content="Instant eSIM data for 200+ destinations. No roaming fees, no physical SIM. Stay connected while traveling.">
+    <title>Travel eSIM Data - TripPortier</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Hero Section */
+        .esim-hero {
+            padding: 8rem 2rem 4rem;
+            background: var(--theme-hero-gradient);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .esim-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(2%, 2%); }
+        }
+
+        .esim-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .esim-hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .esim-hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+
+        .esim-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Search Section */
+        .search-section {
+            padding: 0 2rem;
+            margin-top: -2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            font-size: 1rem;
+            background: transparent;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .search-btn {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Category Tabs */
+        .categories-section {
+            padding: 3rem 2rem 2rem;
+            background: #f8fafc;
+        }
+
+        .categories-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .category-tab {
+            padding: 0.875rem 1.75rem;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-tab:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .category-tab.active {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Countries Grid */
+        .countries-section {
+            padding: 2rem 2rem 4rem;
+            background: #f8fafc;
+        }
+
+        .countries-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .countries-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .country-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .country-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-color: #6366f1;
+        }
+
+        .country-flag {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .country-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .country-price {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .country-price strong {
+            color: #6366f1;
+            font-weight: 700;
+        }
+
+        /* Regional Cards */
+        .regional-card {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+        }
+
+        .regional-card .country-name {
+            color: white;
+        }
+
+        .regional-card .country-price {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .regional-card .country-price strong {
+            color: #fbbf24;
+        }
+
+        .regional-countries {
+            font-size: 0.8125rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+        }
+
+        /* Worldwide Card */
+        .worldwide-card {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2.5rem;
+            text-align: left;
+        }
+
+        .worldwide-card .country-flag {
+            width: 80px;
+            height: 80px;
+            margin: 0;
+        }
+
+        .worldwide-info {
+            flex: 1;
+            margin-left: 2rem;
+        }
+
+        .worldwide-card .country-name {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .worldwide-card .country-price {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        .worldwide-cta {
+            padding: 1rem 2rem;
+            background: white;
+            color: #7c3aed;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .worldwide-cta:hover {
+            transform: scale(1.05);
+        }
+
+        /* Loading State */
+        .loading-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .skeleton-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        .skeleton-flag {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-price {
+            height: 14px;
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .faq-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .faq-header p {
+            color: #64748b;
+        }
+
+        .faq-item {
+            background: #f8fafc;
+            border-radius: 16px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .faq-question:hover {
+            background: #f1f5f9;
+        }
+
+        .faq-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s;
+        }
+
+        .faq-item.open .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            color: #64748b;
+            line-height: 1.7;
+        }
+
+        .faq-item.open .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+
+        .faq-more {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .faq-more a {
+            color: #6366f1;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .faq-more a:hover {
+            text-decoration: underline;
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            padding: 4rem 2rem;
+            background: #f8fafc;
+        }
+
+        .benefits-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .benefits-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .benefits-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .benefit-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+        }
+
+        .benefit-card p {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* Cashback Rewards Section */
+        .cashback-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cashback-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 40%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .cashback-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .cashback-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .cashback-text h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .cashback-text h2 span {
+            background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cashback-text p {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .cashback-tiers {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .cashback-tier {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .cashback-tier:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateX(5px);
+        }
+
+        .tier-badge {
+            min-width: 60px;
+            padding: 0.5rem 0.75rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 8px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .tier-info {
+            flex: 1;
+        }
+
+        .tier-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.125rem;
+        }
+
+        .tier-requirement {
+            font-size: 0.8125rem;
+            opacity: 0.7;
+        }
+
+        .cashback-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .cashback-card-preview {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .card-balance-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-balance {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .card-level {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+        }
+
+        .cashback-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: white;
+            color: #4c1d95;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cashback-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .cashback-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .cashback-text h2 {
+                font-size: 1.75rem;
+            }
+
+            .cashback-visual {
+                order: -1;
+            }
+
+            .card-balance {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* App CTA */
+        .app-cta {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .app-cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .app-cta p {
+            opacity: 0.95;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .esim-hero h1 {
+                font-size: 2rem;
+            }
+
+            .esim-hero p {
+                font-size: 1rem;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-btn {
+                width: 100%;
+            }
+
+            .category-tabs {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 0.5rem;
+            }
+
+            .category-tab {
+                white-space: nowrap;
+            }
+
+            .countries-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .worldwide-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .worldwide-info {
+                margin: 1.5rem 0;
+            }
+        }
+
+        /* Country search dropdown */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin-top: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background: #f8fafc;
+        }
+
+        .search-result-item img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .search-result-item span {
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="esim.html" class="active">eSIM Data</a></li>
+                <li><a href="airport-transfers.html">Transfers</a></li>
+                <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                <li><a href="premium.html">Premium</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="esim-hero">
+        <div class="esim-hero-content">
+            <div class="esim-badge">
+                <span>&#128241;</span>
+                Instant Digital SIM
+            </div>
+            <h1>Travel eSIM Data</h1>
+            <p>Stay connected in 200+ destinations. Instant activation, no physical SIM card needed. Download your eSIM before you travel.</p>
+        </div>
+    </section>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="search-container">
+            <div class="search-wrapper">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="countrySearch" placeholder="Search for a country or region..." autocomplete="off">
+                    <button class="search-btn" onclick="performSearch()">
+                        Search
+                    </button>
+                </div>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Tabs -->
+    <section class="categories-section">
+        <div class="categories-container">
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="popular" onclick="switchCategory('popular')">
+                    Popular
+                </button>
+                <button class="category-tab" data-category="local" onclick="switchCategory('local')">
+                    Local
+                </button>
+                <button class="category-tab" data-category="regional" onclick="switchCategory('regional')">
+                    Regional
+                </button>
+                <button class="category-tab" data-category="global" onclick="switchCategory('global')">
+                    Worldwide
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countries Grid -->
+    <section class="countries-section">
+        <div class="countries-container">
+            <div class="section-header">
+                <h2 class="section-title" id="sectionTitle">Popular Destinations</h2>
+            </div>
+            <div class="countries-grid" id="countriesGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Cashback Rewards Section -->
+    <section class="cashback-section">
+        <div class="cashback-container">
+            <div class="cashback-content">
+                <div class="cashback-text">
+                    <h2>Earn <span>Up to 10% Cashback</span> on Every eSIM</h2>
+                    <p>The more you travel, the more you save. Our rewards program gives you real money back on every eSIM purchase. Your cashback never expires and can be used on future purchases.</p>
+
+                    <div class="cashback-tiers">
+                        <div class="cashback-tier">
+                            <div class="tier-badge">3%</div>
+                            <div class="tier-info">
+                                <div class="tier-name">Explorer</div>
+                                <div class="tier-requirement">Start earning immediately</div>
+                            </div>
+                        </div>
+                        <div class="cashback-tier">
+                            <div class="tier-badge">5%</div>
+                            <div class="tier-info">
+                                <div class="tier-name">Adventurer</div>
+                                <div class="tier-requirement">After $25 in purchases</div>
+                            </div>
+                        </div>
+                        <div class="cashback-tier">
+                            <div class="tier-badge">7%</div>
+                            <div class="tier-info">
+                                <div class="tier-name">Pioneer</div>
+                                <div class="tier-requirement">After $100 in purchases</div>
+                            </div>
+                        </div>
+                        <div class="cashback-tier">
+                            <div class="tier-badge">10%</div>
+                            <div class="tier-info">
+                                <div class="tier-name">Ambassador</div>
+                                <div class="tier-requirement">After $150 in purchases</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cashback-visual">
+                    <div class="cashback-card-preview">
+                        <div class="card-balance-label">Your Cashback Balance</div>
+                        <div class="card-balance">$24.50</div>
+                        <div class="card-level">Pioneer - 7%</div>
+                    </div>
+                    <a href="account.html" class="cashback-cta">
+                        View Your Rewards
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M5 12h14M12 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="benefits-container">
+            <div class="benefits-header">
+                <h2>Why Choose TripPortier eSIM?</h2>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#9889;</div>
+                    <h3>Instant Activation</h3>
+                    <p>Get your eSIM delivered instantly via QR code. Scan, activate, and connect in minutes.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#128176;</div>
+                    <h3>No Roaming Fees</h3>
+                    <p>Save up to 90% compared to traditional roaming. Fixed prices with no hidden charges.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#127760;</div>
+                    <h3>200+ Countries</h3>
+                    <p>Coverage across the globe. Local, regional, and worldwide plans available.</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">&#128241;</div>
+                    <h3>Keep Your Number</h3>
+                    <p>Your eSIM works alongside your regular SIM. No need to swap cards or change numbers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section" id="faq">
+        <div class="faq-container">
+            <div class="faq-header">
+                <h2>eSIM FAQ</h2>
+                <p>Everything you need to know about travel eSIMs</p>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What is an eSIM?</span>
+                    <span class="faq-icon">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    An eSIM (embedded SIM) is a digital SIM that allows you to activate a mobile data plan without needing a physical SIM card. It's built into most modern smartphones (iPhone XS and newer, many Android devices). Perfect for travelers who want instant connectivity without swapping SIM cards or dealing with roaming charges.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>How do I install and activate an eSIM?</span>
+                    <span class="faq-icon">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    <strong>Before traveling:</strong> Purchase your eSIM and scan the QR code while connected to WiFi. This installs the eSIM profile on your device.<br><br>
+                    <strong>When you arrive:</strong> Go to your device settings, find the eSIM, and turn on data roaming. Your connection will activate automatically.<br><br>
+                    <strong>Tip:</strong> Install before you leave home so everything is ready when you land!
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Is my device compatible with eSIM?</span>
+                    <span class="faq-icon">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Most recent smartphones support eSIM, including:<br><br>
+                    <strong>iPhone:</strong> XS, XR, 11, 12, 13, 14, 15, 16 and newer (including all Pro/Max versions)<br>
+                    <strong>Samsung:</strong> Galaxy S20 and newer, Galaxy Z Fold/Flip series<br>
+                    <strong>Google:</strong> Pixel 3 and newer<br>
+                    <strong>Other:</strong> Many Huawei, Xiaomi, and other Android devices<br><br>
+                    Your device must also be carrier-unlocked to use an eSIM from another provider.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Can I keep my regular phone number?</span>
+                    <span class="faq-icon">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    Yes! Your travel eSIM works alongside your existing SIM card. You'll have two lines on your phone - your regular number for calls/texts (you can disable data on this to avoid roaming) and your eSIM for affordable mobile data. You can receive calls and texts on your regular number while using eSIM data.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>What happens if I run out of data?</span>
+                    <span class="faq-icon">&#9660;</span>
+                </div>
+                <div class="faq-answer">
+                    You can purchase a top-up or a new eSIM package at any time through the TripPortier app or website. We also send notifications when your data is running low so you're never caught off guard.
+                </div>
+            </div>
+
+            <div class="faq-more">
+                <a href="faq.html#esim">View all eSIM FAQs &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- App CTA -->
+    <section class="app-cta">
+        <h2>Manage Your eSIMs in the App</h2>
+        <p>Download TripPortier to purchase eSIMs, track your data usage, and get activation reminders before your trip.</p>
+        <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="background: white; color: #8b5cf6;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM Data</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // eSIM Store Data & Functions
+
+        // Popular destinations (same as app)
+        const popularCountries = [
+            { code: 'US', name: 'United States', flag: 'https://flagcdn.com/w80/us.png' },
+            { code: 'JP', name: 'Japan', flag: 'https://flagcdn.com/w80/jp.png' },
+            { code: 'TH', name: 'Thailand', flag: 'https://flagcdn.com/w80/th.png' },
+            { code: 'GB', name: 'United Kingdom', flag: 'https://flagcdn.com/w80/gb.png' },
+            { code: 'FR', name: 'France', flag: 'https://flagcdn.com/w80/fr.png' },
+            { code: 'IT', name: 'Italy', flag: 'https://flagcdn.com/w80/it.png' },
+            { code: 'ES', name: 'Spain', flag: 'https://flagcdn.com/w80/es.png' },
+            { code: 'DE', name: 'Germany', flag: 'https://flagcdn.com/w80/de.png' },
+            { code: 'AU', name: 'Australia', flag: 'https://flagcdn.com/w80/au.png' },
+            { code: 'KR', name: 'South Korea', flag: 'https://flagcdn.com/w80/kr.png' },
+            { code: 'SG', name: 'Singapore', flag: 'https://flagcdn.com/w80/sg.png' },
+            { code: 'AE', name: 'UAE', flag: 'https://flagcdn.com/w80/ae.png' }
+        ];
+
+        // All countries (grouped alphabetically)
+        const allCountries = [
+            { code: 'AF', name: 'Afghanistan', flag: 'https://flagcdn.com/w80/af.png' },
+            { code: 'AL', name: 'Albania', flag: 'https://flagcdn.com/w80/al.png' },
+            { code: 'DZ', name: 'Algeria', flag: 'https://flagcdn.com/w80/dz.png' },
+            { code: 'AR', name: 'Argentina', flag: 'https://flagcdn.com/w80/ar.png' },
+            { code: 'AU', name: 'Australia', flag: 'https://flagcdn.com/w80/au.png' },
+            { code: 'AT', name: 'Austria', flag: 'https://flagcdn.com/w80/at.png' },
+            { code: 'BE', name: 'Belgium', flag: 'https://flagcdn.com/w80/be.png' },
+            { code: 'BR', name: 'Brazil', flag: 'https://flagcdn.com/w80/br.png' },
+            { code: 'BG', name: 'Bulgaria', flag: 'https://flagcdn.com/w80/bg.png' },
+            { code: 'KH', name: 'Cambodia', flag: 'https://flagcdn.com/w80/kh.png' },
+            { code: 'CA', name: 'Canada', flag: 'https://flagcdn.com/w80/ca.png' },
+            { code: 'CL', name: 'Chile', flag: 'https://flagcdn.com/w80/cl.png' },
+            { code: 'CN', name: 'China', flag: 'https://flagcdn.com/w80/cn.png' },
+            { code: 'CO', name: 'Colombia', flag: 'https://flagcdn.com/w80/co.png' },
+            { code: 'HR', name: 'Croatia', flag: 'https://flagcdn.com/w80/hr.png' },
+            { code: 'CY', name: 'Cyprus', flag: 'https://flagcdn.com/w80/cy.png' },
+            { code: 'CZ', name: 'Czech Republic', flag: 'https://flagcdn.com/w80/cz.png' },
+            { code: 'DK', name: 'Denmark', flag: 'https://flagcdn.com/w80/dk.png' },
+            { code: 'EG', name: 'Egypt', flag: 'https://flagcdn.com/w80/eg.png' },
+            { code: 'EE', name: 'Estonia', flag: 'https://flagcdn.com/w80/ee.png' },
+            { code: 'FI', name: 'Finland', flag: 'https://flagcdn.com/w80/fi.png' },
+            { code: 'FR', name: 'France', flag: 'https://flagcdn.com/w80/fr.png' },
+            { code: 'DE', name: 'Germany', flag: 'https://flagcdn.com/w80/de.png' },
+            { code: 'GR', name: 'Greece', flag: 'https://flagcdn.com/w80/gr.png' },
+            { code: 'HK', name: 'Hong Kong', flag: 'https://flagcdn.com/w80/hk.png' },
+            { code: 'HU', name: 'Hungary', flag: 'https://flagcdn.com/w80/hu.png' },
+            { code: 'IS', name: 'Iceland', flag: 'https://flagcdn.com/w80/is.png' },
+            { code: 'IN', name: 'India', flag: 'https://flagcdn.com/w80/in.png' },
+            { code: 'ID', name: 'Indonesia', flag: 'https://flagcdn.com/w80/id.png' },
+            { code: 'IE', name: 'Ireland', flag: 'https://flagcdn.com/w80/ie.png' },
+            { code: 'IL', name: 'Israel', flag: 'https://flagcdn.com/w80/il.png' },
+            { code: 'IT', name: 'Italy', flag: 'https://flagcdn.com/w80/it.png' },
+            { code: 'JP', name: 'Japan', flag: 'https://flagcdn.com/w80/jp.png' },
+            { code: 'JO', name: 'Jordan', flag: 'https://flagcdn.com/w80/jo.png' },
+            { code: 'KZ', name: 'Kazakhstan', flag: 'https://flagcdn.com/w80/kz.png' },
+            { code: 'KE', name: 'Kenya', flag: 'https://flagcdn.com/w80/ke.png' },
+            { code: 'KR', name: 'South Korea', flag: 'https://flagcdn.com/w80/kr.png' },
+            { code: 'KW', name: 'Kuwait', flag: 'https://flagcdn.com/w80/kw.png' },
+            { code: 'LV', name: 'Latvia', flag: 'https://flagcdn.com/w80/lv.png' },
+            { code: 'LT', name: 'Lithuania', flag: 'https://flagcdn.com/w80/lt.png' },
+            { code: 'LU', name: 'Luxembourg', flag: 'https://flagcdn.com/w80/lu.png' },
+            { code: 'MO', name: 'Macau', flag: 'https://flagcdn.com/w80/mo.png' },
+            { code: 'MY', name: 'Malaysia', flag: 'https://flagcdn.com/w80/my.png' },
+            { code: 'MV', name: 'Maldives', flag: 'https://flagcdn.com/w80/mv.png' },
+            { code: 'MT', name: 'Malta', flag: 'https://flagcdn.com/w80/mt.png' },
+            { code: 'MX', name: 'Mexico', flag: 'https://flagcdn.com/w80/mx.png' },
+            { code: 'MA', name: 'Morocco', flag: 'https://flagcdn.com/w80/ma.png' },
+            { code: 'NL', name: 'Netherlands', flag: 'https://flagcdn.com/w80/nl.png' },
+            { code: 'NZ', name: 'New Zealand', flag: 'https://flagcdn.com/w80/nz.png' },
+            { code: 'NO', name: 'Norway', flag: 'https://flagcdn.com/w80/no.png' },
+            { code: 'OM', name: 'Oman', flag: 'https://flagcdn.com/w80/om.png' },
+            { code: 'PK', name: 'Pakistan', flag: 'https://flagcdn.com/w80/pk.png' },
+            { code: 'PE', name: 'Peru', flag: 'https://flagcdn.com/w80/pe.png' },
+            { code: 'PH', name: 'Philippines', flag: 'https://flagcdn.com/w80/ph.png' },
+            { code: 'PL', name: 'Poland', flag: 'https://flagcdn.com/w80/pl.png' },
+            { code: 'PT', name: 'Portugal', flag: 'https://flagcdn.com/w80/pt.png' },
+            { code: 'QA', name: 'Qatar', flag: 'https://flagcdn.com/w80/qa.png' },
+            { code: 'RO', name: 'Romania', flag: 'https://flagcdn.com/w80/ro.png' },
+            { code: 'RU', name: 'Russia', flag: 'https://flagcdn.com/w80/ru.png' },
+            { code: 'SA', name: 'Saudi Arabia', flag: 'https://flagcdn.com/w80/sa.png' },
+            { code: 'RS', name: 'Serbia', flag: 'https://flagcdn.com/w80/rs.png' },
+            { code: 'SG', name: 'Singapore', flag: 'https://flagcdn.com/w80/sg.png' },
+            { code: 'SK', name: 'Slovakia', flag: 'https://flagcdn.com/w80/sk.png' },
+            { code: 'SI', name: 'Slovenia', flag: 'https://flagcdn.com/w80/si.png' },
+            { code: 'ZA', name: 'South Africa', flag: 'https://flagcdn.com/w80/za.png' },
+            { code: 'ES', name: 'Spain', flag: 'https://flagcdn.com/w80/es.png' },
+            { code: 'LK', name: 'Sri Lanka', flag: 'https://flagcdn.com/w80/lk.png' },
+            { code: 'SE', name: 'Sweden', flag: 'https://flagcdn.com/w80/se.png' },
+            { code: 'CH', name: 'Switzerland', flag: 'https://flagcdn.com/w80/ch.png' },
+            { code: 'TW', name: 'Taiwan', flag: 'https://flagcdn.com/w80/tw.png' },
+            { code: 'TH', name: 'Thailand', flag: 'https://flagcdn.com/w80/th.png' },
+            { code: 'TR', name: 'Turkey', flag: 'https://flagcdn.com/w80/tr.png' },
+            { code: 'UA', name: 'Ukraine', flag: 'https://flagcdn.com/w80/ua.png' },
+            { code: 'AE', name: 'UAE', flag: 'https://flagcdn.com/w80/ae.png' },
+            { code: 'GB', name: 'United Kingdom', flag: 'https://flagcdn.com/w80/gb.png' },
+            { code: 'US', name: 'United States', flag: 'https://flagcdn.com/w80/us.png' },
+            { code: 'VN', name: 'Vietnam', flag: 'https://flagcdn.com/w80/vn.png' }
+        ];
+
+        // Regional packages
+        const regionalPackages = [
+            { code: 'europe', name: 'Europe', flag: 'https://flagcdn.com/w80/eu.png', countries: '39 countries' },
+            { code: 'asia', name: 'Asia', flag: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Asia_%28orthographic_projection%29.svg/200px-Asia_%28orthographic_projection%29.svg.png', countries: '26 countries' },
+            { code: 'north-america', name: 'North America', flag: 'https://flagcdn.com/w80/us.png', countries: 'USA, Canada, Mexico' },
+            { code: 'latin-america', name: 'Latin America', flag: 'https://flagcdn.com/w80/br.png', countries: '17 countries' },
+            { code: 'mena', name: 'Middle East', flag: 'https://flagcdn.com/w80/ae.png', countries: '12 countries' },
+            { code: 'africa', name: 'Africa', flag: 'https://flagcdn.com/w80/za.png', countries: '25 countries' },
+            { code: 'oceania', name: 'Oceania', flag: 'https://flagcdn.com/w80/au.png', countries: 'Australia, NZ + more' },
+            { code: 'caribbean', name: 'Caribbean', flag: 'https://flagcdn.com/w80/jm.png', countries: '21 countries' },
+            { code: 'eu-uk', name: 'Europe + UK', flag: 'https://flagcdn.com/w80/eu.png', countries: '40 countries' }
+        ];
+
+        // Current category
+        let currentCategory = 'popular';
+
+        // Switch category
+        function switchCategory(category) {
+            currentCategory = category;
+
+            // Update active tab
+            document.querySelectorAll('.category-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.category === category) {
+                    tab.classList.add('active');
+                }
+            });
+
+            // Update section title
+            const titles = {
+                popular: 'Popular Destinations',
+                local: 'All Countries',
+                regional: 'Regional Plans',
+                global: 'Worldwide Coverage'
+            };
+            document.getElementById('sectionTitle').textContent = titles[category];
+
+            // Render grid
+            renderGrid(category);
+        }
+
+        // Render grid based on category
+        function renderGrid(category) {
+            const grid = document.getElementById('countriesGrid');
+
+            if (category === 'popular') {
+                grid.innerHTML = popularCountries.map(c => createCountryCard(c)).join('');
+            } else if (category === 'local') {
+                grid.innerHTML = allCountries.map(c => createCountryCard(c)).join('');
+            } else if (category === 'regional') {
+                grid.innerHTML = regionalPackages.map(r => createRegionalCard(r)).join('');
+            } else if (category === 'global') {
+                grid.innerHTML = createWorldwideCard();
+            }
+        }
+
+        // Create country card
+        function createCountryCard(country) {
+            return `
+                <a href="esim-country.html?code=${country.code}" class="country-card">
+                    <img src="${country.flag}" alt="${country.name}" class="country-flag" onerror="this.src='assets/images/flag-placeholder.png'">
+                    <div class="country-name">${country.name}</div>
+                    <div class="country-price">From <strong>$4.50</strong></div>
+                </a>
+            `;
+        }
+
+        // Create regional card
+        function createRegionalCard(region) {
+            return `
+                <a href="esim-region.html?region=${region.code}" class="country-card regional-card">
+                    <img src="${region.flag}" alt="${region.name}" class="country-flag" onerror="this.src='assets/images/flag-placeholder.png'">
+                    <div class="country-name">${region.name}</div>
+                    <div class="country-price">From <strong>$5.00</strong></div>
+                    <div class="regional-countries">${region.countries}</div>
+                </a>
+            `;
+        }
+
+        // Create worldwide card
+        function createWorldwideCard() {
+            return `
+                <a href="esim-global.html" class="country-card worldwide-card">
+                    <div style="font-size: 4rem;">&#127758;</div>
+                    <div class="worldwide-info">
+                        <div class="country-name">Worldwide Coverage</div>
+                        <div class="country-price">Data in 100+ countries with a single eSIM. Perfect for multi-destination trips.</div>
+                    </div>
+                    <span class="worldwide-cta">View Plans</span>
+                </a>
+            `;
+        }
+
+        // Search functionality
+        const searchInput = document.getElementById('countrySearch');
+        const searchResults = document.getElementById('searchResults');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+
+            if (query.length < 2) {
+                searchResults.classList.remove('show');
+                return;
+            }
+
+            const matches = allCountries.filter(c =>
+                c.name.toLowerCase().includes(query) ||
+                c.code.toLowerCase() === query
+            ).slice(0, 8);
+
+            if (matches.length > 0) {
+                searchResults.innerHTML = matches.map(c => `
+                    <div class="search-result-item" onclick="goToCountry('${c.code}')">
+                        <img src="${c.flag}" alt="${c.name}">
+                        <span>${c.name}</span>
+                    </div>
+                `).join('');
+                searchResults.classList.add('show');
+            } else {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        // Close search on click outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-wrapper')) {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        function goToCountry(code) {
+            window.location.href = `esim-country.html?code=${code}`;
+        }
+
+        function performSearch() {
+            const query = searchInput.value.toLowerCase().trim();
+            const match = allCountries.find(c =>
+                c.name.toLowerCase() === query ||
+                c.code.toLowerCase() === query
+            );
+            if (match) {
+                goToCountry(match.code);
+            }
+        }
+
+        // FAQ toggle
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            faqItem.classList.toggle('open');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderGrid('popular');
+        });
+    </script>
+</body>
+</html>

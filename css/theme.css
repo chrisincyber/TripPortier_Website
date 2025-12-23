@@ -1,0 +1,84 @@
+/**
+ * TripPortier Theme System
+ * Light mode styles
+ */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+  /* Base colors */
+  --theme-bg: #ffffff;
+  --theme-bg-secondary: #f8fafc;
+  --theme-bg-tertiary: #f1f5f9;
+  --theme-text: #1e293b;
+  --theme-text-secondary: #64748b;
+  --theme-text-muted: #94a3b8;
+  --theme-border: #e2e8f0;
+
+  /* Primary brand colors */
+  --theme-primary: #6366f1;
+  --theme-primary-dark: #4f46e5;
+  --theme-primary-light: #818cf8;
+
+  /* Hero gradient - dark purple/navy like home page */
+  --theme-hero-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+
+  /* Navbar */
+  --theme-navbar-bg: rgba(255, 255, 255, 0.95);
+  --theme-navbar-text: #1e293b;
+  --theme-navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Cards */
+  --theme-card-bg: #ffffff;
+  --theme-card-border: #e2e8f0;
+  --theme-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --theme-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  /* Inputs */
+  --theme-input-bg: #ffffff;
+  --theme-input-border: #e2e8f0;
+  --theme-input-focus-border: #6366f1;
+
+  /* Status colors */
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+}
+
+/* ============================================
+   Navbar Styles
+   ============================================ */
+.nav-container {
+  align-items: center;
+}
+
+.nav-links {
+  align-items: center;
+}
+
+/* Sign In Button */
+.nav-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white !important;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.nav-signin-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  color: white !important;
+}
+
+/* Nav Auth wrapper alignment */
+.nav-auth {
+  display: flex;
+  align-items: center;
+}
