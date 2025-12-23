@@ -44,7 +44,8 @@ const replacements = {
         downloadFreeCta: 'Kostenlos laden',
         bookTransfer: 'Transfer buchen',
         footerTagline: 'Ihr smarter Reisebegleiter für stressfreie Trips.',
-        langTitle: 'Verfügbar in 18 Sprachen'
+        langTitle: 'Verfügbar in 18 Sprachen',
+        signIn: 'Anmelden'
     },
     'fr': {
         title: 'TripPortier - Voyagez Plus Intelligent',
@@ -71,7 +72,8 @@ const replacements = {
         downloadFreeCta: 'Télécharger Gratuit',
         bookTransfer: 'Réserver un Transfert',
         footerTagline: 'Votre compagnon de voyage intelligent pour des trips sans stress.',
-        langTitle: 'Disponible en 18 langues'
+        langTitle: 'Disponible en 18 langues',
+        signIn: 'Connexion'
     },
     'es': {
         title: 'TripPortier - Viaja Más Inteligente',
@@ -83,7 +85,8 @@ const replacements = {
         socialTitle: 'Amado por viajeros de todo el mundo',
         featuresTitle: 'Todo para tu viaje',
         ctaTitle: 'Comienza tu próxima aventura',
-        langTitle: 'Disponible en 18 idiomas'
+        langTitle: 'Disponible en 18 idiomas',
+        signIn: 'Iniciar Sesión'
     },
     'it': {
         title: 'TripPortier - Viaggia Più Intelligente',
@@ -95,7 +98,8 @@ const replacements = {
         socialTitle: 'Amato dai viaggiatori di tutto il mondo',
         featuresTitle: 'Tutto per il tuo viaggio',
         ctaTitle: 'Inizia la tua prossima avventura',
-        langTitle: 'Disponibile in 18 lingue'
+        langTitle: 'Disponibile in 18 lingue',
+        signIn: 'Accedi'
     },
     'nl': {
         title: 'TripPortier - Reis Slimmer',
@@ -107,7 +111,8 @@ const replacements = {
         socialTitle: 'Geliefd door reizigers wereldwijd',
         featuresTitle: 'Alles voor je reis',
         ctaTitle: 'Start je volgende avontuur',
-        langTitle: 'Beschikbaar in 18 talen'
+        langTitle: 'Beschikbaar in 18 talen',
+        signIn: 'Inloggen'
     },
     'pt-BR': {
         title: 'TripPortier - Viaje Mais Inteligente',
@@ -119,7 +124,8 @@ const replacements = {
         socialTitle: 'Amado por viajantes no mundo todo',
         featuresTitle: 'Tudo para sua viagem',
         ctaTitle: 'Comece sua próxima aventura',
-        langTitle: 'Disponível em 18 idiomas'
+        langTitle: 'Disponível em 18 idiomas',
+        signIn: 'Entrar'
     },
     'ja': {
         title: 'TripPortier - スマートに旅する',
@@ -131,7 +137,8 @@ const replacements = {
         socialTitle: '世界中の旅行者に愛されています',
         featuresTitle: '旅行に必要なすべて',
         ctaTitle: '次の冒険を始めよう',
-        langTitle: '18言語で利用可能'
+        langTitle: '18言語で利用可能',
+        signIn: 'ログイン'
     },
     'ko': {
         title: 'TripPortier - 스마트하게 여행하세요',
@@ -143,7 +150,8 @@ const replacements = {
         socialTitle: '전 세계 여행자들이 사랑합니다',
         featuresTitle: '여행에 필요한 모든 것',
         ctaTitle: '다음 모험을 시작하세요',
-        langTitle: '18개 언어로 이용 가능'
+        langTitle: '18개 언어로 이용 가능',
+        signIn: '로그인'
     },
     'zh-Hans': {
         title: 'TripPortier - 更智能地旅行',
@@ -155,7 +163,8 @@ const replacements = {
         socialTitle: '深受全球旅行者喜爱',
         featuresTitle: '旅行所需的一切',
         ctaTitle: '开始你的下一次冒险',
-        langTitle: '提供18种语言'
+        langTitle: '提供18种语言',
+        signIn: '登录'
     },
     'zh-Hant': {
         title: 'TripPortier - 更智慧地旅行',
@@ -167,7 +176,8 @@ const replacements = {
         socialTitle: '深受全球旅行者喜愛',
         featuresTitle: '旅行所需的一切',
         ctaTitle: '開始你的下一次冒險',
-        langTitle: '提供18種語言'
+        langTitle: '提供18種語言',
+        signIn: '登入'
     },
     'ar': {
         title: 'TripPortier - سافر بذكاء',
@@ -179,7 +189,8 @@ const replacements = {
         socialTitle: 'محبوب من المسافرين حول العالم',
         featuresTitle: 'كل ما تحتاجه لرحلتك',
         ctaTitle: 'ابدأ مغامرتك القادمة',
-        langTitle: 'متوفر بـ 18 لغة'
+        langTitle: 'متوفر بـ 18 لغة',
+        signIn: 'تسجيل الدخول'
     },
     'sv': {
         title: 'TripPortier - Res Smartare',
@@ -191,7 +202,8 @@ const replacements = {
         socialTitle: 'Älskad av resenärer världen över',
         featuresTitle: 'Allt för din resa',
         ctaTitle: 'Börja ditt nästa äventyr',
-        langTitle: 'Tillgänglig på 18 språk'
+        langTitle: 'Tillgänglig på 18 språk',
+        signIn: 'Logga In'
     },
     'da': {
         title: 'TripPortier - Rejs Smartere',
@@ -203,7 +215,8 @@ const replacements = {
         socialTitle: 'Elsket af rejsende verden over',
         featuresTitle: 'Alt til din rejse',
         ctaTitle: 'Start dit næste eventyr',
-        langTitle: 'Tilgængelig på 18 sprog'
+        langTitle: 'Tilgængelig på 18 sprog',
+        signIn: 'Log Ind'
     },
     'nb': {
         title: 'TripPortier - Reis Smartere',
@@ -215,7 +228,8 @@ const replacements = {
         socialTitle: 'Elsket av reisende over hele verden',
         featuresTitle: 'Alt for reisen din',
         ctaTitle: 'Start ditt neste eventyr',
-        langTitle: 'Tilgjengelig på 18 språk'
+        langTitle: 'Tilgjengelig på 18 språk',
+        signIn: 'Logg Inn'
     },
     'fi': {
         title: 'TripPortier - Matkusta Älykkäämmin',
@@ -227,7 +241,8 @@ const replacements = {
         socialTitle: 'Matkailijoiden rakastama kaikkialla maailmassa',
         featuresTitle: 'Kaikki matkaasi varten',
         ctaTitle: 'Aloita seuraava seikkailusi',
-        langTitle: 'Saatavilla 18 kielellä'
+        langTitle: 'Saatavilla 18 kielellä',
+        signIn: 'Kirjaudu'
     },
     'th': {
         title: 'TripPortier - เดินทางอย่างชาญฉลาด',
@@ -239,7 +254,8 @@ const replacements = {
         socialTitle: 'เป็นที่รักของนักเดินทางทั่วโลก',
         featuresTitle: 'ทุกอย่างสำหรับการเดินทางของคุณ',
         ctaTitle: 'เริ่มต้นการผจญภัยครั้งต่อไปของคุณ',
-        langTitle: 'มีให้บริการใน 18 ภาษา'
+        langTitle: 'มีให้บริการใน 18 ภาษา',
+        signIn: 'เข้าสู่ระบบ'
     },
     'tr': {
         title: 'TripPortier - Daha Akıllı Seyahat Et',
@@ -251,7 +267,8 @@ const replacements = {
         socialTitle: 'Dünya çapında gezginler tarafından seviliyor',
         featuresTitle: 'Seyahatiniz için her şey',
         ctaTitle: 'Bir sonraki maceranıza başlayın',
-        langTitle: '18 dilde mevcut'
+        langTitle: '18 dilde mevcut',
+        signIn: 'Giriş Yap'
     }
 };
 
@@ -337,6 +354,11 @@ languages.forEach(lang => {
     // Update language title in footer
     if (r.langTitle) {
         html = html.replace('Available in 18 languages', r.langTitle);
+    }
+
+    // Update Sign In button
+    if (r.signIn) {
+        html = html.replace('>Sign In</a>', `>${r.signIn}</a>`);
     }
 
     // Update active language in navbar dropdown
