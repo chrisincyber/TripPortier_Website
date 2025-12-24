@@ -729,6 +729,21 @@
                     <div class="modal-package-price" id="modalPackagePrice">$12.00</div>
                 </div>
 
+                <!-- TripCoins Discount (shown when using coins) -->
+                <div id="tripcoinsDiscount" style="display: none; background: linear-gradient(135deg, #fef3c7, #fef9c3); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #f59e0b;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #92400e; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            TripCoins Applied
+                        </span>
+                        <span style="color: #059669; font-weight: 700;">-$<span id="tripcoinsDiscountAmount">0</span></span>
+                    </div>
+                    <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 14px;">
+                        <span style="color: #64748b;"><s>$<span id="originalPrice">0</span></s></span>
+                        <span style="color: #1e293b; font-weight: 600;">Final: $<span id="finalPrice">0</span></span>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label for="emailInput">Email Address</label>
                     <input type="email" id="emailInput" placeholder="your@email.com" required>
@@ -757,6 +772,9 @@
 
     <script src="js/main.js"></script>
     <script>
+        // TripCoins from URL (passed from esim.html)
+        const tripcoinsFromUrl = parseInt(new URLSearchParams(window.location.search).get('tripcoins')) || 0;
+
         // Country data mapping
         const countryData = {
             'US': { name: 'United States', flag: 'https://flagcdn.com/w160/us.png' },
@@ -930,8 +948,23 @@
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
                 document.getElementById('modalPackageCountry').textContent = currentCountry.name;
-                document.getElementById('modalPackagePrice').textContent =
-                    `$${selectedPackage.price.toFixed(2)}`;
+
+                // Check if TripCoins discount applies
+                const tripcoinsToUse = Math.min(tripcoinsFromUrl, Math.floor(selectedPackage.price));
+                if (tripcoinsToUse > 0) {
+                    const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
+                    document.getElementById('modalPackagePrice').innerHTML =
+                        `<s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                    document.getElementById('tripcoinsDiscountAmount').textContent = tripcoinsToUse.toFixed(0);
+                    document.getElementById('originalPrice').textContent = selectedPackage.price.toFixed(2);
+                    document.getElementById('finalPrice').textContent = finalPrice.toFixed(2);
+                    document.getElementById('tripcoinsDiscount').style.display = 'block';
+                } else {
+                    document.getElementById('modalPackagePrice').textContent =
+                        `$${selectedPackage.price.toFixed(2)}`;
+                    document.getElementById('tripcoinsDiscount').style.display = 'none';
+                }
+
                 openModal();
             }
         }
@@ -967,6 +1000,17 @@
                 return;
             }
 
+            // Calculate final amount with TripCoins discount
+            const tripcoinsToUse = Math.min(tripcoinsFromUrl, Math.floor(selectedPackage.price));
+            const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
+            const amountInCents = Math.round(finalPrice * 100);
+
+            // Minimum charge is 50 cents for Stripe
+            if (amountInCents < 50 && amountInCents > 0) {
+                alert('The minimum payment amount is $0.50. Please adjust your TripCoins usage.');
+                return;
+            }
+
             // Disable button and show loading state
             const btn = document.querySelector('.modal-btn');
             const originalText = btn.textContent;
@@ -974,6 +1018,14 @@
             btn.disabled = true;
 
             try {
+                // If fully covered by TripCoins, handle differently
+                if (amountInCents === 0) {
+                    alert('Free orders with TripCoins are processed in the app. Please use the TripPortier app for this purchase.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+
                 // Call Firebase function to create checkout session
                 const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
@@ -984,13 +1036,15 @@
                         email: email,
                         packageId: selectedPackage.id,
                         packageName: `${selectedPackage.data} - ${selectedPackage.days} Days`,
-                        amount: Math.round(selectedPackage.price * 100), // Convert to cents
+                        amount: amountInCents, // Discounted amount in cents
                         currency: 'USD',
                         countryCode: currentCountry.code,
                         countryTitle: currentCountry.name,
                         data: selectedPackage.data,
                         days: selectedPackage.days,
                         operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
+                        tripcoinsUsed: tripcoinsToUse, // Track coins used
+                        originalPrice: selectedPackage.price, // Original price for records
                     }),
                 });
 

@@ -1094,6 +1094,182 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Filter & Sort Controls */
+        .modal-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            border-color: #6366f1;
+        }
+
+        .filter-tab.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            background: white;
+            cursor: pointer;
+            min-width: 140px;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        /* Unlimited badge */
+        .unlimited-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        /* TripCoin Redemption */
+        .tripcoins-section {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #fef3c7 0%, #fef9c3 100%);
+            border-bottom: 1px solid #fcd34d;
+        }
+
+        .tripcoins-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .tripcoins-balance {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .tripcoins-balance .coin-icon {
+            font-size: 1.25rem;
+        }
+
+        .tripcoins-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tripcoins-toggle label {
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        .tripcoins-toggle input[type="checkbox"] {
+            width: 44px;
+            height: 24px;
+            appearance: none;
+            background: #cbd5e1;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .tripcoins-toggle input[type="checkbox"]:checked {
+            background: #10b981;
+        }
+
+        .tripcoins-toggle input[type="checkbox"]::before {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+
+        .tripcoins-toggle input[type="checkbox"]:checked::before {
+            transform: translateX(20px);
+        }
+
+        .tripcoins-slider-container {
+            margin-top: 0.75rem;
+        }
+
+        .tripcoins-slider {
+            width: 100%;
+            height: 6px;
+            appearance: none;
+            background: #fcd34d;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .tripcoins-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #f59e0b;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .tripcoins-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.875rem;
+            color: #92400e;
+        }
+
+        .tripcoins-savings {
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
         @media (min-width: 768px) {
             .detail-modal-overlay {
                 align-items: center;
@@ -1410,6 +1586,40 @@
             <div class="detail-modal-features" id="modalFeatures">
                 <!-- Filled by JS -->
             </div>
+            <!-- Filter & Sort Controls -->
+            <div class="modal-controls" id="modalControls" style="display: none;">
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">All</button>
+                    <button class="filter-tab" data-filter="unlimited" onclick="setFilter('unlimited')">Unlimited</button>
+                    <button class="filter-tab" data-filter="standard" onclick="setFilter('standard')">Standard</button>
+                </div>
+                <select class="sort-select" id="sortSelect" onchange="setSorting(this.value)">
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="data-desc">Data: Most First</option>
+                    <option value="days-desc">Duration: Longest</option>
+                </select>
+            </div>
+            <!-- TripCoin Redemption (shown for logged-in users with coins) -->
+            <div class="tripcoins-section" id="tripcoinsSection" style="display: none;">
+                <div class="tripcoins-header">
+                    <div class="tripcoins-balance">
+                        <span class="coin-icon">&#129689;</span>
+                        <span>You have <strong id="tripcoinsBalance">0</strong> TripCoins</span>
+                    </div>
+                    <div class="tripcoins-toggle">
+                        <label for="useTripcoins">Use coins</label>
+                        <input type="checkbox" id="useTripcoins" onchange="toggleTripcoins()">
+                    </div>
+                </div>
+                <div class="tripcoins-slider-container" id="tripcoinsSlider" style="display: none;">
+                    <input type="range" class="tripcoins-slider" id="tripcoinsAmount" min="1" max="100" value="1" oninput="updateTripcoinsAmount()">
+                    <div class="tripcoins-info">
+                        <span>Using: $<span id="tripcoinsUsing">0</span></span>
+                        <span class="tripcoins-savings">You save: $<span id="tripcoinsSavings">0</span></span>
+                    </div>
+                </div>
+            </div>
             <div class="detail-modal-body" id="modalBody">
                 <div class="modal-loading">
                     <div class="spinner"></div>
@@ -1450,6 +1660,16 @@
         const packageCache = {};
         let currentModalData = null;
         let selectedPackage = null;
+
+        // Filter & Sort state
+        let currentFilter = 'all';
+        let currentSort = 'price-asc';
+        let allPackages = []; // Original unfiltered packages
+
+        // TripCoins state
+        let userTripcoins = 0;
+        let tripcoinsToUse = 0;
+        let usingTripcoins = false;
 
         // Popular destinations (same as app)
         const popularCountries = [
@@ -1822,23 +2042,155 @@
             document.getElementById('modalBody').innerHTML = `<div class="modal-loading"><div class="spinner"></div><p>Loading packages...</p></div>`;
             document.getElementById('buyNowBtn').disabled = true;
             document.getElementById('buyNowBtn').textContent = 'Select a package';
+            document.getElementById('modalControls').style.display = 'none';
+            document.getElementById('tripcoinsSection').style.display = 'none';
             document.getElementById('detailModal').classList.add('show');
             document.body.style.overflow = 'hidden';
+
+            // Reset filter/sort state
+            currentFilter = 'all';
+            currentSort = 'price-asc';
+            document.getElementById('sortSelect').value = 'price-asc';
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.filter === 'all');
+            });
+
+            // Reset TripCoins state
+            usingTripcoins = false;
+            tripcoinsToUse = 0;
+            document.getElementById('useTripcoins').checked = false;
+            document.getElementById('tripcoinsSlider').style.display = 'none';
+
+            // Load user's TripCoins if logged in
+            loadUserTripcoins();
         }
 
-        // Render modal packages
-        function renderModalPackages(packages, title) {
-            const features = getFeatures(packages);
-            document.getElementById('modalFeatures').innerHTML = `
-                <div class="detail-feature available"><span class="icon">&#128246;</span> Data</div>
-                <div class="detail-feature ${features.hasText ? 'available' : 'unavailable'}"><span class="icon">&#128172;</span> SMS</div>
-                <div class="detail-feature ${features.hasVoice ? 'available' : 'unavailable'}"><span class="icon">&#128222;</span> Calls</div>
-            `;
+        // Load user's TripCoins from Firestore
+        async function loadUserTripcoins() {
+            try {
+                const user = firebase.auth().currentUser;
+                if (!user) {
+                    userTripcoins = 0;
+                    return;
+                }
 
+                const doc = await firebase.firestore().collection('esimRewards').doc(user.uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    userTripcoins = Math.floor(data.totalCredits || 0); // Only whole coins
+                    if (userTripcoins >= 1) {
+                        document.getElementById('tripcoinsBalance').textContent = userTripcoins.toFixed(0);
+                        document.getElementById('tripcoinsSection').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.log('Could not load TripCoins:', error);
+                userTripcoins = 0;
+            }
+        }
+
+        // Toggle TripCoins usage
+        function toggleTripcoins() {
+            usingTripcoins = document.getElementById('useTripcoins').checked;
+            document.getElementById('tripcoinsSlider').style.display = usingTripcoins ? 'block' : 'none';
+
+            if (usingTripcoins && selectedPackage) {
+                const maxUsable = Math.min(userTripcoins, Math.floor(selectedPackage.price));
+                document.getElementById('tripcoinsAmount').max = maxUsable;
+                document.getElementById('tripcoinsAmount').value = Math.min(maxUsable, 1);
+                updateTripcoinsAmount();
+            } else {
+                tripcoinsToUse = 0;
+                updateBuyButton();
+            }
+        }
+
+        // Update TripCoins amount from slider
+        function updateTripcoinsAmount() {
+            tripcoinsToUse = parseInt(document.getElementById('tripcoinsAmount').value) || 0;
+            document.getElementById('tripcoinsUsing').textContent = tripcoinsToUse.toFixed(0);
+            document.getElementById('tripcoinsSavings').textContent = tripcoinsToUse.toFixed(2);
+            updateBuyButton();
+        }
+
+        // Update buy button with final price
+        function updateBuyButton() {
+            if (!selectedPackage) return;
+            const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
+            if (tripcoinsToUse > 0) {
+                document.getElementById('buyNowBtn').innerHTML = `Buy Now - <s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+            } else {
+                document.getElementById('buyNowBtn').textContent = `Buy Now - $${selectedPackage.price.toFixed(2)}`;
+            }
+        }
+
+        // Set filter
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.filter === filter);
+            });
+            applyFilterAndSort();
+        }
+
+        // Set sorting
+        function setSorting(sort) {
+            currentSort = sort;
+            applyFilterAndSort();
+        }
+
+        // Apply filter and sort to packages
+        function applyFilterAndSort() {
+            let filtered = [...allPackages];
+
+            // Apply filter
+            if (currentFilter === 'unlimited') {
+                filtered = filtered.filter(pkg => pkg.isUnlimited);
+            } else if (currentFilter === 'standard') {
+                filtered = filtered.filter(pkg => !pkg.isUnlimited);
+            }
+
+            // Apply sort
+            switch (currentSort) {
+                case 'price-asc':
+                    filtered.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => b.price - a.price);
+                    break;
+                case 'data-desc':
+                    filtered.sort((a, b) => parseDataAmount(b.data) - parseDataAmount(a.data));
+                    break;
+                case 'days-desc':
+                    filtered.sort((a, b) => b.days - a.days);
+                    break;
+            }
+
+            renderPackagesList(filtered);
+        }
+
+        // Parse data amount for sorting (e.g., "1 GB" -> 1, "500 MB" -> 0.5, "Unlimited" -> 9999)
+        function parseDataAmount(dataStr) {
+            if (!dataStr) return 0;
+            const lower = dataStr.toLowerCase();
+            if (lower.includes('unlimited')) return 9999;
+            const match = lower.match(/(\d+\.?\d*)\s*(gb|mb|tb)/);
+            if (!match) return 0;
+            const amount = parseFloat(match[1]);
+            const unit = match[2];
+            if (unit === 'tb') return amount * 1000;
+            if (unit === 'gb') return amount;
+            if (unit === 'mb') return amount / 1000;
+            return 0;
+        }
+
+        // Render just the packages list (for filter/sort updates)
+        function renderPackagesList(packages) {
             if (!packages || packages.length === 0) {
                 document.getElementById('modalBody').innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #64748b;">
-                        <p>No packages available for ${title}.</p>
+                    <div class="no-results">
+                        <p>No ${currentFilter === 'unlimited' ? 'unlimited' : currentFilter === 'standard' ? 'standard' : ''} packages found.</p>
+                        <button class="filter-tab" onclick="setFilter('all')" style="margin-top: 1rem;">Show All Packages</button>
                     </div>
                 `;
                 return;
@@ -1847,9 +2199,12 @@
             document.getElementById('modalBody').innerHTML = `
                 <div class="packages-list">
                     ${packages.map((pkg, i) => `
-                        <div class="package-option" onclick="selectPackageOption(${i})" id="pkg-${i}">
+                        <div class="package-option" onclick="selectPackageOption(${i})" id="pkg-${i}" data-pkg-id="${pkg.id}">
                             <div class="package-info">
-                                <div class="package-data-amount">${pkg.data}</div>
+                                <div class="package-data-amount">
+                                    ${pkg.data}
+                                    ${pkg.isUnlimited ? '<span class="unlimited-badge">Unlimited</span>' : ''}
+                                </div>
                                 <div class="package-validity">${pkg.days} days validity</div>
                                 <div class="package-features-mini">
                                     <span class="has">Data</span>
@@ -1863,13 +2218,58 @@
                 </div>
             `;
 
+            // Store filtered packages for selection
+            currentModalData.filteredPackages = packages;
+        }
+
+        // Render modal packages
+        function renderModalPackages(packages, title) {
+            allPackages = packages; // Store original list
+
+            const features = getFeatures(packages);
+            document.getElementById('modalFeatures').innerHTML = `
+                <div class="detail-feature available"><span class="icon">&#128246;</span> Data</div>
+                <div class="detail-feature ${features.hasText ? 'available' : 'unavailable'}"><span class="icon">&#128172;</span> SMS</div>
+                <div class="detail-feature ${features.hasVoice ? 'available' : 'unavailable'}"><span class="icon">&#128222;</span> Calls</div>
+            `;
+
+            if (!packages || packages.length === 0) {
+                document.getElementById('modalBody').innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #64748b;">
+                        <p>No packages available for ${title}.</p>
+                    </div>
+                `;
+                document.getElementById('modalControls').style.display = 'none';
+                return;
+            }
+
+            // Show controls
+            document.getElementById('modalControls').style.display = 'flex';
+
+            // Check if there are unlimited packages
+            const hasUnlimited = packages.some(pkg => pkg.isUnlimited);
+            const hasStandard = packages.some(pkg => !pkg.isUnlimited);
+
+            // Update filter tabs visibility
+            document.querySelectorAll('.filter-tab[data-filter="unlimited"]').forEach(tab => {
+                tab.style.display = hasUnlimited ? 'block' : 'none';
+            });
+            document.querySelectorAll('.filter-tab[data-filter="standard"]').forEach(tab => {
+                tab.style.display = hasStandard ? 'block' : 'none';
+            });
+
             // Store packages for selection
             currentModalData.packages = packages;
+
+            // Apply initial sort
+            applyFilterAndSort();
         }
 
         // Select package option
         function selectPackageOption(index) {
-            selectedPackage = currentModalData.packages[index];
+            // Use filtered packages if available
+            const packages = currentModalData.filteredPackages || currentModalData.packages;
+            selectedPackage = packages[index];
 
             // Update UI
             document.querySelectorAll('.package-option').forEach((el, i) => {
@@ -1877,21 +2277,40 @@
             });
 
             document.getElementById('buyNowBtn').disabled = false;
-            document.getElementById('buyNowBtn').textContent = `Buy Now - $${selectedPackage.price.toFixed(2)}`;
+
+            // Update TripCoins slider max value based on selected package
+            if (userTripcoins >= 1) {
+                const maxUsable = Math.min(userTripcoins, Math.floor(selectedPackage.price));
+                document.getElementById('tripcoinsAmount').max = maxUsable;
+                if (usingTripcoins) {
+                    document.getElementById('tripcoinsAmount').value = Math.min(parseInt(document.getElementById('tripcoinsAmount').value) || 1, maxUsable);
+                    updateTripcoinsAmount();
+                }
+            }
+
+            updateBuyButton();
         }
 
         // Proceed to purchase
         function proceedToPurchase() {
             if (!selectedPackage || !currentModalData) return;
 
-            // Navigate to the appropriate purchase page with package pre-selected
+            // Build URL with package and TripCoins info
+            let url;
             if (currentModalData.type === 'local') {
-                window.location.href = `esim-country.html?code=${currentModalData.code}&packageId=${selectedPackage.id}`;
+                url = `esim-country.html?code=${currentModalData.code}&packageId=${selectedPackage.id}`;
             } else if (currentModalData.type === 'regional') {
-                window.location.href = `esim-region.html?region=${currentModalData.code}&packageId=${selectedPackage.id}`;
+                url = `esim-region.html?region=${currentModalData.code}&packageId=${selectedPackage.id}`;
             } else {
-                window.location.href = `esim-global.html?packageId=${selectedPackage.id}`;
+                url = `esim-global.html?packageId=${selectedPackage.id}`;
             }
+
+            // Add TripCoins redemption if being used
+            if (usingTripcoins && tripcoinsToUse > 0) {
+                url += `&tripcoins=${tripcoinsToUse}`;
+            }
+
+            window.location.href = url;
         }
 
         // Close detail modal
