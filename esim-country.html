@@ -884,7 +884,7 @@
 
             try {
                 const countryCode = getCountryCode();
-                const response = await fetch(`${API_URL}/getAiraloPackages?countryCode=${countryCode}&type=local`);
+                const response = await fetch(`${API_URL}/getAiraloPackagesHttp?countryCode=${countryCode}&type=local`);
                 const data = await response.json();
 
                 if (data.success && data.packages && data.packages.length > 0) {

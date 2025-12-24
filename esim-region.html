@@ -939,7 +939,7 @@
             grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
 
             try {
-                const response = await fetch(`${API_URL}/getAiraloPackages?type=regional&region=${regionCode}`);
+                const response = await fetch(`${API_URL}/getAiraloPackagesHttp?type=regional&region=${regionCode}`);
                 const data = await response.json();
 
                 if (data.success && data.packages && data.packages.length > 0) {
