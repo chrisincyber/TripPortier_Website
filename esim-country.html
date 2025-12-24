@@ -749,6 +749,36 @@
                     <input type="email" id="emailInput" placeholder="your@email.com" required>
                 </div>
 
+                <!-- TripCoins Earnings (shown for logged-in users) -->
+                <div id="tripcoinsEarnings" style="display: none; background: linear-gradient(135deg, #dcfce7, #d1fae5); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #22c55e;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #166534; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            You'll earn TripCoins
+                        </span>
+                        <span style="color: #166534; font-weight: 700;">+<span id="tripcoinsEarnAmount">0</span> coins</span>
+                    </div>
+                    <p style="margin: 6px 0 0; font-size: 13px; color: #166534; opacity: 0.9;">
+                        Use them on your next purchase!
+                    </p>
+                </div>
+
+                <!-- TripCoins Earnings Prompt (shown for guests) -->
+                <div id="tripcoinsEarningsGuest" style="display: none; background: linear-gradient(135deg, #f3e8ff, #ede9fe); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #a855f7;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #6b21a8; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            Earn <span id="tripcoinsEarnAmountGuest">0</span> TripCoins
+                        </span>
+                    </div>
+                    <p style="margin: 6px 0 8px; font-size: 13px; color: #6b21a8; opacity: 0.9;">
+                        Create an account to earn coins on this purchase!
+                    </p>
+                    <a href="https://apps.apple.com/app/tripportier" style="display: inline-block; background: #a855f7; color: white; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none;">
+                        Get the App
+                    </a>
+                </div>
+
                 <button class="modal-btn" onclick="proceedToCheckout()">
                     Continue to Payment
                 </button>
@@ -770,8 +800,30 @@
         </svg>
     </a>
 
+    <!-- Firebase SDK for auth -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="js/main.js"></script>
     <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBUz7xqSzJJN3bvZ3IU1JYxMgdrI5EW-c",
+            authDomain: "tripportier.firebaseapp.com",
+            projectId: "tripportier",
+            storageBucket: "tripportier.appspot.com",
+            messagingSenderId: "926276849879",
+            appId: "1:926276849879:web:YOUR_WEB_APP_ID"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // User login state
+        let currentUser = null;
+        let userEmail = null;
+
         // TripCoins from URL (passed from esim.html)
         const tripcoinsFromUrl = parseInt(new URLSearchParams(window.location.search).get('tripcoins')) || 0;
 
@@ -941,6 +993,9 @@
             `).join('');
         }
 
+        // TripCoins earning rate (1 TripCoin per $1 spent)
+        const TRIPCOINS_EARN_RATE = 1.0;
+
         // Select package
         function selectPackage(packageId) {
             selectedPackage = loadedPackages.find(p => p.id == packageId);
@@ -951,8 +1006,10 @@
 
                 // Check if TripCoins discount applies
                 const tripcoinsToUse = Math.min(tripcoinsFromUrl, Math.floor(selectedPackage.price));
+                let finalPrice = selectedPackage.price;
+
                 if (tripcoinsToUse > 0) {
-                    const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
+                    finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
                     document.getElementById('modalPackagePrice').innerHTML =
                         `<s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
                     document.getElementById('tripcoinsDiscountAmount').textContent = tripcoinsToUse.toFixed(0);
@@ -963,6 +1020,33 @@
                     document.getElementById('modalPackagePrice').textContent =
                         `$${selectedPackage.price.toFixed(2)}`;
                     document.getElementById('tripcoinsDiscount').style.display = 'none';
+                }
+
+                // Calculate TripCoins earnings based on final price paid
+                const tripcoinsToEarn = Math.floor(finalPrice * TRIPCOINS_EARN_RATE);
+
+                // Pre-fill email if user is logged in
+                if (currentUser && userEmail) {
+                    document.getElementById('emailInput').value = userEmail;
+                }
+
+                // Show appropriate earnings UI
+                if (tripcoinsToEarn > 0) {
+                    if (currentUser) {
+                        // Logged-in user: show green earnings box
+                        document.getElementById('tripcoinsEarnAmount').textContent = tripcoinsToEarn;
+                        document.getElementById('tripcoinsEarnings').style.display = 'block';
+                        document.getElementById('tripcoinsEarningsGuest').style.display = 'none';
+                    } else {
+                        // Guest user: show purple prompt to create account
+                        document.getElementById('tripcoinsEarnAmountGuest').textContent = tripcoinsToEarn;
+                        document.getElementById('tripcoinsEarningsGuest').style.display = 'block';
+                        document.getElementById('tripcoinsEarnings').style.display = 'none';
+                    }
+                } else {
+                    // No earnings to show (e.g., fully paid with TripCoins)
+                    document.getElementById('tripcoinsEarnings').style.display = 'none';
+                    document.getElementById('tripcoinsEarningsGuest').style.display = 'none';
                 }
 
                 openModal();
@@ -1026,6 +1110,9 @@
                     return;
                 }
 
+                // Calculate TripCoins to earn (1 per $1 spent)
+                const tripcoinsToEarn = Math.floor(finalPrice * TRIPCOINS_EARN_RATE);
+
                 // Call Firebase function to create checkout session
                 const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
@@ -1045,6 +1132,7 @@
                         operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
                         tripcoinsUsed: tripcoinsToUse, // Track coins used
                         originalPrice: selectedPackage.price, // Original price for records
+                        tripcoinsToEarn: tripcoinsToEarn, // Coins to award after purchase
                     }),
                 });
 
@@ -1081,6 +1169,19 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
+            // Listen for auth state changes
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    userEmail = user.email;
+                    console.log('User logged in:', user.email);
+                } else {
+                    currentUser = null;
+                    userEmail = null;
+                    console.log('User not logged in');
+                }
+            });
+
             initPage();
             checkCancelledCheckout();
         });
