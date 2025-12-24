@@ -22,6 +22,36 @@
         </svg>
     </a>
 
+    <!-- Trip Menu Button (Fixed) -->
+    <button class="trip-menu-btn" id="trip-menu-btn" style="display: none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="1"/>
+            <circle cx="12" cy="5" r="1"/>
+            <circle cx="12" cy="19" r="1"/>
+        </svg>
+    </button>
+
+    <!-- Trip Menu Dropdown -->
+    <div class="trip-menu-dropdown" id="trip-menu-dropdown">
+        <button class="trip-menu-item" id="edit-trip-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit Trip
+        </button>
+        <div class="trip-menu-divider"></div>
+        <button class="trip-menu-item trip-menu-item-danger" id="delete-trip-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/>
+                <line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+            Delete Trip
+        </button>
+    </div>
+
     <!-- Loading State -->
     <div id="trip-loading" class="trip-loading">
         <div class="trip-spinner"></div>
@@ -66,13 +96,35 @@
 
             <!-- Hub Main Content Area -->
             <main class="trip-main">
-                <!-- Weather Section (if active trip) -->
+                <!-- Weather Section -->
                 <section class="trip-section trip-weather-section" id="trip-weather-section" style="display: none;">
+                    <h2 class="trip-section-title">Current Weather</h2>
                     <div class="trip-weather-card" id="trip-weather-card">
-                        <div class="trip-weather-icon" id="trip-weather-icon"></div>
-                        <div class="trip-weather-info">
-                            <span class="trip-weather-temp" id="trip-weather-temp"></span>
-                            <span class="trip-weather-desc" id="trip-weather-desc"></span>
+                        <div class="trip-weather-main">
+                            <div class="trip-weather-icon" id="trip-weather-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                                </svg>
+                            </div>
+                            <div class="trip-weather-temp" id="trip-weather-temp">--°</div>
+                        </div>
+                        <div class="trip-weather-details">
+                            <div class="trip-weather-desc" id="trip-weather-desc">Loading...</div>
+                            <div class="trip-weather-location" id="trip-weather-location"></div>
+                        </div>
+                        <div class="trip-weather-extra" id="trip-weather-extra">
+                            <div class="trip-weather-stat">
+                                <span class="trip-weather-stat-label">Feels like</span>
+                                <span class="trip-weather-stat-value" id="trip-weather-feels">--°</span>
+                            </div>
+                            <div class="trip-weather-stat">
+                                <span class="trip-weather-stat-label">Humidity</span>
+                                <span class="trip-weather-stat-value" id="trip-weather-humidity">--%</span>
+                            </div>
+                            <div class="trip-weather-stat">
+                                <span class="trip-weather-stat-label">Wind</span>
+                                <span class="trip-weather-stat-value" id="trip-weather-wind">-- km/h</span>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -209,6 +261,33 @@
             <div class="trip-tab-body">
                 <!-- Itinerary Days -->
                 <div class="itinerary-container" id="itinerary-container">
+                    <!-- Add Itinerary Item Form -->
+                    <div class="add-itinerary-form" id="add-itinerary-form">
+                        <div class="add-itinerary-row">
+                            <input type="text" id="itinerary-name-input" placeholder="Event name..." class="add-item-input">
+                        </div>
+                        <div class="add-itinerary-row">
+                            <input type="date" id="itinerary-date-input" class="add-item-input add-item-date">
+                            <input type="time" id="itinerary-time-input" class="add-item-input add-item-time" value="09:00">
+                            <select id="itinerary-category-select" class="add-item-select">
+                                <option value="activity">Activity</option>
+                                <option value="flight">Flight</option>
+                                <option value="hotel">Hotel</option>
+                                <option value="restaurant">Restaurant</option>
+                                <option value="transport">Transport</option>
+                                <option value="event">Event</option>
+                            </select>
+                            <button id="add-itinerary-btn" class="add-item-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="add-itinerary-row add-itinerary-row-extra">
+                            <input type="text" id="itinerary-location-input" placeholder="Location (optional)" class="add-item-input">
+                        </div>
+                    </div>
+
                     <div class="itinerary-empty" id="itinerary-empty">
                         <div class="itinerary-empty-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -217,12 +296,6 @@
                         </div>
                         <h3>No Events Yet</h3>
                         <p>Add flights, hotels, and activities to build your itinerary.</p>
-                        <a href="https://apps.apple.com/app/tripportier" class="itinerary-add-btn" target="_blank">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M12 5v14M5 12h14"/>
-                            </svg>
-                            Add in App
-                        </a>
                     </div>
                     <!-- Itinerary items will be rendered here -->
                     <div id="itinerary-days"></div>
@@ -360,6 +433,30 @@
             </div>
             <div class="trip-tab-body">
                 <div class="budget-container" id="budget-container">
+                    <!-- Add Expense Form -->
+                    <div class="add-expense-form" id="add-expense-form">
+                        <div class="add-expense-row">
+                            <input type="text" id="expense-name-input" placeholder="Expense name..." class="add-item-input">
+                        </div>
+                        <div class="add-expense-row">
+                            <input type="number" id="expense-amount-input" placeholder="Amount" class="add-item-input" step="0.01" min="0">
+                            <select id="expense-category-select" class="add-item-select">
+                                <option value="Food">Food & Dining</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Accommodation">Accommodation</option>
+                                <option value="Activities">Activities</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <button id="add-expense-btn" class="add-item-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 5v14M5 12h14"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Budget Overview Card -->
                     <div class="budget-overview" id="budget-overview">
                         <div class="budget-total">
@@ -492,6 +589,95 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Edit Trip Modal -->
+    <div class="trip-modal" id="edit-trip-modal">
+        <div class="trip-modal-backdrop"></div>
+        <div class="trip-modal-content">
+            <div class="trip-modal-header">
+                <h3>Edit Trip</h3>
+                <button class="trip-modal-close" id="edit-modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="trip-modal-body">
+                <div class="trip-modal-field">
+                    <label for="edit-trip-name">Trip Name</label>
+                    <input type="text" id="edit-trip-name" placeholder="My Trip">
+                </div>
+                <div class="trip-modal-field">
+                    <label for="edit-trip-destination">Destination</label>
+                    <input type="text" id="edit-trip-destination" placeholder="City, Country">
+                </div>
+                <div class="trip-modal-field-row">
+                    <div class="trip-modal-field">
+                        <label for="edit-trip-start">Start Date</label>
+                        <input type="date" id="edit-trip-start">
+                    </div>
+                    <div class="trip-modal-field">
+                        <label for="edit-trip-end">End Date</label>
+                        <input type="date" id="edit-trip-end">
+                    </div>
+                </div>
+                <div class="trip-modal-field">
+                    <label for="edit-trip-context">Trip Type</label>
+                    <select id="edit-trip-context">
+                        <option value="">None</option>
+                        <option value="city">City</option>
+                        <option value="beach">Beach</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="cultural">Cultural</option>
+                        <option value="business">Business</option>
+                        <option value="romantic">Romantic</option>
+                        <option value="family">Family</option>
+                        <option value="ski">Ski</option>
+                        <option value="road_trip">Road Trip</option>
+                        <option value="cruise">Cruise</option>
+                    </select>
+                </div>
+            </div>
+            <div class="trip-modal-footer">
+                <button class="trip-modal-btn-secondary" id="edit-modal-cancel">Cancel</button>
+                <button class="trip-modal-btn-primary" id="edit-modal-save">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="trip-modal" id="delete-trip-modal">
+        <div class="trip-modal-backdrop"></div>
+        <div class="trip-modal-content trip-modal-content-small">
+            <div class="trip-modal-header">
+                <h3>Delete Trip</h3>
+                <button class="trip-modal-close" id="delete-modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="trip-modal-body">
+                <div class="trip-modal-warning">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <p class="trip-modal-message">Are you sure you want to delete <strong id="delete-trip-name"></strong>? This action cannot be undone.</p>
+            </div>
+            <div class="trip-modal-footer">
+                <button class="trip-modal-btn-secondary" id="delete-modal-cancel">Cancel</button>
+                <button class="trip-modal-btn-danger" id="delete-modal-confirm">Delete Trip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="trip-toast" class="trip-toast">
+        <span id="trip-toast-message"></span>
     </div>
 
     <!-- Firebase SDKs -->

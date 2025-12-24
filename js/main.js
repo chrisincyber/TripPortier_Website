@@ -1,5 +1,30 @@
 // TripPortier Website JavaScript
 
+// Theme initialization - apply saved theme on page load
+(function() {
+    const savedTheme = localStorage.getItem('theme') || 'system';
+
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        // System preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    }
+
+    // Listen for system theme changes
+    if (savedTheme === 'system' && window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (localStorage.getItem('theme') === 'system') {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            }
+        });
+    }
+})();
+
 // Mobile Menu Toggle
 function toggleMenu() {
     const navLinks = document.querySelector('.nav-links');
