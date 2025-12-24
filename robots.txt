@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /tp-admin-*
 
 Sitemap: https://tripportier.com/sitemap.xml
