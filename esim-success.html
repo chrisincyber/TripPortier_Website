@@ -480,6 +480,10 @@
                             <span class="detail-label">ICCID</span>
                             <span class="detail-value" id="detailIccid">-</span>
                         </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Order Reference</span>
+                            <span class="detail-value" id="detailOrderCode">-</span>
+                        </div>
                         <div class="detail-row" id="smdpRow" style="display: none;">
                             <span class="detail-label">SM-DP+ Address</span>
                             <span class="detail-value" id="detailSmdp">-</span>
@@ -494,38 +498,125 @@
                 <!-- Installation Instructions -->
                 <div class="install-card">
                     <h3>How to Install Your eSIM</h3>
-                    <ol class="install-steps">
-                        <li class="install-step">
-                            <div class="step-number">1</div>
-                            <div class="step-content">
-                                <strong>Open Camera App</strong>
-                                <span>Point your phone's camera at the QR code above</span>
-                            </div>
-                        </li>
-                        <li class="install-step">
-                            <div class="step-number">2</div>
-                            <div class="step-content">
-                                <strong>Tap the Notification</strong>
-                                <span>A notification will appear - tap to add the eSIM</span>
-                            </div>
-                        </li>
-                        <li class="install-step">
-                            <div class="step-number">3</div>
-                            <div class="step-content">
-                                <strong>Confirm Installation</strong>
-                                <span>Follow the on-screen prompts to complete setup</span>
-                            </div>
-                        </li>
-                        <li class="install-step">
-                            <div class="step-number">4</div>
-                            <div class="step-content">
-                                <strong>Activate When Ready</strong>
-                                <span>Your data plan activates when you first connect in your destination</span>
-                            </div>
-                        </li>
-                    </ol>
 
-                    <div class="action-buttons">
+                    <!-- Important Notice -->
+                    <div style="background: #fef3c7; border-radius: 8px; padding: 15px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+                        <p style="color: #92400e; font-size: 14px; margin: 0; font-weight: 600;">
+                            IMPORTANT: Install your eSIM BEFORE you travel!
+                        </p>
+                        <p style="color: #92400e; font-size: 13px; margin: 8px 0 0 0;">
+                            You need WiFi or mobile data to install. Your data plan only starts when you connect at your destination.
+                        </p>
+                    </div>
+
+                    <!-- iPhone Instructions -->
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: #1e293b;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="2" width="14" height="20" rx="3" stroke="#1e293b" stroke-width="2"/>
+                                <circle cx="12" cy="18" r="1" fill="#1e293b"/>
+                            </svg>
+                            For iPhone (iOS 12.1+)
+                        </h4>
+                        <ol class="install-steps">
+                            <li class="install-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <strong>Open Camera App</strong>
+                                    <span>Point your iPhone's camera at the QR code above (don't take a photo, just point)</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <strong>Tap "Cellular Plan Detected"</strong>
+                                    <span>A yellow notification will appear at the top of your screen - tap it</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <strong>Tap "Continue" and "Add Cellular Plan"</strong>
+                                    <span>Follow the prompts. When asked, you can label it "Travel" or your destination name</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <strong>Choose "Secondary" for data</strong>
+                                    <span>When asked about default line, choose your eSIM as secondary. You can change this later</span>
+                                </div>
+                            </li>
+                        </ol>
+                        <p style="color: #64748b; font-size: 13px; margin-top: 12px; padding: 10px; background: #f1f5f9; border-radius: 6px;">
+                            <strong>Alternative:</strong> Go to Settings → Cellular → Add eSIM → Use QR Code, then scan the QR code above
+                        </p>
+                    </div>
+
+                    <!-- Android Instructions -->
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: #1e293b;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="5" y="2" width="14" height="20" rx="2" stroke="#1e293b" stroke-width="2"/>
+                                <line x1="8" y1="19" x2="16" y2="19" stroke="#1e293b" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            For Android (varies by device)
+                        </h4>
+                        <ol class="install-steps">
+                            <li class="install-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <strong>Open Settings</strong>
+                                    <span>Go to Settings → Network & Internet → SIMs (or Mobile Network)</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <strong>Add eSIM</strong>
+                                    <span>Tap "+" or "Add" or "Download SIM" (wording varies by phone brand)</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <strong>Scan QR Code</strong>
+                                    <span>Select "Scan QR code" and point your camera at the QR code above</span>
+                                </div>
+                            </li>
+                            <li class="install-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <strong>Confirm and Download</strong>
+                                    <span>Tap "Download" or "Confirm" - the eSIM will be installed in about 30 seconds</span>
+                                </div>
+                            </li>
+                        </ol>
+                        <p style="color: #64748b; font-size: 13px; margin-top: 12px; padding: 10px; background: #f1f5f9; border-radius: 6px;">
+                            <strong>Samsung:</strong> Settings → Connections → SIM Manager → Add eSIM<br>
+                            <strong>Google Pixel:</strong> Settings → Network & Internet → SIMs → Add SIM
+                        </p>
+                    </div>
+
+                    <!-- When to Activate -->
+                    <div style="background: #f0fdf4; border-radius: 8px; padding: 15px; border-left: 4px solid #10b981;">
+                        <h4 style="color: #166534; margin: 0 0 10px 0; font-size: 15px;">When to Activate Your eSIM</h4>
+                        <ul style="color: #166534; font-size: 14px; margin: 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Install now</strong> (while you have WiFi/data) - your plan won't start yet!</li>
+                            <li><strong>Turn it ON when you land</strong> at your destination</li>
+                            <li>Your data starts counting from your first connection abroad</li>
+                            <li>Keep your regular SIM for calls/texts, use eSIM for data</li>
+                        </ul>
+                    </div>
+
+                    <!-- Support Notice -->
+                    <div style="margin-top: 20px; padding: 15px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #3b82f6;">
+                        <p style="color: #1e40af; font-size: 14px; margin: 0;">
+                            <strong>Need help?</strong> Contact us at <a href="mailto:support@tripportier.com" style="color: #1e40af;">support@tripportier.com</a>
+                            and include your Order Reference number shown above.
+                        </p>
+                    </div>
+                    <div class="action-buttons" style="margin-top: 20px;">
                         <a href="#" id="directInstallBtn" class="btn-primary" style="display: none;">
                             Install on This Device
                         </a>
@@ -647,6 +738,7 @@
             document.getElementById('detailData').textContent = order.data || '-';
             document.getElementById('detailValidity').textContent = order.days ? `${order.days} days` : '-';
             document.getElementById('detailIccid').textContent = order.iccid || '-';
+            document.getElementById('detailOrderCode').textContent = order.orderCode || '-';
 
             // Show LPA (SM-DP+ Address) if available
             if (order.lpa) {
