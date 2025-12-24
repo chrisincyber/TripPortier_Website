@@ -1079,15 +1079,65 @@
             if (e.target === this) closeCountriesModal();
         });
 
+        // Firebase Functions URL
+        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
+
         // Proceed to checkout
-        function proceedToCheckout() {
+        async function proceedToCheckout() {
             const email = document.getElementById('emailInput').value;
             if (!email || !email.includes('@')) {
                 alert('Please enter a valid email address');
                 return;
             }
-            alert('Checkout coming soon! For now, please use the TripPortier app to purchase eSIMs.');
-            window.open('https://apps.apple.com/app/tripportier', '_blank');
+
+            if (!selectedPackage || !currentRegion) {
+                alert('Please select a package first');
+                return;
+            }
+
+            // Disable button and show loading state
+            const btn = document.querySelector('.modal-btn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            try {
+                // Call Firebase function to create checkout session
+                const response = await fetch(`${FUNCTIONS_URL}/createEsimCheckout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        packageId: selectedPackage.id,
+                        packageName: `${selectedPackage.data} - ${selectedPackage.days} Days`,
+                        amount: Math.round(selectedPackage.price * 100), // Convert to cents
+                        currency: 'USD',
+                        countryCode: currentRegion.code.toUpperCase(),
+                        countryTitle: currentRegion.name,
+                        data: selectedPackage.data,
+                        days: selectedPackage.days,
+                        operatorTitle: selectedPackage.operator || `TripPortier ${currentRegion.name} eSIM`,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = data.url;
+                } else {
+                    alert(data.error || 'Failed to create checkout session. Please try again.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('An error occurred. Please try again.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         }
 
         // Initialize on load
