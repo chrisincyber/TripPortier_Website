@@ -764,8 +764,8 @@
 
     <script src="js/main.js"></script>
     <script>
-        // Regional data
-        const regionData = {
+        // Regional display data (countries list for UI)
+        const regionDisplayData = {
             'europe': {
                 name: 'Europe',
                 icon: '&#127466;&#127482;',
@@ -784,13 +784,6 @@
                     { code: 'CH', name: 'Switzerland' }, { code: 'UA', name: 'Ukraine' }, { code: 'GB', name: 'UK' },
                     { code: 'AL', name: 'Albania' }, { code: 'BA', name: 'Bosnia' }, { code: 'ME', name: 'Montenegro' },
                     { code: 'MK', name: 'North Macedonia' }, { code: 'RS', name: 'Serbia' }, { code: 'TR', name: 'Turkey' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 5.00, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 11.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 15.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 25.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 42.00, popular: false }
                 ]
             },
             'asia': {
@@ -807,13 +800,6 @@
                     { code: 'PK', name: 'Pakistan' }, { code: 'KZ', name: 'Kazakhstan' }, { code: 'UZ', name: 'Uzbekistan' },
                     { code: 'MO', name: 'Macau' }, { code: 'MV', name: 'Maldives' }, { code: 'BN', name: 'Brunei' },
                     { code: 'MN', name: 'Mongolia' }, { code: 'TJ', name: 'Tajikistan' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 5.00, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 10.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 14.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 24.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 40.00, popular: false }
                 ]
             },
             'north-america': {
@@ -822,13 +808,6 @@
                 subtitle: 'USA, Canada & Mexico',
                 countries: [
                     { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' }, { code: 'MX', name: 'Mexico' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 6.00, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 12.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 18.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 30.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 50.00, popular: false }
                 ]
             },
             'latin-america': {
@@ -842,13 +821,6 @@
                     { code: 'GT', name: 'Guatemala' }, { code: 'HN', name: 'Honduras' }, { code: 'NI', name: 'Nicaragua' },
                     { code: 'PA', name: 'Panama' }, { code: 'PY', name: 'Paraguay' }, { code: 'PE', name: 'Peru' },
                     { code: 'UY', name: 'Uruguay' }, { code: 'VE', name: 'Venezuela' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 5.50, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 11.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 16.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 28.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 45.00, popular: false }
                 ]
             },
             'mena': {
@@ -860,13 +832,6 @@
                     { code: 'KW', name: 'Kuwait' }, { code: 'OM', name: 'Oman' }, { code: 'BH', name: 'Bahrain' },
                     { code: 'JO', name: 'Jordan' }, { code: 'IL', name: 'Israel' }, { code: 'LB', name: 'Lebanon' },
                     { code: 'EG', name: 'Egypt' }, { code: 'MA', name: 'Morocco' }, { code: 'TN', name: 'Tunisia' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 6.00, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 13.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 18.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 32.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 55.00, popular: false }
                 ]
             },
             'africa': {
@@ -883,13 +848,6 @@
                     { code: 'NA', name: 'Namibia' }, { code: 'MU', name: 'Mauritius' }, { code: 'TN', name: 'Tunisia' },
                     { code: 'DZ', name: 'Algeria' }, { code: 'MW', name: 'Malawi' }, { code: 'GA', name: 'Gabon' },
                     { code: 'CG', name: 'Congo' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 7.00, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 15.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 22.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 38.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 65.00, popular: false }
                 ]
             },
             'oceania': {
@@ -899,13 +857,6 @@
                 countries: [
                     { code: 'AU', name: 'Australia' }, { code: 'NZ', name: 'New Zealand' }, { code: 'FJ', name: 'Fiji' },
                     { code: 'PG', name: 'Papua New Guinea' }, { code: 'NC', name: 'New Caledonia' }, { code: 'GU', name: 'Guam' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 6.50, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 14.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 20.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 35.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 60.00, popular: false }
                 ]
             },
             'caribbean': {
@@ -921,13 +872,6 @@
                     { code: 'GD', name: 'Grenada' }, { code: 'VC', name: 'St. Vincent' }, { code: 'DM', name: 'Dominica' },
                     { code: 'KN', name: 'St. Kitts' }, { code: 'TC', name: 'Turks & Caicos' }, { code: 'BM', name: 'Bermuda' },
                     { code: 'MQ', name: 'Martinique' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 7.50, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 16.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 24.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 42.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 70.00, popular: false }
                 ]
             },
             'eu-uk': {
@@ -949,19 +893,16 @@
                     { code: 'AL', name: 'Albania' }, { code: 'BA', name: 'Bosnia' }, { code: 'ME', name: 'Montenegro' },
                     { code: 'MK', name: 'North Macedonia' }, { code: 'RS', name: 'Serbia' }, { code: 'TR', name: 'Turkey' },
                     { code: 'GI', name: 'Gibraltar' }
-                ],
-                packages: [
-                    { id: 1, data: '1 GB', days: 7, price: 5.50, popular: false },
-                    { id: 2, data: '3 GB', days: 15, price: 12.00, popular: false },
-                    { id: 3, data: '5 GB', days: 30, price: 17.00, popular: true },
-                    { id: 4, data: '10 GB', days: 30, price: 28.00, popular: false },
-                    { id: 5, data: '20 GB', days: 30, price: 48.00, popular: false }
                 ]
             }
         };
 
+        // Firebase Functions URL
+        const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
+
         let currentRegion = null;
         let selectedPackage = null;
+        let loadedPackages = [];
 
         // Get region from URL
         function getRegionCode() {
@@ -972,7 +913,7 @@
         // Initialize page
         function initPage() {
             const code = getRegionCode();
-            const region = regionData[code];
+            const region = regionDisplayData[code];
 
             if (region) {
                 currentRegion = { code, ...region };
@@ -985,10 +926,31 @@
                 // Render countries preview (first 12)
                 renderCountriesPreview(region.countries);
 
-                // Render packages
-                renderPackages(region.packages);
+                // Load packages from Airalo API
+                loadPackages(code);
             } else {
                 window.location.href = 'esim.html';
+            }
+        }
+
+        // Load packages from Airalo API
+        async function loadPackages(regionCode) {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/getAiraloPackages?type=regional&region=${regionCode}`);
+                const data = await response.json();
+
+                if (data.success && data.packages && data.packages.length > 0) {
+                    loadedPackages = data.packages;
+                    renderPackages(loadedPackages);
+                } else {
+                    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">No packages available for this region.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading packages:', error);
+                grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#dc2626;">Failed to load packages. Please try again.</div>';
             }
         }
 
@@ -1010,14 +972,18 @@
         // Render packages
         function renderPackages(packages) {
             const grid = document.getElementById('packagesGrid');
-            grid.innerHTML = packages.map(pkg => `
-                <div class="package-card ${pkg.popular ? 'popular' : ''}" onclick="selectPackage(${pkg.id})">
+            // Mark the middle package as popular
+            const popularIndex = Math.floor(packages.length / 2);
+            grid.innerHTML = packages.map((pkg, index) => `
+                <div class="package-card ${index === popularIndex ? 'popular' : ''}" onclick="selectPackage('${pkg.id}')">
                     <div class="package-data">${pkg.data}</div>
                     <div class="package-validity">${pkg.days} days validity</div>
                     <ul class="package-features">
                         <li>Works in all covered countries</li>
                         <li>Instant QR code delivery</li>
                         <li>24/7 customer support</li>
+                        ${pkg.hasVoice ? '<li>Voice calls included</li>' : ''}
+                        ${pkg.hasText ? '<li>SMS included</li>' : ''}
                     </ul>
                     <div class="package-price">
                         <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
@@ -1049,7 +1015,7 @@
 
         // Select package
         function selectPackage(packageId) {
-            selectedPackage = currentRegion.packages.find(p => p.id === packageId);
+            selectedPackage = loadedPackages.find(p => p.id == packageId);
             if (selectedPackage && currentRegion) {
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
@@ -1079,9 +1045,6 @@
             if (e.target === this) closeCountriesModal();
         });
 
-        // Firebase Functions URL
-        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
-
         // Proceed to checkout
         async function proceedToCheckout() {
             const email = document.getElementById('emailInput').value;
@@ -1103,7 +1066,7 @@
 
             try {
                 // Call Firebase function to create checkout session
-                const response = await fetch(`${FUNCTIONS_URL}/createEsimCheckout`, {
+                const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -1118,7 +1081,7 @@
                         countryTitle: currentRegion.name,
                         data: selectedPackage.data,
                         days: selectedPackage.days,
-                        operatorTitle: selectedPackage.operator || `TripPortier ${currentRegion.name} eSIM`,
+                        operatorTitle: selectedPackage.operatorTitle || `TripPortier ${currentRegion.name} eSIM`,
                     }),
                 });
 

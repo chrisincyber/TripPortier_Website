@@ -838,18 +838,13 @@
             'AF': { name: 'Afghanistan', flag: 'https://flagcdn.com/w160/af.png' }
         };
 
-        // Sample packages (will be replaced with API data)
-        const samplePackages = [
-            { id: 1, data: '1 GB', days: 7, price: 4.50, popular: false },
-            { id: 2, data: '3 GB', days: 15, price: 8.00, popular: false },
-            { id: 3, data: '5 GB', days: 30, price: 12.00, popular: true },
-            { id: 4, data: '10 GB', days: 30, price: 19.00, popular: false },
-            { id: 5, data: '20 GB', days: 30, price: 32.00, popular: false },
-            { id: 6, data: 'Unlimited', days: 7, price: 25.00, popular: false }
-        ];
-
+        // Packages loaded from Airalo API
+        let loadedPackages = [];
         let currentCountry = null;
         let selectedPackage = null;
+
+        // Firebase Functions URL
+        const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         // Get country code from URL
         function getCountryCode() {
@@ -882,25 +877,42 @@
             }
         }
 
-        // Load packages (simulated - will connect to Firebase)
-        function loadPackages() {
-            // Simulate API delay
-            setTimeout(() => {
-                renderPackages(samplePackages);
-            }, 500);
+        // Load packages from Airalo API
+        async function loadPackages() {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
+
+            try {
+                const countryCode = getCountryCode();
+                const response = await fetch(`${API_URL}/getAiraloPackages?countryCode=${countryCode}&type=local`);
+                const data = await response.json();
+
+                if (data.success && data.packages && data.packages.length > 0) {
+                    loadedPackages = data.packages;
+                    renderPackages(loadedPackages);
+                } else {
+                    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">No packages available for this country.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading packages:', error);
+                grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#dc2626;">Failed to load packages. Please try again.</div>';
+            }
         }
 
         // Render packages
         function renderPackages(packages) {
             const grid = document.getElementById('packagesGrid');
-            grid.innerHTML = packages.map(pkg => `
-                <div class="package-card ${pkg.popular ? 'popular' : ''}" onclick="selectPackage(${pkg.id})">
+            // Mark the middle package as popular
+            const popularIndex = Math.floor(packages.length / 2);
+            grid.innerHTML = packages.map((pkg, index) => `
+                <div class="package-card ${index === popularIndex ? 'popular' : ''}" onclick="selectPackage('${pkg.id}')">
                     <div class="package-data">${pkg.data}</div>
                     <div class="package-validity">${pkg.days} days validity</div>
                     <ul class="package-features">
                         <li>4G/LTE data speeds</li>
                         <li>Instant QR code delivery</li>
-                        <li>24/7 customer support</li>
+                        ${pkg.hasVoice ? '<li>Voice calls included</li>' : ''}
+                        ${pkg.hasText ? '<li>SMS included</li>' : ''}
                     </ul>
                     <div class="package-price">
                         <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
@@ -913,7 +925,7 @@
 
         // Select package
         function selectPackage(packageId) {
-            selectedPackage = samplePackages.find(p => p.id === packageId);
+            selectedPackage = loadedPackages.find(p => p.id == packageId);
             if (selectedPackage && currentCountry) {
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
@@ -942,9 +954,6 @@
             }
         });
 
-        // Firebase Functions URL
-        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
-
         // Proceed to checkout
         async function proceedToCheckout() {
             const email = document.getElementById('emailInput').value;
@@ -966,7 +975,7 @@
 
             try {
                 // Call Firebase function to create checkout session
-                const response = await fetch(`${FUNCTIONS_URL}/createEsimCheckout`, {
+                const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -981,7 +990,7 @@
                         countryTitle: currentCountry.name,
                         data: selectedPackage.data,
                         days: selectedPackage.days,
-                        operatorTitle: selectedPackage.operator || 'TripPortier eSIM',
+                        operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
                     }),
                 });
 

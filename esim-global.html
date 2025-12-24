@@ -693,52 +693,8 @@
                 <p>Perfect for multi-destination trips and frequent travelers</p>
             </div>
             <div class="packages-grid" id="packagesGrid">
-                <div class="package-card" onclick="selectPackage(1)">
-                    <div class="package-data">1 GB</div>
-                    <div class="package-validity">7 days validity</div>
-                    <ul class="package-features">
-                        <li>100+ countries worldwide</li>
-                        <li>Instant QR code delivery</li>
-                        <li>24/7 customer support</li>
-                    </ul>
-                    <div class="package-price">
-                        <span class="package-price-amount">$9.00</span>
-                        <span class="package-price-currency">USD</span>
-                    </div>
-                    <button class="package-btn">Select Plan</button>
-                </div>
-
-                <div class="package-card featured" onclick="selectPackage(2)">
-                    <div class="package-data">5 GB</div>
-                    <div class="package-validity">30 days validity</div>
-                    <ul class="package-features">
-                        <li>100+ countries worldwide</li>
-                        <li>Instant QR code delivery</li>
-                        <li>24/7 customer support</li>
-                        <li>Best value for trips</li>
-                    </ul>
-                    <div class="package-price">
-                        <span class="package-price-amount">$35.00</span>
-                        <span class="package-price-currency">USD</span>
-                    </div>
-                    <button class="package-btn">Select Plan</button>
-                </div>
-
-                <div class="package-card" onclick="selectPackage(3)">
-                    <div class="package-data">10 GB</div>
-                    <div class="package-validity">30 days validity</div>
-                    <ul class="package-features">
-                        <li>100+ countries worldwide</li>
-                        <li>Instant QR code delivery</li>
-                        <li>24/7 customer support</li>
-                        <li>Perfect for heavy use</li>
-                    </ul>
-                    <div class="package-price">
-                        <span class="package-price-amount">$59.00</span>
-                        <span class="package-price-currency">USD</span>
-                    </div>
-                    <button class="package-btn">Select Plan</button>
-                </div>
+                <!-- Packages loaded dynamically from Airalo API -->
+                <div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>
             </div>
         </div>
     </section>
@@ -919,18 +875,61 @@
 
     <script src="js/main.js"></script>
     <script>
-        // Package data
-        const packages = [
-            { id: 1, data: '1 GB', days: 7, price: 9.00 },
-            { id: 2, data: '5 GB', days: 30, price: 35.00 },
-            { id: 3, data: '10 GB', days: 30, price: 59.00 }
-        ];
+        // Firebase Functions URL
+        const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         let selectedPackage = null;
+        let loadedPackages = [];
+
+        // Load packages from Airalo API
+        async function loadPackages() {
+            const grid = document.getElementById('packagesGrid');
+            grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/getAiraloPackages?type=global`);
+                const data = await response.json();
+
+                if (data.success && data.packages && data.packages.length > 0) {
+                    loadedPackages = data.packages;
+                    renderPackages(loadedPackages);
+                } else {
+                    grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">No global packages available.</div>';
+                }
+            } catch (error) {
+                console.error('Error loading packages:', error);
+                grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#dc2626;">Failed to load packages. Please try again.</div>';
+            }
+        }
+
+        // Render packages
+        function renderPackages(packages) {
+            const grid = document.getElementById('packagesGrid');
+            // Mark the middle package as featured
+            const featuredIndex = Math.floor(packages.length / 2);
+            grid.innerHTML = packages.map((pkg, index) => `
+                <div class="package-card ${index === featuredIndex ? 'featured' : ''}" onclick="selectPackage('${pkg.id}')">
+                    <div class="package-data">${pkg.data}</div>
+                    <div class="package-validity">${pkg.days} days validity</div>
+                    <ul class="package-features">
+                        <li>100+ countries worldwide</li>
+                        <li>Instant QR code delivery</li>
+                        <li>24/7 customer support</li>
+                        ${pkg.hasVoice ? '<li>Voice calls included</li>' : ''}
+                        ${pkg.hasText ? '<li>SMS included</li>' : ''}
+                    </ul>
+                    <div class="package-price">
+                        <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
+                        <span class="package-price-currency">USD</span>
+                    </div>
+                    <button class="package-btn">Select Plan</button>
+                </div>
+            `).join('');
+        }
 
         // Select package
         function selectPackage(packageId) {
-            selectedPackage = packages.find(p => p.id === packageId);
+            selectedPackage = loadedPackages.find(p => p.id == packageId);
             if (selectedPackage) {
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
@@ -958,9 +957,6 @@
             }
         });
 
-        // Firebase Functions URL
-        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
-
         // Proceed to checkout
         async function proceedToCheckout() {
             const email = document.getElementById('emailInput').value;
@@ -982,7 +978,7 @@
 
             try {
                 // Call Firebase function to create checkout session
-                const response = await fetch(`${FUNCTIONS_URL}/createEsimCheckout`, {
+                const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -997,7 +993,7 @@
                         countryTitle: 'Global',
                         data: selectedPackage.data,
                         days: selectedPackage.days,
-                        operatorTitle: selectedPackage.operator || 'TripPortier Global eSIM',
+                        operatorTitle: selectedPackage.operatorTitle || 'TripPortier Global eSIM',
                     }),
                 });
 
@@ -1018,6 +1014,9 @@
                 btn.disabled = false;
             }
         }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', loadPackages);
     </script>
 </body>
 </html>
