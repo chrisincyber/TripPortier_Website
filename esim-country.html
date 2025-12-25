@@ -754,12 +754,12 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <span style="display: flex; align-items: center; gap: 6px; color: #166534; font-weight: 600;">
                             <span style="font-size: 1.25rem;">&#129689;</span>
-                            You'll earn (<span id="tripcoinsEarnPercent">5%</span>)
+                            You'll earn on this purchase
                         </span>
                         <span style="color: #166534; font-weight: 700;">+$<span id="tripcoinsEarnAmount">0.00</span></span>
                     </div>
                     <p style="margin: 6px 0 0; font-size: 13px; color: #166534; opacity: 0.9;">
-                        Use them on your next purchase!
+                        <span id="tripcoinsEarnPercent">5%</span> cashback as a <span id="tripcoinsUserLevel">Explorer</span> member
                     </p>
                 </div>
 
@@ -1029,6 +1029,14 @@
                 if (data.success && data.packages && data.packages.length > 0) {
                     loadedPackages = data.packages;
                     renderPackages(loadedPackages);
+
+                    // Check if a package was pre-selected from URL (coming from esim.html)
+                    const params = new URLSearchParams(window.location.search);
+                    const preselectedPackageId = params.get('packageId');
+                    if (preselectedPackageId) {
+                        // Auto-select the package and open modal
+                        selectPackage(preselectedPackageId);
+                    }
                 } else {
                     grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">No packages available for this country.</div>';
                 }
@@ -1104,6 +1112,7 @@
                         // Logged-in user: show green earnings box with their level percentage
                         document.getElementById('tripcoinsEarnPercent').textContent = getEarningsPercentageDisplay();
                         document.getElementById('tripcoinsEarnAmount').textContent = tripcoinsToEarn.toFixed(2);
+                        document.getElementById('tripcoinsUserLevel').textContent = userRewardsLevel;
                         document.getElementById('tripcoinsEarnings').style.display = 'block';
                         document.getElementById('tripcoinsEarningsGuest').style.display = 'none';
                     } else {
@@ -1236,6 +1245,44 @@
             }
         }
 
+        // Refresh the earnings display in modal (called after auth resolves)
+        function refreshEarningsDisplay() {
+            if (!selectedPackage) return;
+
+            // Calculate final price
+            const tripcoinsToUse = Math.min(tripcoinsFromUrl, Math.floor(selectedPackage.price));
+            const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
+
+            // Calculate earnings
+            const tripcoinsToEarn = calculateTripcoinsEarnings(finalPrice);
+            const guestEarnings = finalPrice * 0.03;
+
+            // Pre-fill email if user is logged in
+            if (currentUser && userEmail) {
+                const emailInput = document.getElementById('emailInput');
+                if (emailInput && !emailInput.value) {
+                    emailInput.value = userEmail;
+                }
+            }
+
+            // Update the display
+            if (finalPrice > 0) {
+                if (currentUser) {
+                    // Logged-in user: show earnings with their level percentage
+                    document.getElementById('tripcoinsEarnPercent').textContent = getEarningsPercentageDisplay();
+                    document.getElementById('tripcoinsEarnAmount').textContent = tripcoinsToEarn.toFixed(2);
+                    document.getElementById('tripcoinsUserLevel').textContent = userRewardsLevel;
+                    document.getElementById('tripcoinsEarnings').style.display = 'block';
+                    document.getElementById('tripcoinsEarningsGuest').style.display = 'none';
+                } else {
+                    // Guest: show prompt
+                    document.getElementById('tripcoinsEarnAmountGuest').textContent = guestEarnings.toFixed(2);
+                    document.getElementById('tripcoinsEarningsGuest').style.display = 'block';
+                    document.getElementById('tripcoinsEarnings').style.display = 'none';
+                }
+            }
+        }
+
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
             // Listen for auth state changes
@@ -1246,12 +1293,16 @@
                     console.log('User logged in:', user.email);
                     // Fetch user's rewards level and premium status
                     await fetchUserRewardsData(user.uid);
+                    // Refresh earnings display if modal is already open
+                    refreshEarningsDisplay();
                 } else {
                     currentUser = null;
                     userEmail = null;
                     userRewardsLevel = 'Explorer';
                     isPremiumMember = false;
                     console.log('User not logged in');
+                    // Refresh to show guest prompt
+                    refreshEarningsDisplay();
                 }
             });
 

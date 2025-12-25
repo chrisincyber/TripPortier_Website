@@ -358,6 +358,64 @@
             margin-bottom: 2rem;
         }
 
+        /* Register Prompt Card */
+        .register-prompt {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            color: white;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .register-prompt h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .register-prompt p {
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .register-benefits {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .register-benefit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .register-benefit svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .register-btn {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .success-hero h1 {
@@ -410,8 +468,8 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
                 </svg>
             </div>
-            <h1>Your eSIM is Ready!</h1>
-            <p>Scan the QR code below to activate your eSIM</p>
+            <h1>Thank You for Your Purchase!</h1>
+            <p>Your eSIM is ready - scan the QR code below to install</p>
         </div>
     </header>
 
@@ -627,6 +685,38 @@
                         </a>
                     </div>
                 </div>
+
+                <!-- Register Prompt (shown for non-logged-in users) -->
+                <div class="register-prompt" id="registerPrompt" style="display: none;">
+                    <h3>Save Your Order & Earn Rewards</h3>
+                    <p>Create a free account to access your eSIM anytime, earn TripCoins cashback on every purchase, and get exclusive member benefits!</p>
+                    <div class="register-benefits">
+                        <div class="register-benefit">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>Access eSIMs anytime</span>
+                        </div>
+                        <div class="register-benefit">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <span>3-10% cashback</span>
+                        </div>
+                        <div class="register-benefit">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                            </svg>
+                            <span>Exclusive deals</span>
+                        </div>
+                    </div>
+                    <a href="https://apps.apple.com/app/tripportier" class="register-btn">
+                        Download the App
+                    </a>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">
+                        Your order will be automatically linked to your account
+                    </p>
+                </div>
             </div>
         </div>
     </main>
@@ -673,8 +763,32 @@
         </svg>
     </a>
 
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
     <script src="js/main.js"></script>
     <script>
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBBUz7xqSzJJN3bvZ3IU1JYxMgdrI5EW-c",
+            authDomain: "tripportier.firebaseapp.com",
+            projectId: "tripportier",
+            storageBucket: "tripportier.appspot.com",
+            messagingSenderId: "926276849879",
+            appId: "1:926276849879:web:YOUR_WEB_APP_ID"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const db = firebase.firestore();
+        let currentUser = null;
+        let currentOrderData = null;
+
         // Firebase Functions URL
         const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
@@ -716,6 +830,12 @@
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('errorState').style.display = 'none';
             document.getElementById('successState').style.display = 'block';
+
+            // Store order data for potential linking
+            currentOrderData = order;
+
+            // Show register prompt if not logged in
+            updateRegisterPrompt();
 
             // Update email
             document.getElementById('customerEmail').textContent = order.email || 'your email';
@@ -772,8 +892,64 @@
             document.getElementById('errorMessage').textContent = message;
         }
 
+        // Update register prompt visibility based on auth state
+        function updateRegisterPrompt() {
+            const registerPrompt = document.getElementById('registerPrompt');
+            if (currentUser) {
+                // User is logged in, hide the prompt
+                registerPrompt.style.display = 'none';
+            } else {
+                // User is not logged in, show the prompt
+                registerPrompt.style.display = 'block';
+            }
+        }
+
+        // Link order to user account after login/registration
+        async function linkOrderToUser(userId, orderCode) {
+            if (!orderCode) return;
+
+            try {
+                // Update the esimOrders document to include the userId
+                const ordersRef = db.collection('esimOrders');
+                const querySnapshot = await ordersRef.where('orderCode', '==', orderCode).limit(1).get();
+
+                if (!querySnapshot.empty) {
+                    const orderDoc = querySnapshot.docs[0];
+                    await orderDoc.ref.update({
+                        userId: userId,
+                        linkedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    console.log('Order linked to user:', userId);
+                }
+            } catch (error) {
+                console.error('Error linking order to user:', error);
+            }
+        }
+
         // Initialize on load
-        document.addEventListener('DOMContentLoaded', fetchOrderDetails);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up auth state listener
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    currentUser = user;
+                    console.log('User logged in:', user.email);
+
+                    // If we have order data, try to link it to the user
+                    if (currentOrderData && currentOrderData.orderCode) {
+                        await linkOrderToUser(user.uid, currentOrderData.orderCode);
+                    }
+
+                    // Update UI
+                    updateRegisterPrompt();
+                } else {
+                    currentUser = null;
+                    updateRegisterPrompt();
+                }
+            });
+
+            // Fetch order details
+            fetchOrderDetails();
+        });
     </script>
 </body>
 </html>

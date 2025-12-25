@@ -945,6 +945,14 @@
                 if (data.success && data.packages && data.packages.length > 0) {
                     loadedPackages = data.packages;
                     renderPackages(loadedPackages);
+
+                    // Check if a package was pre-selected from URL (coming from esim.html)
+                    const params = new URLSearchParams(window.location.search);
+                    const preselectedPackageId = params.get('packageId');
+                    if (preselectedPackageId) {
+                        // Auto-select the package and open modal
+                        selectPackage(preselectedPackageId);
+                    }
                 } else {
                     grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">No packages available for this region.</div>';
                 }
