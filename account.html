@@ -515,31 +515,6 @@
         .account-avatar-wrapper {
             position: relative;
             display: inline-block;
-            cursor: pointer;
-        }
-
-        .avatar-edit-btn {
-            position: absolute;
-            bottom: 0;
-            right: 50%;
-            transform: translateX(50px);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--theme-primary, #6366f1);
-            border: 2px solid white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        }
-
-        .avatar-edit-btn:hover {
-            transform: translateX(50px) scale(1.1);
-            background: #4f46e5;
         }
 
         /* Account Settings Section */
@@ -924,12 +899,7 @@
             <!-- Logged In State -->
             <div id="account-content" style="display: none;">
                 <div class="account-profile">
-                    <div id="account-avatar-container" class="account-avatar-wrapper" onclick="openEditProfile()"></div>
-                    <button class="avatar-edit-btn" onclick="openEditProfile()">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"/>
-                        </svg>
-                    </button>
+                    <div id="account-avatar-container" class="account-avatar-wrapper"></div>
                     <div class="account-name" id="account-name">-</div>
                     <div class="account-username" id="account-username" style="color: var(--theme-primary, #6366f1); font-size: 0.9375rem; margin-bottom: 0.25rem;">@username</div>
                     <div class="account-email" id="account-email">-</div>
