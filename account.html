@@ -596,6 +596,58 @@
             height: 20px;
         }
 
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--theme-bg-tertiary, #cbd5e1);
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
         /* Edit Profile Modal */
         .edit-modal {
             position: fixed;
@@ -994,6 +1046,25 @@
                             </svg>
                         </div>
                     </div>
+                    <div class="account-setting-item" onclick="toggleTwoFactorAuth()">
+                        <div class="account-setting-info">
+                            <div class="account-setting-icon" style="background: #8b5cf6;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                                </svg>
+                            </div>
+                            <div class="account-setting-text">
+                                <h4>Two-Factor Authentication</h4>
+                                <p id="two-factor-status">Add extra security to your account</p>
+                            </div>
+                        </div>
+                        <div class="account-setting-toggle">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="two-factor-toggle" onclick="event.stopPropagation()">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="account-actions">
@@ -1378,6 +1449,9 @@
 
                 // Fetch and display subscription status
                 fetchSubscriptionData(user.uid);
+
+                // Update 2FA toggle
+                updateTwoFactorToggle(profile?.twoFactorEnabled || false);
             } else {
                 guestEl.style.display = 'block';
                 contentEl.style.display = 'none';
@@ -2262,6 +2336,73 @@
                 nextBtn.textContent = 'Complete Setup';
             }
         }
+
+        // ============================================
+        // TWO-FACTOR AUTHENTICATION
+        // ============================================
+
+        function updateTwoFactorToggle(enabled) {
+            const toggle = document.getElementById('two-factor-toggle');
+            const statusText = document.getElementById('two-factor-status');
+
+            if (toggle) {
+                toggle.checked = enabled;
+            }
+            if (statusText) {
+                statusText.textContent = enabled ? 'Enabled - Extra security active' : 'Add extra security to your account';
+            }
+        }
+
+        async function toggleTwoFactorAuth() {
+            const toggle = document.getElementById('two-factor-toggle');
+            const user = window.tripPortierAuth.getCurrentUser();
+
+            if (!user) {
+                alert('Please sign in to manage 2FA settings');
+                return;
+            }
+
+            const newState = !toggle.checked;
+            const actionText = newState ? 'enable' : 'disable';
+
+            if (!confirm(`Are you sure you want to ${actionText} two-factor authentication?`)) {
+                return;
+            }
+
+            toggle.disabled = true;
+
+            try {
+                const toggleTwoFactor = firebase.functions().httpsCallable('toggleTwoFactor');
+                const result = await toggleTwoFactor({ enabled: newState });
+
+                if (result.data.success) {
+                    toggle.checked = result.data.enabled;
+                    updateTwoFactorToggle(result.data.enabled);
+
+                    const message = result.data.enabled
+                        ? 'Two-factor authentication has been enabled. You will receive a verification code via email when signing in.'
+                        : 'Two-factor authentication has been disabled.';
+                    alert(message);
+                }
+            } catch (error) {
+                console.error('Error toggling 2FA:', error);
+                alert('Failed to update 2FA settings. Please try again.');
+            } finally {
+                toggle.disabled = false;
+            }
+        }
+
+        // Handle direct toggle click
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('two-factor-toggle');
+            if (toggle) {
+                toggle.addEventListener('change', (e) => {
+                    // Prevent default and trigger our custom toggle
+                    e.preventDefault();
+                    toggleTwoFactorAuth();
+                });
+            }
+        });
     </script>
 </body>
 </html>

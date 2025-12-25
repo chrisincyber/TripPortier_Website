@@ -230,6 +230,35 @@ class AuthUI {
       errorEl.style.display = 'none';
 
       if (this.mode === 'signin') {
+        // Check if 2FA is enabled for this user
+        try {
+          const checkTwoFactorStatus = firebase.functions().httpsCallable('checkTwoFactorStatus');
+          const result = await checkTwoFactorStatus({ email });
+
+          if (result.data.twoFactorEnabled) {
+            // 2FA is enabled - authenticate first, then verify OTP
+            await window.tripPortierAuth.signInWithEmail(email, password);
+
+            // Sign out temporarily - user needs to complete 2FA
+            await window.tripPortierAuth.auth.signOut();
+
+            // Store credentials temporarily (will be used after OTP verification)
+            this.pendingAuth = { email, password };
+
+            // Send 2FA code
+            const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
+            await sendTwoFactorCode({ email });
+
+            // Show OTP verification modal
+            this.showOtpModal(email);
+            return;
+          }
+        } catch (twoFactorError) {
+          // If 2FA check fails, proceed with normal login
+          console.warn('2FA check failed, proceeding with normal login:', twoFactorError);
+        }
+
+        // Normal login (no 2FA)
         await window.tripPortierAuth.signInWithEmail(email, password);
         this.hideModal();
       } else {
@@ -396,6 +425,203 @@ class AuthUI {
         }
       }, 300);
     }
+  }
+
+  // ============================================
+  // TWO-FACTOR AUTHENTICATION OTP MODAL
+  // ============================================
+
+  showOtpModal(email) {
+    // Remove existing modal
+    if (this.modal) {
+      this.modal.remove();
+    }
+
+    const maskedEmail = this.maskEmail(email);
+
+    const modalHTML = `
+    <div id="auth-modal" class="auth-modal">
+      <div class="auth-modal-overlay" onclick="window.authUI.cancelOtpVerification()"></div>
+      <div class="auth-modal-content">
+        <button class="auth-modal-close" onclick="window.authUI.cancelOtpVerification()" aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+
+        <div class="auth-header">
+          <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+            <span style="font-size: 28px;">🔐</span>
+          </div>
+          <h2>Verify Your Identity</h2>
+          <p>We sent a verification code to<br><strong>${maskedEmail}</strong></p>
+        </div>
+
+        <form id="auth-otp-form" class="auth-form">
+          <div class="auth-field">
+            <label for="otp-code">Enter 6-digit code</label>
+            <input
+              type="text"
+              id="otp-code"
+              placeholder="000000"
+              maxlength="6"
+              pattern="[0-9]{6}"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 600;"
+              required
+            >
+          </div>
+
+          <div id="auth-error" class="auth-error" style="display: none;"></div>
+
+          <button type="submit" class="auth-btn auth-btn-primary" id="verify-otp-btn">
+            Verify & Sign In
+          </button>
+        </form>
+
+        <div class="auth-footer" style="margin-top: 1.5rem;">
+          <p>Didn't receive the code? <a onclick="window.authUI.resendOtpCode()" id="resend-otp-link">Resend</a></p>
+          <p style="margin-top: 0.5rem;"><a onclick="window.authUI.cancelOtpVerification()">Use a different account</a></p>
+        </div>
+      </div>
+    </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    this.modal = document.getElementById('auth-modal');
+
+    // Attach event listener
+    const otpForm = document.getElementById('auth-otp-form');
+    if (otpForm) {
+      otpForm.addEventListener('submit', (e) => this.handleOtpSubmit(e));
+    }
+
+    // Auto-focus the input
+    setTimeout(() => {
+      document.getElementById('otp-code')?.focus();
+    }, 100);
+
+    // Show modal with animation
+    requestAnimationFrame(() => {
+      this.modal.classList.add('show');
+    });
+  }
+
+  maskEmail(email) {
+    const [localPart, domain] = email.split('@');
+    if (localPart.length <= 2) {
+      return `${localPart[0]}***@${domain}`;
+    }
+    return `${localPart.slice(0, 2)}***${localPart.slice(-1)}@${domain}`;
+  }
+
+  async handleOtpSubmit(e) {
+    e.preventDefault();
+
+    if (this.isLoading || !this.pendingAuth) return;
+
+    const code = document.getElementById('otp-code').value;
+    const errorEl = document.getElementById('auth-error');
+    const submitBtn = document.getElementById('verify-otp-btn');
+
+    if (!code || code.length !== 6) {
+      errorEl.textContent = 'Please enter the 6-digit code';
+      errorEl.style.display = 'block';
+      return;
+    }
+
+    try {
+      this.isLoading = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Verifying...';
+      errorEl.style.display = 'none';
+
+      // Verify OTP code
+      const verifyTwoFactorCode = firebase.functions().httpsCallable('verifyTwoFactorCode');
+      const result = await verifyTwoFactorCode({
+        email: this.pendingAuth.email,
+        code: code
+      });
+
+      if (result.data.success) {
+        // OTP verified - now complete the sign in
+        await window.tripPortierAuth.signInWithEmail(
+          this.pendingAuth.email,
+          this.pendingAuth.password
+        );
+
+        // Clear pending auth
+        this.pendingAuth = null;
+
+        // Close modal
+        this.hideModal();
+      }
+    } catch (error) {
+      console.error('OTP verification error:', error);
+
+      let errorMessage = 'Invalid verification code. Please try again.';
+      if (error.code === 'functions/deadline-exceeded') {
+        errorMessage = 'Code expired. Please request a new one.';
+      } else if (error.code === 'functions/resource-exhausted') {
+        errorMessage = 'Too many attempts. Please request a new code.';
+      } else if (error.code === 'functions/not-found') {
+        errorMessage = 'No code found. Please request a new one.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      errorEl.textContent = errorMessage;
+      errorEl.style.display = 'block';
+    } finally {
+      this.isLoading = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Verify & Sign In';
+    }
+  }
+
+  async resendOtpCode() {
+    if (this.isLoading || !this.pendingAuth) return;
+
+    const resendLink = document.getElementById('resend-otp-link');
+    const errorEl = document.getElementById('auth-error');
+
+    try {
+      resendLink.textContent = 'Sending...';
+      resendLink.style.pointerEvents = 'none';
+      errorEl.style.display = 'none';
+
+      const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
+      await sendTwoFactorCode({ email: this.pendingAuth.email });
+
+      resendLink.textContent = 'Sent!';
+
+      // Re-enable after 30 seconds
+      setTimeout(() => {
+        resendLink.textContent = 'Resend';
+        resendLink.style.pointerEvents = 'auto';
+      }, 30000);
+
+    } catch (error) {
+      console.error('Resend OTP error:', error);
+      resendLink.textContent = 'Resend';
+      resendLink.style.pointerEvents = 'auto';
+      errorEl.textContent = 'Failed to send code. Please try again.';
+      errorEl.style.display = 'block';
+    }
+  }
+
+  cancelOtpVerification() {
+    // Clear pending auth
+    this.pendingAuth = null;
+
+    // Hide modal and show login again
+    this.hideModal();
+
+    setTimeout(() => {
+      this.showModal('signin');
+    }, 300);
   }
 
   // Update navbar based on auth state
