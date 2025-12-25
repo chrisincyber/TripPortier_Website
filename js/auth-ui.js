@@ -443,16 +443,9 @@ class AuthUI {
               </svg>
               My Trips
             </a>
-            <a href="/profile.html">
-              <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
-              </svg>
-              Profile
-            </a>
             <a href="/account.html">
               <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
+                <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
               </svg>
               My Account
             </a>
@@ -516,7 +509,6 @@ class AuthUI {
           </div>
         </div>
         <a href="/trips.html" class="mobile-signin-btn" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">My Trips</a>
-        <a href="/profile.html" class="mobile-signin-btn" style="background: #f3f4f6; color: #374151; margin-top: 0.5rem;">Profile</a>
         <a href="/account.html" class="mobile-signin-btn" style="background: #f3f4f6; color: #374151; margin-top: 0.5rem;">My Account</a>
         <a href="/settings.html" class="mobile-signin-btn" style="background: #f3f4f6; color: #374151; margin-top: 0.5rem;">Settings</a>
         <button class="mobile-signout-btn" onclick="window.tripPortierAuth.signOut()">Sign Out</button>

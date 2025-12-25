@@ -492,6 +492,242 @@
     color: var(--theme-text-secondary);
 }
 
+/* eSIM Orders */
+.profile-orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-orders-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    color: var(--theme-text-secondary);
+}
+
+.profile-spinner-small {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--theme-border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.profile-order-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: var(--theme-bg);
+    border-radius: 12px;
+    border: 1px solid var(--theme-border);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.profile-order-card:hover {
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.profile-order-flag {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0f0f23, #2d1b4e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 24px;
+}
+
+.profile-order-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-order-country {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--theme-text);
+    margin-bottom: 4px;
+}
+
+.profile-order-package {
+    font-size: 14px;
+    color: var(--theme-text-secondary);
+}
+
+.profile-order-right {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.profile-order-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.profile-order-status.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.profile-order-status.expired {
+    background: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+}
+
+.profile-order-date {
+    font-size: 13px;
+    color: var(--theme-text-tertiary);
+}
+
+.profile-order-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-top: 4px;
+}
+
+.profile-orders-empty {
+    text-align: center;
+    padding: 20px;
+    color: var(--theme-text-secondary);
+}
+
+/* Order Detail Modal */
+.order-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.order-detail-modal.active {
+    display: flex;
+}
+
+.order-detail-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.order-detail-content {
+    position: relative;
+    background: var(--theme-bg);
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.order-detail-header {
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-detail-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--theme-text);
+}
+
+.order-detail-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--theme-bg-secondary);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--theme-text-secondary);
+    transition: all 0.2s;
+}
+
+.order-detail-close:hover {
+    background: var(--theme-border);
+    color: var(--theme-text);
+}
+
+.order-detail-body {
+    padding: 24px;
+}
+
+.order-detail-qr {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.order-detail-qr img {
+    width: 200px;
+    height: 200px;
+    border-radius: 16px;
+    border: 1px solid var(--theme-border);
+}
+
+.order-detail-qr p {
+    font-size: 13px;
+    color: var(--theme-text-secondary);
+    margin-top: 12px;
+}
+
+.order-detail-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.order-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--theme-border);
+}
+
+.order-detail-row:last-child {
+    border-bottom: none;
+}
+
+.order-detail-label {
+    color: var(--theme-text-secondary);
+    font-size: 14px;
+}
+
+.order-detail-value {
+    color: var(--theme-text);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: right;
+}
+
 /* Action Buttons */
 .profile-actions {
     display: flex;

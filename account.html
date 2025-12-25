@@ -511,6 +511,320 @@
             transform: translateY(-2px);
         }
 
+        /* Avatar Edit Button */
+        .account-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50px);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--theme-primary, #6366f1);
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .avatar-edit-btn:hover {
+            transform: translateX(50px) scale(1.1);
+            background: #4f46e5;
+        }
+
+        /* Account Settings Section */
+        .account-settings {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .account-settings h3 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--theme-text-secondary, #64748b);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+
+        .account-setting-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--theme-bg-secondary, #f8fafc);
+            border-radius: 12px;
+            margin-bottom: 0.75rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .account-setting-item:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .account-setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .account-setting-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .account-setting-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--theme-primary, #6366f1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .account-setting-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .account-setting-text h4 {
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--theme-text, #1e293b);
+            margin: 0 0 0.125rem;
+        }
+
+        .account-setting-text p {
+            font-size: 0.8125rem;
+            color: var(--theme-text-secondary, #64748b);
+            margin: 0;
+        }
+
+        .account-setting-arrow {
+            color: var(--theme-text-muted, #94a3b8);
+        }
+
+        .account-setting-arrow svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Edit Profile Modal */
+        .edit-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .edit-modal.active {
+            display: flex;
+        }
+
+        .edit-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .edit-modal-content {
+            position: relative;
+            background: var(--theme-bg, white);
+            border-radius: 20px;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .edit-modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--theme-border, #e2e8f0);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edit-modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--theme-text, #1e293b);
+            margin: 0;
+        }
+
+        .edit-modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--theme-bg-secondary, #f1f5f9);
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--theme-text-secondary, #64748b);
+            transition: all 0.2s;
+        }
+
+        .edit-modal-close:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+            color: var(--theme-text, #1e293b);
+        }
+
+        .edit-modal-body {
+            padding: 1.5rem;
+        }
+
+        .edit-avatar-section {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .edit-avatar-preview {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            overflow: hidden;
+            background: var(--theme-bg-secondary, #f1f5f9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edit-avatar-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-avatar-btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--theme-bg-secondary, #f1f5f9);
+            color: var(--theme-primary, #6366f1);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .edit-avatar-btn:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .edit-form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .edit-form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--theme-text-secondary, #64748b);
+            margin-bottom: 0.5rem;
+        }
+
+        .edit-form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--theme-border, #e2e8f0);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: var(--theme-text, #1e293b);
+            background: var(--theme-bg, white);
+            transition: all 0.2s;
+            box-sizing: border-box;
+        }
+
+        .edit-form-group input:focus {
+            outline: none;
+            border-color: var(--theme-primary, #6366f1);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .edit-modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .edit-modal-footer button {
+            flex: 1;
+            padding: 0.875rem;
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .edit-cancel-btn {
+            background: var(--theme-bg-secondary, #f1f5f9);
+            color: var(--theme-text-secondary, #64748b);
+        }
+
+        .edit-cancel-btn:hover {
+            background: var(--theme-bg-tertiary, #e2e8f0);
+        }
+
+        .edit-save-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .edit-save-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .edit-save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .edit-error {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .edit-error.show {
+            display: block;
+        }
+
         @media (max-width: 600px) {
             .account-header {
                 padding: 6rem 1.5rem 3rem;
@@ -592,7 +906,12 @@
             <!-- Logged In State -->
             <div id="account-content" style="display: none;">
                 <div class="account-profile">
-                    <div id="account-avatar-container"></div>
+                    <div id="account-avatar-container" class="account-avatar-wrapper" onclick="openEditProfile()"></div>
+                    <button class="avatar-edit-btn" onclick="openEditProfile()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z"/>
+                        </svg>
+                    </button>
                     <div class="account-name" id="account-name">-</div>
                     <div class="account-email" id="account-email">-</div>
                 </div>
@@ -629,6 +948,65 @@
                     </div>
                 </div>
 
+                <!-- Account Settings -->
+                <div class="account-settings">
+                    <h3>Account Settings</h3>
+                    <div class="account-setting-item" onclick="openEditProfile()">
+                        <div class="account-setting-info">
+                            <div class="account-setting-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
+                                </svg>
+                            </div>
+                            <div class="account-setting-text">
+                                <h4>Edit Profile</h4>
+                                <p>Change name and photo</p>
+                            </div>
+                        </div>
+                        <div class="account-setting-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="account-setting-item" onclick="openChangeEmail()">
+                        <div class="account-setting-info">
+                            <div class="account-setting-icon" style="background: #10b981;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                                </svg>
+                            </div>
+                            <div class="account-setting-text">
+                                <h4>Change Email</h4>
+                                <p>Update your email address</p>
+                            </div>
+                        </div>
+                        <div class="account-setting-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="account-setting-item" onclick="openChangePassword()">
+                        <div class="account-setting-info">
+                            <div class="account-setting-icon" style="background: #f59e0b;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                                </svg>
+                            </div>
+                            <div class="account-setting-text">
+                                <h4>Change Password</h4>
+                                <p>Update your password</p>
+                            </div>
+                        </div>
+                        <div class="account-setting-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="account-actions">
                     <a href="https://apps.apple.com/app/tripportier" class="account-btn account-btn-secondary">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -644,6 +1022,104 @@
                         </svg>
                         Sign Out
                     </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal -->
+        <div class="edit-modal" id="edit-profile-modal">
+            <div class="edit-modal-backdrop" onclick="closeEditProfile()"></div>
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3>Edit Profile</h3>
+                    <button class="edit-modal-close" onclick="closeEditProfile()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="edit-modal-body">
+                    <div class="edit-error" id="edit-profile-error"></div>
+                    <div class="edit-avatar-section">
+                        <div class="edit-avatar-preview" id="edit-avatar-preview"></div>
+                        <input type="file" id="avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarSelect(event)">
+                        <button class="edit-avatar-btn" onclick="document.getElementById('avatar-file-input').click()">Change Photo</button>
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Display Name</label>
+                        <input type="text" id="edit-display-name" placeholder="Your name">
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button class="edit-cancel-btn" onclick="closeEditProfile()">Cancel</button>
+                    <button class="edit-save-btn" id="save-profile-btn" onclick="saveProfile()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Email Modal -->
+        <div class="edit-modal" id="change-email-modal">
+            <div class="edit-modal-backdrop" onclick="closeChangeEmail()"></div>
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3>Change Email</h3>
+                    <button class="edit-modal-close" onclick="closeChangeEmail()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="edit-modal-body">
+                    <div class="edit-error" id="change-email-error"></div>
+                    <p style="color: var(--theme-text-secondary); font-size: 0.9375rem; margin-bottom: 1.5rem;">
+                        Enter your new email address. You'll need to verify your current password.
+                    </p>
+                    <div class="edit-form-group">
+                        <label>New Email</label>
+                        <input type="email" id="new-email-input" placeholder="new@email.com">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="email-password-input" placeholder="Enter your password">
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button class="edit-cancel-btn" onclick="closeChangeEmail()">Cancel</button>
+                    <button class="edit-save-btn" id="change-email-btn" onclick="changeEmail()">Update Email</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="edit-modal" id="change-password-modal">
+            <div class="edit-modal-backdrop" onclick="closeChangePassword()"></div>
+            <div class="edit-modal-content">
+                <div class="edit-modal-header">
+                    <h3>Change Password</h3>
+                    <button class="edit-modal-close" onclick="closeChangePassword()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="edit-modal-body">
+                    <div class="edit-error" id="change-password-error"></div>
+                    <div class="edit-form-group">
+                        <label>Current Password</label>
+                        <input type="password" id="current-password-input" placeholder="Enter current password">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>New Password</label>
+                        <input type="password" id="new-password-input" placeholder="Enter new password">
+                    </div>
+                    <div class="edit-form-group">
+                        <label>Confirm New Password</label>
+                        <input type="password" id="confirm-password-input" placeholder="Confirm new password">
+                    </div>
+                </div>
+                <div class="edit-modal-footer">
+                    <button class="edit-cancel-btn" onclick="closeChangePassword()">Cancel</button>
+                    <button class="edit-save-btn" id="change-password-btn" onclick="changePassword()">Update Password</button>
                 </div>
             </div>
         </div>
@@ -738,6 +1214,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
 
     <!-- TripPortier Scripts -->
     <script src="js/firebase-config.js"></script>
@@ -1003,6 +1480,370 @@
                 window.tripPortierAuth.addListener(updateAccountUI);
             }
         });
+
+        // ============================================
+        // Edit Profile Functions
+        // ============================================
+        let selectedAvatarFile = null;
+
+        function openEditProfile() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const modal = document.getElementById('edit-profile-modal');
+            const previewEl = document.getElementById('edit-avatar-preview');
+            const nameInput = document.getElementById('edit-display-name');
+            const errorEl = document.getElementById('edit-profile-error');
+
+            // Reset error
+            errorEl.classList.remove('show');
+            errorEl.textContent = '';
+            selectedAvatarFile = null;
+
+            // Get current profile data
+            window.firebaseDb.collection('users').doc(user.uid).get().then(doc => {
+                const profile = doc.exists ? doc.data() : {};
+                const avatarURL = profile.profileImageURL || user.photoURL;
+                const displayName = profile.displayName || user.displayName || '';
+
+                // Set avatar preview
+                if (avatarURL) {
+                    previewEl.innerHTML = `<img src="${avatarURL}" alt="Avatar">`;
+                } else {
+                    const initial = displayName.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase();
+                    previewEl.innerHTML = `<div class="account-avatar-placeholder" style="margin: 0;">${initial}</div>`;
+                }
+
+                // Set name
+                nameInput.value = displayName;
+
+                // Show modal
+                modal.classList.add('active');
+            }).catch(err => {
+                console.error('Error loading profile:', err);
+                // Still show modal with auth data
+                const displayName = user.displayName || '';
+                nameInput.value = displayName;
+                if (user.photoURL) {
+                    previewEl.innerHTML = `<img src="${user.photoURL}" alt="Avatar">`;
+                } else {
+                    const initial = displayName.charAt(0).toUpperCase() || user.email.charAt(0).toUpperCase();
+                    previewEl.innerHTML = `<div class="account-avatar-placeholder" style="margin: 0;">${initial}</div>`;
+                }
+                modal.classList.add('active');
+            });
+        }
+
+        function closeEditProfile() {
+            document.getElementById('edit-profile-modal').classList.remove('active');
+            selectedAvatarFile = null;
+        }
+
+        function handleAvatarSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showProfileError('Please select an image file');
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showProfileError('Image must be less than 5MB');
+                return;
+            }
+
+            selectedAvatarFile = file;
+
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewEl = document.getElementById('edit-avatar-preview');
+                previewEl.innerHTML = `<img src="${e.target.result}" alt="Avatar">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showProfileError(message) {
+            const errorEl = document.getElementById('edit-profile-error');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        async function saveProfile() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const nameInput = document.getElementById('edit-display-name');
+            const saveBtn = document.getElementById('save-profile-btn');
+            const errorEl = document.getElementById('edit-profile-error');
+
+            const displayName = nameInput.value.trim();
+
+            if (!displayName) {
+                showProfileError('Please enter a display name');
+                return;
+            }
+
+            // Disable button and show loading
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+            errorEl.classList.remove('show');
+
+            try {
+                let photoURL = user.photoURL;
+
+                // Upload new avatar if selected
+                if (selectedAvatarFile) {
+                    const storage = firebase.storage();
+                    const storageRef = storage.ref();
+                    const avatarRef = storageRef.child(`profile_images/${user.uid}.jpg`);
+
+                    // Upload file
+                    await avatarRef.put(selectedAvatarFile);
+
+                    // Get download URL
+                    photoURL = await avatarRef.getDownloadURL();
+                }
+
+                // Update Firebase Auth profile
+                await user.updateProfile({
+                    displayName: displayName,
+                    photoURL: photoURL
+                });
+
+                // Update Firestore profile
+                await window.firebaseDb.collection('users').doc(user.uid).set({
+                    displayName: displayName,
+                    profileImageURL: photoURL,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // Refresh UI
+                const doc = await window.firebaseDb.collection('users').doc(user.uid).get();
+                updateAccountUI(user, doc.exists ? doc.data() : null);
+
+                // Close modal
+                closeEditProfile();
+
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showProfileError(error.message || 'Failed to save profile');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+            }
+        }
+
+        // ============================================
+        // Change Email Functions
+        // ============================================
+        function openChangeEmail() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const modal = document.getElementById('change-email-modal');
+            const errorEl = document.getElementById('change-email-error');
+            const emailInput = document.getElementById('new-email-input');
+            const passwordInput = document.getElementById('email-password-input');
+
+            // Reset
+            errorEl.classList.remove('show');
+            errorEl.textContent = '';
+            emailInput.value = '';
+            passwordInput.value = '';
+
+            modal.classList.add('active');
+        }
+
+        function closeChangeEmail() {
+            document.getElementById('change-email-modal').classList.remove('active');
+        }
+
+        function showEmailError(message) {
+            const errorEl = document.getElementById('change-email-error');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        async function changeEmail() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const emailInput = document.getElementById('new-email-input');
+            const passwordInput = document.getElementById('email-password-input');
+            const changeBtn = document.getElementById('change-email-btn');
+            const errorEl = document.getElementById('change-email-error');
+
+            const newEmail = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            // Validate
+            if (!newEmail) {
+                showEmailError('Please enter a new email address');
+                return;
+            }
+
+            if (!password) {
+                showEmailError('Please enter your current password');
+                return;
+            }
+
+            // Basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(newEmail)) {
+                showEmailError('Please enter a valid email address');
+                return;
+            }
+
+            // Disable button and show loading
+            changeBtn.disabled = true;
+            changeBtn.textContent = 'Updating...';
+            errorEl.classList.remove('show');
+
+            try {
+                // Re-authenticate user
+                const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+                await user.reauthenticateWithCredential(credential);
+
+                // Update email
+                await user.updateEmail(newEmail);
+
+                // Update Firestore
+                await window.firebaseDb.collection('users').doc(user.uid).set({
+                    email: newEmail,
+                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // Refresh UI
+                document.getElementById('account-email').textContent = newEmail;
+
+                // Close modal
+                closeChangeEmail();
+                alert('Email updated successfully!');
+
+            } catch (error) {
+                console.error('Error changing email:', error);
+                let message = 'Failed to change email';
+                if (error.code === 'auth/wrong-password') {
+                    message = 'Incorrect password';
+                } else if (error.code === 'auth/email-already-in-use') {
+                    message = 'This email is already in use';
+                } else if (error.code === 'auth/invalid-email') {
+                    message = 'Invalid email address';
+                } else if (error.code === 'auth/requires-recent-login') {
+                    message = 'Please sign out and sign in again before changing email';
+                }
+                showEmailError(message);
+            } finally {
+                changeBtn.disabled = false;
+                changeBtn.textContent = 'Update Email';
+            }
+        }
+
+        // ============================================
+        // Change Password Functions
+        // ============================================
+        function openChangePassword() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const modal = document.getElementById('change-password-modal');
+            const errorEl = document.getElementById('change-password-error');
+            const currentInput = document.getElementById('current-password-input');
+            const newInput = document.getElementById('new-password-input');
+            const confirmInput = document.getElementById('confirm-password-input');
+
+            // Reset
+            errorEl.classList.remove('show');
+            errorEl.textContent = '';
+            currentInput.value = '';
+            newInput.value = '';
+            confirmInput.value = '';
+
+            modal.classList.add('active');
+        }
+
+        function closeChangePassword() {
+            document.getElementById('change-password-modal').classList.remove('active');
+        }
+
+        function showPasswordError(message) {
+            const errorEl = document.getElementById('change-password-error');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        async function changePassword() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const currentInput = document.getElementById('current-password-input');
+            const newInput = document.getElementById('new-password-input');
+            const confirmInput = document.getElementById('confirm-password-input');
+            const changeBtn = document.getElementById('change-password-btn');
+            const errorEl = document.getElementById('change-password-error');
+
+            const currentPassword = currentInput.value;
+            const newPassword = newInput.value;
+            const confirmPassword = confirmInput.value;
+
+            // Validate
+            if (!currentPassword) {
+                showPasswordError('Please enter your current password');
+                return;
+            }
+
+            if (!newPassword) {
+                showPasswordError('Please enter a new password');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showPasswordError('New password must be at least 6 characters');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showPasswordError('New passwords do not match');
+                return;
+            }
+
+            // Disable button and show loading
+            changeBtn.disabled = true;
+            changeBtn.textContent = 'Updating...';
+            errorEl.classList.remove('show');
+
+            try {
+                // Re-authenticate user
+                const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                await user.reauthenticateWithCredential(credential);
+
+                // Update password
+                await user.updatePassword(newPassword);
+
+                // Close modal
+                closeChangePassword();
+                alert('Password updated successfully!');
+
+            } catch (error) {
+                console.error('Error changing password:', error);
+                let message = 'Failed to change password';
+                if (error.code === 'auth/wrong-password') {
+                    message = 'Current password is incorrect';
+                } else if (error.code === 'auth/weak-password') {
+                    message = 'New password is too weak';
+                } else if (error.code === 'auth/requires-recent-login') {
+                    message = 'Please sign out and sign in again before changing password';
+                }
+                showPasswordError(message);
+            } finally {
+                changeBtn.disabled = false;
+                changeBtn.textContent = 'Update Password';
+            }
+        }
     </script>
 </body>
 </html>

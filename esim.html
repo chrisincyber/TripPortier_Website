@@ -201,13 +201,13 @@
         }
 
         .country-card {
-            background: white;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
             border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
             text-decoration: none;
-            color: inherit;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             transition: all 0.3s;
             cursor: pointer;
             border: 2px solid transparent;
@@ -215,7 +215,7 @@
 
         .country-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 40px rgba(99, 102, 241, 0.3);
             border-color: #6366f1;
         }
 
@@ -225,44 +225,30 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .country-name {
             font-weight: 600;
             font-size: 1rem;
-            color: #1e293b;
+            color: white;
             margin-bottom: 0.5rem;
         }
 
         .country-price {
             font-size: 0.875rem;
-            color: #64748b;
+            color: rgba(255, 255, 255, 0.8);
         }
 
         .country-price strong {
-            color: #6366f1;
+            color: #fbbf24;
             font-weight: 700;
         }
 
         /* Regional Cards */
         .regional-card {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
-            color: white;
             padding: 2rem;
             border-radius: 20px;
-        }
-
-        .regional-card .country-name {
-            color: white;
-        }
-
-        .regional-card .country-price {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .regional-card .country-price strong {
-            color: #fbbf24;
         }
 
         .regional-countries {
@@ -1027,6 +1013,97 @@
             background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
         }
 
+        .package-option.expanded {
+            flex-direction: column;
+            align-items: stretch;
+            border-color: #6366f1;
+            background: white;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.15);
+        }
+
+        .package-option.expanded .package-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+
+        .package-details-expanded {
+            display: none;
+        }
+
+        .package-option.expanded .package-details-expanded {
+            display: block;
+        }
+
+        .package-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .package-detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .package-detail-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .package-detail-value {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .package-detail-value.available {
+            color: #059669;
+        }
+
+        .package-detail-value.unavailable {
+            color: #94a3b8;
+        }
+
+        .validity-note {
+            background: #f0fdf4;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 1rem;
+            border-left: 3px solid #22c55e;
+        }
+
+        .validity-note p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #166534;
+        }
+
+        .proceed-btn {
+            width: 100%;
+            padding: 1rem;
+            margin-top: 1rem;
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .proceed-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
         .package-info {
             flex: 1;
         }
@@ -1779,12 +1856,16 @@
                         <input type="checkbox" id="useTripcoins" onchange="toggleTripcoins()">
                     </div>
                 </div>
-                <div class="tripcoins-slider-container" id="tripcoinsSlider" style="display: none;">
-                    <input type="range" class="tripcoins-slider" id="tripcoinsAmount" min="1" max="100" value="1" oninput="updateTripcoinsAmount()">
-                    <div class="tripcoins-info">
-                        <span>Using: $<span id="tripcoinsUsing">0</span></span>
-                        <span class="tripcoins-savings">You save: $<span id="tripcoinsSavings">0</span></span>
+                <div class="tripcoins-input-container" id="tripcoinsSlider" style="display: none;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <label style="color: #64748b; font-size: 14px;">Use:</label>
+                        <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
+                            <span style="color: #1e293b; font-weight: 600;">$</span>
+                            <input type="number" class="tripcoins-input" id="tripcoinsAmount" min="1" max="100" value="1" oninput="updateTripcoinsAmount()" style="flex: 1; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; font-weight: 600; text-align: center;">
+                            <span style="color: #64748b; font-size: 13px; white-space: nowrap;">of <span id="tripcoinsMaxAvailable">0</span></span>
+                        </div>
                     </div>
+                    <p style="margin: 8px 0 0; font-size: 13px; color: #059669; font-weight: 500;">You save: $<span id="tripcoinsSavings">0</span></p>
                 </div>
             </div>
             <div class="detail-modal-body" id="modalBody">
@@ -2341,7 +2422,9 @@
             if (usingTripcoins && selectedPackage) {
                 const maxUsable = Math.min(userTripcoins, Math.floor(selectedPackage.price));
                 document.getElementById('tripcoinsAmount').max = maxUsable;
-                document.getElementById('tripcoinsAmount').value = Math.min(maxUsable, 1);
+                document.getElementById('tripcoinsAmount').min = 1;
+                document.getElementById('tripcoinsAmount').value = maxUsable; // Default to max
+                document.getElementById('tripcoinsMaxAvailable').textContent = maxUsable;
                 updateTripcoinsAmount();
             } else {
                 tripcoinsToUse = 0;
@@ -2349,10 +2432,17 @@
             }
         }
 
-        // Update TripCoins amount from slider
+        // Update TripCoins amount from input
         function updateTripcoinsAmount() {
-            tripcoinsToUse = parseInt(document.getElementById('tripcoinsAmount').value) || 0;
-            document.getElementById('tripcoinsUsing').textContent = tripcoinsToUse.toFixed(0);
+            const input = document.getElementById('tripcoinsAmount');
+            let value = parseInt(input.value) || 0;
+            const max = parseInt(input.max) || 0;
+
+            // Enforce min/max bounds
+            if (value < 1 && value !== 0) value = 1;
+            if (value > max) value = max;
+
+            tripcoinsToUse = value;
             document.getElementById('tripcoinsSavings').textContent = tripcoinsToUse.toFixed(2);
             updateBuyButton();
         }
@@ -2365,6 +2455,19 @@
                 document.getElementById('buyNowBtn').innerHTML = `Buy Now - <s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
             } else {
                 document.getElementById('buyNowBtn').textContent = `Buy Now - $${selectedPackage.price.toFixed(2)}`;
+            }
+
+            // Also update the proceed button in expanded card
+            const expandedCard = document.querySelector('.package-option.expanded');
+            if (expandedCard) {
+                const proceedBtn = expandedCard.querySelector('.proceed-btn');
+                if (proceedBtn) {
+                    if (tripcoinsToUse > 0) {
+                        proceedBtn.innerHTML = `Proceed to Checkout - <s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                    } else {
+                        proceedBtn.textContent = `Proceed to Checkout - $${selectedPackage.price.toFixed(2)}`;
+                    }
+                }
             }
         }
 
@@ -2444,19 +2547,49 @@
                 <div class="packages-list">
                     ${packages.map((pkg, i) => `
                         <div class="package-option" onclick="selectPackageOption(${i})" id="pkg-${i}" data-pkg-id="${pkg.id}">
-                            <div class="package-info">
-                                <div class="package-data-amount">
-                                    ${pkg.data}
-                                    ${pkg.isUnlimited ? '<span class="unlimited-badge">Unlimited</span>' : ''}
+                            <div class="package-header">
+                                <div class="package-info">
+                                    <div class="package-data-amount">
+                                        ${pkg.data}
+                                        ${pkg.isUnlimited ? '<span class="unlimited-badge">Unlimited</span>' : ''}
+                                    </div>
+                                    <div class="package-validity">${pkg.days} days validity</div>
+                                    <div class="package-features-mini">
+                                        <span class="has">Data</span>
+                                        ${pkg.hasText ? '<span class="has">SMS</span>' : ''}
+                                        ${pkg.hasVoice ? '<span class="has">Calls</span>' : ''}
+                                    </div>
                                 </div>
-                                <div class="package-validity">${pkg.days} days validity</div>
-                                <div class="package-features-mini">
-                                    <span class="has">Data</span>
-                                    ${pkg.hasText ? '<span class="has">SMS</span>' : ''}
-                                    ${pkg.hasVoice ? '<span class="has">Calls</span>' : ''}
-                                </div>
+                                <div class="package-price-tag">$${pkg.price.toFixed(2)}</div>
                             </div>
-                            <div class="package-price-tag">$${pkg.price.toFixed(2)}</div>
+                            <div class="package-details-expanded">
+                                <div class="package-detail-row">
+                                    <span class="package-detail-label">&#128246; Data</span>
+                                    <span class="package-detail-value">${pkg.data}${pkg.isUnlimited ? ' (Unlimited)' : ''}</span>
+                                </div>
+                                <div class="package-detail-row">
+                                    <span class="package-detail-label">&#128241; Provider</span>
+                                    <span class="package-detail-value">${pkg.operatorTitle || 'TripPortier eSIM'}</span>
+                                </div>
+                                <div class="package-detail-row">
+                                    <span class="package-detail-label">&#128172; SMS</span>
+                                    <span class="package-detail-value ${pkg.hasText ? 'available' : 'unavailable'}">${pkg.hasText ? 'Included' : 'Not included'}</span>
+                                </div>
+                                <div class="package-detail-row">
+                                    <span class="package-detail-label">&#128222; Voice Calls</span>
+                                    <span class="package-detail-value ${pkg.hasVoice ? 'available' : 'unavailable'}">${pkg.hasVoice ? 'Included' : 'Not included'}</span>
+                                </div>
+                                <div class="package-detail-row">
+                                    <span class="package-detail-label">&#128197; Validity</span>
+                                    <span class="package-detail-value">${pkg.days} days</span>
+                                </div>
+                                <div class="validity-note">
+                                    <p>&#9989; <strong>Activation:</strong> Your ${pkg.days}-day plan starts when you first connect to a network at your destination - not when you install the eSIM.</p>
+                                </div>
+                                <button class="proceed-btn" onclick="event.stopPropagation(); proceedToPurchase();">
+                                    Proceed to Checkout - $${pkg.price.toFixed(2)}
+                                </button>
+                            </div>
                         </div>
                     `).join('')}
                 </div>
@@ -2513,12 +2646,31 @@
         function selectPackageOption(index) {
             // Use filtered packages if available
             const packages = currentModalData.filteredPackages || currentModalData.packages;
+            const clickedElement = document.getElementById(`pkg-${index}`);
+
+            // If clicking on already expanded package, collapse it
+            if (clickedElement.classList.contains('expanded')) {
+                clickedElement.classList.remove('expanded');
+                selectedPackage = null;
+                document.getElementById('buyNowBtn').disabled = true;
+                document.getElementById('buyNowBtn').textContent = 'Select a package';
+                return;
+            }
+
             selectedPackage = packages[index];
 
-            // Update UI
+            // Update UI - collapse all and expand selected
             document.querySelectorAll('.package-option').forEach((el, i) => {
-                el.classList.toggle('selected', i === index);
+                el.classList.remove('selected', 'expanded');
+                if (i === index) {
+                    el.classList.add('expanded');
+                }
             });
+
+            // Scroll expanded package into view
+            setTimeout(() => {
+                clickedElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
 
             document.getElementById('buyNowBtn').disabled = false;
 
@@ -2526,6 +2678,7 @@
             if (userTripcoins >= 1) {
                 const maxUsable = Math.min(userTripcoins, Math.floor(selectedPackage.price));
                 document.getElementById('tripcoinsAmount').max = maxUsable;
+                document.getElementById('tripcoinsMaxAvailable').textContent = maxUsable;
                 if (usingTripcoins) {
                     document.getElementById('tripcoinsAmount').value = Math.min(parseInt(document.getElementById('tripcoinsAmount').value) || 1, maxUsable);
                     updateTripcoinsAmount();

@@ -4,6 +4,7 @@ class ProfileManager {
     constructor() {
         this.user = null;
         this.trips = [];
+        this.esimOrders = [];
         this.selectedAvatarFile = null;
 
         // Achievement definitions
@@ -74,6 +75,7 @@ class ProfileManager {
             // Load user data
             await this.loadUserProfile();
             await this.loadTrips();
+            this.loadEsimOrders(); // Load async, don't await
 
             // Update UI
             this.updateProfileHeader();
@@ -494,6 +496,187 @@ class ProfileManager {
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
+        }
+    }
+
+    async loadEsimOrders() {
+        const loadingEl = document.getElementById('esim-orders-loading');
+        const listEl = document.getElementById('esim-orders-list');
+        const emptyEl = document.getElementById('esim-orders-empty');
+
+        if (!loadingEl || !listEl) return;
+
+        // Show loading
+        loadingEl.style.display = 'flex';
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'none';
+
+        try {
+            // Call Firebase function to get orders
+            const functions = firebase.functions();
+            const getUserEsimOrders = functions.httpsCallable('getUserEsimOrders');
+            const result = await getUserEsimOrders();
+
+            if (result.data?.success && result.data.orders) {
+                this.esimOrders = result.data.orders;
+                this.renderEsimOrders();
+            } else {
+                this.esimOrders = [];
+                this.renderEsimOrders();
+            }
+        } catch (error) {
+            console.error('Error loading eSIM orders:', error);
+            this.esimOrders = [];
+            this.renderEsimOrders();
+        } finally {
+            loadingEl.style.display = 'none';
+        }
+    }
+
+    renderEsimOrders() {
+        const listEl = document.getElementById('esim-orders-list');
+        const emptyEl = document.getElementById('esim-orders-empty');
+
+        if (!listEl) return;
+
+        if (!this.esimOrders || this.esimOrders.length === 0) {
+            listEl.innerHTML = '';
+            emptyEl.style.display = 'block';
+            return;
+        }
+
+        emptyEl.style.display = 'none';
+
+        const now = new Date();
+
+        const html = this.esimOrders.map((order, index) => {
+            const countryCode = order.countryCode || '';
+            const countryTitle = order.countryTitle || 'eSIM';
+            const flag = this.getCountryFlagFromCode(countryCode);
+            const packageName = order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
+            const price = order.price || (order.amountPaid ? order.amountPaid / 100 : 0);
+
+            // Calculate status based on validity
+            const days = parseInt(order.days) || 30;
+            const createdAt = order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000) :
+                              order.orderedAt?.seconds ? new Date(order.orderedAt.seconds * 1000) :
+                              new Date();
+            const expirationDate = new Date(createdAt.getTime() + (days * 24 * 60 * 60 * 1000));
+            const isActive = expirationDate > now;
+
+            const dateStr = createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+            return `
+                <div class="profile-order-card" onclick="profileManager.showOrderDetail(${index})">
+                    <div class="profile-order-flag">${flag}</div>
+                    <div class="profile-order-info">
+                        <div class="profile-order-country">${countryTitle}</div>
+                        <div class="profile-order-package">${packageName}</div>
+                    </div>
+                    <div class="profile-order-right">
+                        <span class="profile-order-status ${isActive ? 'active' : 'expired'}">${isActive ? 'Active' : 'Expired'}</span>
+                        <div class="profile-order-date">${dateStr}</div>
+                        <div class="profile-order-price">$${price.toFixed(2)}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        listEl.innerHTML = html;
+    }
+
+    getCountryFlagFromCode(code) {
+        if (!code || code.length !== 2) return '🌍';
+        const base = 127397;
+        let flag = '';
+        for (const char of code.toUpperCase()) {
+            const unicode = base + char.charCodeAt(0);
+            flag += String.fromCodePoint(unicode);
+        }
+        return flag;
+    }
+
+    showOrderDetail(index) {
+        const order = this.esimOrders[index];
+        if (!order) return;
+
+        // Get QR code URL
+        const qrCodeUrl = order.esimDetails?.qrCodeUrl ||
+                          order.esims?.[0]?.qrcodeUrl ||
+                          order.esims?.[0]?.qrcode_url ||
+                          null;
+
+        const iccid = order.esimDetails?.iccid ||
+                      order.esims?.[0]?.iccid ||
+                      '-';
+
+        const countryTitle = order.countryTitle || 'eSIM';
+        const packageName = order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
+        const orderCode = order.orderCode || order.airaloOrderCode || '-';
+        const price = order.price || (order.amountPaid ? order.amountPaid / 100 : 0);
+
+        const modal = document.createElement('div');
+        modal.className = 'order-detail-modal active';
+        modal.id = 'order-detail-modal';
+        modal.innerHTML = `
+            <div class="order-detail-backdrop" onclick="profileManager.closeOrderDetail()"></div>
+            <div class="order-detail-content">
+                <div class="order-detail-header">
+                    <h3>${countryTitle}</h3>
+                    <button class="order-detail-close" onclick="profileManager.closeOrderDetail()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="order-detail-body">
+                    ${qrCodeUrl ? `
+                        <div class="order-detail-qr">
+                            <img src="${qrCodeUrl}" alt="eSIM QR Code">
+                            <p>Scan to install eSIM</p>
+                        </div>
+                    ` : `
+                        <div class="order-detail-qr" style="padding: 40px; background: var(--theme-bg-secondary); border-radius: 16px; margin-bottom: 24px;">
+                            <p style="margin: 0; color: var(--theme-text-secondary);">QR code was sent to your email</p>
+                        </div>
+                    `}
+                    <div class="order-detail-rows">
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">Package</span>
+                            <span class="order-detail-value">${packageName}</span>
+                        </div>
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">Data</span>
+                            <span class="order-detail-value">${order.data || '-'}</span>
+                        </div>
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">Validity</span>
+                            <span class="order-detail-value">${order.days ? order.days + ' days' : '-'}</span>
+                        </div>
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">ICCID</span>
+                            <span class="order-detail-value" style="font-family: monospace; font-size: 12px;">${iccid}</span>
+                        </div>
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">Order #</span>
+                            <span class="order-detail-value">${orderCode}</span>
+                        </div>
+                        <div class="order-detail-row">
+                            <span class="order-detail-label">Price Paid</span>
+                            <span class="order-detail-value">$${price.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    closeOrderDetail() {
+        const modal = document.getElementById('order-detail-modal');
+        if (modal) {
+            modal.remove();
         }
     }
 }
