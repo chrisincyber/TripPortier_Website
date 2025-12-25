@@ -231,12 +231,16 @@ class AuthUI {
 
       if (this.mode === 'signin') {
         await window.tripPortierAuth.signInWithEmail(email, password);
+        this.hideModal();
       } else {
         const name = document.getElementById('auth-name').value;
         await window.tripPortierAuth.signUpWithEmail(email, password, name);
+        this.hideModal();
+        // Redirect new users to account page to complete profile setup
+        if (!window.location.pathname.includes('account.html')) {
+          window.location.href = '/account.html';
+        }
       }
-
-      this.hideModal();
     } catch (error) {
       errorEl.textContent = this.getErrorMessage(error.code);
       errorEl.style.display = 'block';
@@ -278,13 +282,20 @@ class AuthUI {
 
     const errorEl = document.getElementById('auth-error');
     const googleBtn = document.getElementById('google-btn');
+    const isSignUp = this.mode === 'signup';
 
     try {
       this.setLoading(true, googleBtn);
       if (errorEl) errorEl.style.display = 'none';
 
-      await window.tripPortierAuth.signInWithGoogle();
+      const result = await window.tripPortierAuth.signInWithGoogle();
       this.hideModal();
+
+      // Check if profile needs setup (no username)
+      const profile = window.tripPortierAuth.userProfile;
+      if (!profile?.username && !window.location.pathname.includes('account.html')) {
+        window.location.href = '/account.html';
+      }
     } catch (error) {
       console.error('Google sign-in error:', error);
       if (errorEl) {
@@ -301,13 +312,20 @@ class AuthUI {
 
     const errorEl = document.getElementById('auth-error');
     const appleBtn = document.getElementById('apple-btn');
+    const isSignUp = this.mode === 'signup';
 
     try {
       this.setLoading(true, appleBtn);
       if (errorEl) errorEl.style.display = 'none';
 
-      await window.tripPortierAuth.signInWithApple();
+      const result = await window.tripPortierAuth.signInWithApple();
       this.hideModal();
+
+      // Check if profile needs setup (no username)
+      const profile = window.tripPortierAuth.userProfile;
+      if (!profile?.username && !window.location.pathname.includes('account.html')) {
+        window.location.href = '/account.html';
+      }
     } catch (error) {
       console.error('Apple sign-in error:', error);
       if (errorEl) {

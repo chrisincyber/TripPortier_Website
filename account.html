@@ -825,6 +825,24 @@
             display: block;
         }
 
+        /* Profile Setup Step Dots */
+        .setup-step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--theme-bg-tertiary, #e2e8f0);
+            transition: all 0.3s ease;
+        }
+
+        .setup-step-dot.active {
+            background: var(--theme-primary, #6366f1);
+            transform: scale(1.2);
+        }
+
+        .setup-step-dot.completed {
+            background: #22c55e;
+        }
+
         @media (max-width: 600px) {
             .account-header {
                 padding: 6rem 1.5rem 3rem;
@@ -913,6 +931,7 @@
                         </svg>
                     </button>
                     <div class="account-name" id="account-name">-</div>
+                    <div class="account-username" id="account-username" style="color: var(--theme-primary, #6366f1); font-size: 0.9375rem; margin-bottom: 0.25rem;">@username</div>
                     <div class="account-email" id="account-email">-</div>
                 </div>
 
@@ -1049,6 +1068,18 @@
                         <label>Display Name</label>
                         <input type="text" id="edit-display-name" placeholder="Your name">
                     </div>
+                    <div class="edit-form-group">
+                        <label>Username</label>
+                        <div style="display: flex; align-items: center; gap: 0; border: 2px solid var(--theme-border, #e2e8f0); border-radius: 10px; overflow: hidden;">
+                            <span style="padding: 0.875rem; background: var(--theme-bg-secondary); color: var(--theme-text-secondary);">@</span>
+                            <input type="text" id="edit-username" placeholder="yourname" style="border: none; flex: 1; padding: 0.875rem; padding-left: 0;">
+                            <span id="edit-username-status" style="padding-right: 0.875rem;"></span>
+                        </div>
+                        <p style="color: var(--theme-text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+                            Lowercase letters, numbers, and underscores only. Minimum 3 characters.
+                        </p>
+                        <p id="edit-username-error" style="color: #dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></p>
+                    </div>
                 </div>
                 <div class="edit-modal-footer">
                     <button class="edit-cancel-btn" onclick="closeEditProfile()">Cancel</button>
@@ -1120,6 +1151,72 @@
                 <div class="edit-modal-footer">
                     <button class="edit-cancel-btn" onclick="closeChangePassword()">Cancel</button>
                     <button class="edit-save-btn" id="change-password-btn" onclick="changePassword()">Update Password</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Setup Modal (for new users) -->
+        <div class="edit-modal" id="profile-setup-modal">
+            <div class="edit-modal-backdrop"></div>
+            <div class="edit-modal-content" style="max-width: 500px;">
+                <div class="edit-modal-header">
+                    <h3>Complete Your Profile</h3>
+                </div>
+                <div class="edit-modal-body">
+                    <p style="color: var(--theme-text-secondary); font-size: 0.9375rem; margin-bottom: 1.5rem; text-align: center;">
+                        Set up your profile to connect with other travelers and access all features.
+                    </p>
+                    <div class="edit-error" id="profile-setup-error"></div>
+
+                    <!-- Step indicators -->
+                    <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 1.5rem;">
+                        <div class="setup-step-dot active" id="step-dot-1"></div>
+                        <div class="setup-step-dot" id="step-dot-2"></div>
+                        <div class="setup-step-dot" id="step-dot-3"></div>
+                    </div>
+
+                    <!-- Step 1: Name -->
+                    <div id="setup-step-1" class="setup-step">
+                        <h4 style="font-size: 1.125rem; margin-bottom: 1rem; text-align: center;">What's your name?</h4>
+                        <div class="edit-form-group">
+                            <label>Display Name</label>
+                            <input type="text" id="setup-display-name" placeholder="Your name">
+                            <p style="color: var(--theme-text-muted); font-size: 0.75rem; margin-top: 0.5rem;">This is how other travelers will see you</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Username -->
+                    <div id="setup-step-2" class="setup-step" style="display: none;">
+                        <h4 style="font-size: 1.125rem; margin-bottom: 1rem; text-align: center;">Choose a username</h4>
+                        <div class="edit-form-group">
+                            <label>Username</label>
+                            <div style="display: flex; align-items: center; gap: 0; border: 2px solid var(--theme-border, #e2e8f0); border-radius: 10px; overflow: hidden;">
+                                <span style="padding: 0.875rem; background: var(--theme-bg-secondary); color: var(--theme-text-secondary);">@</span>
+                                <input type="text" id="setup-username" placeholder="yourname" style="border: none; flex: 1; padding: 0.875rem; padding-left: 0;">
+                                <span id="username-status" style="padding-right: 0.875rem;"></span>
+                            </div>
+                            <p style="color: var(--theme-text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+                                Lowercase letters, numbers, and underscores only. Minimum 3 characters.
+                            </p>
+                            <p id="username-error" style="color: #dc2626; font-size: 0.75rem; margin-top: 0.25rem; display: none;"></p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Birthday -->
+                    <div id="setup-step-3" class="setup-step" style="display: none;">
+                        <h4 style="font-size: 1.125rem; margin-bottom: 1rem; text-align: center;">When's your birthday?</h4>
+                        <div class="edit-form-group">
+                            <label>Birthday</label>
+                            <input type="date" id="setup-birthday" style="width: 100%; padding: 0.875rem 1rem; border: 2px solid var(--theme-border, #e2e8f0); border-radius: 10px; font-size: 1rem; color: var(--theme-text, #1e293b); background: var(--theme-bg, white);">
+                            <p style="color: var(--theme-text-muted); font-size: 0.75rem; margin-top: 0.5rem;">
+                                Used for age-appropriate content. You must be at least 13 years old.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="edit-modal-footer" style="flex-direction: column; gap: 0.5rem;">
+                    <button class="edit-save-btn" id="setup-next-btn" onclick="nextSetupStep()" style="width: 100%;">Continue</button>
+                    <button class="edit-cancel-btn" id="setup-back-btn" onclick="prevSetupStep()" style="width: 100%; display: none;">Back</button>
                 </div>
             </div>
         </div>
@@ -1268,9 +1365,22 @@
                     avatarContainer.innerHTML = `<div class="account-avatar-placeholder">${initial}</div>`;
                 }
 
-                // Update name and email
+                // Update name, username, and email
                 document.getElementById('account-name').textContent = displayName;
+                const username = profile?.username;
+                const usernameEl = document.getElementById('account-username');
+                if (username) {
+                    usernameEl.textContent = '@' + username;
+                    usernameEl.style.display = 'block';
+                } else {
+                    usernameEl.style.display = 'none';
+                }
                 document.getElementById('account-email').textContent = user.email;
+
+                // Check if profile is incomplete (no username) and show setup modal
+                if (!username && profile) {
+                    setTimeout(() => showProfileSetup(), 500);
+                }
 
                 // Update member since
                 if (profile?.memberSince) {
@@ -1485,6 +1595,10 @@
         // Edit Profile Functions
         // ============================================
         let selectedAvatarFile = null;
+        let currentUsername = '';
+        let editUsernameCheckTimeout = null;
+        let isEditUsernameAvailable = true;
+        let isEditCheckingUsername = false;
 
         function openEditProfile() {
             const user = firebase.auth().currentUser;
@@ -1493,18 +1607,22 @@
             const modal = document.getElementById('edit-profile-modal');
             const previewEl = document.getElementById('edit-avatar-preview');
             const nameInput = document.getElementById('edit-display-name');
+            const usernameInput = document.getElementById('edit-username');
             const errorEl = document.getElementById('edit-profile-error');
 
             // Reset error
             errorEl.classList.remove('show');
             errorEl.textContent = '';
             selectedAvatarFile = null;
+            document.getElementById('edit-username-status').innerHTML = '';
+            document.getElementById('edit-username-error').style.display = 'none';
 
             // Get current profile data
             window.firebaseDb.collection('users').doc(user.uid).get().then(doc => {
                 const profile = doc.exists ? doc.data() : {};
                 const avatarURL = profile.profileImageURL || user.photoURL;
                 const displayName = profile.displayName || user.displayName || '';
+                currentUsername = profile.username || '';
 
                 // Set avatar preview
                 if (avatarURL) {
@@ -1514,8 +1632,31 @@
                     previewEl.innerHTML = `<div class="account-avatar-placeholder" style="margin: 0;">${initial}</div>`;
                 }
 
-                // Set name
+                // Set name and username
                 nameInput.value = displayName;
+                usernameInput.value = currentUsername;
+                isEditUsernameAvailable = true; // Current username is always available for the user
+
+                // Add username input listener
+                usernameInput.oninput = function() {
+                    let value = this.value.toLowerCase()
+                        .replace(/\s/g, '')
+                        .replace(/[^a-z0-9_]/g, '');
+                    this.value = value;
+
+                    clearTimeout(editUsernameCheckTimeout);
+                    if (value.length >= 3 && value !== currentUsername) {
+                        editUsernameCheckTimeout = setTimeout(() => checkEditUsernameAvailability(value), 500);
+                    } else if (value === currentUsername) {
+                        document.getElementById('edit-username-status').innerHTML = '';
+                        document.getElementById('edit-username-error').style.display = 'none';
+                        isEditUsernameAvailable = true;
+                    } else {
+                        document.getElementById('edit-username-status').innerHTML = '';
+                        document.getElementById('edit-username-error').style.display = 'none';
+                        isEditUsernameAvailable = false;
+                    }
+                };
 
                 // Show modal
                 modal.classList.add('active');
@@ -1524,6 +1665,8 @@
                 // Still show modal with auth data
                 const displayName = user.displayName || '';
                 nameInput.value = displayName;
+                usernameInput.value = '';
+                currentUsername = '';
                 if (user.photoURL) {
                     previewEl.innerHTML = `<img src="${user.photoURL}" alt="Avatar">`;
                 } else {
@@ -1532,6 +1675,43 @@
                 }
                 modal.classList.add('active');
             });
+        }
+
+        async function checkEditUsernameAvailability(username) {
+            if (username.length < 3 || username === currentUsername) {
+                isEditUsernameAvailable = username === currentUsername;
+                return;
+            }
+
+            isEditCheckingUsername = true;
+            const statusEl = document.getElementById('edit-username-status');
+            const errorEl = document.getElementById('edit-username-error');
+
+            statusEl.innerHTML = '<div class="auth-spinner" style="width: 16px; height: 16px; border-width: 2px;"></div>';
+            errorEl.style.display = 'none';
+
+            try {
+                const snapshot = await window.firebaseDb.collection('users')
+                    .where('username', '==', username)
+                    .limit(1)
+                    .get();
+
+                isEditUsernameAvailable = snapshot.empty;
+
+                if (isEditUsernameAvailable) {
+                    statusEl.innerHTML = '<span style="color: #22c55e; font-size: 18px;">&#10003;</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #dc2626; font-size: 18px;">&#10007;</span>';
+                    errorEl.textContent = 'This username is already taken';
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking username:', error);
+                statusEl.innerHTML = '';
+                isEditUsernameAvailable = false;
+            }
+
+            isEditCheckingUsername = false;
         }
 
         function closeEditProfile() {
@@ -1577,14 +1757,36 @@
             if (!user) return;
 
             const nameInput = document.getElementById('edit-display-name');
+            const usernameInput = document.getElementById('edit-username');
             const saveBtn = document.getElementById('save-profile-btn');
             const errorEl = document.getElementById('edit-profile-error');
 
             const displayName = nameInput.value.trim();
+            const username = usernameInput.value.trim().toLowerCase();
 
             if (!displayName) {
                 showProfileError('Please enter a display name');
                 return;
+            }
+
+            // Validate username if changed
+            if (username !== currentUsername) {
+                if (!username) {
+                    showProfileError('Please enter a username');
+                    return;
+                }
+                if (username.length < 3) {
+                    showProfileError('Username must be at least 3 characters');
+                    return;
+                }
+                if (isEditCheckingUsername) {
+                    showProfileError('Please wait while we check username availability');
+                    return;
+                }
+                if (!isEditUsernameAvailable) {
+                    showProfileError('Please choose an available username');
+                    return;
+                }
             }
 
             // Disable button and show loading
@@ -1617,8 +1819,9 @@
                 // Update Firestore profile
                 await window.firebaseDb.collection('users').doc(user.uid).set({
                     displayName: displayName,
+                    username: username,
                     profileImageURL: photoURL,
-                    lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }, { merge: true });
 
                 // Refresh UI
@@ -1842,6 +2045,251 @@
             } finally {
                 changeBtn.disabled = false;
                 changeBtn.textContent = 'Update Password';
+            }
+        }
+
+        // ============================================
+        // Profile Setup Functions (for new users)
+        // ============================================
+        let currentSetupStep = 1;
+        let isCheckingUsername = false;
+        let usernameCheckTimeout = null;
+        let isUsernameAvailable = false;
+
+        function showProfileSetup() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const modal = document.getElementById('profile-setup-modal');
+            const errorEl = document.getElementById('profile-setup-error');
+            const nameInput = document.getElementById('setup-display-name');
+            const usernameInput = document.getElementById('setup-username');
+            const birthdayInput = document.getElementById('setup-birthday');
+
+            // Reset
+            currentSetupStep = 1;
+            errorEl.classList.remove('show');
+            errorEl.textContent = '';
+
+            // Pre-fill display name if available
+            const profile = window.tripPortierAuth?.userProfile;
+            nameInput.value = profile?.displayName || user.displayName || '';
+            usernameInput.value = '';
+
+            // Set default birthday (25 years ago)
+            const defaultBirthday = new Date();
+            defaultBirthday.setFullYear(defaultBirthday.getFullYear() - 25);
+            birthdayInput.value = defaultBirthday.toISOString().split('T')[0];
+
+            // Set max date (13 years ago) and min date (120 years ago)
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() - 13);
+            const minDate = new Date();
+            minDate.setFullYear(minDate.getFullYear() - 120);
+            birthdayInput.max = maxDate.toISOString().split('T')[0];
+            birthdayInput.min = minDate.toISOString().split('T')[0];
+
+            // Reset UI to step 1
+            updateSetupUI();
+
+            // Add username input listener
+            usernameInput.oninput = function() {
+                // Sanitize input: lowercase, no spaces, only letters/numbers/underscore
+                let value = this.value.toLowerCase()
+                    .replace(/\s/g, '')
+                    .replace(/[^a-z0-9_]/g, '');
+                this.value = value;
+
+                // Check availability after debounce
+                clearTimeout(usernameCheckTimeout);
+                if (value.length >= 3) {
+                    usernameCheckTimeout = setTimeout(() => checkUsernameAvailability(value), 500);
+                } else {
+                    document.getElementById('username-status').innerHTML = '';
+                    document.getElementById('username-error').style.display = 'none';
+                    isUsernameAvailable = false;
+                }
+            };
+
+            modal.classList.add('active');
+        }
+
+        function updateSetupUI() {
+            // Update step dots
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById(`step-dot-${i}`);
+                dot.classList.remove('active', 'completed');
+                if (i < currentSetupStep) {
+                    dot.classList.add('completed');
+                } else if (i === currentSetupStep) {
+                    dot.classList.add('active');
+                }
+            }
+
+            // Show/hide steps
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById(`setup-step-${i}`).style.display = i === currentSetupStep ? 'block' : 'none';
+            }
+
+            // Update buttons
+            const nextBtn = document.getElementById('setup-next-btn');
+            const backBtn = document.getElementById('setup-back-btn');
+
+            backBtn.style.display = currentSetupStep > 1 ? 'block' : 'none';
+            nextBtn.textContent = currentSetupStep === 3 ? 'Complete Setup' : 'Continue';
+        }
+
+        async function checkUsernameAvailability(username) {
+            if (username.length < 3) {
+                isUsernameAvailable = false;
+                return;
+            }
+
+            isCheckingUsername = true;
+            const statusEl = document.getElementById('username-status');
+            const errorEl = document.getElementById('username-error');
+
+            statusEl.innerHTML = '<div class="auth-spinner" style="width: 16px; height: 16px; border-width: 2px;"></div>';
+            errorEl.style.display = 'none';
+
+            try {
+                // Check if username exists in Firestore
+                const snapshot = await window.firebaseDb.collection('users')
+                    .where('username', '==', username)
+                    .limit(1)
+                    .get();
+
+                isUsernameAvailable = snapshot.empty;
+
+                if (isUsernameAvailable) {
+                    statusEl.innerHTML = '<span style="color: #22c55e; font-size: 18px;">&#10003;</span>';
+                } else {
+                    statusEl.innerHTML = '<span style="color: #dc2626; font-size: 18px;">&#10007;</span>';
+                    errorEl.textContent = 'This username is already taken';
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error checking username:', error);
+                statusEl.innerHTML = '';
+                isUsernameAvailable = false;
+            }
+
+            isCheckingUsername = false;
+        }
+
+        function showSetupError(message) {
+            const errorEl = document.getElementById('profile-setup-error');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        async function nextSetupStep() {
+            const errorEl = document.getElementById('profile-setup-error');
+            errorEl.classList.remove('show');
+
+            if (currentSetupStep === 1) {
+                // Validate name
+                const name = document.getElementById('setup-display-name').value.trim();
+                if (!name) {
+                    showSetupError('Please enter your name');
+                    return;
+                }
+                currentSetupStep = 2;
+                updateSetupUI();
+            } else if (currentSetupStep === 2) {
+                // Validate username
+                const username = document.getElementById('setup-username').value.trim();
+                if (!username) {
+                    showSetupError('Please enter a username');
+                    return;
+                }
+                if (username.length < 3) {
+                    showSetupError('Username must be at least 3 characters');
+                    return;
+                }
+                if (isCheckingUsername) {
+                    showSetupError('Please wait while we check username availability');
+                    return;
+                }
+                if (!isUsernameAvailable) {
+                    showSetupError('Please choose an available username');
+                    return;
+                }
+                currentSetupStep = 3;
+                updateSetupUI();
+            } else if (currentSetupStep === 3) {
+                // Validate birthday and save profile
+                const birthdayInput = document.getElementById('setup-birthday');
+                const birthday = new Date(birthdayInput.value);
+                const today = new Date();
+                const age = Math.floor((today - birthday) / (365.25 * 24 * 60 * 60 * 1000));
+
+                if (isNaN(birthday.getTime())) {
+                    showSetupError('Please enter your birthday');
+                    return;
+                }
+                if (age < 13) {
+                    showSetupError('You must be at least 13 years old');
+                    return;
+                }
+                if (age > 120) {
+                    showSetupError('Please enter a valid birthday');
+                    return;
+                }
+
+                // Save the complete profile
+                await saveProfileSetup();
+            }
+        }
+
+        function prevSetupStep() {
+            if (currentSetupStep > 1) {
+                currentSetupStep--;
+                updateSetupUI();
+            }
+        }
+
+        async function saveProfileSetup() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            const nextBtn = document.getElementById('setup-next-btn');
+            const displayName = document.getElementById('setup-display-name').value.trim();
+            const username = document.getElementById('setup-username').value.trim().toLowerCase();
+            const birthdayInput = document.getElementById('setup-birthday');
+            const birthday = new Date(birthdayInput.value);
+
+            nextBtn.disabled = true;
+            nextBtn.textContent = 'Saving...';
+
+            try {
+                // Update Firebase Auth profile
+                await user.updateProfile({ displayName: displayName });
+
+                // Update Firestore profile with username and birthday
+                await window.firebaseDb.collection('users').doc(user.uid).set({
+                    displayName: displayName,
+                    username: username,
+                    birthday: firebase.firestore.Timestamp.fromDate(birthday),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                // Close modal and refresh UI
+                document.getElementById('profile-setup-modal').classList.remove('active');
+
+                // Refresh the profile data
+                await window.tripPortierAuth.fetchUserProfile(user.uid);
+
+                // Update account page UI
+                const doc = await window.firebaseDb.collection('users').doc(user.uid).get();
+                updateAccountUI(user, doc.exists ? doc.data() : null);
+
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showSetupError(error.message || 'Failed to save profile');
+            } finally {
+                nextBtn.disabled = false;
+                nextBtn.textContent = 'Complete Setup';
             }
         }
     </script>
