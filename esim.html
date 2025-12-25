@@ -1264,6 +1264,146 @@
             color: #059669;
         }
 
+        /* Checkout Modal */
+        .checkout-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .checkout-modal-overlay.show {
+            display: flex;
+        }
+
+        .checkout-modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 450px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .checkout-modal-header {
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .checkout-modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .checkout-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .checkout-modal-close:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
+        .checkout-modal-body {
+            padding: 1.5rem;
+        }
+
+        .checkout-package-summary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 12px;
+            padding: 1.25rem;
+            color: white;
+            margin-bottom: 1.25rem;
+        }
+
+        .checkout-package-summary h4 {
+            font-weight: 600;
+            margin: 0 0 0.25rem;
+        }
+
+        .checkout-package-summary p {
+            opacity: 0.9;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .checkout-package-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        .checkout-form-group {
+            margin-bottom: 1rem;
+        }
+
+        .checkout-form-group label {
+            display: block;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .checkout-form-group input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .checkout-form-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .checkout-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .no-results {
             text-align: center;
             padding: 2rem;
@@ -1630,6 +1770,83 @@
                 <button class="buy-now-btn" id="buyNowBtn" disabled onclick="proceedToPurchase()">
                     Select a package
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal-overlay" id="checkoutModal">
+        <div class="checkout-modal-content">
+            <button class="checkout-modal-close" onclick="closeCheckoutModal()">&times;</button>
+            <div class="checkout-modal-header">
+                <h3>Complete Your Purchase</h3>
+            </div>
+            <div class="checkout-modal-body">
+                <div class="checkout-package-summary">
+                    <h4 id="checkoutPackageName">5GB - 30 Days</h4>
+                    <p id="checkoutPackageCountry">Japan</p>
+                    <div class="checkout-package-price" id="checkoutPackagePrice">$12.00</div>
+                </div>
+
+                <!-- TripCoins Discount (shown when using coins) -->
+                <div id="checkoutTripcoinsDiscount" style="display: none; background: linear-gradient(135deg, #fef3c7, #fef9c3); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #f59e0b;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #92400e; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            TripCoins Applied
+                        </span>
+                        <span style="color: #059669; font-weight: 700;">-$<span id="checkoutTripcoinsAmount">0</span></span>
+                    </div>
+                    <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 14px;">
+                        <span style="color: #64748b;"><s>$<span id="checkoutOriginalPrice">0</span></s></span>
+                        <span style="color: #1e293b; font-weight: 600;">Final: $<span id="checkoutFinalPrice">0</span></span>
+                    </div>
+                </div>
+
+                <div class="checkout-form-group">
+                    <label for="checkoutEmailInput">Email Address</label>
+                    <input type="email" id="checkoutEmailInput" placeholder="your@email.com" required>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 6px;">Your eSIM QR code will be sent to this email</p>
+                </div>
+
+                <!-- TripCoins Earnings (shown for logged-in users) -->
+                <div id="checkoutTripcoinsEarnings" style="display: none; background: linear-gradient(135deg, #dcfce7, #d1fae5); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #22c55e;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #166534; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            You'll earn on this purchase
+                        </span>
+                        <span style="color: #166534; font-weight: 700;">+$<span id="checkoutEarnAmount">0.00</span></span>
+                    </div>
+                    <p style="margin: 6px 0 0; font-size: 13px; color: #166534; opacity: 0.9;">
+                        <span id="checkoutEarnPercent">5%</span> cashback as a <span id="checkoutUserLevel">Explorer</span> member
+                    </p>
+                </div>
+
+                <!-- TripCoins Earnings Prompt (shown for guests) -->
+                <div id="checkoutTripcoinsGuest" style="display: none; background: linear-gradient(135deg, #f3e8ff, #ede9fe); border-radius: 8px; padding: 12px; margin-bottom: 16px; border-left: 4px solid #a855f7;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="display: flex; align-items: center; gap: 6px; color: #6b21a8; font-weight: 600;">
+                            <span style="font-size: 1.25rem;">&#129689;</span>
+                            Earn 3% cashback
+                        </span>
+                        <span style="color: #6b21a8; font-weight: 700;">+$<span id="checkoutEarnAmountGuest">0.00</span></span>
+                    </div>
+                    <p style="margin: 6px 0 8px; font-size: 13px; color: #6b21a8; opacity: 0.9;">
+                        Create an account to earn on this purchase!
+                    </p>
+                    <a href="https://apps.apple.com/app/tripportier" style="display: inline-block; background: #a855f7; color: white; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none;">
+                        Get the App
+                    </a>
+                </div>
+
+                <button class="checkout-btn" id="checkoutBtn" onclick="proceedToStripeCheckout()">
+                    Continue to Payment
+                </button>
+
+                <p style="text-align: center; font-size: 12px; color: #64748b; margin-top: 12px;">
+                    Secure payment powered by Stripe
+                </p>
             </div>
         </div>
     </div>
@@ -2291,26 +2508,168 @@
             updateBuyButton();
         }
 
-        // Proceed to purchase
+        // Proceed to purchase - open checkout modal
         function proceedToPurchase() {
             if (!selectedPackage || !currentModalData) return;
+            openCheckoutModal();
+        }
 
-            // Build URL with package and TripCoins info
-            let url;
-            if (currentModalData.type === 'local') {
-                url = `esim-country.html?code=${currentModalData.code}&packageId=${selectedPackage.id}`;
-            } else if (currentModalData.type === 'regional') {
-                url = `esim-region.html?region=${currentModalData.code}&packageId=${selectedPackage.id}`;
+        // Open checkout modal
+        function openCheckoutModal() {
+            // Get destination name
+            const destinationName = currentModalData.title || currentModalData.name || 'Your Destination';
+
+            // Update package summary
+            document.getElementById('checkoutPackageName').textContent =
+                `${selectedPackage.data} - ${selectedPackage.days} Days`;
+            document.getElementById('checkoutPackageCountry').textContent = destinationName;
+
+            // Calculate final price with TripCoins
+            const originalPrice = selectedPackage.price;
+            const coinsToUse = usingTripcoins ? tripcoinsToUse : 0;
+            const finalPrice = Math.max(0, originalPrice - coinsToUse);
+
+            // Show TripCoins discount if applicable
+            if (coinsToUse > 0) {
+                document.getElementById('checkoutPackagePrice').innerHTML =
+                    `<s style="opacity:0.6">$${originalPrice.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                document.getElementById('checkoutTripcoinsAmount').textContent = coinsToUse.toFixed(0);
+                document.getElementById('checkoutOriginalPrice').textContent = originalPrice.toFixed(2);
+                document.getElementById('checkoutFinalPrice').textContent = finalPrice.toFixed(2);
+                document.getElementById('checkoutTripcoinsDiscount').style.display = 'block';
             } else {
-                url = `esim-global.html?packageId=${selectedPackage.id}`;
+                document.getElementById('checkoutPackagePrice').textContent = `$${originalPrice.toFixed(2)}`;
+                document.getElementById('checkoutTripcoinsDiscount').style.display = 'none';
             }
 
-            // Add TripCoins redemption if being used
-            if (usingTripcoins && tripcoinsToUse > 0) {
-                url += `&tripcoins=${tripcoinsToUse}`;
+            // Pre-fill email if user is logged in
+            const currentUser = firebase.auth().currentUser;
+            if (currentUser && currentUser.email) {
+                document.getElementById('checkoutEmailInput').value = currentUser.email;
             }
 
-            window.location.href = url;
+            // Show earnings UI
+            if (finalPrice > 0) {
+                const guestEarnings = finalPrice * 0.03;
+                if (currentUser) {
+                    // Calculate user's actual earnings (would need level data)
+                    const userEarnings = finalPrice * 0.03; // Default to 3% for now
+                    document.getElementById('checkoutEarnAmount').textContent = userEarnings.toFixed(2);
+                    document.getElementById('checkoutEarnPercent').textContent = '3%';
+                    document.getElementById('checkoutUserLevel').textContent = 'Explorer';
+                    document.getElementById('checkoutTripcoinsEarnings').style.display = 'block';
+                    document.getElementById('checkoutTripcoinsGuest').style.display = 'none';
+                } else {
+                    document.getElementById('checkoutEarnAmountGuest').textContent = guestEarnings.toFixed(2);
+                    document.getElementById('checkoutTripcoinsGuest').style.display = 'block';
+                    document.getElementById('checkoutTripcoinsEarnings').style.display = 'none';
+                }
+            } else {
+                document.getElementById('checkoutTripcoinsEarnings').style.display = 'none';
+                document.getElementById('checkoutTripcoinsGuest').style.display = 'none';
+            }
+
+            // Show the modal
+            document.getElementById('checkoutModal').classList.add('show');
+        }
+
+        // Close checkout modal
+        function closeCheckoutModal() {
+            document.getElementById('checkoutModal').classList.remove('show');
+        }
+
+        // Close checkout modal on outside click
+        document.getElementById('checkoutModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCheckoutModal();
+            }
+        });
+
+        // Proceed to Stripe checkout
+        async function proceedToStripeCheckout() {
+            const email = document.getElementById('checkoutEmailInput').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            if (!selectedPackage || !currentModalData) {
+                alert('Please select a package first');
+                return;
+            }
+
+            // Calculate final amount with TripCoins discount
+            const coinsToUse = usingTripcoins ? tripcoinsToUse : 0;
+            const finalPrice = Math.max(0, selectedPackage.price - coinsToUse);
+            const amountInCents = Math.round(finalPrice * 100);
+
+            // Minimum charge is 50 cents for Stripe
+            if (amountInCents < 50 && amountInCents > 0) {
+                alert('The minimum payment amount is $0.50. Please adjust your TripCoins usage.');
+                return;
+            }
+
+            // Disable button and show loading state
+            const btn = document.getElementById('checkoutBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            try {
+                // If fully covered by TripCoins, handle differently
+                if (amountInCents === 0) {
+                    alert('Free orders with TripCoins are processed in the app. Please use the TripPortier app for this purchase.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    return;
+                }
+
+                // Get destination info
+                const countryCode = currentModalData.code || '';
+                const countryTitle = currentModalData.title || currentModalData.name || '';
+
+                // Calculate TripCoins to earn (default 3%)
+                const tripcoinsToEarn = finalPrice * 0.03;
+
+                // Call Firebase function to create checkout session
+                const response = await fetch(`${API_URL}/createEsimCheckout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        packageId: selectedPackage.id,
+                        packageName: `${selectedPackage.data} - ${selectedPackage.days} Days`,
+                        amount: amountInCents,
+                        currency: 'USD',
+                        countryCode: countryCode,
+                        countryTitle: countryTitle,
+                        data: selectedPackage.data,
+                        days: selectedPackage.days,
+                        operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
+                        tripcoinsUsed: coinsToUse,
+                        originalPrice: selectedPackage.price,
+                        tripcoinsToEarn: tripcoinsToEarn,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.url) {
+                    // Redirect to Stripe Checkout
+                    window.location.href = data.url;
+                } else {
+                    alert(data.error || 'Failed to create checkout session. Please try again.');
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Checkout error:', error);
+                alert('An error occurred. Please try again.');
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
         }
 
         // Close detail modal
