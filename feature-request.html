@@ -81,214 +81,16 @@
         <p style="color: var(--gray); margin-bottom: 2rem;">Vote for features you'd like to see! Click the arrow to upvote.</p>
 
         <div class="feature-list" id="featureList">
-            <!-- Feature 1 -->
-            <div class="feature-request-card" data-id="1">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(1)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-1">47</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Android Version</h3>
-                    <p>Release TripPortier for Android devices so more travelers can use the app.</p>
-                    <span class="feature-tag">Other</span>
-                </div>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="feature-request-card" data-id="2">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(2)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-2">38</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Hotel Booking Integration</h3>
-                    <p>Add ability to search and book hotels directly within the app, with confirmation details added to the itinerary.</p>
-                    <span class="feature-tag">Integrations</span>
-                </div>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="feature-request-card" data-id="3">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(3)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-3">32</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Apple Watch App</h3>
-                    <p>Quick access to flight info, packing list progress, and trip countdown on Apple Watch.</p>
-                    <span class="feature-tag">Integrations</span>
-                </div>
-            </div>
-
-            <!-- Feature 4 -->
-            <div class="feature-request-card" data-id="4">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(4)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-4">28</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Trip Budget Tracker</h3>
-                    <p>Track expenses during trips, set budgets, and get spending insights by category.</p>
-                    <span class="feature-tag">Trip Planning</span>
-                </div>
-            </div>
-
-            <!-- Feature 5 -->
-            <div class="feature-request-card" data-id="5">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(5)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-5">24</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Document Scanner</h3>
-                    <p>Scan and store travel documents (passport, visas, tickets) with secure cloud backup.</p>
-                    <span class="feature-tag">Trip Planning</span>
-                </div>
-            </div>
-
-            <!-- Feature 6 -->
-            <div class="feature-request-card" data-id="6">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(6)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-6">21</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Widgets for Home Screen</h3>
-                    <p>iOS home screen widgets showing upcoming trips, packing progress, or flight countdown.</p>
-                    <span class="feature-tag">User Interface</span>
-                </div>
-            </div>
-
-            <!-- Feature 7 -->
-            <div class="feature-request-card" data-id="7">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(7)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-7">19</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Packing List Photos</h3>
-                    <p>Add photos to packing items to remember exactly which items you packed.</p>
-                    <span class="feature-tag">Packing Lists</span>
-                </div>
-            </div>
-
-            <!-- Feature 8 -->
-            <div class="feature-request-card" data-id="8">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(8)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-8">17</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Public Transportation Info</h3>
-                    <p>Show local public transit options, metro maps, and transportation tips for destinations.</p>
-                    <span class="feature-tag">Trip Planning</span>
-                </div>
-            </div>
-
-            <!-- Feature 9 -->
-            <div class="feature-request-card" data-id="9">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(9)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-9">15</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Train Tracking</h3>
-                    <p>Track train journeys similar to flights, with platform info and delay notifications.</p>
-                    <span class="feature-tag">Integrations</span>
-                </div>
-            </div>
-
-            <!-- Feature 10 -->
-            <div class="feature-request-card" data-id="10">
-                <div class="vote-section">
-                    <button class="vote-btn" onclick="upvote(10)" aria-label="Upvote">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 15l-6-6-6 6"/>
-                        </svg>
-                    </button>
-                    <span class="vote-count" id="votes-10">12</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Visa Requirements Checker</h3>
-                    <p>Automatic visa requirement lookup based on your passport and destination country.</p>
-                    <span class="feature-tag">Trip Planning</span>
-                </div>
-            </div>
+            <!-- Dynamic approved features will be loaded here -->
+            <div class="loading-state" style="text-align: center; padding: 2rem; color: var(--gray);">Loading features...</div>
         </div>
 
         <!-- Implemented Features -->
         <h2 style="margin: 3rem 0 1.5rem;">Recently Implemented</h2>
         <p style="color: var(--gray); margin-bottom: 2rem;">Features we've built based on your feedback!</p>
 
-        <div class="feature-list">
-            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
-                <div class="vote-section">
-                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>eSIM Plans</h3>
-                    <p>Buy and activate instant mobile data for 200+ countries directly in the app.</p>
-                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
-                </div>
-            </div>
-
-            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
-                <div class="vote-section">
-                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Real-time Flight Tracking</h3>
-                    <p>Track flights with live updates, gate changes, and smart departure notifications.</p>
-                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
-                </div>
-            </div>
-
-            <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
-                <div class="vote-section">
-                    <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
-                </div>
-                <div class="feature-request-content">
-                    <h3>Trip Sharing</h3>
-                    <p>Share trips with friends and family to collaborate on planning.</p>
-                    <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
-                </div>
-            </div>
+        <div class="feature-list" id="implementedList">
+            <!-- Dynamic implemented features will be loaded here -->
         </div>
     </main>
 
@@ -336,5 +138,277 @@
     </a>
 
     <script src="js/main.js"></script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqHMTZkT-RVIoLl0CqpIr1RL-AaPOvvg8",
+            authDomain: "tripportier.firebaseapp.com",
+            projectId: "tripportier",
+            storageBucket: "tripportier.firebasestorage.app",
+            messagingSenderId: "1097210315657",
+            appId: "1:1097210315657:web:ce1a35c5f34f1a4b62e2db"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        // Default/seed features (shown if no approved features in Firestore yet)
+        const defaultFeatures = [
+            { id: 'default_1', title: 'Android Version', description: 'Release TripPortier for Android devices so more travelers can use the app.', category: 'Other', upvotes: 47 },
+            { id: 'default_2', title: 'Hotel Booking Integration', description: 'Add ability to search and book hotels directly within the app, with confirmation details added to the itinerary.', category: 'Integrations', upvotes: 38 },
+            { id: 'default_3', title: 'Apple Watch App', description: 'Quick access to flight info, packing list progress, and trip countdown on Apple Watch.', category: 'Integrations', upvotes: 32 },
+            { id: 'default_4', title: 'Trip Budget Tracker', description: 'Track expenses during trips, set budgets, and get spending insights by category.', category: 'Trip Planning', upvotes: 28 },
+            { id: 'default_5', title: 'Document Scanner', description: 'Scan and store travel documents (passport, visas, tickets) with secure cloud backup.', category: 'Trip Planning', upvotes: 24 },
+            { id: 'default_6', title: 'Widgets for Home Screen', description: 'iOS home screen widgets showing upcoming trips, packing progress, or flight countdown.', category: 'User Interface', upvotes: 21 },
+            { id: 'default_7', title: 'Packing List Photos', description: 'Add photos to packing items to remember exactly which items you packed.', category: 'Packing Lists', upvotes: 19 },
+            { id: 'default_8', title: 'Public Transportation Info', description: 'Show local public transit options, metro maps, and transportation tips for destinations.', category: 'Trip Planning', upvotes: 17 },
+            { id: 'default_9', title: 'Train Tracking', description: 'Track train journeys similar to flights, with platform info and delay notifications.', category: 'Integrations', upvotes: 15 },
+            { id: 'default_10', title: 'Visa Requirements Checker', description: 'Automatic visa requirement lookup based on your passport and destination country.', category: 'Trip Planning', upvotes: 12 }
+        ];
+
+        // Default implemented features
+        const defaultImplemented = [
+            { id: 'impl_1', title: 'eSIM Plans', description: 'Buy and activate instant mobile data for 200+ countries directly in the app.' },
+            { id: 'impl_2', title: 'Real-time Flight Tracking', description: 'Track flights with live updates, gate changes, and smart departure notifications.' },
+            { id: 'impl_3', title: 'Trip Sharing', description: 'Share trips with friends and family to collaborate on planning.' }
+        ];
+
+        // Get or create visitor ID for tracking votes
+        function getVisitorId() {
+            let visitorId = localStorage.getItem('tp_visitor_id');
+            if (!visitorId) {
+                visitorId = 'v_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('tp_visitor_id', visitorId);
+            }
+            return visitorId;
+        }
+
+        // Get user's votes from localStorage
+        function getUserVotes() {
+            const votes = localStorage.getItem('tp_feature_votes');
+            return votes ? JSON.parse(votes) : {};
+        }
+
+        // Save user's vote to localStorage
+        function saveUserVote(featureId, voteType) {
+            const votes = getUserVotes();
+            votes[featureId] = voteType;
+            localStorage.setItem('tp_feature_votes', JSON.stringify(votes));
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render a feature card
+        function renderFeatureCard(feature, isDefault = false) {
+            const userVotes = getUserVotes();
+            const featureId = feature.id;
+            const isVoted = userVotes[featureId] === 'up';
+            const voteCount = feature.upvotes || 0;
+
+            return `
+                <div class="feature-request-card" data-id="${featureId}">
+                    <div class="vote-section">
+                        <button class="vote-btn ${isVoted ? 'voted' : ''}" onclick="upvote('${featureId}')" aria-label="Upvote">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M18 15l-6-6-6 6"/>
+                            </svg>
+                        </button>
+                        <span class="vote-count" id="votes-${featureId}">${voteCount}</span>
+                    </div>
+                    <div class="feature-request-content">
+                        <h3>${escapeHtml(feature.title)}</h3>
+                        <p>${escapeHtml(feature.description)}</p>
+                        <span class="feature-tag">${escapeHtml(feature.category || 'General')}</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render an implemented feature card
+        function renderImplementedCard(feature) {
+            return `
+                <div class="feature-request-card" style="background: #f0fdf4; border-left: 4px solid #22c55e;">
+                    <div class="vote-section">
+                        <span style="color: #22c55e; font-size: 1.5rem;">&#10003;</span>
+                    </div>
+                    <div class="feature-request-content">
+                        <h3>${escapeHtml(feature.title)}</h3>
+                        <p>${escapeHtml(feature.description)}</p>
+                        <span class="feature-tag" style="background: #dcfce7; color: #16a34a;">Shipped!</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load features from Firestore
+        async function loadFeatures() {
+            const featureList = document.getElementById('featureList');
+            const implementedList = document.getElementById('implementedList');
+
+            try {
+                // Load approved features
+                const approvedSnapshot = await db.collection('featureRequests')
+                    .where('status', '==', 'approved')
+                    .orderBy('upvotes', 'desc')
+                    .get();
+
+                let approvedFeatures = [];
+                approvedSnapshot.forEach(doc => {
+                    approvedFeatures.push({ id: doc.id, ...doc.data() });
+                });
+
+                // If no approved features, use defaults
+                if (approvedFeatures.length === 0) {
+                    approvedFeatures = defaultFeatures;
+                }
+
+                // Render approved features
+                featureList.innerHTML = approvedFeatures.map(f => renderFeatureCard(f, f.id.startsWith('default_'))).join('');
+
+                // Load implemented features
+                const implementedSnapshot = await db.collection('featureRequests')
+                    .where('status', '==', 'implemented')
+                    .orderBy('updatedAt', 'desc')
+                    .get();
+
+                let implementedFeatures = [];
+                implementedSnapshot.forEach(doc => {
+                    implementedFeatures.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Add default implemented features
+                implementedFeatures = [...implementedFeatures, ...defaultImplemented];
+
+                // Render implemented features
+                implementedList.innerHTML = implementedFeatures.map(f => renderImplementedCard(f)).join('');
+
+            } catch (error) {
+                console.error('Error loading features:', error);
+                // Fallback to defaults on error
+                featureList.innerHTML = defaultFeatures.map(f => renderFeatureCard(f, true)).join('');
+                implementedList.innerHTML = defaultImplemented.map(f => renderImplementedCard(f)).join('');
+            }
+        }
+
+        // Submit feature request to Firestore
+        async function submitFeature(event) {
+            event.preventDefault();
+
+            const title = document.getElementById('featureTitle').value.trim();
+            const category = document.getElementById('featureCategory').value;
+            const description = document.getElementById('featureDescription').value.trim();
+            const email = document.getElementById('featureEmail').value.trim();
+            const submitBtn = document.querySelector('.btn-submit');
+
+            if (!title || !description) {
+                alert('Please fill in the required fields.');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                await db.collection('featureRequests').add({
+                    title: title,
+                    category: category,
+                    description: description,
+                    email: email || null,
+                    status: 'pending', // pending, approved, rejected, implemented
+                    upvotes: 0,
+                    downvotes: 0,
+                    submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    visitorId: getVisitorId()
+                });
+
+                // Show success message
+                document.getElementById('formSuccess').style.display = 'block';
+                document.getElementById('featureForm').reset();
+
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('formSuccess').style.display = 'none';
+                }, 5000);
+            } catch (error) {
+                console.error('Error submitting feature:', error);
+                alert('Failed to submit. Please try again.');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Feature Request';
+        }
+
+        // Upvote function
+        async function upvote(featureId) {
+            const userVotes = getUserVotes();
+            const voteCountEl = document.getElementById('votes-' + featureId);
+            const voteBtn = document.querySelector(`[data-id="${featureId}"] .vote-btn`);
+
+            if (!voteCountEl) return;
+
+            let currentVotes = parseInt(voteCountEl.textContent) || 0;
+
+            if (userVotes[featureId] === 'up') {
+                // Already upvoted, remove vote
+                currentVotes--;
+                saveUserVote(featureId, null);
+                voteBtn.classList.remove('voted');
+            } else {
+                // Add upvote
+                currentVotes++;
+                saveUserVote(featureId, 'up');
+                voteBtn.classList.add('voted');
+            }
+
+            voteCountEl.textContent = currentVotes;
+
+            // Persist to Firestore
+            try {
+                if (featureId.startsWith('default_')) {
+                    // For default features, store in featureVotes collection
+                    await db.collection('featureVotes').doc(featureId).set({
+                        votes: currentVotes,
+                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } else {
+                    // For Firestore features, update the document directly
+                    await db.collection('featureRequests').doc(featureId).update({
+                        upvotes: currentVotes
+                    });
+                }
+            } catch (e) {
+                console.log('Vote saved locally');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadFeatures();
+        });
+    </script>
+
+    <style>
+        .vote-btn.voted {
+            background: #6366f1;
+            color: white;
+        }
+        .vote-btn.voted svg {
+            stroke: white;
+        }
+    </style>
 </body>
 </html>

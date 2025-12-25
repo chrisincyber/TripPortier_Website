@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="htmlRoot">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -301,6 +301,89 @@
 
         .worldwide-cta:hover {
             transform: scale(1.05);
+        }
+
+        /* Language Selector */
+        .language-selector {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .language-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .language-btn:hover {
+            border-color: #6366f1;
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 8px;
+            margin-bottom: 8px;
+            display: none;
+            max-height: 400px;
+            overflow-y: auto;
+            min-width: 180px;
+        }
+
+        .language-dropdown.show {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+        }
+
+        .language-option:hover {
+            background: #f1f5f9;
+        }
+
+        .language-option.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            color: #6366f1;
+            font-weight: 600;
+        }
+
+        .language-option .flag {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .language-selector {
+                bottom: 90px;
+                right: 15px;
+            }
+            .language-btn {
+                padding: 10px 14px;
+                font-size: 13px;
+            }
         }
 
         /* Loading State */
@@ -1541,6 +1624,117 @@
                 max-height: 80vh;
             }
         }
+
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            margin-left: 16px;
+        }
+
+        .language-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .language-dropdown.show {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .language-option:hover {
+            background: #f3f4f6;
+        }
+
+        .language-option.active {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .language-option:first-child {
+            border-radius: 12px 12px 0 0;
+        }
+
+        .language-option:last-child {
+            border-radius: 0 0 12px 12px;
+        }
+
+        .language-option .flag {
+            font-size: 20px;
+        }
+
+        .language-option .name {
+            flex: 1;
+        }
+
+        /* RTL Support for Arabic */
+        [dir="rtl"] {
+            text-align: right;
+        }
+
+        [dir="rtl"] .nav-container,
+        [dir="rtl"] .benefits-grid,
+        [dir="rtl"] .countries-grid {
+            direction: rtl;
+        }
+
+        @media (max-width: 768px) {
+            .language-selector {
+                margin-left: 8px;
+            }
+
+            .language-btn {
+                padding: 6px 10px;
+            }
+
+            #currentLanguageName {
+                display: none;
+            }
+
+            .language-dropdown {
+                right: -50px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1559,6 +1753,18 @@
                 <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
             </ul>
 
+            <!-- Language Selector -->
+            <div class="language-selector" id="languageSelector">
+                <button class="language-btn" onclick="toggleLanguageDropdown()">
+                    <span id="currentLanguageFlag">🇬🇧</span>
+                    <span id="currentLanguageName">EN</span>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </button>
+                <div class="language-dropdown" id="languageDropdown"></div>
+            </div>
+
             <button class="mobile-menu" onclick="toggleMenu()">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -1572,10 +1778,10 @@
         <div class="esim-hero-content">
             <div class="esim-badge">
                 <span>&#128241;</span>
-                Instant Digital SIM
+                <span data-i18n="hero.badge">Instant Digital SIM</span>
             </div>
-            <h1>Travel eSIM</h1>
-            <p>Stay connected in 200+ destinations. Instant activation, no physical SIM card needed. Download your eSIM before you travel.</p>
+            <h1 data-i18n="hero.title">Travel eSIM</h1>
+            <p data-i18n="hero.description">Stay connected in 200+ destinations. Instant activation, no physical SIM card needed. Download your eSIM before you travel.</p>
         </div>
     </section>
 
@@ -1584,9 +1790,9 @@
         <div class="search-container">
             <div class="search-wrapper">
                 <div class="search-box">
-                    <input type="text" class="search-input" id="countrySearch" placeholder="Search for a country or region..." autocomplete="off">
+                    <input type="text" class="search-input" id="countrySearch" data-i18n-placeholder="search.placeholder" placeholder="Search for a country or region..." autocomplete="off">
                     <button class="search-btn" onclick="performSearch()">
-                        Search
+                        <span data-i18n="search.button">Search</span>
                     </button>
                 </div>
                 <div class="search-results" id="searchResults"></div>
@@ -1599,16 +1805,16 @@
         <div class="categories-container">
             <div class="category-tabs">
                 <button class="category-tab active" data-category="popular" onclick="switchCategory('popular')">
-                    Popular
+                    <span data-i18n="tabs.popular">Popular</span>
                 </button>
                 <button class="category-tab" data-category="local" onclick="switchCategory('local')">
-                    Local
+                    <span data-i18n="tabs.local">Local</span>
                 </button>
                 <button class="category-tab" data-category="regional" onclick="switchCategory('regional')">
-                    Regional
+                    <span data-i18n="tabs.regional">Regional</span>
                 </button>
                 <button class="category-tab" data-category="global" onclick="switchCategory('global')">
-                    Worldwide
+                    <span data-i18n="tabs.worldwide">Worldwide</span>
                 </button>
             </div>
         </div>
@@ -1618,7 +1824,7 @@
     <section class="countries-section">
         <div class="countries-container">
             <div class="section-header">
-                <h2 class="section-title" id="sectionTitle">Popular Destinations</h2>
+                <h2 class="section-title" id="sectionTitle" data-i18n="section.popularDestinations">Popular Destinations</h2>
             </div>
             <div class="countries-grid" id="countriesGrid">
                 <!-- Populated by JavaScript -->
@@ -1631,36 +1837,36 @@
         <div class="cashback-container">
             <div class="cashback-content">
                 <div class="cashback-text">
-                    <h2>Earn <span>Up to 10% Cashback</span> on Every eSIM</h2>
-                    <p>The more you travel, the more you save. Our rewards program gives you real money back on every eSIM purchase. Your cashback never expires and can be used on future purchases.</p>
+                    <h2 data-i18n="cashback.title">Earn <span>Up to 10% Cashback</span> on Every eSIM</h2>
+                    <p data-i18n="cashback.description">The more you travel, the more you save. Our rewards program gives you real money back on every eSIM purchase. Your cashback never expires and can be used on future purchases.</p>
 
                     <div class="cashback-tiers">
                         <div class="cashback-tier">
                             <div class="tier-badge">3%</div>
                             <div class="tier-info">
-                                <div class="tier-name">Explorer</div>
-                                <div class="tier-requirement">Start earning immediately</div>
+                                <div class="tier-name" data-i18n="cashback.explorer">Explorer</div>
+                                <div class="tier-requirement" data-i18n="cashback.explorerRequirement">Start earning immediately</div>
                             </div>
                         </div>
                         <div class="cashback-tier">
                             <div class="tier-badge">5%</div>
                             <div class="tier-info">
-                                <div class="tier-name">Adventurer</div>
-                                <div class="tier-requirement">After $25 in purchases</div>
+                                <div class="tier-name" data-i18n="cashback.adventurer">Adventurer</div>
+                                <div class="tier-requirement" data-i18n="cashback.adventurerRequirement">After $25 in purchases</div>
                             </div>
                         </div>
                         <div class="cashback-tier">
                             <div class="tier-badge">7%</div>
                             <div class="tier-info">
-                                <div class="tier-name">Pioneer</div>
-                                <div class="tier-requirement">After $100 in purchases</div>
+                                <div class="tier-name" data-i18n="cashback.pioneer">Pioneer</div>
+                                <div class="tier-requirement" data-i18n="cashback.pioneerRequirement">After $100 in purchases</div>
                             </div>
                         </div>
                         <div class="cashback-tier">
                             <div class="tier-badge">10%</div>
                             <div class="tier-info">
-                                <div class="tier-name">Ambassador</div>
-                                <div class="tier-requirement">After $150 in purchases</div>
+                                <div class="tier-name" data-i18n="cashback.ambassador">Ambassador</div>
+                                <div class="tier-requirement" data-i18n="cashback.ambassadorRequirement">After $150 in purchases</div>
                             </div>
                         </div>
                     </div>
@@ -1668,12 +1874,12 @@
 
                 <div class="cashback-visual">
                     <div class="cashback-card-preview">
-                        <div class="card-balance-label">Your Cashback Balance</div>
+                        <div class="card-balance-label" data-i18n="cashback.yourBalance">Your Cashback Balance</div>
                         <div class="card-balance">$24.50</div>
                         <div class="card-level">Pioneer - 7%</div>
                     </div>
                     <a href="account.html" class="cashback-cta">
-                        View Your Rewards
+                        <span data-i18n="cashback.viewRewards">View Your Rewards</span>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M5 12h14M12 5l7 7-7 7"/>
                         </svg>
@@ -1687,28 +1893,28 @@
     <section class="benefits-section">
         <div class="benefits-container">
             <div class="benefits-header">
-                <h2>Why Choose TripPortier eSIM?</h2>
+                <h2 data-i18n="benefits.title">Why Choose TripPortier eSIM?</h2>
             </div>
             <div class="benefits-grid">
                 <div class="benefit-card">
                     <div class="benefit-icon">&#9889;</div>
-                    <h3>Instant Activation</h3>
-                    <p>Get your eSIM delivered instantly via QR code. Scan, activate, and connect in minutes.</p>
+                    <h3 data-i18n="benefits.instantActivation.title">Instant Activation</h3>
+                    <p data-i18n="benefits.instantActivation.description">Get your eSIM delivered instantly via QR code. Scan, activate, and connect in minutes.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">&#128176;</div>
-                    <h3>No Roaming Fees</h3>
-                    <p>Save up to 90% compared to traditional roaming. Fixed prices with no hidden charges.</p>
+                    <h3 data-i18n="benefits.noRoamingFees.title">No Roaming Fees</h3>
+                    <p data-i18n="benefits.noRoamingFees.description">Save up to 90% compared to traditional roaming. Fixed prices with no hidden charges.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">&#127760;</div>
-                    <h3>200+ Countries</h3>
-                    <p>Coverage across the globe. Local, regional, and worldwide plans available.</p>
+                    <h3 data-i18n="benefits.globalCoverage.title">200+ Countries</h3>
+                    <p data-i18n="benefits.globalCoverage.description">Coverage across the globe. Local, regional, and worldwide plans available.</p>
                 </div>
                 <div class="benefit-card">
                     <div class="benefit-icon">&#128241;</div>
-                    <h3>Keep Your Number</h3>
-                    <p>Your eSIM works alongside your regular SIM. No need to swap cards or change numbers.</p>
+                    <h3 data-i18n="benefits.keepNumber.title">Keep Your Number</h3>
+                    <p data-i18n="benefits.keepNumber.description">Your eSIM works alongside your regular SIM. No need to swap cards or change numbers.</p>
                 </div>
             </div>
         </div>
@@ -1718,26 +1924,26 @@
     <section class="faq-section" id="faq">
         <div class="faq-container">
             <div class="faq-header">
-                <h2>eSIM FAQ</h2>
-                <p>Everything you need to know about travel eSIMs</p>
+                <h2 data-i18n="faq.title">eSIM FAQ</h2>
+                <p data-i18n="faq.subtitle">Everything you need to know about travel eSIMs</p>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>What is an eSIM?</span>
+                    <span data-i18n="faq.q1">What is an eSIM?</span>
                     <span class="faq-icon">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq.a1">
                     An eSIM (embedded SIM) is a digital SIM that allows you to activate a mobile data plan without needing a physical SIM card. It's built into most modern smartphones (iPhone XS and newer, many Android devices). Perfect for travelers who want instant connectivity without swapping SIM cards or dealing with roaming charges.
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>How do I install and activate an eSIM?</span>
+                    <span data-i18n="faq.q2">How do I install and activate an eSIM?</span>
                     <span class="faq-icon">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq.a2">
                     <strong>Before traveling:</strong> Purchase your eSIM and scan the QR code while connected to WiFi. This installs the eSIM profile on your device.<br><br>
                     <strong>When you arrive:</strong> Go to your device settings, find the eSIM, and turn on data roaming. Your connection will activate automatically.<br><br>
                     <strong>Tip:</strong> Install before you leave home so everything is ready when you land!
@@ -1746,10 +1952,10 @@
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Is my device compatible with eSIM?</span>
+                    <span data-i18n="faq.q3">Is my device compatible with eSIM?</span>
                     <span class="faq-icon">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq.a3">
                     Most recent smartphones support eSIM, including:<br><br>
                     <strong>iPhone:</strong> XS, XR, 11, 12, 13, 14, 15, 16 and newer (including all Pro/Max versions)<br>
                     <strong>Samsung:</strong> Galaxy S20 and newer, Galaxy Z Fold/Flip series<br>
@@ -1761,39 +1967,39 @@
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Can I keep my regular phone number?</span>
+                    <span data-i18n="faq.q4">Can I keep my regular phone number?</span>
                     <span class="faq-icon">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq.a4">
                     Yes! Your travel eSIM works alongside your existing SIM card. You'll have two lines on your phone - your regular number for calls/texts (you can disable data on this to avoid roaming) and your eSIM for affordable mobile data. You can receive calls and texts on your regular number while using eSIM data.
                 </div>
             </div>
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>What happens if I run out of data?</span>
+                    <span data-i18n="faq.q5">What happens if I run out of data?</span>
                     <span class="faq-icon">&#9660;</span>
                 </div>
-                <div class="faq-answer">
+                <div class="faq-answer" data-i18n="faq.a5">
                     You can purchase a top-up or a new eSIM package at any time through the TripPortier app or website. We also send notifications when your data is running low so you're never caught off guard.
                 </div>
             </div>
 
             <div class="faq-more">
-                <a href="faq.html#esim">View all eSIM FAQs &rarr;</a>
+                <a href="faq.html#esim"><span data-i18n="faq.viewAll">View all eSIM FAQs</span> &rarr;</a>
             </div>
         </div>
     </section>
 
     <!-- App CTA -->
     <section class="app-cta">
-        <h2>Manage Your eSIMs in the App</h2>
-        <p>Download TripPortier to purchase eSIMs, track your data usage, and get activation reminders before your trip.</p>
+        <h2 data-i18n="app.title">Manage Your eSIMs in the App</h2>
+        <p data-i18n="app.description">Download TripPortier to purchase eSIMs, track your data usage, and get activation reminders before your trip.</p>
         <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary" style="background: white; color: #8b5cf6;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
             </svg>
-            Download on App Store
+            <span data-i18n="app.download">Download on App Store</span>
         </a>
     </section>
 
@@ -1849,15 +2055,21 @@
             <!-- Filter & Sort Controls -->
             <div class="modal-controls" id="modalControls" style="display: none;">
                 <div class="filter-tabs">
-                    <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">All</button>
-                    <button class="filter-tab" data-filter="unlimited" onclick="setFilter('unlimited')">Unlimited</button>
-                    <button class="filter-tab" data-filter="standard" onclick="setFilter('standard')">Standard</button>
+                    <button class="filter-tab active" data-filter="all" onclick="setFilter('all')">
+                        <span data-i18n="modal.filter.all">All</span>
+                    </button>
+                    <button class="filter-tab" data-filter="unlimited" onclick="setFilter('unlimited')">
+                        <span data-i18n="modal.filter.unlimited">Unlimited</span>
+                    </button>
+                    <button class="filter-tab" data-filter="standard" onclick="setFilter('standard')">
+                        <span data-i18n="modal.filter.standard">Standard</span>
+                    </button>
                 </div>
                 <select class="sort-select" id="sortSelect" onchange="setSorting(this.value)">
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="data-desc">Data: Most First</option>
-                    <option value="days-desc">Duration: Longest</option>
+                    <option value="price-asc" data-i18n="modal.sort.priceLowHigh">Price: Low to High</option>
+                    <option value="price-desc" data-i18n="modal.sort.priceHighLow">Price: High to Low</option>
+                    <option value="data-desc" data-i18n="modal.sort.dataMost">Data: Most First</option>
+                    <option value="days-desc" data-i18n="modal.sort.durationLongest">Duration: Longest</option>
                 </select>
             </div>
             <!-- TripCoin Redemption (shown for logged-in users with coins) -->
@@ -1887,12 +2099,12 @@
             <div class="detail-modal-body" id="modalBody">
                 <div class="modal-loading">
                     <div class="spinner"></div>
-                    <p>Loading packages...</p>
+                    <p data-i18n="modal.loading">Loading packages...</p>
                 </div>
             </div>
             <div class="detail-modal-footer">
                 <button class="buy-now-btn" id="buyNowBtn" disabled onclick="proceedToPurchase()">
-                    Select a package
+                    <span data-i18n="modal.selectPackage">Select a package</span>
                 </button>
             </div>
         </div>
@@ -1903,7 +2115,7 @@
         <div class="checkout-modal-content">
             <button class="checkout-modal-close" onclick="closeCheckoutModal()">&times;</button>
             <div class="checkout-modal-header">
-                <h3>Complete Your Purchase</h3>
+                <h3 data-i18n="checkout.title">Complete Your Purchase</h3>
             </div>
             <div class="checkout-modal-body">
                 <div class="checkout-package-summary">
@@ -1928,9 +2140,9 @@
                 </div>
 
                 <div class="checkout-form-group">
-                    <label for="checkoutEmailInput">Email Address</label>
+                    <label for="checkoutEmailInput" data-i18n="checkout.email">Email Address</label>
                     <input type="email" id="checkoutEmailInput" placeholder="your@email.com" required>
-                    <p style="font-size: 12px; color: #64748b; margin-top: 6px;">Your eSIM QR code will be sent to this email</p>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 6px;" data-i18n="checkout.emailHint">Your eSIM QR code will be sent to this email</p>
                 </div>
 
                 <!-- TripCoins Earnings (shown for logged-in users) -->
@@ -1965,13 +2177,27 @@
                 </div>
 
                 <button class="checkout-btn" id="checkoutBtn" onclick="proceedToStripeCheckout()">
-                    Continue to Payment
+                    <span data-i18n="checkout.continuePayment">Continue to Payment</span>
                 </button>
 
-                <p style="text-align: center; font-size: 12px; color: #64748b; margin-top: 12px;">
+                <p style="text-align: center; font-size: 12px; color: #64748b; margin-top: 12px;" data-i18n="checkout.securePayment">
                     Secure payment powered by Stripe
                 </p>
             </div>
+        </div>
+    </div>
+
+    <!-- Language Selector -->
+    <div class="language-selector" id="languageSelector">
+        <button class="language-btn" onclick="toggleLanguageDropdown()">
+            <span id="currentLangFlag">🇬🇧</span>
+            <span id="currentLangName">English</span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 15l-6-6-6 6"/>
+            </svg>
+        </button>
+        <div class="language-dropdown" id="languageDropdown">
+            <!-- Populated by JavaScript -->
         </div>
     </div>
 
@@ -1993,8 +2219,118 @@
     <script src="js/auth.js"></script>
     <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
+
+    <!-- Translation Scripts -->
+    <script src="js/esim-translations.js"></script>
+    <script src="js/esim-faq-translations.js"></script>
     <script>
+        // ==========================================
+        // Language & Translation System
+        // ==========================================
+        let currentLanguage = localStorage.getItem('esimLanguage') || 'en';
+
+        // Initialize language dropdown
+        function initLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            if (!dropdown || typeof languages === 'undefined') return;
+
+            dropdown.innerHTML = languages.map(lang => `
+                <button class="language-option ${lang.code === currentLanguage ? 'active' : ''}"
+                        onclick="setLanguage('${lang.code}')">
+                    <span class="flag">${lang.flag}</span>
+                    <span class="name">${lang.nativeName}</span>
+                </button>
+            `).join('');
+        }
+
+        // Toggle language dropdown
+        function toggleLanguageDropdown() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.language-selector')) {
+                document.getElementById('languageDropdown')?.classList.remove('show');
+            }
+        });
+
+        // Set language
+        function setLanguage(langCode) {
+            currentLanguage = langCode;
+            localStorage.setItem('esimLanguage', langCode);
+
+            // Update UI
+            const lang = languages.find(l => l.code === langCode);
+            if (lang) {
+                document.getElementById('currentLanguageFlag').textContent = lang.flag;
+                document.getElementById('currentLanguageName').textContent = langCode.toUpperCase().split('-')[0];
+                document.body.dir = lang.dir || 'ltr';
+            }
+
+            // Update dropdown active state
+            document.querySelectorAll('.language-option').forEach(opt => {
+                opt.classList.toggle('active', opt.querySelector('.name')?.textContent === lang?.nativeName);
+            });
+
+            // Apply translations
+            applyTranslations();
+            document.getElementById('languageDropdown')?.classList.remove('show');
+        }
+
+        // Apply translations to all elements with data-i18n
+        function applyTranslations() {
+            const trans = translations[currentLanguage] || translations['en'];
+            const faqTrans = faqTranslations[currentLanguage] || faqTranslations['en'];
+
+            // Translate regular elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const value = getNestedValue(trans, key) || getNestedValue(faqTrans, key);
+                if (value) el.textContent = value;
+            });
+
+            // Translate placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const value = getNestedValue(trans, key);
+                if (value) el.placeholder = value;
+            });
+        }
+
+        // Get nested object value by dot-notation key
+        function getNestedValue(obj, key) {
+            return key.split('.').reduce((o, k) => o?.[k], obj);
+        }
+
+        // Localize country name using Intl.DisplayNames
+        function localizeCountryName(countryCode) {
+            try {
+                const langCode = currentLanguage.replace('-', '-');
+                const displayNames = new Intl.DisplayNames([langCode], { type: 'region' });
+                return displayNames.of(countryCode.toUpperCase()) || countryCode;
+            } catch {
+                return countryCode;
+            }
+        }
+
+        // Initialize language system on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            initLanguageDropdown();
+            // Set initial language from storage
+            const lang = languages?.find(l => l.code === currentLanguage);
+            if (lang) {
+                document.getElementById('currentLanguageFlag').textContent = lang.flag;
+                document.getElementById('currentLanguageName').textContent = currentLanguage.toUpperCase().split('-')[0];
+                document.body.dir = lang.dir || 'ltr';
+            }
+            applyTranslations();
+        });
+
+        // ==========================================
         // eSIM Store Data & Functions
+        // ==========================================
         const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         // Cache for package data
@@ -2847,6 +3183,7 @@
                         tripcoinsUsed: coinsToUse,
                         originalPrice: selectedPackage.price,
                         tripcoinsToEarn: tripcoinsToEarn,
+                        language: currentLanguage || 'en',
                     }),
                 });
 

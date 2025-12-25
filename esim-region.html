@@ -1090,6 +1090,7 @@
                         data: selectedPackage.data,
                         days: selectedPackage.days,
                         operatorTitle: selectedPackage.operatorTitle || `TripPortier ${currentRegion.name} eSIM`,
+                        language: (navigator.language || 'en').split('-')[0],
                     }),
                 });
 
