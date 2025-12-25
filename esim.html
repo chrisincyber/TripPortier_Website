@@ -241,7 +241,7 @@
         }
 
         .country-price strong {
-            color: #fbbf24;
+            color: white;
             font-weight: 700;
         }
 
@@ -2290,7 +2290,7 @@
                 if (priceEl && cheapest) {
                     priceEl.innerHTML = `From <strong>$${cheapest.price.toFixed(2)}</strong>`;
                 } else if (priceEl) {
-                    priceEl.innerHTML = `<span style="color:#fbbf24">No packages</span>`;
+                    priceEl.innerHTML = `<span style="color:rgba(255,255,255,0.6)">No packages</span>`;
                 }
 
                 if (smsEl && features.hasText) {
