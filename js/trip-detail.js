@@ -129,10 +129,20 @@ class TripDetailManager {
     const aiFab = document.getElementById('trip-ai-fab');
     const aiOverlay = document.getElementById('trip-ai-overlay');
     const aiClose = document.getElementById('trip-ai-overlay-close');
+    const aiInput = document.getElementById('ai-chat-input');
+    const aiSendBtn = document.getElementById('ai-chat-send');
+    const aiMessages = document.getElementById('ai-chat-messages');
+
+    // AI chat state
+    this.aiConversationHistory = [];
+    this.aiIsLoading = false;
 
     if (aiFab && aiOverlay) {
       aiFab.addEventListener('click', () => {
         aiOverlay.classList.add('active');
+        this.updateAIDestinationName();
+        this.checkAIPremiumAccess();
+        if (aiInput) aiInput.focus();
       });
     }
 
@@ -151,15 +161,185 @@ class TripDetailManager {
       });
     }
 
-    // AI suggestion buttons
-    const suggestions = document.querySelectorAll('.trip-ai-suggestion');
-    suggestions.forEach(btn => {
+    // Chat input handling
+    if (aiInput && aiSendBtn) {
+      aiInput.addEventListener('input', () => {
+        aiSendBtn.disabled = !aiInput.value.trim();
+      });
+
+      aiInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && aiInput.value.trim() && !this.aiIsLoading) {
+          this.sendAIMessage(aiInput.value.trim());
+          aiInput.value = '';
+          aiSendBtn.disabled = true;
+        }
+      });
+
+      aiSendBtn.addEventListener('click', () => {
+        if (aiInput.value.trim() && !this.aiIsLoading) {
+          this.sendAIMessage(aiInput.value.trim());
+          aiInput.value = '';
+          aiSendBtn.disabled = true;
+        }
+      });
+    }
+
+    // Quick suggestion buttons
+    const quickBtns = document.querySelectorAll('.ai-quick-btn');
+    quickBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         const prompt = btn.dataset.prompt;
-        // For now, redirect to app store with the prompt context
-        window.open('https://apps.apple.com/app/tripportier', '_blank');
+        if (prompt && !this.aiIsLoading) {
+          this.sendAIMessage(prompt);
+        }
       });
     });
+  }
+
+  updateAIDestinationName() {
+    const destinationSpan = document.getElementById('ai-destination-name');
+    if (destinationSpan && this.trip?.destination) {
+      const shortDestination = this.trip.destination.split(',')[0].trim();
+      destinationSpan.textContent = shortDestination;
+    }
+  }
+
+  async checkAIPremiumAccess() {
+    const premiumNotice = document.getElementById('ai-premium-notice');
+    if (!premiumNotice) return;
+
+    try {
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        premiumNotice.style.display = 'flex';
+        return;
+      }
+
+      const db = firebase.firestore();
+      const subscriptionDoc = await db.collection('subscriptions').doc(user.uid).get();
+
+      if (subscriptionDoc.exists) {
+        const data = subscriptionDoc.data();
+        const isPremium = data.status === 'active' || data.status === 'trialing';
+        premiumNotice.style.display = isPremium ? 'none' : 'flex';
+      } else {
+        premiumNotice.style.display = 'flex';
+      }
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+      premiumNotice.style.display = 'none'; // Hide on error, let function handle auth
+    }
+  }
+
+  async sendAIMessage(message) {
+    if (this.aiIsLoading) return;
+
+    const aiMessages = document.getElementById('ai-chat-messages');
+    const welcome = document.getElementById('ai-chat-welcome');
+    const quickSuggestions = document.getElementById('ai-quick-suggestions');
+
+    // Hide welcome message
+    if (welcome) welcome.style.display = 'none';
+
+    // Add user message to chat
+    this.addAIChatMessage(message, 'user');
+
+    // Add to history
+    this.aiConversationHistory.push({ role: 'user', content: message });
+
+    // Show loading indicator
+    this.aiIsLoading = true;
+    const loadingEl = document.createElement('div');
+    loadingEl.className = 'ai-chat-loading';
+    loadingEl.innerHTML = '<span></span><span></span><span></span>';
+    aiMessages.appendChild(loadingEl);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+
+    // Hide quick suggestions after first message
+    if (quickSuggestions && this.aiConversationHistory.length > 0) {
+      quickSuggestions.style.display = 'none';
+    }
+
+    try {
+      // Call Firebase function
+      const aiChat = firebase.functions().httpsCallable('aiChat');
+      const result = await aiChat({
+        message: message,
+        destination: this.trip?.destination || 'your destination',
+        tripContext: {
+          tripName: this.trip?.name,
+          startDate: this.trip?.startDate?.toISOString?.() || null,
+          endDate: this.trip?.endDate?.toISOString?.() || null,
+          budget: this.trip?.budgetAmount,
+          currency: this.trip?.currency
+        },
+        conversationHistory: this.aiConversationHistory.slice(-6)
+      });
+
+      // Remove loading indicator
+      loadingEl.remove();
+
+      if (result.data?.success && result.data?.response) {
+        this.addAIChatMessage(result.data.response, 'assistant');
+        this.aiConversationHistory.push({ role: 'assistant', content: result.data.response });
+      } else {
+        this.addAIChatMessage('Sorry, I couldn\'t process your request. Please try again.', 'assistant');
+      }
+    } catch (error) {
+      console.error('AI Chat error:', error);
+      loadingEl.remove();
+
+      let errorMessage = 'Sorry, something went wrong. Please try again.';
+      if (error.code === 'permission-denied') {
+        errorMessage = 'AI Assistant requires a TripPortier+ subscription. Upgrade to access personalized travel recommendations!';
+      } else if (error.code === 'unauthenticated') {
+        errorMessage = 'Please sign in to use the AI Assistant.';
+      }
+
+      this.addAIChatMessage(errorMessage, 'assistant');
+    }
+
+    this.aiIsLoading = false;
+  }
+
+  addAIChatMessage(content, role) {
+    const aiMessages = document.getElementById('ai-chat-messages');
+    if (!aiMessages) return;
+
+    const messageEl = document.createElement('div');
+    messageEl.className = `ai-chat-message ${role}`;
+
+    if (role === 'assistant') {
+      // Parse markdown-style formatting
+      const formattedContent = this.formatAIResponse(content);
+      messageEl.innerHTML = formattedContent;
+    } else {
+      messageEl.textContent = content;
+    }
+
+    aiMessages.appendChild(messageEl);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+  }
+
+  formatAIResponse(text) {
+    // Convert markdown to HTML
+    let html = this.escapeHtml(text);
+
+    // Bold text **text**
+    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Bullet points
+    html = html.replace(/^[\-\*]\s+(.+)$/gm, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+    // Numbered lists
+    html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+
+    // Line breaks to paragraphs
+    html = html.split('\n\n').map(p => `<p>${p}</p>`).join('');
+    html = html.replace(/<p><\/p>/g, '');
+
+    return html;
   }
 
   async loadTrip(userId, tripId) {

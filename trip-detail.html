@@ -548,47 +548,47 @@
                     </button>
                 </div>
                 <div class="trip-ai-overlay-body">
-                    <p class="trip-ai-desc">Get AI-powered suggestions for your trip:</p>
-                    <div class="trip-ai-suggestions">
-                        <button class="trip-ai-suggestion" data-prompt="What should I pack for this trip?">
-                            <span class="trip-ai-suggestion-icon">
+                    <!-- Chat Messages -->
+                    <div class="ai-chat-messages" id="ai-chat-messages">
+                        <!-- Welcome message -->
+                        <div class="ai-chat-welcome" id="ai-chat-welcome">
+                            <div class="ai-chat-welcome-icon">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+                                    <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
                                 </svg>
-                            </span>
-                            Packing suggestions
-                        </button>
-                        <button class="trip-ai-suggestion" data-prompt="Create a day-by-day itinerary for this trip">
-                            <span class="trip-ai-suggestion-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-                                </svg>
-                            </span>
-                            Plan my itinerary
-                        </button>
-                        <button class="trip-ai-suggestion" data-prompt="What are the must-see attractions?">
-                            <span class="trip-ai-suggestion-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                                    <circle cx="12" cy="10" r="3"/>
-                                </svg>
-                            </span>
-                            Top attractions
-                        </button>
-                        <button class="trip-ai-suggestion" data-prompt="What local food should I try?">
-                            <span class="trip-ai-suggestion-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/>
-                                </svg>
-                            </span>
-                            Local food tips
+                            </div>
+                            <h4>Discover <span id="ai-destination-name">your destination</span></h4>
+                            <p>Ask me anything about local food, attractions, hidden gems, and travel tips!</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Suggestions -->
+                    <div class="ai-quick-suggestions" id="ai-quick-suggestions">
+                        <button class="ai-quick-btn" data-prompt="Best local food spots">🍜 Local food</button>
+                        <button class="ai-quick-btn" data-prompt="Top attractions to visit">📸 Attractions</button>
+                        <button class="ai-quick-btn" data-prompt="Hidden gems tourists miss">💎 Hidden gems</button>
+                        <button class="ai-quick-btn" data-prompt="Free things to do">💰 Free activities</button>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <div class="ai-chat-input-container">
+                        <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Ask about your destination...">
+                        <button id="ai-chat-send" class="ai-chat-send-btn" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
                         </button>
                     </div>
-                    <div class="trip-ai-app-prompt">
-                        <p>For full AI chat, use the TripPortier app</p>
-                        <a href="https://apps.apple.com/app/tripportier" class="trip-ai-app-btn" target="_blank">
-                            Open App
-                        </a>
+
+                    <!-- Premium Notice (shown for non-premium users) -->
+                    <div class="ai-premium-notice" id="ai-premium-notice" style="display: none;">
+                        <div class="ai-premium-notice-content">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
+                            </svg>
+                            <p>AI Assistant requires <strong>TripPortier+</strong></p>
+                            <a href="premium.html" class="ai-premium-btn">Upgrade Now</a>
+                        </div>
                     </div>
                 </div>
             </div>
