@@ -659,6 +659,169 @@ body {
     color: #94a3b8;
 }
 
+/* Footer Trust Bar */
+.footer-trust-bar {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #475569;
+}
+
+.trust-bar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.trust-icon {
+    font-size: 1.25rem;
+}
+
+/* Footer Selectors */
+.footer-selectors {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.selector-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.selector-group label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.footer-select {
+    background: #334155;
+    color: white;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 0.5rem 2rem 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+    min-width: 140px;
+}
+
+.footer-select:hover {
+    border-color: #6366f1;
+}
+
+.footer-select:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.footer-select option {
+    background: #1e293b;
+    color: white;
+}
+
+/* Payment Methods */
+.payment-methods {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.payment-methods span {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.payment-methods img {
+    height: 24px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.payment-methods img:hover {
+    opacity: 1;
+}
+
+/* Checkout Trust Badges */
+.checkout-trust-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 12px;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    flex-wrap: wrap;
+}
+
+.checkout-trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #10b981;
+    font-weight: 500;
+}
+
+.checkout-trust-badge .icon {
+    font-size: 1.125rem;
+}
+
+@media (max-width: 768px) {
+    .trust-bar-container {
+        gap: 1rem;
+    }
+
+    .trust-item {
+        font-size: 0.75rem;
+    }
+
+    .footer-selectors {
+        flex-direction: column;
+    }
+
+    .footer-select {
+        width: 100%;
+    }
+
+    .payment-methods {
+        gap: 0.75rem;
+    }
+
+    .payment-methods img {
+        height: 20px;
+    }
+
+    .checkout-trust-badges {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+}
+
 .social-links {
     display: flex;
     gap: 1rem;

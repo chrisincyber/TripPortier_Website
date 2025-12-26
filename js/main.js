@@ -173,3 +173,163 @@ window.addEventListener('scroll', () => {
 console.log('%cTripPortier', 'font-size: 24px; font-weight: bold; color: #6366f1;');
 console.log('%cTravel Smarter, Pack Better', 'font-size: 14px; color: #64748b;');
 console.log('Interested in working with us? Contact us at info@tripportier.com');
+
+// Currency and Language Detection & Selection
+const TripPortierLocale = {
+    // Map of locale codes to currencies
+    localeToCurrency: {
+        'en-US': 'USD', 'en-GB': 'GBP', 'en-AU': 'AUD', 'en-CA': 'CAD', 'en-NZ': 'NZD',
+        'en-SG': 'SGD', 'en-HK': 'HKD', 'en-ZA': 'ZAR', 'en-IN': 'INR', 'en-PH': 'PHP',
+        'de': 'EUR', 'de-DE': 'EUR', 'de-AT': 'EUR', 'de-CH': 'CHF',
+        'fr': 'EUR', 'fr-FR': 'EUR', 'fr-CA': 'CAD', 'fr-CH': 'CHF',
+        'es': 'EUR', 'es-ES': 'EUR', 'es-MX': 'MXN',
+        'it': 'EUR', 'it-IT': 'EUR', 'it-CH': 'CHF',
+        'nl': 'EUR', 'nl-NL': 'EUR',
+        'pt': 'EUR', 'pt-PT': 'EUR', 'pt-BR': 'BRL',
+        'ja': 'JPY', 'ja-JP': 'JPY',
+        'ko': 'KRW', 'ko-KR': 'KRW',
+        'zh': 'CNY', 'zh-CN': 'CNY', 'zh-Hans': 'CNY', 'zh-TW': 'TWD', 'zh-Hant': 'TWD', 'zh-HK': 'HKD',
+        'ar': 'AED', 'ar-AE': 'AED', 'ar-SA': 'SAR',
+        'sv': 'SEK', 'sv-SE': 'SEK',
+        'da': 'DKK', 'da-DK': 'DKK',
+        'nb': 'NOK', 'nb-NO': 'NOK', 'no': 'NOK',
+        'fi': 'EUR', 'fi-FI': 'EUR',
+        'th': 'THB', 'th-TH': 'THB',
+        'tr': 'TRY', 'tr-TR': 'TRY',
+        'pl': 'PLN', 'pl-PL': 'PLN',
+        'cs': 'CZK', 'cs-CZ': 'CZK',
+        'ms': 'MYR', 'ms-MY': 'MYR',
+        'id': 'IDR', 'id-ID': 'IDR',
+        'vi': 'VND', 'vi-VN': 'VND',
+        'he': 'ILS', 'he-IL': 'ILS'
+    },
+
+    // Detect currency from browser locale
+    detectCurrency: function() {
+        const savedCurrency = localStorage.getItem('tripportier-currency');
+        if (savedCurrency) return savedCurrency;
+
+        const locale = navigator.language || navigator.userLanguage || 'en-US';
+
+        // Try exact match first
+        if (this.localeToCurrency[locale]) {
+            return this.localeToCurrency[locale];
+        }
+
+        // Try language code only
+        const langCode = locale.split('-')[0];
+        if (this.localeToCurrency[langCode]) {
+            return this.localeToCurrency[langCode];
+        }
+
+        return 'USD'; // Default
+    },
+
+    // Detect language from browser
+    detectLanguage: function() {
+        const savedLang = localStorage.getItem('tripportier-lang');
+        if (savedLang) return savedLang;
+
+        const supportedLangs = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pt-BR', 'ja', 'ko', 'zh-Hans', 'zh-Hant', 'ar', 'sv', 'da', 'nb', 'fi', 'th', 'tr'];
+        const locale = navigator.language || navigator.userLanguage || 'en';
+
+        // Try exact match
+        if (supportedLangs.includes(locale)) {
+            return locale;
+        }
+
+        // Try language code only
+        const langCode = locale.split('-')[0];
+
+        // Handle Chinese variants
+        if (langCode === 'zh') {
+            if (locale.includes('TW') || locale.includes('HK') || locale.includes('Hant')) {
+                return 'zh-Hant';
+            }
+            return 'zh-Hans';
+        }
+
+        // Handle Portuguese
+        if (langCode === 'pt') {
+            return locale.includes('BR') ? 'pt-BR' : 'pt-BR'; // Default to BR for now
+        }
+
+        // Handle Norwegian
+        if (langCode === 'no' || langCode === 'nn') {
+            return 'nb';
+        }
+
+        if (supportedLangs.includes(langCode)) {
+            return langCode;
+        }
+
+        return 'en'; // Default
+    },
+
+    // Initialize selectors on page load
+    init: function() {
+        const languageSelect = document.getElementById('language-select');
+        const currencySelect = document.getElementById('currency-select');
+
+        if (languageSelect) {
+            const detectedLang = this.detectLanguage();
+            languageSelect.value = detectedLang;
+        }
+
+        if (currencySelect) {
+            const detectedCurrency = this.detectCurrency();
+            currencySelect.value = detectedCurrency;
+        }
+    }
+};
+
+// Language change handler
+function changeLanguage(langCode) {
+    localStorage.setItem('tripportier-lang', langCode);
+
+    // Check if we're on a language-specific page or root
+    const currentPath = window.location.pathname;
+    const supportedLangs = ['en', 'de', 'fr', 'es', 'it', 'nl', 'pt-BR', 'ja', 'ko', 'zh-Hans', 'zh-Hant', 'ar', 'sv', 'da', 'nb', 'fi', 'th', 'tr'];
+
+    // Extract current language from path if exists
+    const pathParts = currentPath.split('/').filter(p => p);
+    const currentLang = pathParts.length > 0 && supportedLangs.includes(pathParts[0]) ? pathParts[0] : null;
+
+    if (currentLang) {
+        // Replace language in path
+        const newPath = '/' + langCode + '/' + pathParts.slice(1).join('/');
+        window.location.href = newPath;
+    } else {
+        // Redirect to language-specific root
+        window.location.href = '/' + langCode + '/';
+    }
+}
+
+// Currency change handler
+function changeCurrency(currencyCode) {
+    localStorage.setItem('tripportier-currency', currencyCode);
+
+    // Dispatch event for any components that need to update prices
+    window.dispatchEvent(new CustomEvent('currencyChanged', {
+        detail: { currency: currencyCode }
+    }));
+
+    // Reload page to update prices (in production, this would update via API)
+    // For now, just save the preference
+    console.log('Currency changed to:', currencyCode);
+}
+
+// Get current currency
+function getCurrentCurrency() {
+    return localStorage.getItem('tripportier-currency') || TripPortierLocale.detectCurrency();
+}
+
+// Get current language
+function getCurrentLanguage() {
+    return localStorage.getItem('tripportier-lang') || TripPortierLocale.detectLanguage();
+}
+
+// Initialize locale settings on DOM ready
+document.addEventListener('DOMContentLoaded', function() {
+    TripPortierLocale.init();
+});
