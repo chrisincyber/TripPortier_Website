@@ -46,7 +46,118 @@ const functions = typeof firebase.functions === 'function' ? firebase.functions(
 // Enable local persistence for auth state (survives browser restart)
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
+// Firebase Cloud Messaging for Web Push Notifications
+// VAPID key from Firebase Console > Project Settings > Cloud Messaging > Web configuration
+const VAPID_KEY = 'BDe0-lGSMqgfDl6VhQhSPQxYDMxTq3kN_gKxP3C8pYqKq_Z8yHjmPLqVnkq3qJYBPqQJzH8lKPjHQ3xLzKZRQHE';
+
+let messaging = null;
+
+// Initialize messaging if supported
+async function initializeMessaging() {
+  if (!('Notification' in window)) {
+    console.log('This browser does not support notifications');
+    return null;
+  }
+
+  if (!firebase.messaging) {
+    console.log('Firebase messaging not loaded');
+    return null;
+  }
+
+  try {
+    messaging = firebase.messaging();
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+      console.log('Service Worker registered:', registration.scope);
+    }
+
+    return messaging;
+  } catch (error) {
+    console.error('Failed to initialize messaging:', error);
+    return null;
+  }
+}
+
+// Request notification permission and get FCM token
+async function requestNotificationPermission() {
+  if (!('Notification' in window)) {
+    console.log('Notifications not supported');
+    return null;
+  }
+
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== 'granted') {
+      console.log('Notification permission denied');
+      return null;
+    }
+
+    // Initialize messaging if not already done
+    if (!messaging) {
+      await initializeMessaging();
+    }
+
+    if (!messaging) {
+      return null;
+    }
+
+    // Get the token with VAPID key
+    const token = await messaging.getToken({ vapidKey: VAPID_KEY });
+    console.log('FCM Web Token obtained');
+    return token;
+  } catch (error) {
+    console.error('Error getting notification token:', error);
+    return null;
+  }
+}
+
+// Save web FCM token to Firestore for the current user
+async function saveWebFcmToken(userId, token) {
+  if (!userId || !token) return false;
+
+  try {
+    await db.collection('users').doc(userId).set({
+      fcmWebToken: token,
+      fcmWebTokenUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    console.log('Web FCM token saved to Firestore');
+    return true;
+  } catch (error) {
+    console.error('Error saving web FCM token:', error);
+    return false;
+  }
+}
+
+// Handle foreground messages
+function setupForegroundMessageHandler() {
+  if (!messaging) return;
+
+  messaging.onMessage((payload) => {
+    console.log('Foreground message received:', payload);
+
+    const title = payload.notification?.title || 'TripPortier';
+    const body = payload.notification?.body || '';
+
+    // Show browser notification
+    if (Notification.permission === 'granted') {
+      new Notification(title, {
+        body: body,
+        icon: '/assets/images/logo.png',
+        tag: 'tripportier-foreground'
+      });
+    }
+  });
+}
+
 // Export for use in other modules
 window.firebaseAuth = auth;
 window.firebaseDb = db;
 window.firebaseFunctions = functions;
+window.requestNotificationPermission = requestNotificationPermission;
+window.saveWebFcmToken = saveWebFcmToken;
+window.initializeMessaging = initializeMessaging;
+window.setupForegroundMessageHandler = setupForegroundMessageHandler;

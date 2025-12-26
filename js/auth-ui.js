@@ -629,6 +629,12 @@ class AuthUI {
     const navLinks = document.querySelector('.nav-links');
     if (!navLinks) return;
 
+    // Request notification permission when user logs in (only once per session)
+    if (user && !this._notificationPromptShown) {
+      this._notificationPromptShown = true;
+      this.promptForNotifications(user.uid);
+    }
+
     // Remove existing auth element
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
@@ -736,6 +742,56 @@ class AuthUI {
 
     // Also update mobile menu if it exists
     this.updateMobileMenu(user, profile);
+  }
+
+  // Prompt for web push notifications
+  async promptForNotifications(userId) {
+    // Don't prompt on localhost for now
+    if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+      console.log('Skipping notification prompt on localhost');
+      return;
+    }
+
+    // Check if already have permission
+    if (Notification.permission === 'granted') {
+      // Already have permission, just make sure we have token saved
+      this.setupNotifications(userId);
+      return;
+    }
+
+    // Don't prompt if denied
+    if (Notification.permission === 'denied') {
+      console.log('Notification permission was denied');
+      return;
+    }
+
+    // Wait a bit before prompting (don't interrupt login flow)
+    setTimeout(async () => {
+      try {
+        const token = await window.requestNotificationPermission();
+        if (token) {
+          await window.saveWebFcmToken(userId, token);
+          window.setupForegroundMessageHandler();
+          console.log('Web notifications enabled successfully');
+        }
+      } catch (error) {
+        console.error('Failed to setup notifications:', error);
+      }
+    }, 2000);
+  }
+
+  // Setup notifications for user who already granted permission
+  async setupNotifications(userId) {
+    try {
+      await window.initializeMessaging();
+      const token = await window.requestNotificationPermission();
+      if (token) {
+        await window.saveWebFcmToken(userId, token);
+        window.setupForegroundMessageHandler();
+      }
+    } catch (error) {
+      console.error('Failed to setup notifications:', error);
+    }
   }
 
   updateMobileMenu(user, profile) {

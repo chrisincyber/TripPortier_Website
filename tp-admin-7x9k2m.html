@@ -74,6 +74,15 @@
         .main-content.visible { display: block; }
         .logout-btn { position: fixed; top: 20px; right: 20px; background: #f3f4f6; border: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; color: #666; }
         .logout-btn:hover { background: #e5e7eb; }
+
+        /* Target Selector */
+        .target-selector { display: flex; gap: 12px; flex-wrap: wrap; }
+        .target-option { flex: 1; min-width: 120px; }
+        .target-option input { display: none; }
+        .target-label { display: flex; align-items: center; gap: 8px; padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: all 0.2s; background: white; }
+        .target-label:hover { border-color: #a5b4fc; background: #f5f3ff; }
+        .target-option input:checked + .target-label { border-color: #6366f1; background: #eef2ff; }
+        .target-icon { font-size: 20px; }
     </style>
 </head>
 <body>
@@ -121,8 +130,35 @@
                     <textarea id="body" placeholder="e.g., Get 20% off all eSIMs this week!"></textarea>
                 </div>
 
+                <div class="form-group">
+                    <label for="target">Send To</label>
+                    <div class="target-selector">
+                        <label class="target-option">
+                            <input type="radio" name="target" value="phone" checked>
+                            <span class="target-label">
+                                <span class="target-icon">📱</span>
+                                Phone App
+                            </span>
+                        </label>
+                        <label class="target-option">
+                            <input type="radio" name="target" value="web">
+                            <span class="target-label">
+                                <span class="target-icon">💻</span>
+                                Web Browser
+                            </span>
+                        </label>
+                        <label class="target-option">
+                            <input type="radio" name="target" value="both">
+                            <span class="target-label">
+                                <span class="target-icon">📲</span>
+                                Both
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
                 <button class="btn" onclick="sendNotification()">
-                    Send to All Users
+                    Send Notification
                 </button>
 
                 <div id="result" class="result"></div>
@@ -438,6 +474,7 @@
 
             const title = document.getElementById('title').value.trim();
             const body = document.getElementById('body').value.trim();
+            const target = document.querySelector('input[name="target"]:checked').value;
             const resultDiv = document.getElementById('result');
             const btn = document.querySelector('#notifications-tab .btn');
 
@@ -459,7 +496,7 @@
                         'Content-Type': 'application/json',
                         'X-Admin-Key': adminKey
                     },
-                    body: JSON.stringify({ title, body })
+                    body: JSON.stringify({ title, body, target })
                 });
 
                 const data = await response.json();
@@ -472,8 +509,9 @@
 
                 if (response.ok && data.success) {
                     resultDiv.className = 'result success';
+                    const targetLabel = target === 'phone' ? 'Phone' : target === 'web' ? 'Web' : 'Phone & Web';
                     resultDiv.innerHTML = `
-                        <strong>Notification sent!</strong>
+                        <strong>Notification sent to ${targetLabel}!</strong>
                         <div class="stats">
                             <div class="stat">
                                 <div class="stat-value">${data.sent || 0}</div>
@@ -503,7 +541,7 @@
 
             resultDiv.style.display = 'block';
             btn.disabled = false;
-            btn.textContent = 'Send to All Users';
+            btn.textContent = 'Send Notification';
         }
 
         // Check session on page load
