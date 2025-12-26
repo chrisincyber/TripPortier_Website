@@ -661,9 +661,9 @@ body {
 
 /* Footer Trust Bar */
 .footer-trust-bar {
-    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    padding: 1rem 2rem;
-    border-bottom: 1px solid #475569;
+    background: var(--dark);
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .trust-bar-container {

@@ -143,23 +143,108 @@
 
     <!-- Footer -->
     <footer class="footer">
+        <!-- Trust Bar -->
+        <div class="footer-trust-bar">
+            <div class="trust-bar-container">
+                <div class="trust-item">
+                    <span class="trust-icon">&#128274;</span>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#9989;</span>
+                    <span>Verified Provider</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#128176;</span>
+                    <span>Money-Back Guarantee</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#127760;</span>
+                    <span>200+ Countries</span>
+                </div>
+            </div>
+        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+                <!-- Language & Currency Selectors -->
+                <div class="footer-selectors">
+                    <div class="selector-group">
+                        <label for="language-select">&#127760; Language</label>
+                        <select id="language-select" class="footer-select" onchange="changeLanguage(this.value)">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                            <option value="nl">Nederlands</option>
+                            <option value="pt-BR">Português (BR)</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="zh-Hans">简体中文</option>
+                            <option value="zh-Hant">繁體中文</option>
+                            <option value="ar">العربية</option>
+                            <option value="sv">Svenska</option>
+                            <option value="da">Dansk</option>
+                            <option value="nb">Norsk</option>
+                            <option value="fi">Suomi</option>
+                            <option value="th">ไทย</option>
+                            <option value="tr">Türkçe</option>
+                        </select>
+                    </div>
+                    <div class="selector-group">
+                        <label for="currency-select">&#128176; Currency</label>
+                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
+                            <option value="USD">$ USD</option>
+                            <option value="EUR">€ EUR</option>
+                            <option value="GBP">£ GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">¥ JPY</option>
+                            <option value="CNY">¥ CNY</option>
+                            <option value="KRW">₩ KRW</option>
+                            <option value="AUD">$ AUD</option>
+                            <option value="CAD">$ CAD</option>
+                            <option value="NZD">$ NZD</option>
+                            <option value="SGD">$ SGD</option>
+                            <option value="HKD">$ HKD</option>
+                            <option value="SEK">kr SEK</option>
+                            <option value="NOK">kr NOK</option>
+                            <option value="DKK">kr DKK</option>
+                            <option value="PLN">zł PLN</option>
+                            <option value="CZK">Kč CZK</option>
+                            <option value="THB">฿ THB</option>
+                            <option value="MYR">RM MYR</option>
+                            <option value="INR">₹ INR</option>
+                            <option value="BRL">R$ BRL</option>
+                            <option value="MXN">$ MXN</option>
+                            <option value="AED">د.إ AED</option>
+                            <option value="SAR">﷼ SAR</option>
+                            <option value="TRY">₺ TRY</option>
+                            <option value="ZAR">R ZAR</option>
+                            <option value="ILS">₪ ILS</option>
+                            <option value="TWD">$ TWD</option>
+                            <option value="PHP">₱ PHP</option>
+                            <option value="IDR">Rp IDR</option>
+                            <option value="VND">₫ VND</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="footer-section">
-                <h4>App</h4>
+                <h4>Services</h4>
                 <ul>
-                    <li><a href="index.html#features">Features</a></li>
-                    <li><a href="https://apps.apple.com/app/tripportier">Download</a></li>
-                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="esim.html">eSIM</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4>Support</h4>
                 <ul>
                     <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
                 </ul>
             </div>
@@ -173,6 +258,14 @@
             </div>
         </div>
         <div class="footer-bottom">
+            <div class="payment-methods">
+                <span>We accept:</span>
+                <img src="https://cdn.jsdelivr.net/gh/nicepkg/assets@master/payment/visa.svg" alt="Visa" height="24">
+                <img src="https://cdn.jsdelivr.net/gh/nicepkg/assets@master/payment/mastercard.svg" alt="Mastercard" height="24">
+                <img src="https://cdn.jsdelivr.net/gh/nicepkg/assets@master/payment/amex.svg" alt="American Express" height="24">
+                <img src="https://cdn.jsdelivr.net/gh/nicepkg/assets@master/payment/applepay.svg" alt="Apple Pay" height="24">
+                <img src="https://cdn.jsdelivr.net/gh/nicepkg/assets@master/payment/googlepay.svg" alt="Google Pay" height="24">
+            </div>
             <p>&copy; 2025 TripPortier. All rights reserved.</p>
         </div>
     </footer>
