@@ -670,8 +670,14 @@ class AuthUI {
         tripsLi.innerHTML = `<a href="/trips.html" ${isTripsPage ? 'class="active"' : ''}>My Trips</a>`;
         navLinks.appendChild(tripsLi);
       }
+
+      // Check subscription status and hide TripPortier+ for premium users
+      this.checkAndHidePremiumNav(user.uid);
     } else {
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
+      // Show TripPortier+ for logged out users
+      const premiumNav = document.getElementById('premium-nav');
+      if (premiumNav) premiumNav.style.display = '';
     }
 
     // Create new auth element
@@ -791,6 +797,30 @@ class AuthUI {
       }
     } catch (error) {
       console.error('Failed to setup notifications:', error);
+    }
+  }
+
+  // Check subscription status and hide TripPortier+ nav for premium users
+  async checkAndHidePremiumNav(userId) {
+    const premiumNav = document.getElementById('premium-nav');
+    if (!premiumNav) return;
+
+    try {
+      const db = window.firebaseDb;
+      if (!db) return;
+
+      const subscriptionDoc = await db.collection('subscriptions').doc(userId).get();
+      if (subscriptionDoc.exists) {
+        const data = subscriptionDoc.data();
+        const isPremium = data.status === 'active' || data.status === 'trialing';
+        if (isPremium) {
+          premiumNav.style.display = 'none';
+        } else {
+          premiumNav.style.display = '';
+        }
+      }
+    } catch (error) {
+      console.error('Error checking subscription status:', error);
     }
   }
 
