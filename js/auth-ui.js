@@ -633,25 +633,39 @@ class AuthUI {
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
 
-    // Remove existing My Trips link
+    // Handle My Trips nav link visibility (look for existing element first)
+    const existingMyTripsNav = document.getElementById('mytrips-nav');
     const existingTripsLink = navLinks.querySelector('.nav-trips-link');
-    if (existingTripsLink) existingTripsLink.remove();
+    if (existingTripsLink && !existingMyTripsNav) existingTripsLink.remove();
 
     // Skip adding Sign In button on account page (it has its own Sign In UI)
     const isAccountPage = window.location.pathname.includes('account.html');
     if (!user && isAccountPage) {
+      // Hide My Trips if exists
+      if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Also update mobile menu
       this.updateMobileMenu(user, profile);
       return;
     }
 
-    // Add My Trips nav link if user is logged in
+    // Show/hide My Trips nav link based on login state
     if (user) {
-      const tripsLi = document.createElement('li');
-      tripsLi.className = 'nav-trips-link';
-      const isTripsPage = window.location.pathname.includes('trips.html');
-      tripsLi.innerHTML = `<a href="/trips.html" ${isTripsPage ? 'class="active"' : ''}>My Trips</a>`;
-      navLinks.appendChild(tripsLi);
+      if (existingMyTripsNav) {
+        // Use the existing element
+        existingMyTripsNav.style.display = '';
+        const isTripsPage = window.location.pathname.includes('trips.html');
+        const tripsLink = existingMyTripsNav.querySelector('a');
+        if (tripsLink && isTripsPage) tripsLink.classList.add('active');
+      } else {
+        // Create dynamically if not found
+        const tripsLi = document.createElement('li');
+        tripsLi.className = 'nav-trips-link';
+        const isTripsPage = window.location.pathname.includes('trips.html');
+        tripsLi.innerHTML = `<a href="/trips.html" ${isTripsPage ? 'class="active"' : ''}>My Trips</a>`;
+        navLinks.appendChild(tripsLi);
+      }
+    } else {
+      if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
     }
 
     // Create new auth element
