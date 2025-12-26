@@ -484,7 +484,16 @@ class TripDetailManager {
           </svg>
         </div>
         <span class="packing-item-name">${this.escapeHtml(item.name)}</span>
-        ${quantity > 1 ? `<span class="packing-item-qty">x${quantity}</span>` : ''}
+        <div class="packing-item-qty-controls">
+          <button class="qty-btn qty-minus" data-index="${item.originalIndex}" onclick="event.stopPropagation(); window.tripDetailManager.adjustPackingQuantity(${item.originalIndex}, -1)">−</button>
+          <span class="packing-item-qty">${quantity}</span>
+          <button class="qty-btn qty-plus" data-index="${item.originalIndex}" onclick="event.stopPropagation(); window.tripDetailManager.adjustPackingQuantity(${item.originalIndex}, 1)">+</button>
+        </div>
+        <button class="packing-item-delete" onclick="event.stopPropagation(); window.tripDetailManager.deletePackingItem(${item.originalIndex})" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
     `;
   }
@@ -530,6 +539,36 @@ class TripDetailManager {
     } catch (error) {
       console.error('Error saving packing items:', error);
     }
+  }
+
+  async deletePackingItem(index) {
+    if (!this.trip.packingItems[index]) return;
+
+    // Remove item from array
+    this.trip.packingItems.splice(index, 1);
+
+    // Re-render the list
+    this.renderPackingList();
+
+    // Save to Firestore
+    await this.savePackingItemsToFirestore();
+
+    this.showToast('Item removed');
+  }
+
+  async adjustPackingQuantity(index, delta) {
+    if (!this.trip.packingItems[index]) return;
+
+    const currentQty = this.trip.packingItems[index].quantity || 1;
+    const newQty = Math.max(1, currentQty + delta); // Minimum 1
+
+    this.trip.packingItems[index].quantity = newQty;
+
+    // Re-render the list
+    this.renderPackingList();
+
+    // Save to Firestore
+    await this.savePackingItemsToFirestore();
   }
 
   getCategoryIcon(category) {
@@ -596,6 +635,11 @@ class TripDetailManager {
           ${item.notes ? `<span class="todo-item-notes">${this.escapeHtml(item.notes)}</span>` : ''}
         </div>
         ${dueDateStr ? `<span class="todo-item-due">${dueDateStr}</span>` : ''}
+        <button class="todo-item-delete" onclick="event.stopPropagation(); window.tripDetailManager.deleteTodoItem(${item.originalIndex})" title="Delete">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 6L6 18M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
     `;
   }
@@ -641,6 +685,21 @@ class TripDetailManager {
     } catch (error) {
       console.error('Error saving todos:', error);
     }
+  }
+
+  async deleteTodoItem(index) {
+    if (!this.trip.todos[index]) return;
+
+    // Remove item from array
+    this.trip.todos.splice(index, 1);
+
+    // Re-render the list
+    this.renderTodos();
+
+    // Save to Firestore
+    await this.saveTodosToFirestore();
+
+    this.showToast('To-do removed');
   }
 
   renderBudget() {
@@ -711,13 +770,14 @@ class TripDetailManager {
       return (bDate || 0) - (aDate || 0);
     });
 
-    container.innerHTML = sortedItems.map(item => {
+    container.innerHTML = sortedItems.map((item, idx) => {
       const date = this.parseDate(item.startDate || item.date);
       const dateStr = date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
       const amount = item.homeCurrencyAmount || item.currencyAmount || 0;
+      const isExpense = item.type === 'expense';
 
       return `
-        <div class="expense-item">
+        <div class="expense-item" data-id="${item.id || idx}">
           <div class="expense-item-icon">${this.getExpenseIcon(item.category)}</div>
           <div class="expense-item-content">
             <span class="expense-item-name">${this.escapeHtml(item.name || item.title)}</span>
@@ -727,6 +787,13 @@ class TripDetailManager {
             <span class="expense-item-amount">${currencySymbol}${amount.toFixed(2)}</span>
             ${dateStr ? `<span class="expense-item-date">${dateStr}</span>` : ''}
           </div>
+          ${isExpense ? `
+            <button class="expense-item-delete" onclick="window.tripDetailManager.deleteExpense('${item.id}')" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          ` : ''}
         </div>
       `;
     }).join('');
@@ -944,15 +1011,18 @@ class TripDetailManager {
 
     // Todo item form
     const todoInput = document.getElementById('todo-item-input');
+    const todoDueDateInput = document.getElementById('todo-due-date-input');
     const addTodoBtn = document.getElementById('add-todo-btn');
 
     if (todoInput && addTodoBtn) {
       const addTodoItem = () => {
         const title = todoInput.value.trim();
+        const dueDate = todoDueDateInput ? todoDueDateInput.value : null;
 
         if (title) {
-          this.addTodoItem(title);
+          this.addTodoItem(title, dueDate);
           todoInput.value = '';
+          if (todoDueDateInput) todoDueDateInput.value = '';
         }
       };
 
@@ -996,7 +1066,7 @@ class TripDetailManager {
     await this.savePackingItemsToFirestore();
   }
 
-  async addTodoItem(title) {
+  async addTodoItem(title, dueDate = null) {
     if (!this.trip) return;
 
     // Initialize todos array if needed
@@ -1012,6 +1082,7 @@ class TripDetailManager {
       id: id,
       title: title,
       isCompleted: false,
+      dueDate: dueDate ? new Date(dueDate).toISOString() : null,
       createdAt: new Date().toISOString()
     };
 
@@ -1112,6 +1183,24 @@ class TripDetailManager {
     }
   }
 
+  async deleteExpense(expenseId) {
+    if (!this.trip.expenses) return;
+
+    // Find and remove the expense
+    const index = this.trip.expenses.findIndex(e => e.id === expenseId);
+    if (index === -1) return;
+
+    this.trip.expenses.splice(index, 1);
+
+    // Re-render the budget
+    this.renderBudget();
+
+    // Save to Firestore
+    await this.saveExpensesToFirestore();
+
+    this.showToast('Expense removed');
+  }
+
   // ============================================
   // Itinerary Item Management
   // ============================================
@@ -1122,6 +1211,7 @@ class TripDetailManager {
     const timeInput = document.getElementById('itinerary-time-input');
     const categorySelect = document.getElementById('itinerary-category-select');
     const locationInput = document.getElementById('itinerary-location-input');
+    const notesInput = document.getElementById('itinerary-notes-input');
     const addBtn = document.getElementById('add-itinerary-btn');
 
     // Set default date to trip start date when trip loads
@@ -1139,11 +1229,13 @@ class TripDetailManager {
         const timeStr = timeInput ? timeInput.value : '09:00';
         const category = categorySelect ? categorySelect.value : 'activity';
         const location = locationInput ? locationInput.value.trim() : '';
+        const notes = notesInput ? notesInput.value.trim() : '';
 
         if (name && dateStr) {
-          this.addItineraryItem(name, dateStr, timeStr, category, location);
+          this.addItineraryItem(name, dateStr, timeStr, category, location, notes);
           nameInput.value = '';
           if (locationInput) locationInput.value = '';
+          if (notesInput) notesInput.value = '';
         } else if (!name) {
           this.showToast('Please enter an event name');
         } else if (!dateStr) {
@@ -1160,7 +1252,7 @@ class TripDetailManager {
     }
   }
 
-  async addItineraryItem(name, dateStr, timeStr, category, location) {
+  async addItineraryItem(name, dateStr, timeStr, category, location, notes = '') {
     if (!this.trip) return;
 
     // Initialize itineraryItems array if needed
@@ -1183,6 +1275,7 @@ class TripDetailManager {
       category: category,
       startDate: eventDate.toISOString(),
       location: location || null,
+      notes: notes || null,
       createdAt: new Date().toISOString()
     };
 

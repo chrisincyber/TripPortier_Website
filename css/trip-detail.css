@@ -1036,6 +1036,73 @@
   background: #f1f5f9;
   padding: 0.125rem 0.5rem;
   border-radius: 4px;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.packing-item-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.qty-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.qty-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.qty-btn:active {
+  transform: scale(0.95);
+}
+
+.packing-item-delete,
+.todo-item-delete,
+.expense-item-delete {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+}
+
+.packing-item-delete:hover,
+.todo-item-delete:hover,
+.expense-item-delete:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.packing-item-delete svg,
+.todo-item-delete svg,
+.expense-item-delete svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* ============================================
@@ -2406,4 +2473,35 @@
 
 [data-theme="dark"] .trip-menu-divider {
   background: #2d2d5a;
+}
+
+[data-theme="dark"] .qty-btn {
+  background: #2d2d5a;
+  color: #a5b4fc;
+}
+
+[data-theme="dark"] .qty-btn:hover {
+  background: #3d3d7a;
+  color: #c4b5fd;
+}
+
+[data-theme="dark"] .packing-item-qty {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .packing-item-delete,
+[data-theme="dark"] .todo-item-delete,
+[data-theme="dark"] .expense-item-delete {
+  color: #64748b;
+}
+
+[data-theme="dark"] .packing-item-delete:hover,
+[data-theme="dark"] .todo-item-delete:hover,
+[data-theme="dark"] .expense-item-delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+
+[data-theme="dark"] .add-item-date {
+  color-scheme: dark;
 }
