@@ -2751,3 +2751,90 @@
 [data-theme="dark"] .add-item-date {
   color-scheme: dark;
 }
+
+/* AI Chat Dark Mode */
+[data-theme="dark"] .trip-ai-overlay-content {
+  background: #1e1e3f;
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .trip-ai-overlay-header {
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .trip-ai-overlay-title h3 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .ai-chat-messages {
+  background: #1e1e3f;
+}
+
+[data-theme="dark"] .ai-chat-welcome h4 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .ai-chat-welcome p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .ai-chat-message.assistant {
+  background: #2d2d5a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .ai-chat-message.assistant strong {
+  color: #a5b4fc;
+}
+
+[data-theme="dark"] .ai-chat-loading {
+  background: #2d2d5a;
+}
+
+[data-theme="dark"] .ai-chat-loading span {
+  background: #64748b;
+}
+
+[data-theme="dark"] .ai-quick-suggestions {
+  background: #15152d;
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .ai-quick-btn {
+  background: #2d2d5a;
+  border-color: #3d3d7a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .ai-quick-btn:hover {
+  background: #6366f1;
+  border-color: #6366f1;
+}
+
+[data-theme="dark"] .ai-chat-input-container {
+  background: #1e1e3f;
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .ai-chat-input {
+  background: #15152d;
+  border-color: #2d2d5a;
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .ai-chat-input::placeholder {
+  color: #64748b;
+}
+
+[data-theme="dark"] .ai-chat-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="dark"] .ai-premium-notice {
+  background: rgba(30, 30, 63, 0.98);
+}
+
+[data-theme="dark"] .ai-premium-notice-content p {
+  color: #94a3b8;
+}
