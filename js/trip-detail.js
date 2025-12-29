@@ -398,6 +398,7 @@ class TripDetailManager {
       this.renderTodos();
       this.renderBudget();
       this.loadWeather();
+      this.renderSuggestions();
       this.showContent();
     } catch (error) {
       console.error('Error loading trip:', error);
@@ -999,6 +1000,571 @@ class TripDetailManager {
       'Other': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>'
     };
     return icons[category] || icons.Other;
+  }
+
+  // ============================================
+  // Trip Hub Suggestions
+  // ============================================
+
+  async renderSuggestions() {
+    const phase = this.getTripPhase();
+
+    // Don't show suggestions for past trips
+    if (phase === 'past') return;
+
+    const container = document.getElementById('trip-suggestions-section');
+    if (!container) return;
+
+    const config = await window.tripHubConfigService.loadConfiguration(this.tripId);
+    const isPremium = await this.checkPremiumStatus();
+
+    const suggestions = [];
+
+    // Email Import (Premium only) - Show first
+    if (isPremium && await this.shouldShowSuggestion('emailImport', config)) {
+      suggestions.push(this.renderEmailImportCard(config));
+    }
+
+    // eSIM Recommendation
+    if (this.needsESIM() && await this.shouldShowSuggestion('esim', config)) {
+      suggestions.push(this.renderESIMCard(config));
+    }
+
+    // Asia Transport
+    if (this.isAsiaDestination() && await this.shouldShowSuggestion('asiatransport', config)) {
+      suggestions.push(this.renderAsiaTransportCard(config));
+    }
+
+    // Airport Transfer
+    if (await this.shouldShowSuggestion('airportTransfer', config)) {
+      suggestions.push(this.renderAirportTransferCard(config));
+    }
+
+    // Render all suggestions
+    if (suggestions.length > 0) {
+      container.innerHTML = suggestions.join('');
+      container.style.display = 'block';
+
+      // Setup event listeners
+      this.setupSuggestionEventListeners(config);
+    } else {
+      container.style.display = 'none';
+    }
+
+    // Render companions section separately
+    await this.renderCompanionsSection(config, isPremium);
+  }
+
+  async shouldShowSuggestion(suggestionId, config) {
+    // Check if dismissed
+    if (config.dismissedSuggestions && config.dismissedSuggestions.includes(suggestionId)) {
+      // Check if reminder is due
+      const isDue = await window.tripHubConfigService.clearReminderIfDue(this.tripId, suggestionId);
+      if (!isDue) return false;
+
+      // Reload config after clearing reminder
+      const updatedConfig = await window.tripHubConfigService.loadConfiguration(this.tripId);
+      return !updatedConfig.dismissedSuggestions.includes(suggestionId);
+    }
+    return true;
+  }
+
+  needsESIM() {
+    // Check if trip is international (this is a simple check - you might want to make it more sophisticated)
+    if (!this.trip.destination) return false;
+
+    // For now, assume any trip with a destination is potentially international
+    // You can add more sophisticated logic here (e.g., check against user's home country)
+    return true;
+  }
+
+  isAsiaDestination() {
+    if (!this.trip.destination) return false;
+
+    const asiaCountries = ['Japan', 'Korea', 'China', 'Thailand', 'Vietnam', 'Indonesia',
+      'Malaysia', 'Singapore', 'Philippines', 'Taiwan', 'Hong Kong', 'India', 'Nepal',
+      'Sri Lanka', 'Myanmar', 'Cambodia', 'Laos', 'Bangladesh', 'Pakistan', 'JP', 'KR',
+      'CN', 'TH', 'VN', 'ID', 'MY', 'SG', 'PH', 'TW', 'HK', 'IN', 'NP', 'LK', 'MM', 'KH', 'LA', 'BD', 'PK'];
+
+    const dest = this.trip.destination.toUpperCase();
+    return asiaCountries.some(country => dest.includes(country.toUpperCase()));
+  }
+
+  renderESIMCard(config) {
+    const esimState = config.esimState || 'notPurchased';
+    const isMoreThanTwoWeeksAway = this.isDaysUntilTrip() > 14;
+
+    const stateConfig = {
+      notPurchased: {
+        icon: '📶',
+        title: 'Stay Connected with eSIM',
+        subtitle: 'Get instant mobile data without changing SIM cards',
+        actionText: 'Buy eSIM',
+        actionClass: 'primary'
+      },
+      purchased: {
+        icon: '✓',
+        title: 'eSIM Purchased',
+        subtitle: 'Install your eSIM before departure',
+        actionText: 'Mark as Installed',
+        actionClass: 'success'
+      },
+      installed: {
+        icon: '📱',
+        title: 'eSIM Installed',
+        subtitle: 'Activate when you arrive',
+        actionText: 'Mark as Activated',
+        actionClass: 'success'
+      },
+      activated: {
+        icon: '🎉',
+        title: 'All Set!',
+        subtitle: 'Your eSIM is active',
+        actionText: null,
+        actionClass: null
+      }
+    };
+
+    const state = stateConfig[esimState];
+
+    return `
+      <div class="suggestion-card esim" data-suggestion-id="esim">
+        <div class="suggestion-card-header">
+          <div class="suggestion-card-icon">${state.icon}</div>
+          <div class="suggestion-card-text">
+            <h3>${state.title}</h3>
+            <p>${state.subtitle}</p>
+          </div>
+          ${esimState !== 'activated' ? `
+            <button class="suggestion-card-menu-btn" data-suggestion-id="esim">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+              </svg>
+            </button>
+            <div class="suggestion-card-menu" data-suggestion-id="esim">
+              <button class="suggestion-menu-item dismiss" data-action="dismiss" data-suggestion-id="esim">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+                </svg>
+                Hide
+              </button>
+              ${isMoreThanTwoWeeksAway ? `
+                <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="esim">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                  </svg>
+                  Remind me in a week
+                </button>
+              ` : ''}
+            </div>
+          ` : ''}
+        </div>
+        ${state.actionText ? `
+          <button class="suggestion-card-action ${state.actionClass}" onclick="window.tripDetailManager.handleESIMAction('${esimState}')">
+            <span>${state.actionText}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 18l6-6-6-6"/>
+            </svg>
+          </button>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  renderAsiaTransportCard(config) {
+    return `
+      <div class="suggestion-card transport" data-suggestion-id="asiatransport">
+        <div class="suggestion-card-header">
+          <div class="suggestion-card-icon">🚄</div>
+          <div class="suggestion-card-text">
+            <h3>Asia Transport Pass</h3>
+            <p>Save on trains, buses & ferries across Asia</p>
+          </div>
+          <button class="suggestion-card-menu-btn" data-suggestion-id="asiatransport">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+            </svg>
+          </button>
+          <div class="suggestion-card-menu" data-suggestion-id="asiatransport">
+            <button class="suggestion-menu-item dismiss" data-action="dismiss" data-suggestion-id="asiatransport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+              </svg>
+              Hide
+            </button>
+            ${this.isDaysUntilTrip() > 14 ? `
+              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="asiatransport">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Remind me in a week
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <a href="https://asiatransport.tripportier.com" target="_blank" class="suggestion-card-action">
+          <span>Book Now</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </a>
+      </div>
+    `;
+  }
+
+  renderAirportTransferCard(config) {
+    return `
+      <div class="suggestion-card transfer" data-suggestion-id="airportTransfer">
+        <div class="suggestion-card-header">
+          <div class="suggestion-card-icon">🚖</div>
+          <div class="suggestion-card-text">
+            <h3>Airport Transfer</h3>
+            <p>Pre-book your ride to/from the airport</p>
+          </div>
+          <button class="suggestion-card-menu-btn" data-suggestion-id="airportTransfer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+            </svg>
+          </button>
+          <div class="suggestion-card-menu" data-suggestion-id="airportTransfer">
+            <button class="suggestion-menu-item dismiss" data-action="dismiss" data-suggestion-id="airportTransfer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+              </svg>
+              Hide
+            </button>
+            ${this.isDaysUntilTrip() > 14 ? `
+              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="airportTransfer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Remind me in a week
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <a href="airport-transfers.html" class="suggestion-card-action">
+          <span>Book Transfer</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </a>
+      </div>
+    `;
+  }
+
+  renderEmailImportCard(config) {
+    return `
+      <div class="suggestion-card email-import" data-suggestion-id="emailImport">
+        <div class="suggestion-card-header">
+          <div class="suggestion-card-icon premium">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
+            </svg>
+          </div>
+          <div class="suggestion-card-text">
+            <h3>Email Import <span class="premium-badge">Premium</span></h3>
+            <p>Forward bookings to automatically add to your trip</p>
+          </div>
+          <button class="suggestion-card-menu-btn" data-suggestion-id="emailImport">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/>
+            </svg>
+          </button>
+          <div class="suggestion-card-menu" data-suggestion-id="emailImport">
+            <button class="suggestion-menu-item dismiss" data-action="dismiss" data-suggestion-id="emailImport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>
+              </svg>
+              Hide
+            </button>
+            ${this.isDaysUntilTrip() > 14 ? `
+              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="emailImport">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Remind me in a week
+              </button>
+            ` : ''}
+          </div>
+        </div>
+        <div class="email-import-address" id="email-import-address">
+          <span class="email-import-loading">Loading email...</span>
+        </div>
+      </div>
+    `;
+  }
+
+  async renderCompanionsSection(config, isPremium) {
+    const container = document.getElementById('trip-companions-section');
+    if (!container) return;
+
+    // For now, show invite prompt (companions integration will be added in Phase 7)
+    if (config.hideCompanionsWidget || config.hasDeclinedCompanionInvite) {
+      container.style.display = 'none';
+      return;
+    }
+
+    container.innerHTML = `
+      <div class="companions-invite-card">
+        <div class="companions-invite-header">
+          <div class="companions-invite-icon">👥</div>
+          <div class="companions-invite-text">
+            <h3>Traveling with others?</h3>
+            <p>Invite companions to collaborate on this trip</p>
+          </div>
+          <button class="companions-close-btn" onclick="window.tripDetailManager.hideCompanionsWidget()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div class="companions-invite-actions">
+          <button class="companions-invite-btn" onclick="window.tripDetailManager.inviteCompanions()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="8.5" cy="7" r="4"/>
+              <path d="M20 8v6M23 11h-6"/>
+            </svg>
+            Invite Now
+          </button>
+          <button class="companions-decline-btn" onclick="window.tripDetailManager.declineCompanionInvite()">
+            Not this time
+          </button>
+        </div>
+      </div>
+    `;
+
+    container.style.display = 'block';
+  }
+
+  setupSuggestionEventListeners(config) {
+    // Menu toggle buttons
+    const menuBtns = document.querySelectorAll('.suggestion-card-menu-btn');
+    menuBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const suggestionId = btn.dataset.suggestionId;
+        const menu = document.querySelector(`.suggestion-card-menu[data-suggestion-id="${suggestionId}"]`);
+
+        // Close all other menus
+        document.querySelectorAll('.suggestion-card-menu').forEach(m => {
+          if (m !== menu) m.classList.remove('active');
+        });
+
+        menu.classList.toggle('active');
+      });
+    });
+
+    // Close menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.suggestion-card-menu') && !e.target.closest('.suggestion-card-menu-btn')) {
+        document.querySelectorAll('.suggestion-card-menu').forEach(m => m.classList.remove('active'));
+      }
+    });
+
+    // Dismiss buttons
+    const dismissBtns = document.querySelectorAll('.suggestion-menu-item.dismiss');
+    dismissBtns.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const suggestionId = btn.dataset.suggestionId;
+        await this.dismissSuggestion(suggestionId);
+      });
+    });
+
+    // Remind buttons
+    const remindBtns = document.querySelectorAll('.suggestion-menu-item.remind');
+    remindBtns.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const suggestionId = btn.dataset.suggestionId;
+        await this.remindSuggestion(suggestionId);
+      });
+    });
+
+    // Load email import address if shown
+    const emailImportCard = document.querySelector('.suggestion-card.email-import');
+    if (emailImportCard) {
+      this.loadEmailImportAddress();
+    }
+  }
+
+  async dismissSuggestion(suggestionId) {
+    await window.tripHubConfigService.dismissSuggestion(this.tripId, suggestionId);
+
+    // Remove the card with animation
+    const card = document.querySelector(`.suggestion-card[data-suggestion-id="${suggestionId}"]`);
+    if (card) {
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => card.remove(), 300);
+    }
+
+    this.showToast('Suggestion hidden');
+  }
+
+  async remindSuggestion(suggestionId) {
+    // Set reminder for 1 week from now
+    const reminderDate = new Date();
+    reminderDate.setDate(reminderDate.getDate() + 7);
+
+    await window.tripHubConfigService.setReminder(this.tripId, suggestionId, reminderDate);
+
+    // Remove the card
+    const card = document.querySelector(`.suggestion-card[data-suggestion-id="${suggestionId}"]`);
+    if (card) {
+      card.style.opacity = '0';
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => card.remove(), 300);
+    }
+
+    this.showToast('Reminder set for 1 week');
+  }
+
+  async handleESIMAction(currentState) {
+    const stateTransitions = {
+      'notPurchased': 'purchased',
+      'purchased': 'installed',
+      'installed': 'activated'
+    };
+
+    const nextState = stateTransitions[currentState];
+    if (nextState) {
+      if (currentState === 'notPurchased') {
+        // Open eSIM page
+        window.open('esim.html', '_blank');
+      } else {
+        // Update state
+        await window.tripHubConfigService.updateESIMState(this.tripId, nextState);
+        this.renderSuggestions();
+
+        const messages = {
+          'purchased': 'eSIM marked as purchased',
+          'installed': 'eSIM marked as installed',
+          'activated': 'eSIM activated! Have a great trip!'
+        };
+        this.showToast(messages[nextState]);
+      }
+    }
+  }
+
+  async loadEmailImportAddress() {
+    const addressEl = document.getElementById('email-import-address');
+    if (!addressEl) return;
+
+    try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
+      // Get or create unique email address
+      const db = firebase.firestore();
+      const userDoc = await db.collection('users').doc(user.uid).get();
+      const userData = userDoc.data();
+
+      let forwardingEmail = userData?.forwardingEmail;
+      if (!forwardingEmail) {
+        // Generate unique email
+        const uniqueId = user.uid.substring(0, 8);
+        forwardingEmail = `${uniqueId}@bookings.tripportier.com`;
+
+        // Save to user document
+        await db.collection('users').doc(user.uid).set({
+          forwardingEmail: forwardingEmail
+        }, { merge: true });
+      }
+
+      // Display email with copy button
+      addressEl.innerHTML = `
+        <span class="email-import-text">${forwardingEmail}</span>
+        <button class="email-import-copy-btn" onclick="window.tripDetailManager.copyEmailAddress('${forwardingEmail}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+            <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+          </svg>
+          Copy
+        </button>
+      `;
+    } catch (error) {
+      console.error('Error loading email import address:', error);
+      addressEl.innerHTML = '<span class="email-import-error">Failed to load email</span>';
+    }
+  }
+
+  async copyEmailAddress(email) {
+    try {
+      await navigator.clipboard.writeText(email);
+      this.showToast('Email address copied!');
+    } catch (error) {
+      console.error('Failed to copy:', error);
+      this.showToast('Failed to copy email');
+    }
+  }
+
+  async hideCompanionsWidget() {
+    await window.tripHubConfigService.hideCompanionsWidget(this.tripId);
+    const container = document.getElementById('trip-companions-section');
+    if (container) {
+      container.style.display = 'none';
+    }
+  }
+
+  async declineCompanionInvite() {
+    await window.tripHubConfigService.declineCompanionInvite(this.tripId);
+    const container = document.getElementById('trip-companions-section');
+    if (container) {
+      container.style.display = 'none';
+    }
+    this.showToast('Companion invite declined');
+  }
+
+  inviteCompanions() {
+    // Create share data
+    const shareData = {
+      title: `Join my trip: ${this.trip.name}`,
+      text: `I'm planning a trip to ${this.trip.destination} and I'd like you to join me on TripPortier!`,
+      url: window.location.href
+    };
+
+    // Try Web Share API
+    if (navigator.share) {
+      navigator.share(shareData).catch(err => console.log('Share cancelled'));
+    } else {
+      // Fallback: copy link
+      navigator.clipboard.writeText(window.location.href);
+      this.showToast('Trip link copied to clipboard');
+    }
+  }
+
+  isDaysUntilTrip() {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tripStart = new Date(
+      this.trip.startDate.getFullYear(),
+      this.trip.startDate.getMonth(),
+      this.trip.startDate.getDate()
+    );
+
+    return Math.ceil((tripStart - today) / (1000 * 60 * 60 * 24));
+  }
+
+  async checkPremiumStatus() {
+    try {
+      const user = firebase.auth().currentUser;
+      if (!user) return false;
+
+      const db = firebase.firestore();
+      const subscriptionDoc = await db.collection('subscriptions').doc(user.uid).get();
+
+      if (subscriptionDoc.exists) {
+        const data = subscriptionDoc.data();
+        return data.status === 'active' || data.status === 'trialing';
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+      return false;
+    }
   }
 
   getTripPhase() {
