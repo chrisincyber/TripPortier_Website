@@ -92,9 +92,12 @@ class TripsManager {
 
     if (!user) {
       this.showNotSignedIn();
-      // Hide FAB and switcher when not signed in
+      // Hide FABs and switcher when not signed in
       if (this.createTripFab) {
         this.createTripFab.style.display = 'none';
+      }
+      if (this.addFlightFab) {
+        this.addFlightFab.style.display = 'none';
       }
       if (this.viewSwitcherEl) {
         this.viewSwitcherEl.style.display = 'none';
@@ -102,12 +105,18 @@ class TripsManager {
       return;
     }
 
-    // Show FAB and switcher when signed in
-    if (this.createTripFab) {
-      this.createTripFab.style.display = 'flex';
-    }
+    // Show switcher and appropriate FAB based on current view
     if (this.viewSwitcherEl) {
       this.viewSwitcherEl.style.display = 'flex';
+    }
+
+    // Show appropriate FAB based on current view
+    if (this.currentView === 'trips') {
+      if (this.createTripFab) this.createTripFab.style.display = 'flex';
+      if (this.addFlightFab) this.addFlightFab.style.display = 'none';
+    } else {
+      if (this.createTripFab) this.createTripFab.style.display = 'none';
+      if (this.addFlightFab) this.addFlightFab.style.display = 'flex';
     }
 
     this.showLoading();
