@@ -1209,6 +1209,16 @@ class TripsManager {
     // Status classes
     const statusClass = `status-${(flight.status || 'scheduled').toLowerCase().replace(/\s+/g, '-')}`;
 
+    // Format flight date for display
+    const formatFlightDate = (dateStr) => {
+      if (!dateStr) return '';
+      const date = new Date(dateStr);
+      const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    };
+
+    const flightDate = formatFlightDate(flight.departureDate);
+
     card.innerHTML = `
       <div class="flight-card-header">
         <div class="flight-card-header-left">
@@ -1326,6 +1336,11 @@ class TripsManager {
             </div>
           </div>
         ` : ''}
+
+        <!-- Flight date (shown for past flights only) -->
+        <div class="flight-card-date">
+          ${flightDate}
+        </div>
 
         <!-- Delay indicator -->
         ${isDelayed ? `

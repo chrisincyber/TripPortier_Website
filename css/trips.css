@@ -1050,6 +1050,12 @@
   gap: 1.25rem;
 }
 
+/* Past flights grid - more compact */
+.flights-grid.past-flights {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
 /* ============================================
    Flight Card
    ============================================ */
@@ -1324,13 +1330,82 @@
   color: #92400e;
 }
 
-/* Past flight card - slightly muted */
+/* Past flight card - compact style */
 .flight-card.past {
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 .flight-card.past:hover {
   opacity: 1;
+}
+
+.flight-card.past .flight-card-header {
+  padding: 0.875rem 1rem;
+}
+
+.flight-card.past .flight-card-airline-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 1rem;
+}
+
+.flight-card.past .flight-card-flight-number {
+  font-size: 1rem;
+}
+
+.flight-card.past .flight-card-airline-name {
+  display: none;
+}
+
+.flight-card.past .flight-card-status-badge {
+  display: none;
+}
+
+.flight-card.past .flight-card-body {
+  padding: 1rem;
+}
+
+.flight-card.past .flight-card-route {
+  margin-bottom: 0.75rem;
+}
+
+.flight-card.past .flight-card-airport-code {
+  font-size: 1.25rem;
+}
+
+.flight-card.past .flight-card-airport-name {
+  font-size: 0.75rem;
+}
+
+.flight-card.past .flight-card-route-line {
+  flex: 0 0 40px;
+  margin: 0 0.5rem;
+}
+
+.flight-card.past .flight-card-route-line::after {
+  font-size: 0.875rem;
+}
+
+/* Hide all extra details for past flights */
+.flight-card.past .flight-card-times,
+.flight-card.past .flight-card-details,
+.flight-card.past .flight-card-delay {
+  display: none;
+}
+
+/* Show flight date for past flights */
+.flight-card-date {
+  display: none; /* Hidden by default */
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #64748b;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 0.75rem;
+}
+
+.flight-card.past .flight-card-date {
+  display: block;
 }
 
 /* Responsive */
@@ -1339,6 +1414,12 @@
     grid-template-columns: 1fr;
     max-width: 500px;
     margin: 0 auto;
+  }
+
+  .flights-grid.past-flights {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    max-width: 100%;
   }
 
   .flight-card-airport-code {
@@ -1353,10 +1434,26 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
+
+  .flight-card.past .flight-card-airport-code {
+    font-size: 1.125rem;
+  }
+
+  .flight-card.past .flight-card-airport-name {
+    font-size: 0.6875rem;
+  }
+
+  .flight-card.past .flight-card-date {
+    font-size: 0.75rem;
+  }
 }
 
 @media (min-width: 1400px) {
   .flights-grid {
     grid-template-columns: repeat(auto-fill, minmax(360px, 420px));
+  }
+
+  .flights-grid.past-flights {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
   }
 }
