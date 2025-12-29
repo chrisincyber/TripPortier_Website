@@ -1457,3 +1457,289 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 320px));
   }
 }
+
+/* ============================================
+   Beta Badge
+   ============================================ */
+
+.trips-header-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.beta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  animation: beta-pulse 2s ease-in-out infinite;
+}
+
+.beta-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+}
+
+.beta-badge-icon {
+  font-size: 1rem;
+  animation: beta-rocket 3s ease-in-out infinite;
+}
+
+@keyframes beta-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.5);
+  }
+}
+
+@keyframes beta-rocket {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+/* ============================================
+   Beta Modal
+   ============================================ */
+
+.beta-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+}
+
+.beta-modal.active {
+  display: flex;
+}
+
+.beta-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+  animation: betaModalSlideUp 0.3s ease-out;
+  text-align: center;
+}
+
+@keyframes betaModalSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.beta-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.beta-modal-close:hover {
+  background: #e2e8f0;
+}
+
+.beta-modal-close svg {
+  width: 20px;
+  height: 20px;
+  color: #64748b;
+}
+
+.beta-modal-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: beta-rocket 3s ease-in-out infinite;
+}
+
+.beta-modal h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem;
+}
+
+.beta-modal-subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0 0 2rem;
+}
+
+.beta-modal-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.beta-feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+}
+
+.beta-feature-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.beta-feature-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.beta-feature-text strong {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.beta-feature-text span {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.beta-modal-description {
+  font-size: 0.9375rem;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 2rem;
+}
+
+.beta-modal-actions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+}
+
+.beta-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.beta-modal-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.beta-modal-btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+}
+
+.beta-modal-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.beta-modal-btn-secondary {
+  background: white;
+  color: #25d366;
+  border: 2px solid #e2e8f0;
+}
+
+.beta-modal-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .trips-header-title-row {
+    flex-wrap: wrap;
+  }
+
+  .trips-header-title-row h1 {
+    flex: 1 0 100%;
+  }
+
+  .beta-badge {
+    font-size: 0.6875rem;
+    padding: 0.3125rem 0.75rem;
+  }
+
+  .beta-modal-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .beta-modal h2 {
+    font-size: 1.5rem;
+  }
+
+  .beta-modal-icon {
+    font-size: 3rem;
+  }
+
+  .beta-modal-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .beta-modal-content {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .beta-feature {
+    padding: 0.75rem;
+  }
+
+  .beta-feature-icon {
+    font-size: 1.25rem;
+  }
+}

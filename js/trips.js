@@ -75,6 +75,9 @@ class TripsManager {
 
     // Setup view switcher
     this.setupViewSwitcher();
+
+    // Setup beta badge
+    this.setupBetaBadge();
   }
 
   async handleAuthChange(user) {
@@ -1364,6 +1367,48 @@ class TripsManager {
 
   showFlightsContainer() {
     this.flightsEmptyEl.style.display = 'none';
+  }
+
+  // ============================================
+  // Beta Badge
+  // ============================================
+
+  setupBetaBadge() {
+    const betaBadge = document.getElementById('beta-badge');
+    const betaModal = document.getElementById('beta-modal');
+    const betaModalClose = document.getElementById('beta-modal-close');
+
+    if (!betaBadge || !betaModal) return;
+
+    // Open modal on beta badge click
+    betaBadge.addEventListener('click', () => {
+      betaModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+
+    // Close modal on close button click
+    if (betaModalClose) {
+      betaModalClose.addEventListener('click', () => {
+        betaModal.classList.remove('active');
+        document.body.style.overflow = '';
+      });
+    }
+
+    // Close modal on outside click
+    betaModal.addEventListener('click', (e) => {
+      if (e.target === betaModal) {
+        betaModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && betaModal.classList.contains('active')) {
+        betaModal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
   }
 }
 
