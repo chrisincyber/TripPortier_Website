@@ -557,6 +557,128 @@
         </div>
     </div>
 
+    <!-- Add Flight Modal -->
+    <div class="add-flight-modal" id="add-flight-modal">
+        <div class="add-flight-modal-content">
+            <button class="add-flight-modal-close" id="add-flight-modal-close" aria-label="Close">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+
+            <div class="add-flight-modal-icon">✈️</div>
+            <h2>Add Flight</h2>
+            <p class="add-flight-modal-subtitle">Track your flight with real-time updates</p>
+
+            <form class="add-flight-form" id="add-flight-form">
+                <div class="add-flight-input-group">
+                    <label for="flight-number">Flight Number</label>
+                    <input
+                        type="text"
+                        id="flight-number"
+                        name="flightNumber"
+                        placeholder="e.g., LX180, AA1234"
+                        required
+                        autocomplete="off"
+                        pattern="[A-Za-z0-9]+"
+                    />
+                    <span class="add-flight-input-hint">Enter airline code + flight number</span>
+                </div>
+
+                <div class="add-flight-input-group">
+                    <label for="flight-date">Departure Date</label>
+                    <input
+                        type="date"
+                        id="flight-date"
+                        name="flightDate"
+                        required
+                    />
+                </div>
+
+                <!-- Premium Notice -->
+                <div class="add-flight-premium-notice" id="add-flight-premium-notice" style="display: none;">
+                    <div class="add-flight-premium-icon">⭐</div>
+                    <div class="add-flight-premium-text">
+                        <strong>TripPortier+ Required</strong>
+                        <span>Real-time flight tracking with notifications requires TripPortier+</span>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="add-flight-error" id="add-flight-error" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <span id="add-flight-error-text">Flight not found. Please check the flight number and date.</span>
+                </div>
+
+                <!-- Buttons -->
+                <div class="add-flight-buttons">
+                    <button type="button" class="add-flight-btn add-flight-btn-secondary" id="add-flight-cancel">
+                        Cancel
+                    </button>
+                    <button type="submit" class="add-flight-btn add-flight-btn-primary" id="add-flight-submit">
+                        <span id="add-flight-submit-text">Add Flight</span>
+                        <span id="add-flight-submit-loading" style="display: none;">
+                            <svg class="add-flight-spinner" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="3"/>
+                            </svg>
+                            Searching...
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Upgrade Prompt (shown for non-premium users) -->
+            <div class="add-flight-upgrade-prompt" id="add-flight-upgrade-prompt" style="display: none;">
+                <div class="add-flight-upgrade-icon">🚀</div>
+                <h3>Upgrade to TripPortier+</h3>
+                <p>Get real-time flight tracking with:</p>
+                <ul class="add-flight-upgrade-features">
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Live flight status updates
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Gate change notifications
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Delay alerts
+                    </li>
+                    <li>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Automatic trip integration
+                    </li>
+                </ul>
+                <div class="add-flight-upgrade-buttons">
+                    <a href="premium.html" class="add-flight-btn add-flight-btn-primary">
+                        Upgrade Now
+                    </a>
+                    <button type="button" class="add-flight-btn add-flight-btn-secondary" id="add-flight-upgrade-cancel">
+                        Maybe Later
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Flight FAB (shown only on flights view) -->
+    <button class="add-flight-fab" id="add-flight-fab" style="display: none;" aria-label="Add flight">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+        </svg>
+    </button>
+
     <!-- WhatsApp Float Button -->
     <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
         <svg viewBox="0 0 24 24">

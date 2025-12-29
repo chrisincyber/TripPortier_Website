@@ -54,6 +54,10 @@ class TripsManager {
     this.createTripFab = document.getElementById('create-trip-fab');
     this.createTripModal = document.getElementById('create-trip-modal');
 
+    // Add flight elements
+    this.addFlightFab = document.getElementById('add-flight-fab');
+    this.addFlightModal = document.getElementById('add-flight-modal');
+
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => this.init());
@@ -78,6 +82,9 @@ class TripsManager {
 
     // Setup beta badge
     this.setupBetaBadge();
+
+    // Setup add flight functionality
+    this.setupAddFlight();
   }
 
   async handleAuthChange(user) {
@@ -1081,14 +1088,18 @@ class TripsManager {
       }
     });
 
-    // Show appropriate container
+    // Show appropriate container and FAB
     if (view === 'trips') {
       this.containerEl.style.display = 'block';
       this.flightsContainerEl.style.display = 'none';
+      if (this.createTripFab) this.createTripFab.style.display = 'flex';
+      if (this.addFlightFab) this.addFlightFab.style.display = 'none';
       this.renderTrips();
     } else {
       this.containerEl.style.display = 'none';
       this.flightsContainerEl.style.display = 'block';
+      if (this.createTripFab) this.createTripFab.style.display = 'none';
+      if (this.addFlightFab) this.addFlightFab.style.display = 'flex';
       this.renderFlights();
     }
   }
@@ -1409,6 +1420,275 @@ class TripsManager {
         document.body.style.overflow = '';
       }
     });
+  }
+
+  // ============================================
+  // Add Flight Functionality
+  // ============================================
+
+  setupAddFlight() {
+    if (!this.addFlightFab || !this.addFlightModal) return;
+
+    // FAB click opens modal
+    this.addFlightFab.addEventListener('click', () => this.openAddFlightModal());
+
+    // Close button
+    const closeBtn = document.getElementById('add-flight-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => this.closeAddFlightModal());
+    }
+
+    // Click outside to close
+    this.addFlightModal.addEventListener('click', (e) => {
+      if (e.target === this.addFlightModal) {
+        this.closeAddFlightModal();
+      }
+    });
+
+    // Escape key to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && this.addFlightModal.classList.contains('active')) {
+        this.closeAddFlightModal();
+      }
+    });
+
+    // Form submission
+    const form = document.getElementById('add-flight-form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.handleAddFlight();
+      });
+    }
+
+    // Upgrade button
+    const upgradeBtn = document.getElementById('add-flight-upgrade-btn');
+    if (upgradeBtn) {
+      upgradeBtn.addEventListener('click', () => {
+        window.location.href = '/premium.html';
+      });
+    }
+  }
+
+  openAddFlightModal() {
+    // Reset form
+    const form = document.getElementById('add-flight-form');
+    if (form) form.reset();
+
+    // Clear any errors
+    const errorDiv = document.getElementById('add-flight-error');
+    if (errorDiv) errorDiv.style.display = 'none';
+
+    // Show modal
+    this.addFlightModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Focus flight number input
+    setTimeout(() => {
+      const flightNumberInput = document.getElementById('flight-number');
+      if (flightNumberInput) flightNumberInput.focus();
+    }, 300);
+  }
+
+  closeAddFlightModal() {
+    this.addFlightModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  async handleAddFlight() {
+    if (!this.currentUser) {
+      this.showAddFlightError('Please sign in to add flights');
+      return;
+    }
+
+    // Get form values
+    const flightNumberInput = document.getElementById('flight-number');
+    const flightDateInput = document.getElementById('flight-date');
+
+    const flightNumber = flightNumberInput.value.trim().toUpperCase();
+    const flightDate = flightDateInput.value;
+
+    if (!flightNumber || !flightDate) {
+      this.showAddFlightError('Please enter both flight number and date');
+      return;
+    }
+
+    // Check premium status
+    const isPremium = await this.checkPremiumStatus();
+
+    if (!isPremium) {
+      // Show upgrade prompt
+      this.showUpgradePrompt();
+      return;
+    }
+
+    // Show loading state
+    const submitBtn = document.querySelector('#add-flight-form button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Searching...';
+
+    try {
+      // Call Firebase function to search and add flight
+      const functions = firebase.functions();
+      const getFlightStatusFn = functions.httpsCallable('getFlightStatusFn');
+
+      const result = await getFlightStatusFn({
+        flightNumber: flightNumber,
+        date: flightDate
+      });
+
+      const flightData = result.data;
+
+      // Add flight to Firestore
+      await this.addFlightToFirestore(flightData, flightDate);
+
+      // Check if we should auto-add to trip itinerary
+      await this.autoAddFlightToTrip(flightData, flightDate);
+
+      // Success! Reload flights and close modal
+      await this.loadFlights(this.currentUser.uid);
+      this.renderFlights();
+      this.closeAddFlightModal();
+
+      // Show success message
+      alert(`Flight ${flightNumber} has been added to your tracking!`);
+
+    } catch (error) {
+      console.error('Error adding flight:', error);
+      this.showAddFlightError(error.message || 'Failed to find flight. Please check the flight number and date.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  }
+
+  async checkPremiumStatus() {
+    // Check premium status from auth profile
+    if (window.tripPortierAuth && window.tripPortierAuth.profile) {
+      return window.tripPortierAuth.profile.isPremium || false;
+    }
+
+    // Fallback: check Firestore directly
+    try {
+      const db = firebase.firestore();
+      const userDoc = await db.collection('users').doc(this.currentUser.uid).get();
+      if (userDoc.exists) {
+        return userDoc.data().isPremium || false;
+      }
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+    }
+
+    return false;
+  }
+
+  async addFlightToFirestore(flightData, departureDate) {
+    const db = firebase.firestore();
+
+    // Build flight document matching iOS app structure
+    const flightDoc = {
+      userId: this.currentUser.uid,
+      flightNumber: flightData.flight_iata || flightData.flightNumber,
+      flightIata: flightData.flight_iata,
+      airlineIata: flightData.airline_iata,
+      departureAirportIata: flightData.dep_iata,
+      arrivalAirportIata: flightData.arr_iata,
+      departureCity: flightData.dep_city || '',
+      arrivalCity: flightData.arr_city || '',
+      departureDate: departureDate,
+      depTime: flightData.dep_time || flightData.std,
+      arrTime: flightData.arr_time || flightData.sta,
+      std: flightData.std,
+      sta: flightData.sta,
+      depEstimated: flightData.dep_estimated,
+      arrEstimated: flightData.arr_estimated,
+      depActual: flightData.dep_actual,
+      arrActual: flightData.arr_actual,
+      depDelayed: flightData.dep_delayed || 0,
+      arrDelayed: flightData.arr_delayed || 0,
+      depTerminal: flightData.dep_terminal || null,
+      depGate: flightData.dep_gate || null,
+      arrTerminal: flightData.arr_terminal || null,
+      arrGate: flightData.arr_gate || null,
+      arrBaggage: flightData.arr_baggage || null,
+      status: flightData.status || 'Scheduled',
+      duration: flightData.duration || null,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // Add to flights collection
+    await db.collection('flights').add(flightDoc);
+  }
+
+  async autoAddFlightToTrip(flightData, departureDate) {
+    // Check if there's an upcoming or active trip that matches this flight date
+    const flightDateObj = new Date(departureDate);
+
+    for (const trip of this.trips) {
+      // Skip someday trips
+      if (trip.isSomedayTrip) continue;
+
+      // Check if flight date falls within trip dates
+      if (flightDateObj >= trip.startDate && flightDateObj <= trip.endDate) {
+        // Flight is within this trip - add to itinerary
+        await this.addFlightToTripItinerary(trip, flightData, departureDate);
+        console.log(`Auto-added flight to trip: ${trip.name}`);
+        break; // Only add to first matching trip
+      }
+    }
+  }
+
+  async addFlightToTripItinerary(trip, flightData, departureDate) {
+    const db = firebase.firestore();
+
+    // Create itinerary item for the flight
+    const itineraryItem = {
+      id: db.collection('temp').doc().id,
+      type: 'flight',
+      title: `${flightData.dep_iata} → ${flightData.arr_iata}`,
+      description: `Flight ${flightData.flight_iata || flightData.flightNumber}`,
+      date: firebase.firestore.Timestamp.fromDate(new Date(departureDate)),
+      startTime: flightData.dep_time || flightData.std || null,
+      endTime: flightData.arr_time || flightData.sta || null,
+      location: flightData.dep_city || '',
+      flightNumber: flightData.flight_iata || flightData.flightNumber,
+      departureAirport: flightData.dep_iata,
+      arrivalAirport: flightData.arr_iata,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    // Add to trip's itineraryItems array
+    await db
+      .collection('users')
+      .doc(this.currentUser.uid)
+      .collection('trips')
+      .doc(trip.id)
+      .update({
+        itineraryItems: firebase.firestore.FieldValue.arrayUnion(itineraryItem),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+  }
+
+  showAddFlightError(message) {
+    const errorDiv = document.getElementById('add-flight-error');
+    const errorText = document.getElementById('add-flight-error-text');
+
+    if (errorDiv && errorText) {
+      errorText.textContent = message;
+      errorDiv.style.display = 'flex';
+    }
+  }
+
+  showUpgradePrompt() {
+    const formContainer = document.querySelector('.add-flight-form');
+    const upgradePrompt = document.getElementById('add-flight-upgrade-prompt');
+
+    if (formContainer && upgradePrompt) {
+      formContainer.style.display = 'none';
+      upgradePrompt.style.display = 'block';
+    }
   }
 }
 

@@ -1743,3 +1743,379 @@
     font-size: 1.25rem;
   }
 }
+
+/* ============================================
+   Add Flight FAB
+   ============================================ */
+
+.add-flight-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  z-index: 90;
+}
+
+.add-flight-fab:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
+}
+
+.add-flight-fab svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .add-flight-fab {
+    bottom: 6rem;
+    right: 1.5rem;
+    width: 56px;
+    height: 56px;
+  }
+
+  .add-flight-fab svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ============================================
+   Add Flight Modal
+   ============================================ */
+
+.add-flight-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 1rem;
+}
+
+.add-flight-modal.active {
+  display: flex;
+}
+
+.add-flight-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 24px;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+  animation: modalSlideUp 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.add-flight-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.add-flight-modal-close:hover {
+  background: #e2e8f0;
+}
+
+.add-flight-modal-close svg {
+  width: 20px;
+  height: 20px;
+  color: #64748b;
+}
+
+.add-flight-modal-icon {
+  font-size: 3.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.add-flight-modal-content h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
+
+.add-flight-modal-subtitle {
+  font-size: 0.9375rem;
+  color: #64748b;
+  margin: 0 0 2rem;
+  text-align: center;
+}
+
+/* Form Styles */
+.add-flight-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.add-flight-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.add-flight-input-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.add-flight-input-group input {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.add-flight-input-group input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+.add-flight-input-group input::placeholder {
+  color: #94a3b8;
+}
+
+.add-flight-input-hint {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+}
+
+/* Premium Notice */
+.add-flight-premium-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 12px;
+  border: 1px solid #fbbf24;
+}
+
+.add-flight-premium-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.add-flight-premium-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.add-flight-premium-text strong {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.add-flight-premium-text span {
+  font-size: 0.8125rem;
+  color: #78350f;
+}
+
+/* Error Message */
+.add-flight-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #fee2e2;
+  border-radius: 12px;
+  border: 1px solid #f87171;
+}
+
+.add-flight-error svg {
+  width: 20px;
+  height: 20px;
+  color: #dc2626;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.add-flight-error span {
+  font-size: 0.875rem;
+  color: #991b1b;
+  line-height: 1.4;
+}
+
+/* Buttons */
+.add-flight-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.add-flight-btn {
+  flex: 1;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.add-flight-btn-primary {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.add-flight-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.add-flight-btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.add-flight-btn-secondary {
+  background: white;
+  color: #64748b;
+  border: 2px solid #e2e8f0;
+}
+
+.add-flight-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Loading Spinner */
+.add-flight-spinner {
+  width: 16px;
+  height: 16px;
+  animation: spin 0.8s linear infinite;
+}
+
+.add-flight-spinner circle {
+  stroke-dasharray: 50;
+  stroke-dashoffset: 25;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Upgrade Prompt */
+.add-flight-upgrade-prompt {
+  text-align: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  margin-top: 1.5rem;
+}
+
+.add-flight-upgrade-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.add-flight-upgrade-prompt h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem;
+}
+
+.add-flight-upgrade-prompt > p {
+  font-size: 0.9375rem;
+  color: #64748b;
+  margin: 0 0 1.5rem;
+}
+
+.add-flight-upgrade-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: left;
+}
+
+.add-flight-upgrade-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.add-flight-upgrade-features svg {
+  width: 20px;
+  height: 20px;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.add-flight-upgrade-features li {
+  font-size: 0.9375rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.add-flight-upgrade-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 480px) {
+  .add-flight-modal-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .add-flight-modal-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .add-flight-buttons {
+    flex-direction: column;
+  }
+}
