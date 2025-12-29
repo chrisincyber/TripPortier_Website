@@ -6,8 +6,10 @@
 class TripsManager {
   constructor() {
     this.trips = [];
+    this.flights = [];
     this.imageCache = new Map();
     this.currentUser = null;
+    this.currentView = 'trips'; // 'trips' or 'flights'
     // Same API key as iOS app (PexelsService.swift)
     this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
 
@@ -37,6 +39,17 @@ class TripsManager {
     this.upcomingTripsGrid = document.getElementById('upcoming-trips-grid');
     this.pastTripsGrid = document.getElementById('past-trips-grid');
 
+    // Flights elements
+    this.flightsContainerEl = document.getElementById('flights-container');
+    this.flightsEmptyEl = document.getElementById('flights-empty');
+    this.upcomingFlightsSection = document.getElementById('upcoming-flights-section');
+    this.pastFlightsSection = document.getElementById('past-flights-section');
+    this.upcomingFlightsGrid = document.getElementById('upcoming-flights-grid');
+    this.pastFlightsGrid = document.getElementById('past-flights-grid');
+
+    // View switcher
+    this.viewSwitcherEl = document.getElementById('view-switcher');
+
     // Create trip elements
     this.createTripFab = document.getElementById('create-trip-fab');
     this.createTripModal = document.getElementById('create-trip-modal');
@@ -59,6 +72,9 @@ class TripsManager {
 
     // Setup create trip functionality
     this.setupCreateTrip();
+
+    // Setup view switcher
+    this.setupViewSwitcher();
   }
 
   async handleAuthChange(user) {
@@ -66,25 +82,41 @@ class TripsManager {
 
     if (!user) {
       this.showNotSignedIn();
-      // Hide FAB when not signed in
+      // Hide FAB and switcher when not signed in
       if (this.createTripFab) {
         this.createTripFab.style.display = 'none';
+      }
+      if (this.viewSwitcherEl) {
+        this.viewSwitcherEl.style.display = 'none';
       }
       return;
     }
 
-    // Show FAB when signed in
+    // Show FAB and switcher when signed in
     if (this.createTripFab) {
       this.createTripFab.style.display = 'flex';
+    }
+    if (this.viewSwitcherEl) {
+      this.viewSwitcherEl.style.display = 'flex';
     }
 
     this.showLoading();
 
     try {
-      await this.loadTrips(user.uid);
-      this.renderTrips();
+      // Load both trips and flights
+      await Promise.all([
+        this.loadTrips(user.uid),
+        this.loadFlights(user.uid)
+      ]);
+
+      // Render based on current view
+      if (this.currentView === 'trips') {
+        this.renderTrips();
+      } else {
+        this.renderFlights();
+      }
     } catch (error) {
-      console.error('Error loading trips:', error);
+      console.error('Error loading data:', error);
       this.showEmpty();
     }
   }
@@ -1013,6 +1045,292 @@ class TripsManager {
         submitBtn.textContent = 'Create Trip';
       }
     }
+  }
+
+  // ============================================
+  // View Switcher
+  // ============================================
+
+  setupViewSwitcher() {
+    if (!this.viewSwitcherEl) return;
+
+    const buttons = this.viewSwitcherEl.querySelectorAll('.view-switcher-btn');
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const view = btn.dataset.view;
+        this.switchView(view);
+      });
+    });
+  }
+
+  switchView(view) {
+    if (view === this.currentView) return;
+
+    this.currentView = view;
+
+    // Update button states
+    const buttons = this.viewSwitcherEl.querySelectorAll('.view-switcher-btn');
+    buttons.forEach(btn => {
+      if (btn.dataset.view === view) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+
+    // Show appropriate container
+    if (view === 'trips') {
+      this.containerEl.style.display = 'block';
+      this.flightsContainerEl.style.display = 'none';
+      this.renderTrips();
+    } else {
+      this.containerEl.style.display = 'none';
+      this.flightsContainerEl.style.display = 'block';
+      this.renderFlights();
+    }
+  }
+
+  // ============================================
+  // Flights Loading and Rendering
+  // ============================================
+
+  async loadFlights(userId) {
+    const db = firebase.firestore();
+
+    // Fetch flights from flights collection
+    const snapshot = await db
+      .collection('flights')
+      .where('userId', '==', userId)
+      .orderBy('departureDate', 'asc')
+      .get();
+
+    this.flights = [];
+
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      this.flights.push({
+        id: doc.id,
+        ...data
+      });
+    });
+
+    console.log(`Loaded ${this.flights.length} flights from Firebase`);
+  }
+
+  renderFlights() {
+    const { upcoming, past } = this.categorizeFlights();
+
+    // If no flights at all, show empty state
+    if (upcoming.length === 0 && past.length === 0) {
+      this.showFlightsEmpty();
+      return;
+    }
+
+    // Clear grids
+    this.upcomingFlightsGrid.innerHTML = '';
+    this.pastFlightsGrid.innerHTML = '';
+
+    // Render upcoming flights
+    if (upcoming.length > 0) {
+      this.upcomingFlightsSection.style.display = 'block';
+      upcoming.forEach(flight => {
+        const card = this.createFlightCard(flight, 'upcoming');
+        this.upcomingFlightsGrid.appendChild(card);
+      });
+    } else {
+      this.upcomingFlightsSection.style.display = 'none';
+    }
+
+    // Render past flights
+    if (past.length > 0) {
+      this.pastFlightsSection.style.display = 'block';
+      past.forEach(flight => {
+        const card = this.createFlightCard(flight, 'past');
+        this.pastFlightsGrid.appendChild(card);
+      });
+    } else {
+      this.pastFlightsSection.style.display = 'none';
+    }
+
+    this.showFlightsContainer();
+  }
+
+  categorizeFlights() {
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+
+    const upcoming = [];
+    const past = [];
+
+    for (const flight of this.flights) {
+      if (flight.departureDate >= today) {
+        upcoming.push(flight);
+      } else {
+        past.push(flight);
+      }
+    }
+
+    // Sort upcoming by departure date (soonest first)
+    upcoming.sort((a, b) => a.departureDate.localeCompare(b.departureDate));
+
+    // Sort past by departure date (most recent first)
+    past.sort((a, b) => b.departureDate.localeCompare(a.departureDate));
+
+    return { upcoming, past };
+  }
+
+  createFlightCard(flight, type) {
+    const card = document.createElement('div');
+    card.className = `flight-card ${type}`;
+    card.dataset.flightId = flight.id;
+
+    // Extract time from timestamp strings (format: "YYYY-MM-DD HH:mm:ss" or "HH:mm")
+    const extractTime = (timeStr) => {
+      if (!timeStr) return '--:--';
+      const match = timeStr.match(/(\d{1,2}:\d{2})/);
+      return match ? match[1] : '--:--';
+    };
+
+    const depTime = extractTime(flight.depActual || flight.depEstimated || flight.depTime || flight.std);
+    const arrTime = extractTime(flight.arrActual || flight.arrEstimated || flight.arrTime || flight.sta);
+    const scheduledDepTime = extractTime(flight.depTime || flight.std);
+    const scheduledArrTime = extractTime(flight.arrTime || flight.sta);
+
+    const isDelayed = (flight.depDelayed && flight.depDelayed > 15) || (flight.arrDelayed && flight.arrDelayed > 15);
+    const depDelay = flight.depDelayed || 0;
+    const arrDelay = flight.arrDelayed || 0;
+    const maxDelay = Math.max(depDelay, arrDelay);
+
+    // Format duration
+    const formattedDuration = flight.duration ?
+      `${Math.floor(flight.duration / 60)}h ${flight.duration % 60}m` :
+      '--';
+
+    // Status classes
+    const statusClass = `status-${(flight.status || 'scheduled').toLowerCase().replace(/\s+/g, '-')}`;
+
+    card.innerHTML = `
+      <div class="flight-card-header">
+        <div class="flight-card-header-left">
+          <div class="flight-card-airline-icon">✈️</div>
+          <div>
+            <div class="flight-card-flight-number">${this.escapeHtml(flight.flightNumber || flight.flightIata || 'N/A')}</div>
+            ${flight.airlineIata ? `<div class="flight-card-airline-name">${this.escapeHtml(flight.airlineIata)}</div>` : ''}
+          </div>
+        </div>
+        <div class="flight-card-status-badge ${statusClass}">
+          ${this.escapeHtml(flight.status || 'Scheduled')}
+        </div>
+      </div>
+
+      <div class="flight-card-body">
+        <!-- Route -->
+        <div class="flight-card-route">
+          <div class="flight-card-airport">
+            <div class="flight-card-airport-code">${this.escapeHtml(flight.departureAirportIata || flight.depIata || '???')}</div>
+            <div class="flight-card-airport-name">${this.escapeHtml(flight.departureCity || '')}</div>
+          </div>
+          <div class="flight-card-route-line"></div>
+          <div class="flight-card-airport">
+            <div class="flight-card-airport-code">${this.escapeHtml(flight.arrivalAirportIata || flight.arrIata || '???')}</div>
+            <div class="flight-card-airport-name">${this.escapeHtml(flight.arrivalCity || '')}</div>
+          </div>
+        </div>
+
+        <!-- Times -->
+        <div class="flight-card-times">
+          <div class="flight-card-time">
+            <div class="flight-card-time-label">Departure</div>
+            ${isDelayed && depDelay > 0 ? `
+              <div class="flight-card-time-value">
+                <div class="flight-card-time-delayed">${scheduledDepTime}</div>
+                <div class="flight-card-time-estimated">${depTime}</div>
+              </div>
+            ` : `
+              <div class="flight-card-time-value">${depTime}</div>
+            `}
+          </div>
+          <div class="flight-card-duration">
+            <div class="flight-card-duration-label">Duration</div>
+            <div class="flight-card-duration-value">${formattedDuration}</div>
+          </div>
+          <div class="flight-card-time">
+            <div class="flight-card-time-label">Arrival</div>
+            ${isDelayed && arrDelay > 0 ? `
+              <div class="flight-card-time-value">
+                <div class="flight-card-time-delayed">${scheduledArrTime}</div>
+                <div class="flight-card-time-estimated">${arrTime}</div>
+              </div>
+            ` : `
+              <div class="flight-card-time-value">${arrTime}</div>
+            `}
+          </div>
+        </div>
+
+        <!-- Details -->
+        ${flight.depTerminal || flight.depGate || flight.arrTerminal || flight.arrGate ? `
+          <div class="flight-card-details">
+            ${flight.depTerminal ? `
+              <div class="flight-card-detail">
+                <div class="flight-card-detail-icon">🚪</div>
+                <div class="flight-card-detail-text">
+                  <div class="flight-card-detail-label">Dep Terminal</div>
+                  <div class="flight-card-detail-value">${this.escapeHtml(flight.depTerminal)}</div>
+                </div>
+              </div>
+            ` : ''}
+            ${flight.depGate ? `
+              <div class="flight-card-detail">
+                <div class="flight-card-detail-icon">🚪</div>
+                <div class="flight-card-detail-text">
+                  <div class="flight-card-detail-label">Dep Gate</div>
+                  <div class="flight-card-detail-value">${this.escapeHtml(flight.depGate)}</div>
+                </div>
+              </div>
+            ` : ''}
+            ${flight.arrTerminal ? `
+              <div class="flight-card-detail">
+                <div class="flight-card-detail-icon">🚪</div>
+                <div class="flight-card-detail-text">
+                  <div class="flight-card-detail-label">Arr Terminal</div>
+                  <div class="flight-card-detail-value">${this.escapeHtml(flight.arrTerminal)}</div>
+                </div>
+              </div>
+            ` : ''}
+            ${flight.arrGate ? `
+              <div class="flight-card-detail">
+                <div class="flight-card-detail-icon">🚪</div>
+                <div class="flight-card-detail-text">
+                  <div class="flight-card-detail-label">Arr Gate</div>
+                  <div class="flight-card-detail-value">${this.escapeHtml(flight.arrGate)}</div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        ` : ''}
+
+        <!-- Delay indicator -->
+        ${isDelayed ? `
+          <div class="flight-card-delay">
+            <div class="flight-card-delay-icon">⚠️</div>
+            <div class="flight-card-delay-text">Delayed by ${maxDelay} minutes</div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+
+    return card;
+  }
+
+  // UI State Methods for Flights
+  showFlightsEmpty() {
+    this.flightsEmptyEl.style.display = 'flex';
+    this.upcomingFlightsSection.style.display = 'none';
+    this.pastFlightsSection.style.display = 'none';
+  }
+
+  showFlightsContainer() {
+    this.flightsEmptyEl.style.display = 'none';
   }
 }
 
