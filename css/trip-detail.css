@@ -2838,3 +2838,523 @@
 [data-theme="dark"] .ai-premium-notice-content p {
   color: #94a3b8;
 }
+
+/* ============================================
+   Trip Suggestions & Recommendations
+   ============================================ */
+
+.trip-suggestions-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.suggestion-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+  position: relative;
+}
+
+.suggestion-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.suggestion-card-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suggestion-card-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestion-card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 4px;
+}
+
+.suggestion-card-subtitle {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.suggestion-card-menu {
+  position: relative;
+}
+
+.suggestion-card-menu-btn {
+  background: #e2e8f0;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.suggestion-card-menu-btn:hover {
+  background: #cbd5e1;
+  color: #475569;
+}
+
+.suggestion-card-menu-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  min-width: 180px;
+  display: none;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.suggestion-card-menu-dropdown.active {
+  display: block;
+}
+
+.suggestion-card-menu-dropdown button {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.suggestion-card-menu-dropdown button:hover {
+  background: #f1f5f9;
+}
+
+.suggestion-card-menu-dropdown button.destructive {
+  color: #ef4444;
+}
+
+.suggestion-card-action {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.suggestion-card-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* eSIM Card Styles */
+.suggestion-card.esim .suggestion-card-icon {
+  color: #3b82f6;
+}
+
+.suggestion-card.esim .suggestion-card-action {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+.suggestion-card.esim .suggestion-card-action:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+}
+
+.suggestion-card-state-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suggestion-card-secondary-action {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.75rem;
+  padding: 4px 0;
+  cursor: pointer;
+  text-align: center;
+}
+
+.suggestion-card-secondary-action:hover {
+  color: #475569;
+  text-decoration: underline;
+}
+
+/* Asia Transport Card Styles */
+.suggestion-card.transport .suggestion-card-icon {
+  color: #e67e22;
+}
+
+.suggestion-card.transport .suggestion-card-action {
+  background: linear-gradient(90deg, #e67e22, #d35400);
+  justify-content: space-between;
+}
+
+.suggestion-card.transport .suggestion-card-action:hover {
+  background: linear-gradient(90deg, #d35400, #c0392b);
+}
+
+/* Airport Transfer Card Styles */
+.suggestion-card.transfer .suggestion-card-icon {
+  color: #4a90e2;
+}
+
+.suggestion-card.transfer .suggestion-card-action {
+  background: linear-gradient(90deg, #4a90e2, #3a7bc8);
+  justify-content: space-between;
+}
+
+.suggestion-card.transfer .suggestion-card-action:hover {
+  background: linear-gradient(90deg, #3a7bc8, #2a5a8f);
+}
+
+/* Email Import Card Styles */
+.suggestion-card.email-import .suggestion-card-icon {
+  color: #9966ff;
+}
+
+.email-import-address {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.email-import-address-text {
+  flex: 1;
+  font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.email-import-copy-btn {
+  background: #9966ff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.email-import-copy-btn:hover {
+  background: #7d4cdb;
+}
+
+.email-import-copy-btn.copied {
+  background: #22c55e;
+}
+
+/* Companions Section Styles */
+.trip-companions-section {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.companions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.companions-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0;
+}
+
+.companions-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.companions-invite-btn {
+  background: none;
+  border: none;
+  color: #4a90e2;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.companions-invite-btn:hover {
+  text-decoration: underline;
+}
+
+.companions-list {
+  display: flex;
+  gap: -8px;
+  margin-bottom: 12px;
+}
+
+.companion-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #475569;
+  margin-left: -8px;
+}
+
+.companion-avatar:first-child {
+  margin-left: 0;
+}
+
+.companion-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.companion-more {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.companions-view-btn {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  color: #1e293b;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.companions-view-btn:hover {
+  color: #4a90e2;
+}
+
+/* Invite Prompt Card */
+.companions-invite-card {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.companions-invite-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.companions-invite-icon {
+  font-size: 28px;
+  color: #4a90e2;
+}
+
+.companions-invite-content h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 4px;
+}
+
+.companions-invite-content p {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.companions-invite-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.companions-invite-actions button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.companions-invite-primary {
+  background: #4a90e2;
+  color: white;
+}
+
+.companions-invite-primary:hover {
+  background: #3a7bc8;
+}
+
+.companions-invite-secondary {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.companions-invite-secondary:hover {
+  background: #cbd5e1;
+}
+
+/* Premium Badge for Email Import */
+.suggestion-card.email-import .suggestion-card-title::after {
+  content: ' 🔒';
+  font-size: 0.875rem;
+  margin-left: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .suggestion-card {
+    padding: 14px;
+  }
+
+  .suggestion-card-title {
+    font-size: 0.875rem;
+  }
+
+  .suggestion-card-subtitle {
+    font-size: 0.6875rem;
+  }
+
+  .email-import-address {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .email-import-copy-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .companions-invite-actions {
+    flex-direction: column;
+  }
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .suggestion-card {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+[data-theme="dark"] .suggestion-card-title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .suggestion-card-subtitle {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .suggestion-card-menu-btn {
+  background: rgba(100, 116, 139, 0.2);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .suggestion-card-menu-btn:hover {
+  background: rgba(100, 116, 139, 0.3);
+}
+
+[data-theme="dark"] .suggestion-card-menu-dropdown {
+  background: rgba(30, 41, 59, 0.98);
+}
+
+[data-theme="dark"] .suggestion-card-menu-dropdown button {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .suggestion-card-menu-dropdown button:hover {
+  background: rgba(100, 116, 139, 0.2);
+}
+
+[data-theme="dark"] .email-import-address {
+  background: rgba(30, 41, 59, 0.5);
+  border-color: rgba(100, 116, 139, 0.3);
+}
+
+[data-theme="dark"] .trip-companions-section,
+[data-theme="dark"] .companions-invite-card {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+[data-theme="dark"] .companions-title {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .companions-view-btn {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .companions-view-btn:hover {
+  color: #60a5fa;
+}
+
+[data-theme="dark"] .companions-invite-content h3 {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .companions-invite-content p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .companions-invite-secondary {
+  background: rgba(100, 116, 139, 0.3);
+  color: #cbd5e1;
+}
+
+[data-theme="dark"] .companions-invite-secondary:hover {
+  background: rgba(100, 116, 139, 0.4);
+}
