@@ -62,9 +62,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            font-weight: bold;
-            color: #6366f1;
+            overflow: hidden;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 8px;
         }
 
         .brand-name {
@@ -175,7 +180,9 @@
             <div class="content">
                 <!-- Top: Logo & Brand -->
                 <div class="logo-section">
-                    <div class="logo">T</div>
+                    <div class="logo">
+                        <img src="assets/images/logo.png" alt="TripPortier Logo">
+                    </div>
                     <div class="brand-name">TripPortier</div>
                 </div>
 
