@@ -1,0 +1,53 @@
+TripPortier - URLs to Submit to Google Search Console
+=====================================================
+
+PRIORITY 1 - JUST FIXED (Submit First):
+----------------------------------------
+https://tripportier.com/trips.html
+https://tripportier.com/trip-detail.html
+
+PRIORITY 2 - Main Service Pages:
+---------------------------------
+https://tripportier.com/
+https://tripportier.com/esim.html
+https://tripportier.com/airport-transfers.html
+https://tripportier.com/premium.html
+
+PRIORITY 3 - eSIM Category Pages:
+----------------------------------
+https://tripportier.com/esim-global.html
+https://tripportier.com/esim-country.html
+https://tripportier.com/esim-region.html
+
+PRIORITY 4 - Support Pages:
+----------------------------
+https://tripportier.com/faq.html
+https://tripportier.com/feature-request.html
+
+OPTIONAL - Legal Pages:
+-----------------------
+https://tripportier.com/privacy.html
+https://tripportier.com/terms.html
+https://tripportier.com/attributions.html
+
+
+HOW TO SUBMIT:
+==============
+
+1. Go to: https://search.google.com/search-console
+2. Select your property: tripportier.com
+3. Click the search bar at top
+4. Paste each URL (copy from list above)
+5. Press Enter
+6. Click "Request Indexing"
+7. Wait for confirmation
+8. Move to next URL
+
+TIPS:
+-----
+- Start with Priority 1 URLs (just fixed)
+- Google limits requests, so spread them out if needed
+- Check back in 24-48 hours to see indexing status
+- You can check status anytime by inspecting the URL again
+
+Last Updated: December 29, 2024
