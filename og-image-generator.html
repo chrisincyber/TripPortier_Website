@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripPortier - OG Image Generator</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* OG Image Canvas - 1200x630px */
+        .og-image {
+            width: 1200px;
+            height: 630px;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #6366f1 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* Animated gradient overlay */
+        .og-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.4) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 40%);
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            padding: 80px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #6366f1;
+        }
+
+        .brand-name {
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+            letter-spacing: -1px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 72px;
+            font-weight: 900;
+            color: white;
+            margin: 0 0 20px 0;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-size: 36px;
+            color: rgba(255,255,255,0.9);
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .features {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
+            font-size: 20px;
+            color: white;
+            font-weight: 600;
+        }
+
+        .bottom-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .url {
+            font-size: 28px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .instructions {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            max-width: 1200px;
+        }
+
+        .instructions h2 {
+            margin-top: 0;
+            color: #0f0f23;
+        }
+
+        .instructions ol {
+            line-height: 2;
+        }
+
+        .instructions code {
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="og-image" id="ogImage">
+            <div class="content">
+                <!-- Top: Logo & Brand -->
+                <div class="logo-section">
+                    <div class="logo">T</div>
+                    <div class="brand-name">TripPortier</div>
+                </div>
+
+                <!-- Middle: Main Message -->
+                <div class="main-content">
+                    <h1>Travel Smarter</h1>
+                    <p class="subtitle">Your Complete Travel Platform</p>
+
+                    <div class="features">
+                        <div class="feature">
+                            <div class="feature-icon">📱</div>
+                            <div class="feature-text">eSIM Cards</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🚗</div>
+                            <div class="feature-text">Transfers</div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">✨</div>
+                            <div class="feature-text">AI Planning</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom: URL & Badge -->
+                <div class="bottom-section">
+                    <div class="url">tripportier.com</div>
+                    <div class="badge">200+ Countries</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>📸 How to Create Your OG Image:</h2>
+            <ol>
+                <li>Open this file in your browser (you're already here!)</li>
+                <li>
+                    <strong>Take a screenshot:</strong>
+                    <ul>
+                        <li><strong>Mac:</strong> Press <code>Cmd + Shift + 4</code>, then select just the blue gradient box</li>
+                        <li><strong>Windows:</strong> Use Snipping Tool or <code>Win + Shift + S</code></li>
+                    </ul>
+                </li>
+                <li>Save the screenshot as <code>og-image.png</code></li>
+                <li>Place it in your <code>/assets/images/</code> folder</li>
+                <li>Copy it and rename to <code>twitter-card.png</code> (Twitter uses same dimensions)</li>
+                <li>Commit and push to GitHub!</li>
+            </ol>
+
+            <h3>Alternative: Use a Design Tool</h3>
+            <p>You can also create these images using:</p>
+            <ul>
+                <li><strong>Canva</strong> (canva.com) - Free, easy template-based design</li>
+                <li><strong>Figma</strong> (figma.com) - Professional design tool</li>
+                <li><strong>Photoshop/Sketch</strong> - If you have design skills</li>
+            </ul>
+
+            <p><strong>Template size:</strong> Create a 1200 x 630 px canvas with your branding!</p>
+        </div>
+    </div>
+</body>
+</html>
