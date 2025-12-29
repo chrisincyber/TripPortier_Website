@@ -293,26 +293,7 @@
         }
         const db = firebase.firestore();
 
-        // Default/seed features (shown if no approved features in Firestore yet)
-        const defaultFeatures = [
-            { id: 'default_1', title: 'Android Version', description: 'Release TripPortier for Android devices so more travelers can use the app.', category: 'Other', upvotes: 47 },
-            { id: 'default_2', title: 'Hotel Booking Integration', description: 'Add ability to search and book hotels directly within the app, with confirmation details added to the itinerary.', category: 'Integrations', upvotes: 38 },
-            { id: 'default_3', title: 'Apple Watch App', description: 'Quick access to flight info, packing list progress, and trip countdown on Apple Watch.', category: 'Integrations', upvotes: 32 },
-            { id: 'default_4', title: 'Trip Budget Tracker', description: 'Track expenses during trips, set budgets, and get spending insights by category.', category: 'Trip Planning', upvotes: 28 },
-            { id: 'default_5', title: 'Document Scanner', description: 'Scan and store travel documents (passport, visas, tickets) with secure cloud backup.', category: 'Trip Planning', upvotes: 24 },
-            { id: 'default_6', title: 'Widgets for Home Screen', description: 'iOS home screen widgets showing upcoming trips, packing progress, or flight countdown.', category: 'User Interface', upvotes: 21 },
-            { id: 'default_7', title: 'Packing List Photos', description: 'Add photos to packing items to remember exactly which items you packed.', category: 'Packing Lists', upvotes: 19 },
-            { id: 'default_8', title: 'Public Transportation Info', description: 'Show local public transit options, metro maps, and transportation tips for destinations.', category: 'Trip Planning', upvotes: 17 },
-            { id: 'default_9', title: 'Train Tracking', description: 'Track train journeys similar to flights, with platform info and delay notifications.', category: 'Integrations', upvotes: 15 },
-            { id: 'default_10', title: 'Visa Requirements Checker', description: 'Automatic visa requirement lookup based on your passport and destination country.', category: 'Trip Planning', upvotes: 12 }
-        ];
-
-        // Default implemented features
-        const defaultImplemented = [
-            { id: 'impl_1', title: 'eSIM Plans', description: 'Buy and activate instant mobile data for 200+ countries directly in the app.' },
-            { id: 'impl_2', title: 'Real-time Flight Tracking', description: 'Track flights with live updates, gate changes, and smart departure notifications.' },
-            { id: 'impl_3', title: 'Trip Sharing', description: 'Share trips with friends and family to collaborate on planning.' }
-        ];
+        // No default features - only show real user submissions
 
         // Get or create visitor ID for tracking votes
         function getVisitorId() {
@@ -404,13 +385,18 @@
                     approvedFeatures.push({ id: doc.id, ...doc.data() });
                 });
 
-                // If no approved features, use defaults
+                // Show empty state or render features
                 if (approvedFeatures.length === 0) {
-                    approvedFeatures = defaultFeatures;
+                    featureList.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: var(--gray);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">💡</div>
+                            <h3 style="color: var(--text); margin-bottom: 0.5rem;">No Feature Requests Yet</h3>
+                            <p>Be the first to suggest a feature! Use the form above to share your ideas.</p>
+                        </div>
+                    `;
+                } else {
+                    featureList.innerHTML = approvedFeatures.map(f => renderFeatureCard(f, false)).join('');
                 }
-
-                // Render approved features
-                featureList.innerHTML = approvedFeatures.map(f => renderFeatureCard(f, f.id.startsWith('default_'))).join('');
 
                 // Load implemented features
                 const implementedSnapshot = await db.collection('featureRequests')
@@ -423,17 +409,29 @@
                     implementedFeatures.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Add default implemented features
-                implementedFeatures = [...implementedFeatures, ...defaultImplemented];
-
-                // Render implemented features
-                implementedList.innerHTML = implementedFeatures.map(f => renderImplementedCard(f)).join('');
+                // Show empty state or render features
+                if (implementedFeatures.length === 0) {
+                    implementedList.innerHTML = `
+                        <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: var(--gray);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">🚀</div>
+                            <h3 style="color: var(--text); margin-bottom: 0.5rem;">No Implemented Features Yet</h3>
+                            <p>Check back soon! We're constantly building features based on your feedback.</p>
+                        </div>
+                    `;
+                } else {
+                    implementedList.innerHTML = implementedFeatures.map(f => renderImplementedCard(f)).join('');
+                }
 
             } catch (error) {
                 console.error('Error loading features:', error);
-                // Fallback to defaults on error
-                featureList.innerHTML = defaultFeatures.map(f => renderFeatureCard(f, true)).join('');
-                implementedList.innerHTML = defaultImplemented.map(f => renderImplementedCard(f)).join('');
+                featureList.innerHTML = `
+                    <div class="empty-state" style="text-align: center; padding: 3rem 1rem; color: #ef4444;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                        <h3 style="color: var(--text); margin-bottom: 0.5rem;">Error Loading Features</h3>
+                        <p>Please try refreshing the page. If the problem persists, contact support.</p>
+                    </div>
+                `;
+                implementedList.innerHTML = '';
             }
         }
 
@@ -511,20 +509,11 @@
 
             // Persist to Firestore
             try {
-                if (featureId.startsWith('default_')) {
-                    // For default features, store in featureVotes collection
-                    await db.collection('featureVotes').doc(featureId).set({
-                        votes: currentVotes,
-                        lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
-                } else {
-                    // For Firestore features, update the document directly
-                    await db.collection('featureRequests').doc(featureId).update({
-                        upvotes: currentVotes
-                    });
-                }
+                await db.collection('featureRequests').doc(featureId).update({
+                    upvotes: currentVotes
+                });
             } catch (e) {
-                console.log('Vote saved locally');
+                console.log('Vote saved locally (feature may not exist in database yet)');
             }
         }
 
