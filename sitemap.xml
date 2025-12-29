@@ -1,39 +1,122 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+    <!-- Main Pages -->
     <url>
         <loc>https://tripportier.com/</loc>
-        <lastmod>2024-12-08</lastmod>
-        <changefreq>weekly</changefreq>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
+
+    <!-- eSIM Services -->
     <url>
-        <loc>https://tripportier.com/privacy.html</loc>
-        <lastmod>2024-12-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <loc>https://tripportier.com/esim.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
     </url>
     <url>
-        <loc>https://tripportier.com/terms.html</loc>
-        <lastmod>2024-12-13</lastmod>
-        <changefreq>monthly</changefreq>
-        <priority>0.5</priority>
+        <loc>https://tripportier.com/esim-global.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
     </url>
     <url>
-        <loc>https://tripportier.com/attributions.html</loc>
-        <lastmod>2024-12-13</lastmod>
+        <loc>https://tripportier.com/esim-country.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/esim-region.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+    </url>
+
+    <!-- Transport Services -->
+    <url>
+        <loc>https://tripportier.com/airport-transfers.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Trip Planning -->
+    <url>
+        <loc>https://tripportier.com/trips.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/trip-detail.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Premium -->
+    <url>
+        <loc>https://tripportier.com/premium.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.85</priority>
+    </url>
+
+    <!-- User Pages -->
+    <url>
+        <loc>https://tripportier.com/account.html</loc>
+        <lastmod>2024-12-29</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
     </url>
     <url>
+        <loc>https://tripportier.com/profile.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/settings.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Support Pages -->
+    <url>
         <loc>https://tripportier.com/faq.html</loc>
-        <lastmod>2024-12-08</lastmod>
+        <lastmod>2024-12-29</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://tripportier.com/feature-request.html</loc>
-        <lastmod>2024-12-08</lastmod>
+        <lastmod>2024-12-29</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.7</priority>
+    </url>
+
+    <!-- Legal Pages -->
+    <url>
+        <loc>https://tripportier.com/privacy.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/terms.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    <url>
+        <loc>https://tripportier.com/attributions.html</loc>
+        <lastmod>2024-12-29</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
     </url>
 </urlset>

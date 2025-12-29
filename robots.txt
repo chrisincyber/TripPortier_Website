@@ -1,5 +1,38 @@
+# TripPortier - Travel Smarter
+# https://tripportier.com
+
+# Allow all search engines
 User-agent: *
 Allow: /
 Disallow: /tp-admin-*
+Disallow: /redirect.html
+Disallow: /generate-languages.js
 
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Sitemaps
 Sitemap: https://tripportier.com/sitemap.xml
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Disallow: /tp-admin-*
+
+User-agent: Bingbot
+Allow: /
+Disallow: /tp-admin-*
+
+User-agent: Slurp
+Allow: /
+Disallow: /tp-admin-*
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
