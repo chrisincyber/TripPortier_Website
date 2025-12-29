@@ -360,6 +360,7 @@
     </main>
 
     <!-- Footer -->
+    <!-- Footer -->
     <footer class="footer">
         <!-- Trust Bar -->
         <div class="footer-trust-bar">
@@ -486,6 +487,39 @@
             <p>&copy; 2025 TripPortier. All rights reserved.</p>
         </div>
     </footer>
+
+    <!-- Footer JavaScript Functions -->
+    <script>
+        function changeLanguage(lang) {
+            console.log('Language changed to:', lang);
+            // TODO: Implement language switching logic
+            // For now, just save preference
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        function changeCurrency(currency) {
+            console.log('Currency changed to:', currency);
+            // TODO: Implement currency switching logic
+            // For now, just save preference
+            localStorage.setItem('preferredCurrency', currency);
+        }
+
+        // Load saved preferences on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('preferredLanguage');
+            const savedCurrency = localStorage.getItem('preferredCurrency');
+
+            if (savedLang) {
+                const langSelect = document.getElementById('language-select');
+                if (langSelect) langSelect.value = savedLang;
+            }
+
+            if (savedCurrency) {
+                const currencySelect = document.getElementById('currency-select');
+                if (currencySelect) currencySelect.value = savedCurrency;
+            }
+        });
+    </script>
 
     <!-- WhatsApp Float Button -->
     <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
