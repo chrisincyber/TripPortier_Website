@@ -471,13 +471,13 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Scrolled navbar state - dark text for user button */
+/* Scrolled navbar state - white text for user button */
 .navbar.scrolled .nav-user-btn {
-  color: #1e293b;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .navbar.scrolled .nav-user-chevron {
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-user-menu {
