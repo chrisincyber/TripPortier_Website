@@ -1268,44 +1268,62 @@ class TripsManager {
         </div>
 
         <!-- Details -->
-        ${flight.depTerminal || flight.depGate || flight.arrTerminal || flight.arrGate ? `
+        ${flight.depTerminal || flight.depGate || flight.arrTerminal || flight.arrGate || flight.arrBaggage ? `
           <div class="flight-card-details">
-            ${flight.depTerminal ? `
-              <div class="flight-card-detail">
-                <div class="flight-card-detail-icon">🚪</div>
-                <div class="flight-card-detail-text">
-                  <div class="flight-card-detail-label">Dep Terminal</div>
-                  <div class="flight-card-detail-value">${this.escapeHtml(flight.depTerminal)}</div>
+            <!-- Departure Column -->
+            <div class="flight-card-details-column">
+              <div class="flight-card-details-column-title">Departure</div>
+              ${flight.depTerminal ? `
+                <div class="flight-card-detail">
+                  <div class="flight-card-detail-icon">🏢</div>
+                  <div class="flight-card-detail-text">
+                    <div class="flight-card-detail-label">Terminal</div>
+                    <div class="flight-card-detail-value">${this.escapeHtml(flight.depTerminal)}</div>
+                  </div>
                 </div>
-              </div>
-            ` : ''}
-            ${flight.depGate ? `
-              <div class="flight-card-detail">
-                <div class="flight-card-detail-icon">🚪</div>
-                <div class="flight-card-detail-text">
-                  <div class="flight-card-detail-label">Dep Gate</div>
-                  <div class="flight-card-detail-value">${this.escapeHtml(flight.depGate)}</div>
+              ` : ''}
+              ${flight.depGate ? `
+                <div class="flight-card-detail">
+                  <div class="flight-card-detail-icon">🚪</div>
+                  <div class="flight-card-detail-text">
+                    <div class="flight-card-detail-label">Gate</div>
+                    <div class="flight-card-detail-value">${this.escapeHtml(flight.depGate)}</div>
+                  </div>
                 </div>
-              </div>
-            ` : ''}
-            ${flight.arrTerminal ? `
-              <div class="flight-card-detail">
-                <div class="flight-card-detail-icon">🚪</div>
-                <div class="flight-card-detail-text">
-                  <div class="flight-card-detail-label">Arr Terminal</div>
-                  <div class="flight-card-detail-value">${this.escapeHtml(flight.arrTerminal)}</div>
+              ` : ''}
+            </div>
+
+            <!-- Arrival Column -->
+            <div class="flight-card-details-column">
+              <div class="flight-card-details-column-title">Arrival</div>
+              ${flight.arrTerminal ? `
+                <div class="flight-card-detail">
+                  <div class="flight-card-detail-icon">🏢</div>
+                  <div class="flight-card-detail-text">
+                    <div class="flight-card-detail-label">Terminal</div>
+                    <div class="flight-card-detail-value">${this.escapeHtml(flight.arrTerminal)}</div>
+                  </div>
                 </div>
-              </div>
-            ` : ''}
-            ${flight.arrGate ? `
-              <div class="flight-card-detail">
-                <div class="flight-card-detail-icon">🚪</div>
-                <div class="flight-card-detail-text">
-                  <div class="flight-card-detail-label">Arr Gate</div>
-                  <div class="flight-card-detail-value">${this.escapeHtml(flight.arrGate)}</div>
+              ` : ''}
+              ${flight.arrGate ? `
+                <div class="flight-card-detail">
+                  <div class="flight-card-detail-icon">🚪</div>
+                  <div class="flight-card-detail-text">
+                    <div class="flight-card-detail-label">Gate</div>
+                    <div class="flight-card-detail-value">${this.escapeHtml(flight.arrGate)}</div>
+                  </div>
                 </div>
-              </div>
-            ` : ''}
+              ` : ''}
+              ${flight.arrBaggage ? `
+                <div class="flight-card-detail">
+                  <div class="flight-card-detail-icon">🧳</div>
+                  <div class="flight-card-detail-text">
+                    <div class="flight-card-detail-label">Baggage</div>
+                    <div class="flight-card-detail-value">${this.escapeHtml(flight.arrBaggage)}</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
           </div>
         ` : ''}
 
