@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/cookie-consent.css">
+    <script src="js/cookie-consent.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Consent Test - TripPortier</title>
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #667eea;
+        }
+        .test-section {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #5568d3;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .status.accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.declined {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status.none {
+            background: #fff3cd;
+            color: #856404;
+        }
+        #status-display {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍪 Cookie Consent Test Page</h1>
+
+    <div class="test-section">
+        <h2>Current Status</h2>
+        <p>Cookie Consent Status: <span id="status-display">Loading...</span></p>
+        <p id="ga-status">Google Analytics: <span id="ga-loaded">Checking...</span></p>
+        <p>Cookies: <span id="cookie-list">Checking...</span></p>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Controls</h2>
+        <p>Use these buttons to test the cookie consent system:</p>
+        <button class="test-button" onclick="testShowBanner()">Show Banner</button>
+        <button class="test-button" onclick="testAccept()">Accept Cookies</button>
+        <button class="test-button" onclick="testDecline()">Decline Cookies</button>
+        <button class="test-button" onclick="testRevoke()">Revoke Consent</button>
+        <button class="test-button" onclick="refreshStatus()">Refresh Status</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Instructions</h2>
+        <ol>
+            <li>On first load, you should see the cookie consent banner at the bottom</li>
+            <li>Click "Accept" or "Decline" to set your preference</li>
+            <li>Refresh the page - the banner should NOT appear again (consent saved)</li>
+            <li>Use "Revoke Consent" to clear your choice and show the banner again</li>
+            <li>Check if Google Analytics loads only when accepted</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Expected Behavior</h2>
+        <ul>
+            <li>✅ Banner appears on first visit only</li>
+            <li>✅ Consent preference persists across page loads</li>
+            <li>✅ Google Analytics loads ONLY if accepted</li>
+            <li>✅ GA cookies deleted when declined</li>
+            <li>✅ Do Not Track (DNT) is respected</li>
+            <li>✅ Banner works on mobile devices</li>
+        </ul>
+    </div>
+
+    <script>
+        // Test functions
+        function testShowBanner() {
+            if (typeof CookieConsent !== 'undefined') {
+                CookieConsent.revoke();
+            }
+        }
+
+        function testAccept() {
+            if (typeof CookieConsent !== 'undefined') {
+                CookieConsent.accept();
+                refreshStatus();
+            }
+        }
+
+        function testDecline() {
+            if (typeof CookieConsent !== 'undefined') {
+                CookieConsent.decline();
+                refreshStatus();
+            }
+        }
+
+        function testRevoke() {
+            if (typeof CookieConsent !== 'undefined') {
+                CookieConsent.revoke();
+                refreshStatus();
+            }
+        }
+
+        function refreshStatus() {
+            // Get consent status
+            const status = typeof CookieConsent !== 'undefined' ? CookieConsent.getStatus() : null;
+            const statusDisplay = document.getElementById('status-display');
+
+            if (status === null) {
+                statusDisplay.innerHTML = '<span class="status none">No Consent Given</span>';
+            } else if (status === true) {
+                statusDisplay.innerHTML = '<span class="status accepted">Accepted ✓</span>';
+            } else {
+                statusDisplay.innerHTML = '<span class="status declined">Declined ✗</span>';
+            }
+
+            // Check if GA is loaded
+            const gaLoaded = typeof gtag === 'function';
+            document.getElementById('ga-loaded').textContent = gaLoaded ? 'Loaded ✓' : 'Not Loaded ✗';
+            document.getElementById('ga-loaded').style.color = gaLoaded ? 'green' : 'red';
+
+            // List cookies
+            const cookies = document.cookie.split(';').map(c => c.trim()).filter(c => c);
+            const cookieList = document.getElementById('cookie-list');
+            if (cookies.length === 0) {
+                cookieList.textContent = 'No cookies';
+            } else {
+                cookieList.innerHTML = '<br>' + cookies.map(c => {
+                    const name = c.split('=')[0];
+                    return `• ${name}`;
+                }).join('<br>');
+            }
+        }
+
+        // Update status on load and every 2 seconds
+        setInterval(refreshStatus, 2000);
+        setTimeout(refreshStatus, 500);
+    </script>
+</body>
+</html>
