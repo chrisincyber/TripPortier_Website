@@ -1205,14 +1205,19 @@ class TripsManager {
       return match ? match[1] : '--:--';
     };
 
-    const depTime = extractTime(flight.depActual || flight.depEstimated || flight.depTime || flight.std);
-    const arrTime = extractTime(flight.arrActual || flight.arrEstimated || flight.arrTime || flight.sta);
+    // Scheduled (planned) times
     const scheduledDepTime = extractTime(flight.depTime || flight.std);
     const scheduledArrTime = extractTime(flight.arrTime || flight.sta);
 
-    const isDelayed = (flight.depDelayed && flight.depDelayed > 15) || (flight.arrDelayed && flight.arrDelayed > 15);
+    // Actual/Estimated times
+    const actualDepTime = extractTime(flight.depActual || flight.depEstimated);
+    const actualArrTime = extractTime(flight.arrActual || flight.arrEstimated);
+
+    // Check for delays (consider any delay > 5 minutes as delayed)
     const depDelay = flight.depDelayed || 0;
     const arrDelay = flight.arrDelayed || 0;
+    const isDepartureDelayed = depDelay > 5 && actualDepTime && actualDepTime !== '--:--';
+    const isArrivalDelayed = arrDelay > 5 && actualArrTime && actualArrTime !== '--:--';
     const maxDelay = Math.max(depDelay, arrDelay);
 
     // Format duration
@@ -1265,13 +1270,13 @@ class TripsManager {
         <div class="flight-card-times">
           <div class="flight-card-time">
             <div class="flight-card-time-label">Departure</div>
-            ${isDelayed && depDelay > 0 ? `
+            ${isDepartureDelayed ? `
               <div class="flight-card-time-value">
                 <div class="flight-card-time-delayed">${scheduledDepTime}</div>
-                <div class="flight-card-time-estimated">${depTime}</div>
+                <div class="flight-card-time-estimated">${actualDepTime}</div>
               </div>
             ` : `
-              <div class="flight-card-time-value">${depTime}</div>
+              <div class="flight-card-time-value">${scheduledDepTime}</div>
             `}
           </div>
           <div class="flight-card-duration">
@@ -1280,13 +1285,13 @@ class TripsManager {
           </div>
           <div class="flight-card-time">
             <div class="flight-card-time-label">Arrival</div>
-            ${isDelayed && arrDelay > 0 ? `
+            ${isArrivalDelayed ? `
               <div class="flight-card-time-value">
                 <div class="flight-card-time-delayed">${scheduledArrTime}</div>
-                <div class="flight-card-time-estimated">${arrTime}</div>
+                <div class="flight-card-time-estimated">${actualArrTime}</div>
               </div>
             ` : `
-              <div class="flight-card-time-value">${arrTime}</div>
+              <div class="flight-card-time-value">${scheduledArrTime}</div>
             `}
           </div>
         </div>
@@ -1357,7 +1362,7 @@ class TripsManager {
         </div>
 
         <!-- Delay indicator -->
-        ${isDelayed ? `
+        ${(isDepartureDelayed || isArrivalDelayed) && maxDelay > 5 ? `
           <div class="flight-card-delay">
             <div class="flight-card-delay-icon">⚠️</div>
             <div class="flight-card-delay-text">Delayed by ${maxDelay} minutes</div>
