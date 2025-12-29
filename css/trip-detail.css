@@ -300,6 +300,21 @@
   z-index: 10;
 }
 
+/* Desktop: Wider content area */
+@media (min-width: 1024px) {
+  .trip-main {
+    max-width: 1200px;
+    padding: 2rem 3rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .trip-main {
+    max-width: 900px;
+    padding: 2rem;
+  }
+}
+
 .trip-section {
   margin-bottom: 2rem;
 }
@@ -341,6 +356,22 @@
   padding: 1rem;
 }
 
+/* Desktop: Better width for tab content */
+@media (min-width: 768px) {
+  .trip-tab-body {
+    padding: 2rem;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+
+@media (min-width: 1024px) {
+  .trip-tab-body {
+    padding: 2rem 3rem;
+    max-width: 1200px;
+  }
+}
+
 /* ============================================
    Weather Section
    ============================================ */
@@ -359,6 +390,19 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
   color: white;
+}
+
+/* Desktop: Better weather card layout */
+@media (min-width: 768px) {
+  .trip-weather-card {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .trip-weather-extra {
+    display: flex !important;
+    gap: 2rem;
+  }
 }
 
 .trip-weather-main {
@@ -525,6 +569,22 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+}
+
+/* Desktop: 2x2 grid for quick actions */
+@media (min-width: 768px) {
+  .trip-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .trip-actions-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+  }
 }
 
 .trip-action-card {
@@ -1869,20 +1929,107 @@
   }
 
   .trip-cover-content {
-    max-width: 600px;
+    max-width: 900px;
     padding: 2.5rem;
   }
 
   .trip-tab-bar {
-    max-width: 500px;
+    max-width: 600px;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 20px 20px 0 0;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   }
 
+  .trip-tab-btn {
+    padding: 10px 20px;
+  }
+
+  .trip-tab-btn svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .trip-tab-btn span {
+    font-size: 0.8125rem;
+  }
+
   .trip-ai-fab {
-    right: calc(50% - 280px);
+    right: calc(50% - 350px);
+  }
+
+  .trip-essentials-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+
+  .trip-weather-card {
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* Large Desktop Enhancements */
+@media (min-width: 1024px) {
+  .trip-cover {
+    height: 60vh;
+    min-height: 500px;
+    max-height: 600px;
+  }
+
+  .trip-cover-content {
+    max-width: 1200px;
+    padding: 3rem;
+  }
+
+  .trip-tab-bar {
+    max-width: 800px;
+    height: 75px;
+  }
+
+  .trip-tab-btn {
+    padding: 12px 24px;
+  }
+
+  .trip-tab-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .trip-tab-btn span {
+    font-size: 0.875rem;
+  }
+
+  .trip-ai-fab {
+    right: calc(50% - 450px);
+    width: 60px;
+    height: 60px;
+  }
+
+  .trip-ai-fab svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .trip-essentials-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .trip-essential-card {
+    padding: 1.75rem;
+  }
+
+  .trip-action-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .trip-section-title {
+    font-size: 1.25rem;
+    margin: 2rem 0 1.5rem;
+  }
+
+  .trip-content {
+    padding-bottom: 100px;
   }
 }
 
@@ -2847,6 +2994,22 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Desktop: Grid layout for suggestions */
+@media (min-width: 768px) {
+  .trip-suggestions-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .trip-suggestions-section {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
 }
 
 .suggestion-card {
