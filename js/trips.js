@@ -47,15 +47,16 @@ class TripsManager {
     this.upcomingFlightsGrid = document.getElementById('upcoming-flights-grid');
     this.pastFlightsGrid = document.getElementById('past-flights-grid');
 
-    // View switcher
+    // View switcher and controls
+    this.tripsControlsEl = document.getElementById('trips-controls');
     this.viewSwitcherEl = document.getElementById('view-switcher');
 
     // Create trip elements
-    this.createTripFab = document.getElementById('create-trip-fab');
+    this.createTripBtn = document.getElementById('create-trip-btn');
     this.createTripModal = document.getElementById('create-trip-modal');
 
     // Add flight elements
-    this.addFlightFab = document.getElementById('add-flight-fab');
+    this.addFlightBtn = document.getElementById('add-flight-btn');
     this.addFlightModal = document.getElementById('add-flight-modal');
 
     // Initialize when DOM is ready
@@ -92,31 +93,25 @@ class TripsManager {
 
     if (!user) {
       this.showNotSignedIn();
-      // Hide FABs and switcher when not signed in
-      if (this.createTripFab) {
-        this.createTripFab.style.display = 'none';
-      }
-      if (this.addFlightFab) {
-        this.addFlightFab.style.display = 'none';
-      }
-      if (this.viewSwitcherEl) {
-        this.viewSwitcherEl.style.display = 'none';
+      // Hide controls when not signed in
+      if (this.tripsControlsEl) {
+        this.tripsControlsEl.style.display = 'none';
       }
       return;
     }
 
-    // Show switcher and appropriate FAB based on current view
-    if (this.viewSwitcherEl) {
-      this.viewSwitcherEl.style.display = 'flex';
+    // Show controls
+    if (this.tripsControlsEl) {
+      this.tripsControlsEl.style.display = 'flex';
     }
 
-    // Show appropriate FAB based on current view
+    // Show appropriate button based on current view
     if (this.currentView === 'trips') {
-      if (this.createTripFab) this.createTripFab.style.display = 'flex';
-      if (this.addFlightFab) this.addFlightFab.style.display = 'none';
+      if (this.createTripBtn) this.createTripBtn.style.display = 'inline-flex';
+      if (this.addFlightBtn) this.addFlightBtn.style.display = 'none';
     } else {
-      if (this.createTripFab) this.createTripFab.style.display = 'none';
-      if (this.addFlightFab) this.addFlightFab.style.display = 'flex';
+      if (this.createTripBtn) this.createTripBtn.style.display = 'none';
+      if (this.addFlightBtn) this.addFlightBtn.style.display = 'inline-flex';
     }
 
     this.showLoading();
@@ -529,10 +524,10 @@ class TripsManager {
   // ============================================
 
   setupCreateTrip() {
-    if (!this.createTripFab || !this.createTripModal) return;
+    if (!this.createTripBtn || !this.createTripModal) return;
 
-    // FAB click opens modal
-    this.createTripFab.addEventListener('click', () => this.openCreateTripModal());
+    // Button click opens modal
+    this.createTripBtn.addEventListener('click', () => this.openCreateTripModal());
 
     // Close button
     const closeBtn = document.getElementById('create-trip-close');
@@ -1097,18 +1092,18 @@ class TripsManager {
       }
     });
 
-    // Show appropriate container and FAB
+    // Show appropriate container and button
     if (view === 'trips') {
       this.containerEl.style.display = 'block';
       this.flightsContainerEl.style.display = 'none';
-      if (this.createTripFab) this.createTripFab.style.display = 'flex';
-      if (this.addFlightFab) this.addFlightFab.style.display = 'none';
+      if (this.createTripBtn) this.createTripBtn.style.display = 'inline-flex';
+      if (this.addFlightBtn) this.addFlightBtn.style.display = 'none';
       this.renderTrips();
     } else {
       this.containerEl.style.display = 'none';
       this.flightsContainerEl.style.display = 'block';
-      if (this.createTripFab) this.createTripFab.style.display = 'none';
-      if (this.addFlightFab) this.addFlightFab.style.display = 'flex';
+      if (this.createTripBtn) this.createTripBtn.style.display = 'none';
+      if (this.addFlightBtn) this.addFlightBtn.style.display = 'inline-flex';
       this.renderFlights();
     }
   }
@@ -1441,10 +1436,10 @@ class TripsManager {
   // ============================================
 
   setupAddFlight() {
-    if (!this.addFlightFab || !this.addFlightModal) return;
+    if (!this.addFlightBtn || !this.addFlightModal) return;
 
-    // FAB click opens modal
-    this.addFlightFab.addEventListener('click', () => this.openAddFlightModal());
+    // Button click opens modal
+    this.addFlightBtn.addEventListener('click', () => this.openAddFlightModal());
 
     // Close button
     const closeBtn = document.getElementById('add-flight-close');

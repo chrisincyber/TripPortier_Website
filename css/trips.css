@@ -509,49 +509,6 @@
 }
 
 /* ============================================
-   Create Trip FAB
-   ============================================ */
-
-.create-trip-fab {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 100;
-}
-
-.create-trip-fab:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
-}
-
-.create-trip-fab svg {
-  width: 28px;
-  height: 28px;
-  color: white;
-}
-
-/* Move FAB above WhatsApp button on mobile */
-@media (max-width: 768px) {
-  .create-trip-fab {
-    bottom: 6rem;
-    right: 1.5rem;
-    width: 56px;
-    height: 56px;
-  }
-}
-
-/* ============================================
    Create Trip Modal
    ============================================ */
 
@@ -980,8 +937,17 @@
   }
 }
 /* ============================================
-   View Switcher
+   View Switcher and Controls
    ============================================ */
+
+.trips-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
 
 .view-switcher {
   display: flex;
@@ -990,8 +956,6 @@
   backdrop-filter: blur(10px);
   padding: 0.5rem;
   border-radius: 12px;
-  margin: 2rem auto 0;
-  max-width: fit-content;
 }
 
 .view-switcher-btn {
@@ -1024,14 +988,60 @@
   color: #6366f1;
 }
 
+/* Action Buttons */
+.create-trip-btn,
+.add-flight-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1.75rem;
+  background: white;
+  color: #6366f1;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.create-trip-btn:hover,
+.add-flight-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+  background: #f8fafc;
+}
+
+.create-trip-btn svg,
+.add-flight-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
 @media (max-width: 768px) {
-  .view-switcher {
+  .trips-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
     margin-top: 1.5rem;
   }
 
+  .view-switcher {
+    width: 100%;
+  }
+
   .view-switcher-btn {
+    flex: 1;
+    justify-content: center;
     padding: 0.625rem 1.25rem;
     font-size: 0.9375rem;
+  }
+
+  .create-trip-btn,
+  .add-flight-btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -1765,53 +1775,6 @@
 
   .beta-feature-icon {
     font-size: 1.25rem;
-  }
-}
-
-/* ============================================
-   Add Flight FAB
-   ============================================ */
-
-.add-flight-fab {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 90;
-}
-
-.add-flight-fab:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.5);
-}
-
-.add-flight-fab svg {
-  width: 28px;
-  height: 28px;
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .add-flight-fab {
-    bottom: 6rem;
-    right: 1.5rem;
-    width: 56px;
-    height: 56px;
-  }
-
-  .add-flight-fab svg {
-    width: 24px;
-    height: 24px;
   }
 }
 

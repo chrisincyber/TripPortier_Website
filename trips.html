@@ -80,19 +80,35 @@
             </div>
             <p>View and manage your travel plans</p>
 
-            <!-- View Switcher -->
-            <div class="view-switcher" id="view-switcher" style="display: none;">
-                <button class="view-switcher-btn active" data-view="trips">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/>
+            <!-- View Switcher and Action Buttons -->
+            <div class="trips-controls" id="trips-controls" style="display: none;">
+                <div class="view-switcher" id="view-switcher">
+                    <button class="view-switcher-btn active" data-view="trips">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"/>
+                        </svg>
+                        Trips
+                    </button>
+                    <button class="view-switcher-btn" data-view="flights">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+                        </svg>
+                        Flights
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <button class="create-trip-btn" id="create-trip-btn" aria-label="Create new trip">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
-                    Trips
+                    Create Trip
                 </button>
-                <button class="view-switcher-btn" data-view="flights">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/>
+                <button class="add-flight-btn" id="add-flight-btn" style="display: none;" aria-label="Add flight">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
-                    Flights
+                    Add Flight
                 </button>
             </div>
         </div>
@@ -325,13 +341,6 @@
         });
     </script>
 
-    <!-- Create Trip FAB -->
-    <button class="create-trip-fab" id="create-trip-fab" aria-label="Create new trip" style="display: none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-        </svg>
-    </button>
-
     <!-- Create Trip Modal -->
     <div class="create-trip-modal" id="create-trip-modal">
         <div class="create-trip-content">
@@ -524,7 +533,7 @@
     <!-- Add Flight Modal -->
     <div class="add-flight-modal" id="add-flight-modal">
         <div class="add-flight-modal-content">
-            <button class="add-flight-modal-close" id="add-flight-modal-close" aria-label="Close">
+            <button class="add-flight-modal-close" id="add-flight-close" aria-label="Close">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -635,13 +644,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Flight FAB (shown only on flights view) -->
-    <button class="add-flight-fab" id="add-flight-fab" style="display: none;" aria-label="Add flight">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-        </svg>
-    </button>
 
     <!-- WhatsApp Float Button -->
     <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
