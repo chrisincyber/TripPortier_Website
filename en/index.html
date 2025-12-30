@@ -1268,31 +1268,8 @@
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
-                <!-- Language & Currency Selectors -->
+                <!-- Currency Selector -->
                 <div class="footer-selectors">
-                    <div class="selector-group">
-                        <label for="language-select">&#127760; Language</label>
-                        <select id="language-select" class="footer-select" onchange="changeLanguage(this.value)">
-                            <option value="en" selected>English</option>
-                            <option value="de">Deutsch</option>
-                            <option value="fr">Français</option>
-                            <option value="es">Español</option>
-                            <option value="it">Italiano</option>
-                            <option value="nl">Nederlands</option>
-                            <option value="pt-BR">Português (BR)</option>
-                            <option value="ja">日本語</option>
-                            <option value="ko">한국어</option>
-                            <option value="zh-Hans">简体中文</option>
-                            <option value="zh-Hant">繁體中文</option>
-                            <option value="ar">العربية</option>
-                            <option value="sv">Svenska</option>
-                            <option value="da">Dansk</option>
-                            <option value="nb">Norsk</option>
-                            <option value="fi">Suomi</option>
-                            <option value="th">ไทย</option>
-                            <option value="tr">Türkçe</option>
-                        </select>
-                    </div>
                     <div class="selector-group">
                         <label for="currency-select">&#128176; Currency</label>
                         <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
@@ -1371,12 +1348,6 @@
 
     <!-- Footer JavaScript Functions -->
     <script>
-        function changeLanguage(lang) {
-            console.log('Language changed to:', lang);
-            // Redirect to language-specific page
-            window.location.href = `/${lang}/`;
-        }
-
         function changeCurrency(currency) {
             console.log('Currency changed to:', currency);
             // Save preference
