@@ -1231,10 +1231,93 @@
 
     <!-- Footer -->
     <footer class="footer">
+        <!-- Trust Bar -->
+        <div class="footer-trust-bar">
+            <div class="trust-bar-container">
+                <div class="trust-item">
+                    <span class="trust-icon">&#128274;</span>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#9989;</span>
+                    <span>Verified Provider</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#128176;</span>
+                    <span>Money-Back Guarantee</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#127760;</span>
+                    <span>200+ Countries</span>
+                </div>
+            </div>
+        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+                <!-- Language & Currency Selectors -->
+                <div class="footer-selectors">
+                    <div class="selector-group">
+                        <label for="language-select">&#127760; Language</label>
+                        <select id="language-select" class="footer-select" onchange="changeLanguage(this.value)">
+                            <option value="en">English</option>
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                            <option value="nl" selected>Nederlands</option>
+                            <option value="pt-BR">Português (BR)</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="zh-Hans">简体中文</option>
+                            <option value="zh-Hant">繁體中文</option>
+                            <option value="ar">العربية</option>
+                            <option value="sv">Svenska</option>
+                            <option value="da">Dansk</option>
+                            <option value="nb">Norsk</option>
+                            <option value="fi">Suomi</option>
+                            <option value="th">ไทย</option>
+                            <option value="tr">Türkçe</option>
+                        </select>
+                    </div>
+                    <div class="selector-group">
+                        <label for="currency-select">&#128176; Currency</label>
+                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
+                            <option value="USD">$ USD</option>
+                            <option value="EUR">€ EUR</option>
+                            <option value="GBP">£ GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">¥ JPY</option>
+                            <option value="CNY">¥ CNY</option>
+                            <option value="KRW">₩ KRW</option>
+                            <option value="AUD">$ AUD</option>
+                            <option value="CAD">$ CAD</option>
+                            <option value="NZD">$ NZD</option>
+                            <option value="SGD">$ SGD</option>
+                            <option value="HKD">$ HKD</option>
+                            <option value="SEK">kr SEK</option>
+                            <option value="NOK">kr NOK</option>
+                            <option value="DKK">kr DKK</option>
+                            <option value="PLN">zł PLN</option>
+                            <option value="CZK">Kč CZK</option>
+                            <option value="THB">฿ THB</option>
+                            <option value="MYR">RM MYR</option>
+                            <option value="INR">₹ INR</option>
+                            <option value="BRL">R$ BRL</option>
+                            <option value="MXN">$ MXN</option>
+                            <option value="AED">د.إ AED</option>
+                            <option value="SAR">﷼ SAR</option>
+                            <option value="TRY">₺ TRY</option>
+                            <option value="ZAR">R ZAR</option>
+                            <option value="ILS">₪ ILS</option>
+                            <option value="TWD">$ TWD</option>
+                            <option value="PHP">₱ PHP</option>
+                            <option value="IDR">Rp IDR</option>
+                            <option value="VND">₫ VND</option>
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="footer-section">
                 <h4>Services</h4>
@@ -1262,37 +1345,42 @@
                 </ul>
             </div>
         </div>
-
-        <!-- Language Links -->
-        <div class="footer-languages">
-            <p class="footer-lang-title">Beschikbaar in 18 talen</p>
-            <div class="footer-lang-grid">
-                <a href="/en/" class="footer-lang">English</a>
-                <a href="/de/" class="footer-lang">Deutsch</a>
-                <a href="/fr/" class="footer-lang">Français</a>
-                <a href="/es/" class="footer-lang">Español</a>
-                <a href="/it/" class="footer-lang">Italiano</a>
-                <a href="/nl/" class="footer-lang active">Nederlands</a>
-                <a href="/pt-BR/" class="footer-lang">Português</a>
-                <a href="/ja/" class="footer-lang">日本語</a>
-                <a href="/ko/" class="footer-lang">한국어</a>
-                <a href="/zh-Hans/" class="footer-lang">简体中文</a>
-                <a href="/zh-Hant/" class="footer-lang">繁體中文</a>
-                <a href="/ar/" class="footer-lang">العربية</a>
-                <a href="/sv/" class="footer-lang">Svenska</a>
-                <a href="/da/" class="footer-lang">Dansk</a>
-                <a href="/nb/" class="footer-lang">Norsk</a>
-                <a href="/fi/" class="footer-lang">Suomi</a>
-                <a href="/th/" class="footer-lang">ไทย</a>
-                <a href="/tr/" class="footer-lang">Türkçe</a>
-            </div>
-        </div>
-
         <div class="footer-bottom">
+            <div class="payment-methods">
+                <span>We accept:</span>
+                <svg height="24" viewBox="0 0 750 471" aria-label="Visa"><path fill="#1434CB" d="M278 334l33-195h51l-32 195zm137-190c-10-4-26-8-46-8-51 0-87 26-87 63 0 28 26 43 45 52 20 9 27 15 27 24 0 13-16 19-31 19-21 0-32-3-49-10l-7-3-7 43c12 5 35 10 58 10 54 0 89-25 89-65 0-22-14-38-44-52-18-9-30-15-30-24 0-8 10-17 30-17 17 0 30 3 40 7l5 2 7-41zm128-5h-40c-12 0-22 4-27 17l-77 177h54l11-29h66l6 29h48l-41-194zm-62 126l21-55 6-16 3 14 12 57h-42zM193 139l-50 133-5-26c-10-31-40-65-74-82l46 170h55l82-195h-54z"/><path fill="#F9A533" d="M131 139H50l-1 5c65 16 108 54 126 100l-18-88c-3-12-12-16-26-17z"/></svg>
+                <svg height="24" viewBox="0 0 750 471" aria-label="Mastercard"><circle fill="#EB001B" cx="250" cy="235" r="150"/><circle fill="#F79E1B" cx="500" cy="235" r="150"/><path fill="#FF5F00" d="M325 113c42 33 69 84 69 141s-27 108-69 141c-42-33-69-84-69-141s27-108 69-141z"/></svg>
+                <svg height="24" viewBox="0 0 750 471" aria-label="American Express"><rect fill="#2E77BC" width="750" height="471" rx="40"/><path fill="#fff" d="M0 220h83l19-43 19 43h166v-33l15 33h85l15-34v34h250v-70h-27c-7 0-9 1-9 9v14h-73v-23h71c11 0 22 0 31 6v-70H395l-17 38-18-38H193v33l-17-33H96L0 220zm113-99l-73 165h46l14-31h78l13 31h47l-73-165h-52zm26 47l24 55h-48l24-55zm118-47v165h42v-116l48 116h36l48-116v116h42v-165h-66l-41 98-44-98h-65zm347 0v165h129v-34H646v-29h58v-34h-58v-33h62v-35H604zm-228 99c0 39 29 69 74 69 21 0 39-4 52-13v-41h-62v32h21v14c-4 2-10 3-17 3-24 0-38-17-38-42 0-25 15-42 41-42 14 0 25 4 35 12l24-28c-16-13-37-19-61-19-46 0-69 30-69 55z"/></svg>
+                <svg height="24" viewBox="0 0 750 471" aria-label="PayPal"><path fill="#003087" d="M248 89h-69c-5 0-9 3-10 8l-28 177c-1 4 2 7 6 7h36c3 0 6-2 7-6l8-50c1-5 5-8 10-8h23c47 0 74-22 81-67 3-20 0-35-10-46-11-12-30-15-54-15zm8 66c-4 25-24 25-43 25h-11l8-49c0-3 3-5 6-5h5c13 0 26 0 32 8 4 4 5 11 3 21z"/><path fill="#009cde" d="M400 154h-36c-3 0-5 2-6 5l-2 10-2-4c-8-11-24-15-41-15-38 0-71 29-77 69-3 20 1 40 13 53 10 12 25 17 43 17 30 0 47-19 47-19l-2 10c-1 4 2 7 6 7h32c5 0 9-3 10-8l19-118c1-4-2-7-4-7zm-47 67c-4 19-18 32-37 32-10 0-17-3-22-9-5-6-7-14-5-23 3-19 18-32 36-32 9 0 17 3 22 9 5 6 7 14 6 23z"/><path fill="#003087" d="M560 154h-36c-3 0-6 2-7 4l-41 60-17-58c-1-4-5-6-9-6h-35c-4 0-7 4-6 8l33 96-31 43c-3 4 0 9 5 9h36c3 0 6-1 7-4l99-143c3-4 0-9-5-9z"/><path fill="#009cde" d="M641 89h-69c-5 0-9 3-10 8l-28 177c-1 4 2 7 6 7h38c3 0 6-2 7-6l8-52c1-5 5-8 10-8h23c47 0 74-22 81-67 3-20 0-35-10-46-11-12-30-13-56-13zm8 66c-4 25-23 25-42 25h-11l8-49c0-3 3-5 6-5h5c13 0 25 0 31 8 4 4 6 11 3 21z"/></svg>
+            </div>
             <p>&copy; 2025 TripPortier. All rights reserved.</p>
         </div>
     </footer>
 
+    <!-- Footer JavaScript Functions -->
+    <script>
+        function changeLanguage(lang) {
+            console.log('Language changed to:', lang);
+            // Redirect to language-specific page
+            window.location.href = `/${lang}/`;
+        }
+
+        function changeCurrency(currency) {
+            console.log('Currency changed to:', currency);
+            // Save preference
+            localStorage.setItem('preferredCurrency', currency);
+        }
+
+        // Load saved preferences on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedCurrency = localStorage.getItem('preferredCurrency');
+
+            if (savedCurrency) {
+                const currencySelect = document.getElementById('currency-select');
+                if (currencySelect) currencySelect.value = savedCurrency;
+            }
+        });
+    </script>
     <!-- WhatsApp Float Button -->
     <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
         <svg viewBox="0 0 24 24">
