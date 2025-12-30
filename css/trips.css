@@ -993,6 +993,7 @@
 .add-flight-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.625rem;
   padding: 0.875rem 1.75rem;
   background: white;
@@ -1004,6 +1005,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  min-width: 160px;
 }
 
 .create-trip-btn:hover,
