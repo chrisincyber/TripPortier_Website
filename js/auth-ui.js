@@ -8,6 +8,7 @@ class AuthUI {
     this.modal = null;
     this.mode = 'signin'; // 'signin', 'signup', or 'reset'
     this.isLoading = false;
+    this.hideTimeout = null;
 
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
@@ -409,8 +410,21 @@ class AuthUI {
   }
 
   switchMode(mode) {
-    this.hideModal();
-    setTimeout(() => this.showModal(mode), 250);
+    // Cancel any pending hide timeout
+    if (this.hideTimeout) {
+      clearTimeout(this.hideTimeout);
+      this.hideTimeout = null;
+    }
+
+    // Remove modal immediately and show new one
+    if (this.modal) {
+      this.modal.remove();
+      this.modal = null;
+      document.body.style.overflow = '';
+    }
+
+    // Show new modal immediately
+    this.showModal(mode);
   }
 
   hideModal() {
@@ -418,11 +432,13 @@ class AuthUI {
       this.modal.classList.remove('show');
       document.body.style.overflow = '';
 
-      setTimeout(() => {
+      // Store timeout reference so it can be cancelled by switchMode
+      this.hideTimeout = setTimeout(() => {
         if (this.modal) {
           this.modal.remove();
           this.modal = null;
         }
+        this.hideTimeout = null;
       }, 300);
     }
   }
