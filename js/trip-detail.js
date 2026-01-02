@@ -1036,7 +1036,7 @@ class TripDetailManager {
 
     // Email Import (Premium only) - Show first
     if (isPremium && await this.shouldShowSuggestion('emailImport', config)) {
-      suggestions.push(this.renderEmailImportCard(config));
+      suggestions.push(this.renderEmailImportCard(config, isPremium));
     }
 
     // eSIM Recommendation
@@ -1271,17 +1271,23 @@ class TripDetailManager {
     `;
   }
 
-  renderEmailImportCard(config) {
+  renderEmailImportCard(config, isPremium = false) {
+    // Only show premium badge if user doesn't have TripPortier+
+    const premiumBadge = isPremium ? '' : '<span class="premium-badge">TripPortier+</span>';
+
     return `
       <div class="suggestion-card email-import" data-suggestion-id="emailImport">
         <div class="suggestion-card-header">
-          <div class="suggestion-card-icon premium">
+          <div class="suggestion-card-icon ${isPremium ? 'email-import-icon' : 'premium'}">
             <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>
+              ${isPremium
+                ? '<path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>'
+                : '<path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4-6.2-4.5-6.2 4.5 2.4-7.4L2 9.4h7.6z"/>'
+              }
             </svg>
           </div>
           <div class="suggestion-card-text">
-            <h3>Email Import <span class="premium-badge">Premium</span></h3>
+            <h3>Email Import ${premiumBadge}</h3>
             <p>Forward bookings to automatically add to your trip</p>
           </div>
           <button class="suggestion-card-menu-btn" data-suggestion-id="emailImport">
