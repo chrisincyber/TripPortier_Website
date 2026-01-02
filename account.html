@@ -2440,6 +2440,9 @@
         // TWO-FACTOR AUTHENTICATION
         // ============================================
 
+        let twoFactorVerificationModal = null;
+        let twoFactorPendingEmail = null;
+
         function updateTwoFactorToggle(enabled) {
             const toggle = document.getElementById('two-factor-toggle');
             const statusText = document.getElementById('two-factor-status');
@@ -2462,33 +2465,247 @@
             }
 
             const newState = !toggle.checked;
-            const actionText = newState ? 'enable' : 'disable';
 
-            if (!confirm(`Are you sure you want to ${actionText} two-factor authentication?`)) {
-                return;
+            if (newState) {
+                // ENABLING 2FA - Show verification modal first
+                await startTwoFactorSetup(user);
+            } else {
+                // DISABLING 2FA - Simple confirmation
+                if (!confirm('Are you sure you want to disable two-factor authentication? Your account will be less secure.')) {
+                    return;
+                }
+
+                toggle.disabled = true;
+
+                try {
+                    const toggleTwoFactor = firebase.functions().httpsCallable('toggleTwoFactor');
+                    const result = await toggleTwoFactor({ enabled: false });
+
+                    if (result.data.success) {
+                        updateTwoFactorToggle(false);
+                        alert('Two-factor authentication has been disabled.');
+                    }
+                } catch (error) {
+                    console.error('Error disabling 2FA:', error);
+                    alert('Failed to disable 2FA. Please try again.');
+                } finally {
+                    toggle.disabled = false;
+                }
             }
+        }
 
+        async function startTwoFactorSetup(user) {
+            const toggle = document.getElementById('two-factor-toggle');
             toggle.disabled = true;
 
             try {
-                const toggleTwoFactor = firebase.functions().httpsCallable('toggleTwoFactor');
-                const result = await toggleTwoFactor({ enabled: newState });
+                // Send verification code to user's email
+                const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
+                await sendTwoFactorCode({ email: user.email });
 
-                if (result.data.success) {
-                    toggle.checked = result.data.enabled;
-                    updateTwoFactorToggle(result.data.enabled);
+                twoFactorPendingEmail = user.email;
 
-                    const message = result.data.enabled
-                        ? 'Two-factor authentication has been enabled. You will receive a verification code via email when signing in.'
-                        : 'Two-factor authentication has been disabled.';
-                    alert(message);
-                }
+                // Show verification modal
+                showTwoFactorSetupModal(user.email);
+
             } catch (error) {
-                console.error('Error toggling 2FA:', error);
-                alert('Failed to update 2FA settings. Please try again.');
-            } finally {
+                console.error('Error sending 2FA code:', error);
+                alert('Failed to send verification code. Please try again.');
                 toggle.disabled = false;
             }
+        }
+
+        function showTwoFactorSetupModal(email) {
+            // Remove existing modal if present
+            if (twoFactorVerificationModal) {
+                twoFactorVerificationModal.remove();
+            }
+
+            const maskedEmail = maskEmail(email);
+
+            const modalHTML = `
+            <div id="two-factor-setup-modal" class="auth-modal">
+                <div class="auth-modal-overlay" onclick="closeTwoFactorSetupModal()"></div>
+                <div class="auth-modal-content">
+                    <button class="auth-modal-close" onclick="closeTwoFactorSetupModal()" aria-label="Close">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+
+                    <div class="auth-header">
+                        <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 50%; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center;">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+                            </svg>
+                        </div>
+                        <h2>Verify Your Email</h2>
+                        <p>We sent a 6-digit code to<br><strong>${maskedEmail}</strong></p>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-top: 0.5rem;">Enter the code to enable two-factor authentication</p>
+                    </div>
+
+                    <form id="two-factor-setup-form" onsubmit="verifyTwoFactorSetup(event)">
+                        <div class="auth-field">
+                            <label for="setup-otp-code">Verification Code</label>
+                            <input
+                                type="text"
+                                id="setup-otp-code"
+                                placeholder="000000"
+                                maxlength="6"
+                                pattern="[0-9]{6}"
+                                inputmode="numeric"
+                                autocomplete="one-time-code"
+                                style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 600;"
+                                required
+                            >
+                        </div>
+
+                        <div id="setup-error" class="auth-error" style="display: none;"></div>
+
+                        <button type="submit" class="auth-btn auth-btn-primary" id="verify-setup-btn">
+                            Verify & Enable 2FA
+                        </button>
+                    </form>
+
+                    <div class="auth-footer" style="margin-top: 1.5rem;">
+                        <p>Didn't receive the code? <a onclick="resendSetupCode()" id="resend-setup-link" style="cursor: pointer;">Resend</a></p>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            twoFactorVerificationModal = document.getElementById('two-factor-setup-modal');
+
+            // Prevent body scroll
+            document.body.style.overflow = 'hidden';
+
+            // Auto-focus the input
+            setTimeout(() => {
+                document.getElementById('setup-otp-code')?.focus();
+            }, 100);
+
+            // Show modal with animation
+            requestAnimationFrame(() => {
+                twoFactorVerificationModal.classList.add('show');
+            });
+        }
+
+        function maskEmail(email) {
+            const [localPart, domain] = email.split('@');
+            if (localPart.length <= 2) {
+                return `${localPart[0]}***@${domain}`;
+            }
+            return `${localPart.slice(0, 2)}***${localPart.slice(-1)}@${domain}`;
+        }
+
+        async function verifyTwoFactorSetup(e) {
+            e.preventDefault();
+
+            const code = document.getElementById('setup-otp-code').value;
+            const errorEl = document.getElementById('setup-error');
+            const submitBtn = document.getElementById('verify-setup-btn');
+
+            if (!code || code.length !== 6) {
+                errorEl.textContent = 'Please enter the 6-digit code';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying...';
+            errorEl.style.display = 'none';
+
+            try {
+                // Verify the code first
+                const verifyTwoFactorCode = firebase.functions().httpsCallable('verifyTwoFactorCode');
+                const verifyResult = await verifyTwoFactorCode({
+                    email: twoFactorPendingEmail,
+                    code: code
+                });
+
+                if (verifyResult.data.success) {
+                    // Code verified! Now enable 2FA
+                    const toggleTwoFactor = firebase.functions().httpsCallable('toggleTwoFactor');
+                    const result = await toggleTwoFactor({ enabled: true });
+
+                    if (result.data.success) {
+                        updateTwoFactorToggle(true);
+                        closeTwoFactorSetupModal();
+                        alert('Two-factor authentication has been enabled! You will receive a verification code via email when signing in.');
+                    }
+                }
+            } catch (error) {
+                console.error('2FA setup verification error:', error);
+
+                let errorMessage = 'Invalid verification code. Please try again.';
+                if (error.code === 'functions/deadline-exceeded') {
+                    errorMessage = 'Code expired. Please request a new one.';
+                } else if (error.code === 'functions/resource-exhausted') {
+                    errorMessage = 'Too many attempts. Please request a new code.';
+                } else if (error.code === 'functions/not-found') {
+                    errorMessage = 'No code found. Please request a new one.';
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+
+                errorEl.textContent = errorMessage;
+                errorEl.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Verify & Enable 2FA';
+            }
+        }
+
+        async function resendSetupCode() {
+            const resendLink = document.getElementById('resend-setup-link');
+            const errorEl = document.getElementById('setup-error');
+
+            if (!twoFactorPendingEmail) return;
+
+            try {
+                resendLink.textContent = 'Sending...';
+                resendLink.style.pointerEvents = 'none';
+                errorEl.style.display = 'none';
+
+                const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
+                await sendTwoFactorCode({ email: twoFactorPendingEmail });
+
+                resendLink.textContent = 'Sent!';
+
+                // Re-enable after 30 seconds
+                setTimeout(() => {
+                    resendLink.textContent = 'Resend';
+                    resendLink.style.pointerEvents = 'auto';
+                }, 30000);
+
+            } catch (error) {
+                console.error('Resend code error:', error);
+                resendLink.textContent = 'Resend';
+                resendLink.style.pointerEvents = 'auto';
+                errorEl.textContent = 'Failed to send code. Please try again.';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        function closeTwoFactorSetupModal() {
+            const toggle = document.getElementById('two-factor-toggle');
+            toggle.disabled = false;
+
+            if (twoFactorVerificationModal) {
+                twoFactorVerificationModal.classList.remove('show');
+                document.body.style.overflow = '';
+
+                setTimeout(() => {
+                    if (twoFactorVerificationModal) {
+                        twoFactorVerificationModal.remove();
+                        twoFactorVerificationModal = null;
+                    }
+                }, 300);
+            }
+
+            twoFactorPendingEmail = null;
         }
 
         // Handle direct toggle click
