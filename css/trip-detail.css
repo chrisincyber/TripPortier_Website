@@ -3040,19 +3040,22 @@
   justify-content: center;
 }
 
-.suggestion-card-content {
+.suggestion-card-content,
+.suggestion-card-text {
   flex: 1;
   min-width: 0;
 }
 
-.suggestion-card-title {
+.suggestion-card-title,
+.suggestion-card-text h3 {
   font-size: 0.9375rem;
   font-weight: 600;
   color: #1e293b;
   margin: 0 0 4px;
 }
 
-.suggestion-card-subtitle {
+.suggestion-card-subtitle,
+.suggestion-card-text p {
   font-size: 0.75rem;
   color: #64748b;
   margin: 0;
@@ -3082,7 +3085,8 @@
   color: #475569;
 }
 
-.suggestion-card-menu-dropdown {
+.suggestion-card-menu-dropdown,
+.suggestion-card-menu[data-suggestion-id] {
   position: absolute;
   top: 100%;
   right: 0;
@@ -3096,11 +3100,13 @@
   overflow: hidden;
 }
 
-.suggestion-card-menu-dropdown.active {
+.suggestion-card-menu-dropdown.active,
+.suggestion-card-menu[data-suggestion-id].active {
   display: block;
 }
 
-.suggestion-card-menu-dropdown button {
+.suggestion-card-menu-dropdown button,
+.suggestion-card-menu[data-suggestion-id] button {
   width: 100%;
   padding: 12px 16px;
   border: none;
@@ -3115,11 +3121,13 @@
   transition: background 0.2s;
 }
 
-.suggestion-card-menu-dropdown button:hover {
+.suggestion-card-menu-dropdown button:hover,
+.suggestion-card-menu[data-suggestion-id] button:hover {
   background: #f1f5f9;
 }
 
-.suggestion-card-menu-dropdown button.destructive {
+.suggestion-card-menu-dropdown button.destructive,
+.suggestion-card-menu[data-suggestion-id] button.destructive {
   color: #ef4444;
 }
 
@@ -3211,6 +3219,32 @@
   color: #9966ff;
 }
 
+.suggestion-card-icon.premium {
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  border-radius: 10px;
+  color: white;
+}
+
+.suggestion-card-icon.premium svg {
+  width: 20px;
+  height: 20px;
+}
+
+.premium-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
 .email-import-address {
   display: flex;
   align-items: center;
@@ -3222,7 +3256,8 @@
   border: 1px solid #e2e8f0;
 }
 
-.email-import-address-text {
+.email-import-address-text,
+.email-import-text {
   flex: 1;
   font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
   font-size: 0.75rem;
@@ -3430,11 +3465,13 @@
     padding: 14px;
   }
 
-  .suggestion-card-title {
+  .suggestion-card-title,
+  .suggestion-card-text h3 {
     font-size: 0.875rem;
   }
 
-  .suggestion-card-subtitle {
+  .suggestion-card-subtitle,
+  .suggestion-card-text p {
     font-size: 0.6875rem;
   }
 
@@ -3458,11 +3495,13 @@
   background: rgba(30, 41, 59, 0.5);
 }
 
-[data-theme="dark"] .suggestion-card-title {
+[data-theme="dark"] .suggestion-card-title,
+[data-theme="dark"] .suggestion-card-text h3 {
   color: #f1f5f9;
 }
 
-[data-theme="dark"] .suggestion-card-subtitle {
+[data-theme="dark"] .suggestion-card-subtitle,
+[data-theme="dark"] .suggestion-card-text p {
   color: #94a3b8;
 }
 
@@ -3475,15 +3514,18 @@
   background: rgba(100, 116, 139, 0.3);
 }
 
-[data-theme="dark"] .suggestion-card-menu-dropdown {
+[data-theme="dark"] .suggestion-card-menu-dropdown,
+[data-theme="dark"] .suggestion-card-menu[data-suggestion-id] {
   background: rgba(30, 41, 59, 0.98);
 }
 
-[data-theme="dark"] .suggestion-card-menu-dropdown button {
+[data-theme="dark"] .suggestion-card-menu-dropdown button,
+[data-theme="dark"] .suggestion-card-menu[data-suggestion-id] button {
   color: #f1f5f9;
 }
 
-[data-theme="dark"] .suggestion-card-menu-dropdown button:hover {
+[data-theme="dark"] .suggestion-card-menu-dropdown button:hover,
+[data-theme="dark"] .suggestion-card-menu[data-suggestion-id] button:hover {
   background: rgba(100, 116, 139, 0.2);
 }
 
