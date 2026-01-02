@@ -2198,9 +2198,142 @@ class TripDetailManager {
         windEl.textContent = `${Math.round(current.wind_speed_10m)} km/h`;
       }
 
+      // Store coordinates for forecast
+      this.weatherCoords = { lat, lon };
+
+      // Add click handler for forecast
+      const weatherCard = document.getElementById('trip-weather-card');
+      if (weatherCard) {
+        weatherCard.addEventListener('click', () => this.showWeatherForecast());
+      }
+
+      // Setup forecast modal close handlers
+      this.setupForecastModalHandlers();
+
     } catch (error) {
       console.warn('Failed to load weather:', error);
     }
+  }
+
+  setupForecastModalHandlers() {
+    const modal = document.getElementById('weather-forecast-modal');
+    const closeBtn = document.getElementById('weather-forecast-close');
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+    }
+
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  async showWeatherForecast() {
+    if (!this.weatherCoords) return;
+
+    const modal = document.getElementById('weather-forecast-modal');
+    const listEl = document.getElementById('weather-forecast-list');
+    const locationEl = document.getElementById('weather-forecast-location');
+
+    if (!modal || !listEl) return;
+
+    // Show modal with loading state
+    modal.classList.add('active');
+    listEl.innerHTML = '<div style="text-align: center; padding: 20px; color: #64748b;">Loading forecast...</div>';
+
+    if (locationEl) {
+      locationEl.textContent = this.trip.destination;
+    }
+
+    try {
+      const { lat, lon } = this.weatherCoords;
+
+      // Fetch 10-day forecast from Open-Meteo
+      const response = await fetch(
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=10`
+      );
+
+      if (!response.ok) throw new Error('Failed to fetch forecast');
+
+      const data = await response.json();
+      const daily = data.daily;
+
+      if (!daily || !daily.time) throw new Error('No forecast data');
+
+      // Get trip date range
+      const tripStart = this.trip.startDate ? new Date(this.trip.startDate) : null;
+      const tripEnd = this.trip.endDate ? new Date(this.trip.endDate) : null;
+
+      // Render forecast days
+      let forecastHtml = '';
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      for (let i = 0; i < daily.time.length; i++) {
+        const date = new Date(daily.time[i]);
+        const dayName = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : dayNames[date.getDay()];
+        const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+        const weatherInfo = this.getWeatherInfo(daily.weather_code[i]);
+        const highTemp = Math.round(daily.temperature_2m_max[i]);
+        const lowTemp = Math.round(daily.temperature_2m_min[i]);
+
+        // Check if this date falls within trip dates
+        const isTripDate = this.isDateInTripRange(date, tripStart, tripEnd);
+
+        // Determine icon class based on weather
+        let iconClass = '';
+        if ([3, 45, 48].includes(daily.weather_code[i])) {
+          iconClass = 'cloudy';
+        } else if ([51, 53, 55, 61, 63, 65, 80, 81, 82].includes(daily.weather_code[i])) {
+          iconClass = 'rainy';
+        }
+
+        forecastHtml += `
+          <div class="weather-forecast-day ${isTripDate ? 'trip-date' : ''}">
+            <div class="weather-forecast-day-info">
+              <div class="weather-forecast-day-name">${dayName}</div>
+              <div class="weather-forecast-day-date">${dateStr}</div>
+            </div>
+            <div class="weather-forecast-day-icon ${iconClass}">
+              ${weatherInfo.icon}
+            </div>
+            <div class="weather-forecast-day-temps">
+              <div class="weather-forecast-day-high">${highTemp}°</div>
+              <div class="weather-forecast-day-low">${lowTemp}°</div>
+            </div>
+            <div class="weather-forecast-day-desc">${weatherInfo.description}</div>
+          </div>
+        `;
+      }
+
+      listEl.innerHTML = forecastHtml;
+
+    } catch (error) {
+      console.warn('Failed to load forecast:', error);
+      listEl.innerHTML = '<div style="text-align: center; padding: 20px; color: #ef4444;">Failed to load forecast</div>';
+    }
+  }
+
+  isDateInTripRange(date, tripStart, tripEnd) {
+    if (!tripStart) return false;
+
+    // Normalize dates to midnight for comparison
+    const checkDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const start = new Date(tripStart.getFullYear(), tripStart.getMonth(), tripStart.getDate());
+
+    if (tripEnd) {
+      const end = new Date(tripEnd.getFullYear(), tripEnd.getMonth(), tripEnd.getDate());
+      return checkDate >= start && checkDate <= end;
+    }
+
+    // If no end date, just check start date
+    return checkDate.getTime() === start.getTime();
   }
 
   async geocodeDestination(destination) {

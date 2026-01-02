@@ -151,8 +151,32 @@
                                 <span class="trip-weather-stat-value" id="trip-weather-wind">-- km/h</span>
                             </div>
                         </div>
+                        <div class="trip-weather-hint">
+                            <span>Tap for 10-day forecast</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </div>
                     </div>
                 </section>
+
+                <!-- Weather Forecast Modal -->
+                <div class="weather-forecast-modal" id="weather-forecast-modal">
+                    <div class="weather-forecast-content">
+                        <div class="weather-forecast-header">
+                            <h2>10-Day Forecast</h2>
+                            <button class="weather-forecast-close" id="weather-forecast-close">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="weather-forecast-location" id="weather-forecast-location"></div>
+                        <div class="weather-forecast-list" id="weather-forecast-list">
+                            <!-- Forecast days will be inserted here -->
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Trip Suggestions Section -->
                 <section class="trip-section trip-suggestions-section" id="trip-suggestions-section">
