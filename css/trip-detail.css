@@ -3085,6 +3085,11 @@
   color: #475569;
 }
 
+.suggestion-card-menu-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
 .suggestion-card-menu-dropdown,
 .suggestion-card-menu[data-suggestion-id] {
   position: absolute;
@@ -3129,6 +3134,13 @@
 .suggestion-card-menu-dropdown button.destructive,
 .suggestion-card-menu[data-suggestion-id] button.destructive {
   color: #ef4444;
+}
+
+.suggestion-card-menu-dropdown button svg,
+.suggestion-card-menu[data-suggestion-id] button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .suggestion-card-action {

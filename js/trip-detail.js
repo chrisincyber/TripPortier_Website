@@ -1106,7 +1106,6 @@ class TripDetailManager {
 
   renderESIMCard(config) {
     const esimState = config.esimState || 'notPurchased';
-    const isMoreThanTwoWeeksAway = this.isDaysUntilTrip() > 14;
 
     const stateConfig = {
       notPurchased: {
@@ -1166,14 +1165,12 @@ class TripDetailManager {
                 </svg>
                 Hide
               </button>
-              ${isMoreThanTwoWeeksAway ? `
-                <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="esim">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                  </svg>
-                  Remind me in a week
-                </button>
-              ` : ''}
+              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="esim">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                Remind me in a week
+              </button>
             </div>
           ` : ''}
         </div>
@@ -1210,14 +1207,12 @@ class TripDetailManager {
               </svg>
               Hide
             </button>
-            ${this.isDaysUntilTrip() > 14 ? `
-              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="asiatransport">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                Remind me in a week
-              </button>
-            ` : ''}
+            <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="asiatransport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              Remind me in a week
+            </button>
           </div>
         </div>
         <a href="https://asiatransport.tripportier.com" target="_blank" class="suggestion-card-action">
@@ -1251,14 +1246,12 @@ class TripDetailManager {
               </svg>
               Hide
             </button>
-            ${this.isDaysUntilTrip() > 14 ? `
-              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="airportTransfer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                Remind me in a week
-              </button>
-            ` : ''}
+            <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="airportTransfer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              Remind me in a week
+            </button>
           </div>
         </div>
         <a href="airport-transfers.html" class="suggestion-card-action">
@@ -1302,14 +1295,12 @@ class TripDetailManager {
               </svg>
               Hide
             </button>
-            ${this.isDaysUntilTrip() > 14 ? `
-              <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="emailImport">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                </svg>
-                Remind me in a week
-              </button>
-            ` : ''}
+            <button class="suggestion-menu-item remind" data-action="remind" data-suggestion-id="emailImport">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              Remind me in a week
+            </button>
           </div>
         </div>
         <div class="email-import-address" id="email-import-address">
