@@ -1462,31 +1462,6 @@
     <script src="js/auth.js"></script>
     <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
-    <script src="js/i18n.js"></script>
-    <script>
-        // Language Detection and Redirect
-        (function() {
-            // Check if user has a saved preference or detect their language
-            const savedLang = localStorage.getItem('tripportier-lang');
-            if (savedLang && TripPortierI18n.supportedLanguages.includes(savedLang)) {
-                // Redirect to saved language
-                window.location.href = '/' + savedLang + '/';
-                return;
-            }
-
-            // Auto-detect and redirect (optional - can be disabled for SEO crawlers)
-            const isBot = /bot|crawl|spider|slurp|googlebot|bingbot/i.test(navigator.userAgent);
-            if (!isBot) {
-                const detectedLang = TripPortierI18n.getBestLanguage();
-                if (detectedLang !== 'en') {
-                    window.location.href = '/' + detectedLang + '/';
-                } else {
-                    // Default to English
-                    window.location.href = '/en/';
-                }
-            }
-        })();
-    </script>
     <script>
         // Typing Animation
         const words = ['Pro', 'Local', 'VIP', 'Explorer', 'Adventurer'];

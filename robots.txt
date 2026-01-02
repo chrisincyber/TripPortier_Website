@@ -5,8 +5,6 @@
 User-agent: *
 Allow: /
 Disallow: /tp-admin-*
-Disallow: /redirect.html
-Disallow: /generate-languages.js
 
 # Crawl-delay for polite crawling
 Crawl-delay: 1
