@@ -364,6 +364,8 @@ class TripDetailManager {
         destination: data.destination || '',
         startDate: this.parseDate(data.startDate),
         endDate: this.parseDate(data.endDate),
+        isSomedayTrip: data.isSomedayTrip || false,
+        tripLength: data.tripLength || 7,
         context: data.context || null,
         customImageURL: data.customImageURL || null,
         latitude: data.latitude || null,
@@ -387,7 +389,8 @@ class TripDetailManager {
         todosCount: this.trip.todos.length
       });
 
-      if (!this.trip.startDate || !this.trip.endDate) {
+      // Wishlist trips don't need dates, regular trips do
+      if (!this.trip.isSomedayTrip && (!this.trip.startDate || !this.trip.endDate)) {
         this.showError();
         return;
       }
@@ -443,17 +446,26 @@ class TripDetailManager {
     document.getElementById('trip-title').textContent = trip.name;
     document.getElementById('trip-destination').textContent = trip.destination;
 
-    // Dates
-    const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    const startStr = trip.startDate.toLocaleDateString('en-US', dateOptions);
-    const endStr = trip.endDate.toLocaleDateString('en-US', dateOptions);
-    document.getElementById('trip-dates').textContent = `${startStr} - ${endStr}`;
-
-    // Itinerary dates subtitle
+    // Dates - handle wishlist trips differently
+    const tripDatesEl = document.getElementById('trip-dates');
     const itineraryDates = document.getElementById('itinerary-dates');
-    if (itineraryDates) {
-      const shortDateOptions = { month: 'short', day: 'numeric' };
-      itineraryDates.textContent = `${trip.startDate.toLocaleDateString('en-US', shortDateOptions)} - ${trip.endDate.toLocaleDateString('en-US', shortDateOptions)}`;
+
+    if (trip.isSomedayTrip) {
+      // Wishlist trips show planned duration instead of dates
+      tripDatesEl.textContent = 'Dates not set yet';
+      if (itineraryDates) {
+        itineraryDates.textContent = `${trip.tripLength || 7} days planned`;
+      }
+    } else {
+      const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+      const startStr = trip.startDate.toLocaleDateString('en-US', dateOptions);
+      const endStr = trip.endDate.toLocaleDateString('en-US', dateOptions);
+      tripDatesEl.textContent = `${startStr} - ${endStr}`;
+
+      if (itineraryDates) {
+        const shortDateOptions = { month: 'short', day: 'numeric' };
+        itineraryDates.textContent = `${trip.startDate.toLocaleDateString('en-US', shortDateOptions)} - ${trip.endDate.toLocaleDateString('en-US', shortDateOptions)}`;
+      }
     }
 
     // Status badge
@@ -470,6 +482,8 @@ class TripDetailManager {
     } else if (phase === 'upcoming') {
       const countdown = this.getCountdown();
       statusText.textContent = countdown;
+    } else if (phase === 'wishlist') {
+      statusText.textContent = `${this.trip.tripLength || 7} days planned`;
     } else {
       statusText.textContent = 'Completed';
     }
@@ -1568,6 +1582,11 @@ class TripDetailManager {
   }
 
   getTripPhase() {
+    // Wishlist/someday trips have no dates
+    if (this.trip.isSomedayTrip) {
+      return 'wishlist';
+    }
+
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tripStart = new Date(
@@ -1633,6 +1652,11 @@ class TripDetailManager {
   }
 
   getDurationDays() {
+    // Wishlist trips use tripLength instead of calculated duration
+    if (this.trip.isSomedayTrip) {
+      return this.trip.tripLength || 7;
+    }
+
     const tripStart = new Date(
       this.trip.startDate.getFullYear(),
       this.trip.startDate.getMonth(),

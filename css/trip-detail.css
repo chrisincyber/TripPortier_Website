@@ -242,6 +242,10 @@
   background: #94a3b8;
 }
 
+.trip-status-badge.wishlist .trip-status-dot {
+  background: #8b5cf6;
+}
+
 .trip-status-dot {
   width: 10px;
   height: 10px;
