@@ -1110,32 +1110,36 @@ class TripDetailManager {
 
     const stateConfig = {
       notPurchased: {
-        icon: '📶',
+        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3C8.5 3 5.4 4.6 3.4 7.1L2 5.7C4.4 2.7 8 1 12 1s7.6 1.7 10 4.7l-1.4 1.4C18.6 4.6 15.5 3 12 3zm2.8 4.2L12 10l-2.8-2.8C7.9 8.4 7 10.1 7 12s.9 3.6 2.2 4.8L12 14l2.8 2.8c1.3-1.2 2.2-2.9 2.2-4.8s-.9-3.6-2.2-4.8zM12 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>',
         title: 'Stay Connected with eSIM',
         subtitle: 'Get instant mobile data without changing SIM cards',
         actionText: 'Buy eSIM',
-        actionClass: 'primary'
+        actionClass: 'primary',
+        iconClass: 'esim-default'
       },
       purchased: {
-        icon: '✓',
+        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
         title: 'eSIM Purchased',
         subtitle: 'Install your eSIM before departure',
         actionText: 'Mark as Installed',
-        actionClass: 'success'
+        actionClass: 'success',
+        iconClass: 'esim-purchased'
       },
       installed: {
-        icon: '📱',
+        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>',
         title: 'eSIM Installed',
         subtitle: 'Activate when you arrive',
         actionText: 'Mark as Activated',
-        actionClass: 'success'
+        actionClass: 'success',
+        iconClass: 'esim-installed'
       },
       activated: {
-        icon: '🎉',
+        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>',
         title: 'All Set!',
         subtitle: 'Your eSIM is active',
         actionText: null,
-        actionClass: null
+        actionClass: null,
+        iconClass: 'esim-activated'
       }
     };
 
@@ -1144,7 +1148,7 @@ class TripDetailManager {
     return `
       <div class="suggestion-card esim" data-suggestion-id="esim">
         <div class="suggestion-card-header">
-          <div class="suggestion-card-icon">${state.icon}</div>
+          <div class="suggestion-card-icon ${state.iconClass}">${state.icon}</div>
           <div class="suggestion-card-text">
             <h3>${state.title}</h3>
             <p>${state.subtitle}</p>
