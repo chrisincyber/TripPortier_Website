@@ -3429,6 +3429,26 @@
   background: linear-gradient(135deg, #2563eb, #1e40af);
 }
 
+/* Companions Card Styles */
+.suggestion-card.companions .suggestion-card-icon.companions-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 10px;
+  color: white;
+}
+
+.suggestion-card.companions .suggestion-card-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.suggestion-card.companions .suggestion-card-action {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.suggestion-card.companions .suggestion-card-action:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+}
+
 .suggestion-card-state-actions {
   display: flex;
   flex-direction: column;

@@ -1322,32 +1322,29 @@ class TripDetailManager {
     }
 
     container.innerHTML = `
-      <div class="companions-invite-card">
-        <div class="companions-invite-header">
-          <div class="companions-invite-icon">👥</div>
-          <div class="companions-invite-text">
+      <div class="suggestion-card companions" data-suggestion-id="companions">
+        <div class="suggestion-card-header">
+          <div class="suggestion-card-icon companions-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+            </svg>
+          </div>
+          <div class="suggestion-card-text">
             <h3>Traveling with others?</h3>
             <p>Invite companions to collaborate on this trip</p>
           </div>
-          <button class="companions-close-btn" onclick="window.tripDetailManager.hideCompanionsWidget()">
+          <button class="suggestion-card-menu-btn" onclick="event.stopPropagation(); window.tripDetailManager.hideCompanionsWidget()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 6L6 18M6 6l12 12"/>
             </svg>
           </button>
         </div>
-        <div class="companions-invite-actions">
-          <button class="companions-invite-btn" onclick="window.tripDetailManager.inviteCompanions()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-              <circle cx="8.5" cy="7" r="4"/>
-              <path d="M20 8v6M23 11h-6"/>
-            </svg>
-            Invite Now
-          </button>
-          <button class="companions-decline-btn" onclick="window.tripDetailManager.declineCompanionInvite()">
-            Not this time
-          </button>
-        </div>
+        <button class="suggestion-card-action companions-action" onclick="window.tripDetailManager.inviteCompanions()">
+          <span>Invite Now</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </button>
       </div>
     `;
 
