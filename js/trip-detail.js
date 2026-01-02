@@ -44,6 +44,7 @@ class TripDetailManager {
     this.setupTripMenu();
     this.setupExpenseForm();
     this.setupItineraryForm();
+    this.setupForecastModalHandlers();
 
     // Wait for auth to be ready
     if (window.tripPortierAuth) {
@@ -2200,15 +2201,6 @@ class TripDetailManager {
 
       // Store coordinates for forecast
       this.weatherCoords = { lat, lon };
-
-      // Add click handler for forecast
-      const weatherCard = document.getElementById('trip-weather-card');
-      if (weatherCard) {
-        weatherCard.addEventListener('click', () => this.showWeatherForecast());
-      }
-
-      // Setup forecast modal close handlers
-      this.setupForecastModalHandlers();
 
     } catch (error) {
       console.warn('Failed to load weather:', error);
