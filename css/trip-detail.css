@@ -3152,6 +3152,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+.suggestion-card-action svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
 /* eSIM Card Styles */
 .suggestion-card.esim .suggestion-card-icon {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
