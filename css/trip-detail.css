@@ -3472,30 +3472,42 @@
 
 /* Asia Transport Card Styles */
 .suggestion-card.transport .suggestion-card-icon {
-  color: #e67e22;
+  background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);
+  border-radius: 10px;
+  color: white;
+}
+
+.suggestion-card.transport .suggestion-card-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .suggestion-card.transport .suggestion-card-action {
-  background: linear-gradient(90deg, #e67e22, #d35400);
-  justify-content: space-between;
+  background: linear-gradient(135deg, #e67e22, #d35400);
 }
 
 .suggestion-card.transport .suggestion-card-action:hover {
-  background: linear-gradient(90deg, #d35400, #c0392b);
+  background: linear-gradient(135deg, #d35400, #c0392b);
 }
 
 /* Airport Transfer Card Styles */
 .suggestion-card.transfer .suggestion-card-icon {
-  color: #4a90e2;
+  background: linear-gradient(135deg, #4a90e2 0%, #3a7bc8 100%);
+  border-radius: 10px;
+  color: white;
+}
+
+.suggestion-card.transfer .suggestion-card-icon svg {
+  width: 20px;
+  height: 20px;
 }
 
 .suggestion-card.transfer .suggestion-card-action {
-  background: linear-gradient(90deg, #4a90e2, #3a7bc8);
-  justify-content: space-between;
+  background: linear-gradient(135deg, #4a90e2, #3a7bc8);
 }
 
 .suggestion-card.transfer .suggestion-card-action:hover {
-  background: linear-gradient(90deg, #3a7bc8, #2a5a8f);
+  background: linear-gradient(135deg, #3a7bc8, #2a5a8f);
 }
 
 /* Email Import Card Styles */
@@ -3584,9 +3596,7 @@
 
 /* Companions Section Styles */
 .trip-companions-section {
-  background: #f8fafc;
-  border-radius: 16px;
-  padding: 16px;
+  /* No extra padding - the suggestion card inside handles its own styling */
 }
 
 .companions-header {
