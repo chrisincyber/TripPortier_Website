@@ -84,7 +84,28 @@ class SubscriptionManager {
       return;
     }
 
+    // Check if functions is available
+    if (!this.functions) {
+      console.error('Firebase Functions not initialized');
+      alert('Unable to connect to payment service. Please refresh and try again.');
+      return;
+    }
+
+    // Find and update button to show loading state
+    const buttons = document.querySelectorAll('.subscribe-btn');
+    const clickedButton = Array.from(buttons).find(btn =>
+      btn.textContent.toLowerCase().includes(planId)
+    ) || buttons[planId === 'yearly' ? 1 : 0];
+
+    const originalText = clickedButton?.textContent;
+    if (clickedButton) {
+      clickedButton.disabled = true;
+      clickedButton.textContent = 'Loading...';
+      clickedButton.style.opacity = '0.7';
+    }
+
     try {
+      console.log('Creating checkout session for:', planId);
       const createCheckout = this.functions.httpsCallable('createSubscriptionCheckout');
 
       const result = await createCheckout({
@@ -93,15 +114,32 @@ class SubscriptionManager {
         cancelUrl: window.location.origin + '/premium.html?subscription=cancelled',
       });
 
+      console.log('Checkout result:', result);
+
       if (result.data.success && result.data.url) {
         // Redirect to Stripe Checkout
         window.location.href = result.data.url;
       } else {
-        throw new Error('Failed to create checkout session');
+        throw new Error(result.data.error || 'Failed to create checkout session');
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
+
+      // Reset button state
+      if (clickedButton) {
+        clickedButton.disabled = false;
+        clickedButton.textContent = originalText;
+        clickedButton.style.opacity = '1';
+      }
+
+      // Show user-friendly error
+      if (error.code === 'functions/unauthenticated') {
+        alert('Please sign in to subscribe.');
+      } else if (error.code === 'functions/unavailable') {
+        alert('Payment service is temporarily unavailable. Please try again later.');
+      } else {
+        alert('Failed to start checkout: ' + (error.message || 'Please try again.'));
+      }
     }
   }
 
