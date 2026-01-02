@@ -418,13 +418,228 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         }
 
+        /* Arrival Date Card */
+        .arrival-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-top: 2rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .arrival-card.submitted {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+
+        .arrival-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .arrival-card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .arrival-card-icon svg {
+            width: 24px;
+            height: 24px;
+            color: white;
+        }
+
+        .arrival-card-icon.success {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+        }
+
+        .arrival-card-text h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0 0 0.25rem;
+        }
+
+        .arrival-card-text p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .arrival-card-optional {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        .arrival-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .arrival-input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .arrival-input-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+
+        .arrival-input-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            color: #1e293b;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+
+        .arrival-input-group input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .arrival-submit-btn {
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            align-self: flex-end;
+            white-space: nowrap;
+        }
+
+        .arrival-submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .arrival-submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .arrival-benefits {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .arrival-benefit {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .arrival-benefit svg {
+            width: 18px;
+            height: 18px;
+            color: #10b981;
+        }
+
+        .arrival-success-message {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.75rem;
+            border: 1px solid #bbf7d0;
+        }
+
+        .arrival-success-message svg {
+            width: 24px;
+            height: 24px;
+            color: #10b981;
+            flex-shrink: 0;
+        }
+
+        .arrival-success-message p {
+            color: #166534;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .arrival-success-message strong {
+            display: block;
+            color: #14532d;
+        }
+
+        /* Install Now Banner */
+        .install-now-banner {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            color: white;
+            animation: pulse-banner 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-banner {
+            0%, 100% { box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3); }
+            50% { box-shadow: 0 4px 30px rgba(16, 185, 129, 0.5); }
+        }
+
+        .install-now-banner svg {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .install-now-banner-text {
+            flex: 1;
+        }
+
+        .install-now-banner-text strong {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .install-now-banner-text span {
+            font-size: 0.875rem;
+            opacity: 0.95;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .success-hero h1 {
                 font-size: 1.75rem;
             }
 
-            .esim-card, .install-card {
+            .esim-card, .install-card, .arrival-card {
                 padding: 1.5rem;
             }
 
@@ -435,6 +650,33 @@
             .btn-primary, .btn-secondary {
                 min-width: auto;
                 width: 100%;
+            }
+
+            .arrival-form {
+                flex-direction: column;
+            }
+
+            .arrival-submit-btn {
+                width: 100%;
+            }
+
+            .arrival-benefits {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .arrival-card-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .arrival-card-icon {
+                margin: 0 auto;
+            }
+
+            .install-now-banner {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
@@ -505,6 +747,17 @@
 
             <!-- Success State (hidden by default) -->
             <div id="successState" style="display: none;">
+                <!-- Install Now Banner -->
+                <div class="install-now-banner">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                    <div class="install-now-banner-text">
+                        <strong>📲 Install your eSIM now while you have WiFi!</strong>
+                        <span>Your data plan only starts when you connect at your destination. Install now so you're ready when you land.</span>
+                    </div>
+                </div>
+
                 <!-- Email Notice -->
                 <div class="email-notice">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -682,6 +935,61 @@
                         <a href="esim.html" class="btn-secondary">
                             Browse More eSIMs
                         </a>
+                    </div>
+                </div>
+
+                <!-- Arrival Date Card -->
+                <div class="arrival-card" id="arrivalCard">
+                    <div class="arrival-card-header">
+                        <div class="arrival-card-icon" id="arrivalCardIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                        </div>
+                        <div class="arrival-card-text">
+                            <h3>Get a reminder to activate <span class="arrival-card-optional">Optional</span></h3>
+                            <p>Enter your arrival date and we'll remind you to activate your eSIM when you land</p>
+                        </div>
+                    </div>
+
+                    <!-- Form State -->
+                    <div id="arrivalFormState">
+                        <div class="arrival-form">
+                            <div class="arrival-input-group">
+                                <label for="arrivalDate">When do you arrive at your destination?</label>
+                                <input type="date" id="arrivalDate" name="arrivalDate" required>
+                            </div>
+                            <button type="button" class="arrival-submit-btn" id="arrivalSubmitBtn" onclick="submitArrivalDate()">
+                                Set Reminder
+                            </button>
+                        </div>
+                        <div class="arrival-benefits">
+                            <div class="arrival-benefit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Push notification on arrival day</span>
+                            </div>
+                            <div class="arrival-benefit">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                <span>Email reminder to activate</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Success State -->
+                    <div id="arrivalSuccessState" style="display: none;">
+                        <div class="arrival-success-message">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p>
+                                <strong>Reminder set for <span id="arrivalDateDisplay">-</span></strong>
+                                We'll send you a push notification and email on your arrival day to activate your eSIM.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -980,6 +1288,94 @@
             }
         }
 
+        // Submit arrival date for reminder
+        async function submitArrivalDate() {
+            const arrivalDateInput = document.getElementById('arrivalDate');
+            const arrivalDate = arrivalDateInput.value;
+
+            if (!arrivalDate) {
+                arrivalDateInput.focus();
+                return;
+            }
+
+            const submitBtn = document.getElementById('arrivalSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Setting...';
+
+            try {
+                // Get order reference
+                const orderCode = currentOrderData?.orderCode;
+                const email = currentOrderData?.email;
+
+                if (!orderCode || !email) {
+                    throw new Error('Order data not found');
+                }
+
+                // Save arrival date to Firestore for reminder scheduling
+                const reminderData = {
+                    orderCode: orderCode,
+                    email: email,
+                    arrivalDate: arrivalDate,
+                    packageName: currentOrderData?.packageName || 'eSIM',
+                    countryTitle: currentOrderData?.countryTitle || 'your destination',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    reminderSent: false,
+                    userId: currentUser?.uid || null
+                };
+
+                // Save to esimReminders collection
+                await db.collection('esimReminders').add(reminderData);
+
+                // Also update the order with arrival date
+                const ordersRef = db.collection('esimOrders');
+                const querySnapshot = await ordersRef.where('orderCode', '==', orderCode).limit(1).get();
+
+                if (!querySnapshot.empty) {
+                    const orderDoc = querySnapshot.docs[0];
+                    await orderDoc.ref.update({
+                        arrivalDate: arrivalDate,
+                        reminderSet: true
+                    });
+                }
+
+                // Show success state
+                const formattedDate = new Date(arrivalDate + 'T00:00:00').toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                document.getElementById('arrivalDateDisplay').textContent = formattedDate;
+                document.getElementById('arrivalFormState').style.display = 'none';
+                document.getElementById('arrivalSuccessState').style.display = 'block';
+                document.getElementById('arrivalCard').classList.add('submitted');
+                document.getElementById('arrivalCardIcon').classList.add('success');
+
+                console.log('Arrival reminder set for:', arrivalDate);
+
+            } catch (error) {
+                console.error('Error setting arrival reminder:', error);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Set Reminder';
+                alert('Failed to set reminder. Please try again.');
+            }
+        }
+
+        // Set minimum date for arrival date input (today)
+        function initArrivalDateInput() {
+            const arrivalDateInput = document.getElementById('arrivalDate');
+            if (arrivalDateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                arrivalDateInput.min = today;
+
+                // Set default to tomorrow if available
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                arrivalDateInput.value = tomorrow.toISOString().split('T')[0];
+            }
+        }
+
         // Link order to user account after login/registration
         async function linkOrderToUser(userId, orderCode) {
             if (!orderCode) return;
@@ -1004,6 +1400,9 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize arrival date input
+            initArrivalDateInput();
+
             // Set up auth state listener
             firebase.auth().onAuthStateChanged(async (user) => {
                 if (user) {
