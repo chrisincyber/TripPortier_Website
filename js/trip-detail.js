@@ -1110,7 +1110,7 @@ class TripDetailManager {
 
     const stateConfig = {
       notPurchased: {
-        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.5 5.5L18 4l-1.5 1.5L15 4l-1.5 1.5L12 4 9 7v12c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2V7l-1.5-1.5zM17 19h-6V9.5L12.5 8l1 1L15 7.5l1.5 1.5L17 8.5V19z"/></svg>',
+        icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>',
         title: 'Stay Connected with eSIM',
         subtitle: 'Get instant mobile data without changing SIM cards',
         actionText: 'Buy eSIM',
