@@ -89,7 +89,7 @@ class SubscriptionManager {
 
       const result = await createCheckout({
         planId,
-        successUrl: window.location.origin + '/account.html?subscription=success',
+        successUrl: window.location.origin + '/premium-success.html',
         cancelUrl: window.location.origin + '/premium.html?subscription=cancelled',
       });
 
@@ -150,19 +150,12 @@ class SubscriptionManager {
 // Create global instance
 window.subscriptionManager = new SubscriptionManager();
 
-// Check for subscription success/cancelled URL params
+// Check for subscription cancelled URL param
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const subscriptionStatus = urlParams.get('subscription');
 
-  if (subscriptionStatus === 'success') {
-    // Show success message
-    setTimeout(() => {
-      alert('Welcome to TripPortier Premium! Your subscription is now active.');
-      // Clean up URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }, 500);
-  } else if (subscriptionStatus === 'cancelled') {
+  if (subscriptionStatus === 'cancelled') {
     // Clean up URL silently
     window.history.replaceState({}, document.title, window.location.pathname);
   }
