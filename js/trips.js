@@ -13,6 +13,37 @@ class TripsManager {
     // Same API key as iOS app (PexelsService.swift)
     this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
 
+    // Travel styles (matches iOS app - 27 categories)
+    this.travelStyles = [
+      { id: 'accessibility', name: 'Accessibility', emoji: '♿' },
+      { id: 'adventure', name: 'Adventure', emoji: '🏔️' },
+      { id: 'arts', name: 'Arts', emoji: '🎨' },
+      { id: 'beaches', name: 'Beaches', emoji: '🏖️' },
+      { id: 'budget', name: 'Budget Friendly', emoji: '💰' },
+      { id: 'canoeing', name: 'Canoeing', emoji: '🛶' },
+      { id: 'childFriendly', name: 'Child Friendly', emoji: '👶' },
+      { id: 'cruise', name: 'Cruise', emoji: '🚢' },
+      { id: 'cycling', name: 'Cycling', emoji: '🚴' },
+      { id: 'education', name: 'Education', emoji: '📚' },
+      { id: 'family', name: 'Family', emoji: '👨‍👩‍👧‍👦' },
+      { id: 'fishing', name: 'Fishing', emoji: '🎣' },
+      { id: 'food', name: 'Food', emoji: '🍽️' },
+      { id: 'gardens', name: 'Gardens & Forests', emoji: '🌳' },
+      { id: 'health', name: 'Health & Wellness', emoji: '🧘' },
+      { id: 'hiddenGems', name: 'Hidden Gems', emoji: '💎' },
+      { id: 'hiking', name: 'Hiking', emoji: '🥾' },
+      { id: 'history', name: 'History', emoji: '🏛️' },
+      { id: 'honeymoon', name: 'Honeymoon', emoji: '💕' },
+      { id: 'kayaking', name: 'Kayaking', emoji: '🚣' },
+      { id: 'lgbtq', name: 'LGBTQ+ Friendly', emoji: '🏳️‍🌈' },
+      { id: 'luxury', name: 'Luxury', emoji: '✨' },
+      { id: 'mountain', name: 'Mountain', emoji: '⛰️' },
+      { id: 'nightlife', name: 'Nightlife', emoji: '🌙' },
+      { id: 'religious', name: 'Religious', emoji: '🕌' },
+      { id: 'sightseeing', name: 'Sightseeing', emoji: '📸' },
+      { id: 'sports', name: 'Sports', emoji: '⚽' }
+    ];
+
     // Trip creation state
     this.newTrip = {
       destination: '',
@@ -21,11 +52,18 @@ class TripsManager {
       longitude: null,
       startDate: null,
       endDate: null,
-      context: null,
+      tripLength: 7,        // For wishlist trips (days)
+      isSomedayTrip: false, // true if no specific dates
+      useAI: false,         // AI generation opted in
+      travelStyles: [],     // Selected style IDs
+      travelCompanion: null, // 'solo' | 'partner' | 'group'
+      aiItinerary: [],      // Generated itinerary items
+      context: null,        // Legacy context (derived from travelStyles)
       name: ''
     };
     this.currentStep = 1;
     this.createdTripId = null;
+    this.isPremium = false; // Will be checked on auth
 
     // DOM elements
     this.loadingEl = document.getElementById('trips-loading');
@@ -34,9 +72,11 @@ class TripsManager {
     this.containerEl = document.getElementById('trips-container');
     this.activeTripSection = document.getElementById('active-trip-section');
     this.upcomingTripsSection = document.getElementById('upcoming-trips-section');
+    this.wishlistTripsSection = document.getElementById('wishlist-trips-section');
     this.pastTripsSection = document.getElementById('past-trips-section');
     this.activeTripGrid = document.getElementById('active-trip-grid');
     this.upcomingTripsGrid = document.getElementById('upcoming-trips-grid');
+    this.wishlistTripsGrid = document.getElementById('wishlist-trips-grid');
     this.pastTripsGrid = document.getElementById('past-trips-grid');
 
     // Flights elements
@@ -97,6 +137,7 @@ class TripsManager {
       if (this.tripsControlsEl) {
         this.tripsControlsEl.style.display = 'none';
       }
+      this.isPremium = false;
       return;
     }
 
@@ -117,8 +158,9 @@ class TripsManager {
     this.showLoading();
 
     try {
-      // Load both trips and flights
+      // Check premium status and load trips/flights
       await Promise.all([
+        this.checkPremiumStatus(),
         this.loadTrips(user.uid),
         this.loadFlights(user.uid)
       ]);
@@ -132,6 +174,34 @@ class TripsManager {
     } catch (error) {
       console.error('Error loading data:', error);
       this.showEmpty();
+    }
+  }
+
+  async checkPremiumStatus() {
+    if (!this.currentUser) {
+      this.isPremium = false;
+      return;
+    }
+
+    try {
+      if (window.subscriptionManager) {
+        const { isSubscribed } = await window.subscriptionManager.getSubscriptionStatus(this.currentUser.uid);
+        this.isPremium = isSubscribed;
+      } else {
+        // Fallback: check Firestore directly
+        const db = firebase.firestore();
+        const subDoc = await db.collection('subscriptions').doc(this.currentUser.uid).get();
+        if (subDoc.exists) {
+          const data = subDoc.data();
+          const expirationDate = data.expirationDate?.toDate();
+          this.isPremium = data.status === 'active' && expirationDate && expirationDate > new Date();
+        } else {
+          this.isPremium = false;
+        }
+      }
+    } catch (error) {
+      console.error('Error checking premium status:', error);
+      this.isPremium = false;
     }
   }
 
@@ -225,11 +295,15 @@ class TripsManager {
 
     const active = [];
     const upcoming = [];
+    const wishlist = [];
     const past = [];
 
     for (const trip of this.trips) {
-      // Skip someday trips
-      if (trip.isSomedayTrip) continue;
+      // Handle wishlist/someday trips
+      if (trip.isSomedayTrip) {
+        wishlist.push(trip);
+        continue;
+      }
 
       const tripStart = new Date(trip.startDate.getFullYear(), trip.startDate.getMonth(), trip.startDate.getDate());
       const tripEnd = new Date(trip.endDate.getFullYear(), trip.endDate.getMonth(), trip.endDate.getDate());
@@ -249,17 +323,20 @@ class TripsManager {
     // Sort upcoming by start date (soonest first)
     upcoming.sort((a, b) => a.startDate - b.startDate);
 
+    // Sort wishlist by creation date (newest first)
+    wishlist.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
     // Sort past by end date (most recent first)
     past.sort((a, b) => b.endDate - a.endDate);
 
-    return { active, upcoming, past };
+    return { active, upcoming, wishlist, past };
   }
 
   renderTrips() {
-    const { active, upcoming, past } = this.categorizeTrips();
+    const { active, upcoming, wishlist, past } = this.categorizeTrips();
 
     // If no trips at all, show empty state
-    if (active.length === 0 && upcoming.length === 0 && past.length === 0) {
+    if (active.length === 0 && upcoming.length === 0 && wishlist.length === 0 && past.length === 0) {
       this.showEmpty();
       return;
     }
@@ -267,6 +344,7 @@ class TripsManager {
     // Clear grids
     this.activeTripGrid.innerHTML = '';
     this.upcomingTripsGrid.innerHTML = '';
+    this.wishlistTripsGrid.innerHTML = '';
     this.pastTripsGrid.innerHTML = '';
 
     // Render active trips
@@ -291,6 +369,17 @@ class TripsManager {
       this.upcomingTripsSection.style.display = 'none';
     }
 
+    // Render wishlist trips
+    if (wishlist.length > 0) {
+      this.wishlistTripsSection.style.display = 'block';
+      wishlist.forEach(trip => {
+        const card = this.createTripCard(trip, 'wishlist');
+        this.wishlistTripsGrid.appendChild(card);
+      });
+    } else {
+      this.wishlistTripsSection.style.display = 'none';
+    }
+
     // Render past trips
     if (past.length > 0) {
       this.pastTripsSection.style.display = 'block';
@@ -310,7 +399,53 @@ class TripsManager {
     card.className = `trip-card trip-card-${type}`;
     card.dataset.tripId = trip.id;
 
-    // Calculate days info
+    // Handle wishlist trips differently
+    if (type === 'wishlist') {
+      const tripLength = trip.tripLength || 7;
+      const contextIcon = this.getContextIcon(trip.context);
+      const contextDisplay = trip.context ? trip.context.charAt(0).toUpperCase() + trip.context.slice(1) : '';
+
+      card.innerHTML = `
+        <div class="trip-card-gradient"></div>
+        <div class="trip-card-overlay"></div>
+
+        <div class="trip-card-badges">
+          <div class="trip-card-wishlist-badge">
+            <span>💭</span>
+            Wishlist
+          </div>
+        </div>
+
+        <div class="trip-card-content">
+          <h3 class="trip-card-name">${this.escapeHtml(trip.name)}</h3>
+
+          <div class="trip-card-info">
+            <span>${tripLength} day${tripLength !== 1 ? 's' : ''}</span>
+            <span class="trip-card-info-dot">&bull;</span>
+            <span>No dates set</span>
+          </div>
+
+          ${trip.context ? `
+            <div class="trip-card-context">
+              <span class="trip-card-context-icon">${contextIcon}</span>
+              <span>${contextDisplay}</span>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      // Load background image
+      this.loadBackgroundImage(card, trip);
+
+      // Add click handler to navigate to trip detail
+      card.addEventListener('click', () => {
+        window.location.href = `/trip-detail.html?id=${trip.id}`;
+      });
+
+      return card;
+    }
+
+    // Calculate days info for regular trips
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const tripStart = new Date(trip.startDate.getFullYear(), trip.startDate.getMonth(), trip.startDate.getDate());
@@ -562,8 +697,10 @@ class TripsManager {
     // Reset state
     this.resetCreateTripState();
     this.currentStep = 1;
-    this.updateProgressBar();
-    this.showStep(1);
+    this.showStep('step-destination');
+
+    // Populate travel styles grid
+    this.populateTravelStyles();
 
     // Show modal
     this.createTripModal.classList.add('active');
@@ -574,6 +711,40 @@ class TripsManager {
       const destinationInput = document.getElementById('destination-input');
       if (destinationInput) destinationInput.focus();
     }, 300);
+  }
+
+  populateTravelStyles() {
+    const grid = document.getElementById('travel-styles-grid');
+    if (!grid) return;
+
+    grid.innerHTML = this.travelStyles.map(style => `
+      <button class="travel-style-option" data-style="${style.id}">
+        <span class="travel-style-emoji">${style.emoji}</span>
+        <span class="travel-style-name">${style.name}</span>
+      </button>
+    `).join('');
+
+    // Add click handlers
+    grid.querySelectorAll('.travel-style-option').forEach(option => {
+      option.addEventListener('click', () => {
+        option.classList.toggle('selected');
+        const styleId = option.dataset.style;
+
+        if (option.classList.contains('selected')) {
+          if (!this.newTrip.travelStyles.includes(styleId)) {
+            this.newTrip.travelStyles.push(styleId);
+          }
+        } else {
+          this.newTrip.travelStyles = this.newTrip.travelStyles.filter(s => s !== styleId);
+        }
+
+        // Enable continue button if at least one style selected
+        const nextBtn = document.getElementById('next-to-companion');
+        if (nextBtn) {
+          nextBtn.disabled = this.newTrip.travelStyles.length === 0;
+        }
+      });
+    });
   }
 
   closeCreateTripModal() {
@@ -589,6 +760,12 @@ class TripsManager {
       longitude: null,
       startDate: null,
       endDate: null,
+      tripLength: 7,
+      isSomedayTrip: false,
+      useAI: false,
+      travelStyles: [],
+      travelCompanion: null,
+      aiItinerary: [],
       context: null,
       name: ''
     };
@@ -599,92 +776,210 @@ class TripsManager {
     const startDateInput = document.getElementById('start-date');
     const endDateInput = document.getElementById('end-date');
     const nameInput = document.getElementById('trip-name-input');
+    const somedayCheckbox = document.getElementById('someday-checkbox');
+    const tripLengthInput = document.getElementById('trip-length');
 
     if (destinationInput) destinationInput.value = '';
     if (startDateInput) startDateInput.value = '';
     if (endDateInput) endDateInput.value = '';
     if (nameInput) nameInput.value = '';
+    if (somedayCheckbox) somedayCheckbox.checked = false;
+    if (tripLengthInput) tripLengthInput.value = '7';
 
-    // Reset context selection
-    document.querySelectorAll('.context-option').forEach(opt => {
+    // Show/hide date containers
+    const specificDatesContainer = document.getElementById('specific-dates-container');
+    const tripLengthContainer = document.getElementById('trip-length-container');
+    if (specificDatesContainer) specificDatesContainer.style.display = 'flex';
+    if (tripLengthContainer) tripLengthContainer.style.display = 'none';
+
+    // Reset travel styles selection
+    document.querySelectorAll('.travel-style-option').forEach(opt => {
       opt.classList.remove('selected');
     });
 
+    // Reset companion selection
+    document.querySelectorAll('.companion-option').forEach(opt => {
+      opt.classList.remove('selected');
+    });
+
+    // Reset AI loading and content
+    const aiLoading = document.getElementById('ai-loading');
+    const aiContent = document.getElementById('ai-itinerary-content');
+    if (aiLoading) aiLoading.style.display = 'flex';
+    if (aiContent) aiContent.style.display = 'none';
+
     // Reset buttons
     const nextToDates = document.getElementById('next-to-dates');
-    const nextToContext = document.getElementById('next-to-context');
-    const nextToName = document.getElementById('next-to-name');
+    const nextToAiPrompt = document.getElementById('next-to-ai-prompt');
+    const nextToCompanion = document.getElementById('next-to-companion');
     const submitBtn = document.getElementById('create-trip-submit');
 
     if (nextToDates) nextToDates.disabled = true;
-    if (nextToContext) nextToContext.disabled = true;
-    if (nextToName) nextToName.disabled = true;
+    if (nextToAiPrompt) nextToAiPrompt.disabled = true;
+    if (nextToCompanion) nextToCompanion.disabled = true;
     if (submitBtn) submitBtn.disabled = true;
   }
 
-  showStep(stepNumber) {
+  showStep(stepId) {
     // Hide all steps
     document.querySelectorAll('.create-trip-step').forEach(step => {
       step.style.display = 'none';
     });
 
     // Show target step
-    const stepIds = ['step-destination', 'step-dates', 'step-context', 'step-name', 'step-success'];
-    const targetStep = document.getElementById(stepIds[stepNumber - 1]);
+    const targetStep = document.getElementById(stepId);
     if (targetStep) {
       targetStep.style.display = 'block';
     }
 
-    this.currentStep = stepNumber;
-    this.updateProgressBar();
+    // Calculate progress based on flow
+    const stepProgress = this.calculateStepProgress(stepId);
+    this.currentStep = stepProgress.step;
+    this.updateProgressBar(stepProgress.total);
   }
 
-  updateProgressBar() {
+  calculateStepProgress(stepId) {
+    // Define step order based on whether AI is being used
+    if (this.newTrip.useAI) {
+      // AI flow: destination -> dates -> ai-prompt -> styles -> companion -> ai-review -> name -> success
+      const aiSteps = ['step-destination', 'step-dates', 'step-ai-prompt', 'step-styles', 'step-companion', 'step-ai-review', 'step-name', 'step-success'];
+      const index = aiSteps.indexOf(stepId);
+      return { step: index + 1, total: 7 }; // 7 steps before success
+    } else {
+      // Non-AI flow: destination -> dates -> ai-prompt -> name -> success
+      const regularSteps = ['step-destination', 'step-dates', 'step-ai-prompt', 'step-name', 'step-success'];
+      const index = regularSteps.indexOf(stepId);
+      return { step: index + 1, total: 4 }; // 4 steps before success
+    }
+  }
+
+  updateProgressBar(totalSteps = 4) {
     const progressBar = document.getElementById('create-trip-progress-bar');
     if (progressBar) {
-      const percentage = (this.currentStep / 4) * 100;
+      const percentage = (this.currentStep / totalSteps) * 100;
       progressBar.style.width = `${Math.min(percentage, 100)}%`;
     }
   }
 
   setupStepNavigation() {
-    // Step 1 -> Step 2
+    // Step 1 (Destination) -> Step 2 (Dates)
     const nextToDates = document.getElementById('next-to-dates');
     if (nextToDates) {
-      nextToDates.addEventListener('click', () => this.showStep(2));
+      nextToDates.addEventListener('click', () => this.showStep('step-dates'));
     }
 
-    // Step 2 -> Step 1
+    // Step 2 (Dates) -> Step 1 (Destination)
     const backToDestination = document.getElementById('back-to-destination');
     if (backToDestination) {
-      backToDestination.addEventListener('click', () => this.showStep(1));
+      backToDestination.addEventListener('click', () => this.showStep('step-destination'));
     }
 
-    // Step 2 -> Step 3
-    const nextToContext = document.getElementById('next-to-context');
-    if (nextToContext) {
-      nextToContext.addEventListener('click', () => this.showStep(3));
+    // Step 2 (Dates) -> Step 3 (AI Prompt)
+    const nextToAiPrompt = document.getElementById('next-to-ai-prompt');
+    if (nextToAiPrompt) {
+      nextToAiPrompt.addEventListener('click', () => this.showStep('step-ai-prompt'));
     }
 
-    // Step 3 -> Step 2
+    // Step 3 (AI Prompt) -> Step 2 (Dates)
     const backToDates = document.getElementById('back-to-dates');
     if (backToDates) {
-      backToDates.addEventListener('click', () => this.showStep(2));
+      backToDates.addEventListener('click', () => this.showStep('step-dates'));
     }
 
-    // Step 3 -> Step 4
-    const nextToName = document.getElementById('next-to-name');
-    if (nextToName) {
-      nextToName.addEventListener('click', () => {
-        this.generateSuggestedNames();
-        this.showStep(4);
+    // AI Prompt: Yes - go to styles
+    const aiYes = document.getElementById('ai-yes');
+    if (aiYes) {
+      aiYes.addEventListener('click', () => {
+        // Check premium status
+        if (!this.isPremium) {
+          // Show upgrade prompt
+          window.location.href = '/premium.html?feature=ai-planner';
+          return;
+        }
+        this.newTrip.useAI = true;
+        this.showStep('step-styles');
       });
     }
 
-    // Step 4 -> Step 3
-    const backToContext = document.getElementById('back-to-context');
-    if (backToContext) {
-      backToContext.addEventListener('click', () => this.showStep(3));
+    // AI Prompt: No - go directly to name
+    const aiNo = document.getElementById('ai-no');
+    if (aiNo) {
+      aiNo.addEventListener('click', () => {
+        this.newTrip.useAI = false;
+        this.generateSuggestedNames();
+        this.showStep('step-name');
+      });
+    }
+
+    // Step 4 (Styles) -> Step 3 (AI Prompt)
+    const backToAiPrompt = document.getElementById('back-to-ai-prompt');
+    if (backToAiPrompt) {
+      backToAiPrompt.addEventListener('click', () => this.showStep('step-ai-prompt'));
+    }
+
+    // Step 4 (Styles) -> Step 5 (Companion)
+    const nextToCompanion = document.getElementById('next-to-companion');
+    if (nextToCompanion) {
+      nextToCompanion.addEventListener('click', () => this.showStep('step-companion'));
+    }
+
+    // Step 5 (Companion) -> Step 4 (Styles)
+    const backToStyles = document.getElementById('back-to-styles');
+    if (backToStyles) {
+      backToStyles.addEventListener('click', () => this.showStep('step-styles'));
+    }
+
+    // Companion selection -> AI Review
+    const companionOptions = document.getElementById('companion-options');
+    if (companionOptions) {
+      companionOptions.querySelectorAll('.companion-option').forEach(option => {
+        option.addEventListener('click', () => {
+          // Deselect all
+          companionOptions.querySelectorAll('.companion-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          // Select this one
+          option.classList.add('selected');
+          this.newTrip.travelCompanion = option.dataset.companion;
+
+          // Show AI review and generate itinerary
+          this.showStep('step-ai-review');
+          this.generateAIItinerary();
+        });
+      });
+    }
+
+    // Step 5b (AI Review) -> Step 5 (Companion)
+    const backToCompanion = document.getElementById('back-to-companion');
+    if (backToCompanion) {
+      backToCompanion.addEventListener('click', () => this.showStep('step-companion'));
+    }
+
+    // Step 5b (AI Review) -> Step 6 (Name)
+    const nextToNameFromAi = document.getElementById('next-to-name-from-ai');
+    if (nextToNameFromAi) {
+      nextToNameFromAi.addEventListener('click', () => {
+        this.generateSuggestedNames();
+        this.showStep('step-name');
+      });
+    }
+
+    // Regenerate itinerary
+    const regenerateBtn = document.getElementById('regenerate-itinerary');
+    if (regenerateBtn) {
+      regenerateBtn.addEventListener('click', () => this.generateAIItinerary());
+    }
+
+    // Step 6 (Name) -> Back (dynamic based on AI flow)
+    const backFromName = document.getElementById('back-from-name');
+    if (backFromName) {
+      backFromName.addEventListener('click', () => {
+        if (this.newTrip.useAI) {
+          this.showStep('step-ai-review');
+        } else {
+          this.showStep('step-ai-prompt');
+        }
+      });
     }
 
     // Submit
@@ -848,7 +1143,13 @@ class TripsManager {
   setupDateInputs() {
     const startInput = document.getElementById('start-date');
     const endInput = document.getElementById('end-date');
-    const nextBtn = document.getElementById('next-to-context');
+    const nextBtn = document.getElementById('next-to-ai-prompt');
+    const somedayCheckbox = document.getElementById('someday-checkbox');
+    const specificDatesContainer = document.getElementById('specific-dates-container');
+    const tripLengthContainer = document.getElementById('trip-length-container');
+    const tripLengthInput = document.getElementById('trip-length');
+    const tripLengthMinus = document.getElementById('trip-length-minus');
+    const tripLengthPlus = document.getElementById('trip-length-plus');
 
     if (!startInput || !endInput) return;
 
@@ -857,6 +1158,12 @@ class TripsManager {
     startInput.min = today;
 
     const validateDates = () => {
+      // If someday trip, just check trip length
+      if (this.newTrip.isSomedayTrip) {
+        if (nextBtn) nextBtn.disabled = false;
+        return;
+      }
+
       const start = startInput.value;
       const end = endInput.value;
 
@@ -876,6 +1183,48 @@ class TripsManager {
       }
     };
 
+    // Someday/Wishlist toggle
+    if (somedayCheckbox) {
+      somedayCheckbox.addEventListener('change', () => {
+        this.newTrip.isSomedayTrip = somedayCheckbox.checked;
+
+        if (somedayCheckbox.checked) {
+          // Show trip length, hide specific dates
+          if (specificDatesContainer) specificDatesContainer.style.display = 'none';
+          if (tripLengthContainer) tripLengthContainer.style.display = 'block';
+          // Enable continue button immediately for wishlist
+          if (nextBtn) nextBtn.disabled = false;
+        } else {
+          // Show specific dates, hide trip length
+          if (specificDatesContainer) specificDatesContainer.style.display = 'flex';
+          if (tripLengthContainer) tripLengthContainer.style.display = 'none';
+          // Re-validate dates
+          validateDates();
+        }
+      });
+    }
+
+    // Trip length controls
+    if (tripLengthMinus && tripLengthInput) {
+      tripLengthMinus.addEventListener('click', () => {
+        const current = parseInt(tripLengthInput.value) || 7;
+        if (current > 1) {
+          tripLengthInput.value = current - 1;
+          this.newTrip.tripLength = current - 1;
+        }
+      });
+    }
+
+    if (tripLengthPlus && tripLengthInput) {
+      tripLengthPlus.addEventListener('click', () => {
+        const current = parseInt(tripLengthInput.value) || 7;
+        if (current < 90) {
+          tripLengthInput.value = current + 1;
+          this.newTrip.tripLength = current + 1;
+        }
+      });
+    }
+
     startInput.addEventListener('change', () => {
       // Update end date min
       if (startInput.value) {
@@ -890,26 +1239,10 @@ class TripsManager {
     endInput.addEventListener('change', validateDates);
   }
 
+  // Context is now derived from travel styles - this method is deprecated
+  // Keeping empty for backwards compatibility with setupCreateTrip call
   setupContextSelection() {
-    const contextGrid = document.getElementById('context-grid');
-    const nextBtn = document.getElementById('next-to-name');
-
-    if (!contextGrid) return;
-
-    contextGrid.querySelectorAll('.context-option').forEach(option => {
-      option.addEventListener('click', () => {
-        // Deselect all
-        contextGrid.querySelectorAll('.context-option').forEach(opt => {
-          opt.classList.remove('selected');
-        });
-
-        // Select this one
-        option.classList.add('selected');
-        this.newTrip.context = option.dataset.context;
-
-        if (nextBtn) nextBtn.disabled = false;
-      });
-    });
+    // No longer needed - travel styles replace context
   }
 
   setupNameInput() {
@@ -932,15 +1265,15 @@ class TripsManager {
 
     const destination = this.newTrip.destination || 'Trip';
     const startDate = this.newTrip.startDate;
-    const context = this.newTrip.context;
+    const travelStyles = this.newTrip.travelStyles;
 
     const suggestions = [];
 
     // Basic destination name
     suggestions.push(`${destination} Trip`);
 
-    // With season/month
-    if (startDate) {
+    // With season/month (only for non-wishlist trips)
+    if (startDate && !this.newTrip.isSomedayTrip) {
       const month = startDate.toLocaleString('en-US', { month: 'long' });
       const year = startDate.getFullYear();
       suggestions.push(`${destination} ${month} ${year}`);
@@ -956,17 +1289,29 @@ class TripsManager {
       suggestions.push(`${season} in ${destination}`);
     }
 
-    // Context-based
-    if (context) {
-      const contextNames = {
-        city: 'City Break',
-        beach: 'Beach Vacation',
+    // Style-based suggestions
+    if (travelStyles.length > 0) {
+      const styleNames = {
         adventure: 'Adventure',
-        business: 'Business Trip',
-        winter: 'Winter Getaway',
-        family: 'Family Trip'
+        beaches: 'Beach Vacation',
+        family: 'Family Trip',
+        honeymoon: 'Honeymoon',
+        food: 'Culinary Journey',
+        hiking: 'Hiking Trip',
+        history: 'Historical Tour',
+        luxury: 'Luxury Escape',
+        budget: 'Budget Adventure'
       };
-      suggestions.push(`${destination} ${contextNames[context] || ''}`);
+      const firstStyle = travelStyles[0];
+      if (styleNames[firstStyle]) {
+        suggestions.push(`${destination} ${styleNames[firstStyle]}`);
+      }
+    }
+
+    // Wishlist-specific
+    if (this.newTrip.isSomedayTrip) {
+      suggestions.push(`Dream ${destination} Trip`);
+      suggestions.push(`${destination} Someday`);
     }
 
     // Render suggestions
@@ -982,6 +1327,133 @@ class TripsManager {
           this.newTrip.name = item.textContent;
           const submitBtn = document.getElementById('create-trip-submit');
           if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+    });
+  }
+
+  async generateAIItinerary() {
+    const loadingEl = document.getElementById('ai-loading');
+    const contentEl = document.getElementById('ai-itinerary-content');
+    const daysContainer = document.getElementById('ai-itinerary-days');
+
+    // Show loading, hide content
+    if (loadingEl) loadingEl.style.display = 'flex';
+    if (contentEl) contentEl.style.display = 'none';
+
+    try {
+      // Calculate trip length
+      let tripDays = this.newTrip.tripLength || 7;
+      if (!this.newTrip.isSomedayTrip && this.newTrip.startDate && this.newTrip.endDate) {
+        const msPerDay = 1000 * 60 * 60 * 24;
+        tripDays = Math.ceil((this.newTrip.endDate - this.newTrip.startDate) / msPerDay) + 1;
+      }
+
+      // Format dates for API
+      const formatDate = (date) => {
+        if (!date) return null;
+        return date.toISOString().split('T')[0];
+      };
+
+      // Call the aiPlanTrip Firebase function
+      const aiPlanTrip = firebase.functions().httpsCallable('aiPlanTrip');
+      const result = await aiPlanTrip({
+        destination: this.newTrip.destination,
+        startDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.startDate),
+        endDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.endDate),
+        tripDays: tripDays,
+        interests: this.newTrip.travelStyles,
+        travelStyle: this.newTrip.travelCompanion || 'solo'
+      });
+
+      const itinerary = result.data;
+
+      // Store itinerary
+      this.newTrip.aiItinerary = itinerary.days || [];
+
+      // Render itinerary
+      this.renderAIItinerary(itinerary.days || []);
+
+      // Hide loading, show content
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (contentEl) contentEl.style.display = 'block';
+
+    } catch (error) {
+      console.error('AI itinerary generation error:', error);
+
+      // Show error message
+      if (daysContainer) {
+        daysContainer.innerHTML = `
+          <div class="ai-error">
+            <p>Unable to generate itinerary. Please try again.</p>
+            <button class="ai-retry-btn" onclick="window.tripsManager.generateAIItinerary()">Retry</button>
+          </div>
+        `;
+      }
+
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (contentEl) contentEl.style.display = 'block';
+    }
+  }
+
+  renderAIItinerary(days) {
+    const container = document.getElementById('ai-itinerary-days');
+    if (!container) return;
+
+    if (!days || days.length === 0) {
+      container.innerHTML = '<p class="ai-no-results">No activities found. Try different interests.</p>';
+      return;
+    }
+
+    container.innerHTML = days.map((day, dayIndex) => `
+      <div class="ai-day" data-day="${dayIndex}">
+        <div class="ai-day-header">
+          <h3>Day ${dayIndex + 1}</h3>
+          ${day.title ? `<span class="ai-day-title">${this.escapeHtml(day.title)}</span>` : ''}
+        </div>
+        <div class="ai-day-activities">
+          ${(day.activities || []).map((activity, actIndex) => `
+            <div class="ai-activity ${activity.included !== false ? 'included' : 'excluded'}"
+                 data-day="${dayIndex}"
+                 data-activity="${actIndex}">
+              <div class="ai-activity-toggle">
+                <input type="checkbox"
+                       id="activity-${dayIndex}-${actIndex}"
+                       ${activity.included !== false ? 'checked' : ''}>
+              </div>
+              <div class="ai-activity-content">
+                <div class="ai-activity-time">${activity.time || ''}</div>
+                <div class="ai-activity-title">${this.escapeHtml(activity.title || activity.name || '')}</div>
+                <div class="ai-activity-desc">${this.escapeHtml(activity.description || '')}</div>
+                ${activity.category ? `
+                  <div class="ai-activity-category">${this.escapeHtml(activity.category)}</div>
+                ` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+
+    // Add toggle handlers
+    container.querySelectorAll('.ai-activity input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        const activityEl = e.target.closest('.ai-activity');
+        const dayIndex = parseInt(activityEl.dataset.day);
+        const actIndex = parseInt(activityEl.dataset.activity);
+
+        if (e.target.checked) {
+          activityEl.classList.add('included');
+          activityEl.classList.remove('excluded');
+          if (this.newTrip.aiItinerary[dayIndex]?.activities[actIndex]) {
+            this.newTrip.aiItinerary[dayIndex].activities[actIndex].included = true;
+          }
+        } else {
+          activityEl.classList.remove('included');
+          activityEl.classList.add('excluded');
+          if (this.newTrip.aiItinerary[dayIndex]?.activities[actIndex]) {
+            this.newTrip.aiItinerary[dayIndex].activities[actIndex].included = false;
+          }
         }
       });
     });
@@ -1005,28 +1477,88 @@ class TripsManager {
       // Generate unique ID
       const tripId = db.collection('users').doc().id;
 
+      // Derive context from travel styles (for backwards compatibility)
+      let derivedContext = null;
+      const styleToContext = {
+        beaches: 'beach',
+        adventure: 'adventure',
+        family: 'family',
+        hiking: 'adventure',
+        history: 'city',
+        food: 'city',
+        luxury: 'city',
+        nightlife: 'city'
+      };
+      for (const style of this.newTrip.travelStyles) {
+        if (styleToContext[style]) {
+          derivedContext = styleToContext[style];
+          break;
+        }
+      }
+
       // Build trip document matching iOS app structure
       const tripData = {
         id: tripId,
         name: this.newTrip.name,
         destination: this.newTrip.destination,
-        startDate: firebase.firestore.Timestamp.fromDate(this.newTrip.startDate),
-        endDate: firebase.firestore.Timestamp.fromDate(this.newTrip.endDate),
-        context: this.newTrip.context,
+        context: derivedContext,
         latitude: this.newTrip.latitude,
         longitude: this.newTrip.longitude,
         customImageURL: null,
         isArchived: false,
-        isSomedayTrip: false,
+        isSomedayTrip: this.newTrip.isSomedayTrip,
+        tripLength: this.newTrip.tripLength,
+        travelStyles: this.newTrip.travelStyles,
+        travelCompanion: this.newTrip.travelCompanion,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        // Initialize empty arrays for cross-device sync
-        itineraryItems: [],
+        // Initialize arrays for cross-device sync
         packingItems: [],
         todoItems: [],
         documents: [],
         legs: []
       };
+
+      // Handle dates based on trip type
+      if (this.newTrip.isSomedayTrip) {
+        // Wishlist trip - use placeholder dates far in future
+        const placeholderDate = new Date('2099-01-01');
+        tripData.startDate = firebase.firestore.Timestamp.fromDate(placeholderDate);
+        tripData.endDate = firebase.firestore.Timestamp.fromDate(placeholderDate);
+      } else {
+        tripData.startDate = firebase.firestore.Timestamp.fromDate(this.newTrip.startDate);
+        tripData.endDate = firebase.firestore.Timestamp.fromDate(this.newTrip.endDate);
+      }
+
+      // Build itinerary items from AI suggestions if used
+      const itineraryItems = [];
+      if (this.newTrip.useAI && this.newTrip.aiItinerary.length > 0) {
+        this.newTrip.aiItinerary.forEach((day, dayIndex) => {
+          (day.activities || []).forEach((activity, actIndex) => {
+            // Only include activities that are checked
+            if (activity.included !== false) {
+              const itemDate = this.newTrip.isSomedayTrip
+                ? null
+                : new Date(this.newTrip.startDate.getTime() + dayIndex * 24 * 60 * 60 * 1000);
+
+              itineraryItems.push({
+                id: `${tripId}-${dayIndex}-${actIndex}`,
+                title: activity.title || activity.name || 'Activity',
+                description: activity.description || '',
+                date: itemDate ? firebase.firestore.Timestamp.fromDate(itemDate) : null,
+                dayIndex: dayIndex,
+                time: activity.time || null,
+                category: activity.category || 'activity',
+                estimatedCost: activity.estimatedCost || null,
+                location: activity.location || null,
+                isCompleted: false,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+              });
+            }
+          });
+        });
+      }
+      tripData.itineraryItems = itineraryItems;
 
       // Save to Firestore
       await db
@@ -1041,10 +1573,12 @@ class TripsManager {
       // Show success
       const successMessage = document.getElementById('success-message');
       if (successMessage) {
-        successMessage.textContent = `"${this.newTrip.name}" has been created and synced to all your devices.`;
+        const tripType = this.newTrip.isSomedayTrip ? 'wishlist' : '';
+        const aiNote = this.newTrip.useAI ? ` with ${itineraryItems.length} AI-generated activities` : '';
+        successMessage.textContent = `"${this.newTrip.name}" has been created${aiNote} and synced to all your devices.`;
       }
 
-      this.showStep(5);
+      this.showStep('step-success');
 
       // Reload trips list
       await this.loadTrips(this.currentUser.uid);
