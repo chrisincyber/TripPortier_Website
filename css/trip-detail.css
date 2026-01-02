@@ -634,12 +634,13 @@
 }
 
 .weather-forecast-day {
-  display: flex;
+  display: grid;
+  grid-template-columns: 90px 44px 50px 1fr;
   align-items: center;
   padding: 12px 16px;
   background: #f8fafc;
   border-radius: 12px;
-  gap: 12px;
+  gap: 8px;
 }
 
 .weather-forecast-day.trip-date {
@@ -663,33 +664,36 @@
 }
 
 .weather-forecast-day-info {
-  flex: 1;
   min-width: 0;
 }
 
 .weather-forecast-day-name {
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .weather-forecast-day-date {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: #64748b;
 }
 
 .weather-forecast-day-icon {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #f59e0b;
+  flex-shrink: 0;
 }
 
 .weather-forecast-day-icon svg {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
 }
 
 .weather-forecast-day-icon.cloudy {
@@ -701,17 +705,18 @@
 }
 
 .weather-forecast-day-temps {
-  text-align: right;
+  text-align: center;
+  min-width: 50px;
 }
 
 .weather-forecast-day-high {
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   color: #1e293b;
 }
 
 .weather-forecast-day-low {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: #94a3b8;
 }
 
@@ -719,7 +724,9 @@
   font-size: 0.75rem;
   color: #64748b;
   text-align: right;
-  max-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (min-width: 768px) {
