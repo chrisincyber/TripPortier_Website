@@ -10,8 +10,6 @@ class TripsManager {
     this.imageCache = new Map();
     this.currentUser = null;
     this.currentView = 'trips'; // 'trips' or 'flights'
-    // Same API key as iOS app (PexelsService.swift)
-    this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
 
     // User preferences for AI personalization
     this.userPreferences = {
@@ -612,26 +610,15 @@ class TripsManager {
       return;
     }
 
-    if (!this.pexelsApiKey) return;
-
     try {
-      // Same query format as iOS app: "{location} travel landscape"
+      // Use Firebase Function to fetch Pexels image (keeps API key secure)
       const searchQuery = `${query} travel landscape`;
-      const response = await fetch(
-        `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=1&orientation=landscape`,
-        {
-          headers: {
-            'Authorization': this.pexelsApiKey
-          }
-        }
-      );
+      const getPexelsImage = firebase.functions().httpsCallable('getPexelsImage');
+      const result = await getPexelsImage({ query: searchQuery });
 
-      if (!response.ok) return;
-
-      const data = await response.json();
-      if (data.photos && data.photos.length > 0) {
+      if (result.data.success && result.data.image) {
         // Use large2x for better quality (same as iOS app)
-        const imageUrl = data.photos[0].src.large2x || data.photos[0].src.large;
+        const imageUrl = result.data.image.src.large2x || result.data.image.src.large;
         this.imageCache.set(query, imageUrl);
         this.setCardImage(card, imageUrl);
       }

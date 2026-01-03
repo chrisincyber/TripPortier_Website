@@ -8,7 +8,6 @@ class TripDetailManager {
   constructor() {
     this.trip = null;
     this.userId = null;
-    this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
     this.selectedTab = 'hub';
     this.selectedPlanSubtab = 'packing';
     this.temperatureUnit = 'celsius'; // Default to celsius
@@ -532,6 +531,10 @@ class TripDetailManager {
     const items = this.trip.itineraryItems;
     const container = document.getElementById('itinerary-days');
     const emptyState = document.getElementById('itinerary-empty');
+    const itineraryContainer = document.getElementById('itinerary-container');
+
+    // Render filter chips (only once)
+    this.renderItineraryFilters(itineraryContainer, items);
 
     if (!items || items.length === 0) {
       emptyState.style.display = 'flex';
@@ -541,9 +544,20 @@ class TripDetailManager {
 
     emptyState.style.display = 'none';
 
+    // Get active filters
+    const activeFilters = this.getActiveItineraryFilters();
+
+    // Filter items based on active filters
+    const filteredItems = activeFilters.length === 0
+      ? items
+      : items.filter(item => {
+          const category = (item.category || item.type || 'event').toLowerCase();
+          return activeFilters.includes(category) || activeFilters.includes('all');
+        });
+
     // Group items by date
     const itemsByDate = {};
-    items.forEach(item => {
+    filteredItems.forEach(item => {
       const date = this.parseDate(item.startDate || item.date);
       if (!date) return;
       const dateKey = date.toDateString();
@@ -561,22 +575,47 @@ class TripDetailManager {
       item._originalIndex = index;
     });
 
+    // Calculate day numbers based on trip start date
+    const tripStartDate = this.trip.startDate ? new Date(this.trip.startDate) : null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     // Render days
-    container.innerHTML = sortedDates.map(dateKey => {
+    container.innerHTML = sortedDates.map((dateKey, idx) => {
       const date = new Date(dateKey);
+      date.setHours(0, 0, 0, 0);
       const dayItems = itemsByDate[dateKey].sort((a, b) => {
         const aDate = this.parseDate(a.startDate || a.date);
         const bDate = this.parseDate(b.startDate || b.date);
         return (aDate || 0) - (bDate || 0);
       });
 
-      const dateOptions = { weekday: 'long', month: 'short', day: 'numeric' };
+      // Calculate day number from trip start
+      let dayNumber = idx + 1;
+      if (tripStartDate) {
+        const tripStart = new Date(tripStartDate);
+        tripStart.setHours(0, 0, 0, 0);
+        const diffTime = date - tripStart;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        dayNumber = diffDays + 1;
+      }
+
+      const isToday = date.getTime() === today.getTime();
+      const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
       const formattedDate = date.toLocaleDateString('en-US', dateOptions);
 
       return `
-        <div class="itinerary-day">
-          <div class="itinerary-day-header">
-            <h3>${formattedDate}</h3>
+        <div class="itinerary-day expanded${isToday ? ' today' : ''}" data-date="${dateKey}">
+          <div class="itinerary-day-header" onclick="window.tripDetailManager.toggleItineraryDay(this)">
+            <div class="itinerary-day-chevron">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </div>
+            <div class="itinerary-day-badge">Day ${dayNumber}</div>
+            <div class="itinerary-day-info">
+              <span class="itinerary-day-date">${formattedDate}</span>
+            </div>
             <span class="itinerary-day-count">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
           </div>
           <div class="itinerary-day-items">
@@ -587,22 +626,122 @@ class TripDetailManager {
     }).join('');
   }
 
+  renderItineraryFilters(container, items) {
+    // Check if filters already exist
+    let filtersEl = container.querySelector('.itinerary-filters');
+    if (filtersEl) return; // Already rendered
+
+    // Get unique categories from items
+    const categories = new Set();
+    if (items) {
+      items.forEach(item => {
+        const cat = (item.category || item.type || 'event').toLowerCase();
+        categories.add(cat);
+      });
+    }
+
+    // Define filter options with icons
+    const filterOptions = [
+      { type: 'all', label: 'All', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>' },
+      { type: 'activity', label: 'Activity', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>' },
+      { type: 'hotel', label: 'Hotel', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>' },
+      { type: 'restaurant', label: 'Food', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>' },
+      { type: 'flight', label: 'Flight', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>' },
+      { type: 'transport', label: 'Transport', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>' },
+      { type: 'event', label: 'Event', icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>' }
+    ];
+
+    // Create filters HTML
+    filtersEl = document.createElement('div');
+    filtersEl.className = 'itinerary-filters';
+    filtersEl.innerHTML = filterOptions.map(opt => `
+      <button class="itinerary-filter-chip${opt.type === 'all' ? ' active' : ''}" data-type="${opt.type}" onclick="window.tripDetailManager.toggleItineraryFilter(this)">
+        ${opt.icon}
+        <span>${opt.label}</span>
+      </button>
+    `).join('');
+
+    // Insert before the add form
+    const addForm = container.querySelector('.add-itinerary-form');
+    if (addForm) {
+      container.insertBefore(filtersEl, addForm);
+    } else {
+      container.prepend(filtersEl);
+    }
+  }
+
+  getActiveItineraryFilters() {
+    const activeChips = document.querySelectorAll('.itinerary-filter-chip.active');
+    const filters = Array.from(activeChips).map(chip => chip.dataset.type);
+    return filters.includes('all') ? [] : filters;
+  }
+
+  toggleItineraryFilter(chip) {
+    const type = chip.dataset.type;
+
+    if (type === 'all') {
+      // Toggle all: if all is active, deactivate all; otherwise activate only all
+      const allChips = document.querySelectorAll('.itinerary-filter-chip');
+      if (chip.classList.contains('active')) {
+        allChips.forEach(c => c.classList.remove('active'));
+      } else {
+        allChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      }
+    } else {
+      // Toggle individual filter
+      const allChip = document.querySelector('.itinerary-filter-chip[data-type="all"]');
+      if (allChip) allChip.classList.remove('active');
+      chip.classList.toggle('active');
+
+      // If no filters active, activate "all"
+      const activeCount = document.querySelectorAll('.itinerary-filter-chip.active').length;
+      if (activeCount === 0 && allChip) {
+        allChip.classList.add('active');
+      }
+    }
+
+    // Re-render itinerary with new filters
+    this.renderItinerary();
+  }
+
+  toggleItineraryDay(header) {
+    const dayEl = header.closest('.itinerary-day');
+    if (dayEl) {
+      dayEl.classList.toggle('expanded');
+    }
+  }
+
   renderItineraryItem(item, index) {
     const startDate = this.parseDate(item.startDate || item.date);
     const timeStr = startDate ? startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
     const icon = this.getItineraryIcon(item.category || item.type);
     const category = item.category || item.type || 'event';
+    const typeName = this.getItineraryTypeName(category);
+    const hasLocation = item.location || item.latitude || item.longitude;
 
     return `
       <div class="itinerary-item itinerary-item-${category.toLowerCase()}" data-item-id="${item.id || index}">
-        <div class="itinerary-item-time">${timeStr}</div>
         <div class="itinerary-item-icon">${icon}</div>
         <div class="itinerary-item-content">
-          <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
+          <div class="itinerary-item-header">
+            <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
+            <span class="itinerary-item-type-badge">${typeName}</span>
+          </div>
+          ${timeStr ? `<div class="itinerary-item-time">${timeStr}</div>` : ''}
           ${item.location ? `<div class="itinerary-item-location">${this.escapeHtml(item.location)}</div>` : ''}
           ${item.notes ? `<div class="itinerary-item-notes">${this.escapeHtml(item.notes)}</div>` : ''}
         </div>
-        ${item.homeCurrencyAmount ? `<div class="itinerary-item-cost">$${item.homeCurrencyAmount.toFixed(2)}</div>` : ''}
+        <div class="itinerary-item-right">
+          ${item.homeCurrencyAmount ? `<div class="itinerary-item-cost">$${item.homeCurrencyAmount.toFixed(2)}</div>` : ''}
+          ${hasLocation ? `
+            <button class="itinerary-item-map-btn" onclick="event.stopPropagation(); window.tripDetailManager.openItemInMaps('${this.escapeHtml(item.location || item.name || '')}')" title="Open in Maps">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+              </svg>
+            </button>
+          ` : ''}
+        </div>
         <div class="itinerary-item-actions">
           <button class="itinerary-action-btn delete" onclick="event.stopPropagation(); window.tripDetailManager.deleteItineraryItem('${item.id || index}')" title="Delete">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -615,14 +754,41 @@ class TripDetailManager {
     `;
   }
 
+  getItineraryTypeName(category) {
+    const names = {
+      'flight': 'Flight',
+      'hotel': 'Hotel',
+      'accommodation': 'Hotel',
+      'restaurant': 'Food',
+      'food': 'Food',
+      'activity': 'Activity',
+      'transport': 'Transport',
+      'travel': 'Travel',
+      'event': 'Event',
+      'other': 'Other'
+    };
+    return names[category?.toLowerCase()] || 'Event';
+  }
+
+  openItemInMaps(location) {
+    if (!location) return;
+    const query = encodeURIComponent(location);
+    // Try to open in Google Maps first, fall back to Apple Maps
+    window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+  }
+
   getItineraryIcon(category) {
     const icons = {
       'flight': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>',
       'hotel': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>',
+      'accommodation': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>',
       'restaurant': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
+      'food': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>',
       'activity': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>',
       'transport': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>',
-      'event': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>'
+      'travel': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>',
+      'event': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>',
+      'other': '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>'
     };
     return icons[category?.toLowerCase()] || icons.event;
   }
@@ -1729,26 +1895,16 @@ class TripDetailManager {
   }
 
   async loadPexelsImage(coverEl) {
-    if (!this.pexelsApiKey) return;
-
     try {
       const query = this.trip.destination || this.trip.name;
       const searchQuery = `${query} travel landscape`;
 
-      const response = await fetch(
-        `https://api.pexels.com/v1/search?query=${encodeURIComponent(searchQuery)}&per_page=1&orientation=landscape`,
-        {
-          headers: {
-            'Authorization': this.pexelsApiKey
-          }
-        }
-      );
+      // Use Firebase Function to fetch Pexels image (keeps API key secure)
+      const getPexelsImage = firebase.functions().httpsCallable('getPexelsImage');
+      const result = await getPexelsImage({ query: searchQuery });
 
-      if (!response.ok) return;
-
-      const data = await response.json();
-      if (data.photos && data.photos.length > 0) {
-        const imageUrl = data.photos[0].src.large2x || data.photos[0].src.large;
+      if (result.data.success && result.data.image) {
+        const imageUrl = result.data.image.src.large2x || result.data.image.src.large;
 
         const img = new Image();
         img.onload = () => {
