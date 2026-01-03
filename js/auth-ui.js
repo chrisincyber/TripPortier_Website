@@ -768,9 +768,15 @@ class AuthUI {
 
   // Prompt for web push notifications
   async promptForNotifications(userId) {
-    // Don't prompt on localhost for now
+    // Don't prompt on localhost
     if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
       console.log('Skipping notification prompt on localhost');
+      return;
+    }
+
+    // Check if notifications are supported
+    if (!('Notification' in window)) {
+      console.log('Notifications not supported in this browser');
       return;
     }
 
@@ -787,19 +793,179 @@ class AuthUI {
       return;
     }
 
-    // Wait a bit before prompting (don't interrupt login flow)
-    setTimeout(async () => {
+    // Check if user has dismissed the prompt before
+    const dismissed = localStorage.getItem('notification_prompt_dismissed');
+    if (dismissed) {
+      const dismissedDate = new Date(dismissed);
+      const daysSinceDismissed = (Date.now() - dismissedDate.getTime()) / (1000 * 60 * 60 * 24);
+      // Don't show again for 30 days after dismissal
+      if (daysSinceDismissed < 30) {
+        console.log('Notification prompt dismissed recently');
+        return;
+      }
+    }
+
+    // Show notification prompt banner after a short delay
+    setTimeout(() => {
+      this.showNotificationBanner(userId);
+    }, 3000);
+  }
+
+  // Show notification permission banner
+  showNotificationBanner(userId) {
+    // Don't show if banner already exists
+    if (document.getElementById('notification-banner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'notification-banner';
+    banner.innerHTML = `
+      <div class="notification-banner-content">
+        <div class="notification-banner-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </div>
+        <div class="notification-banner-text">
+          <strong>Stay updated!</strong>
+          <p>Get notified about trip updates and reminders.</p>
+        </div>
+        <div class="notification-banner-actions">
+          <button id="notification-enable-btn" class="notification-btn-enable">Enable</button>
+          <button id="notification-dismiss-btn" class="notification-btn-dismiss">Not now</button>
+        </div>
+      </div>
+    `;
+
+    // Add styles if not already added
+    if (!document.getElementById('notification-banner-styles')) {
+      const style = document.createElement('style');
+      style.id = 'notification-banner-styles';
+      style.textContent = `
+        #notification-banner {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: var(--card-bg, #1a1a2e);
+          border: 1px solid var(--border-color, #333);
+          border-radius: 12px;
+          padding: 16px 20px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+          z-index: 10000;
+          animation: slideUp 0.3s ease-out;
+          max-width: 90vw;
+          width: 420px;
+        }
+        @keyframes slideUp {
+          from { transform: translateX(-50%) translateY(100px); opacity: 0; }
+          to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        .notification-banner-content {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .notification-banner-icon {
+          width: 40px;
+          height: 40px;
+          background: var(--accent-color, #6c5ce7);
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+        .notification-banner-icon svg {
+          width: 22px;
+          height: 22px;
+          stroke: white;
+        }
+        .notification-banner-text {
+          flex: 1;
+        }
+        .notification-banner-text strong {
+          color: var(--text-primary, #fff);
+          font-size: 14px;
+        }
+        .notification-banner-text p {
+          color: var(--text-secondary, #888);
+          font-size: 12px;
+          margin: 2px 0 0 0;
+        }
+        .notification-banner-actions {
+          display: flex;
+          gap: 8px;
+          flex-shrink: 0;
+        }
+        .notification-btn-enable {
+          background: var(--accent-color, #6c5ce7);
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .notification-btn-enable:hover {
+          background: var(--accent-hover, #5b4cdb);
+        }
+        .notification-btn-dismiss {
+          background: transparent;
+          color: var(--text-secondary, #888);
+          border: none;
+          padding: 8px 12px;
+          border-radius: 8px;
+          font-size: 13px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+        .notification-btn-dismiss:hover {
+          color: var(--text-primary, #fff);
+        }
+        @media (max-width: 480px) {
+          #notification-banner {
+            bottom: 10px;
+            padding: 12px 16px;
+          }
+          .notification-banner-content {
+            flex-wrap: wrap;
+          }
+          .notification-banner-actions {
+            width: 100%;
+            margin-top: 10px;
+            justify-content: flex-end;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    document.body.appendChild(banner);
+
+    // Handle enable button click
+    document.getElementById('notification-enable-btn').addEventListener('click', async () => {
       try {
         const token = await window.requestNotificationPermission();
         if (token) {
           await window.saveWebFcmToken(userId, token);
           window.setupForegroundMessageHandler();
           console.log('Web notifications enabled successfully');
+          localStorage.setItem('notification_enabled', 'true');
         }
       } catch (error) {
-        console.error('Failed to setup notifications:', error);
+        console.error('Failed to enable notifications:', error);
       }
-    }, 2000);
+      banner.remove();
+    });
+
+    // Handle dismiss button click
+    document.getElementById('notification-dismiss-btn').addEventListener('click', () => {
+      localStorage.setItem('notification_prompt_dismissed', new Date().toISOString());
+      banner.remove();
+    });
   }
 
   // Setup notifications for user who already granted permission
