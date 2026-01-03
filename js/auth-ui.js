@@ -805,167 +805,81 @@ class AuthUI {
       }
     }
 
-    // Show notification prompt banner after a short delay
+    // Show small notification prompt after a short delay
     setTimeout(() => {
-      this.showNotificationBanner(userId);
-    }, 3000);
+      this.showNotificationPrompt(userId);
+    }, 2000);
   }
 
-  // Show notification permission banner
-  showNotificationBanner(userId) {
-    // Don't show if banner already exists
-    if (document.getElementById('notification-banner')) return;
+  // Show small prompt that triggers browser's permission dialog on click
+  showNotificationPrompt(userId) {
+    if (document.getElementById('notification-prompt')) return;
 
-    const banner = document.createElement('div');
-    banner.id = 'notification-banner';
-    banner.innerHTML = `
-      <div class="notification-banner-content">
-        <div class="notification-banner-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-        </div>
-        <div class="notification-banner-text">
-          <strong>Stay updated!</strong>
-          <p>Get notified about trip updates and reminders.</p>
-        </div>
-        <div class="notification-banner-actions">
-          <button id="notification-enable-btn" class="notification-btn-enable">Enable</button>
-          <button id="notification-dismiss-btn" class="notification-btn-dismiss">Not now</button>
-        </div>
-      </div>
+    const prompt = document.createElement('div');
+    prompt.id = 'notification-prompt';
+    prompt.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #1a1a2e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 10000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      animation: fadeIn 0.3s ease;
+    `;
+    prompt.innerHTML = `
+      <span style="font-size: 18px;">🔔</span>
+      <span style="color: #fff; font-size: 14px;">Enable notifications?</span>
+      <span style="color: #666; font-size: 18px; margin-left: 8px;">&times;</span>
     `;
 
-    // Add styles if not already added
-    if (!document.getElementById('notification-banner-styles')) {
-      const style = document.createElement('style');
-      style.id = 'notification-banner-styles';
-      style.textContent = `
-        #notification-banner {
-          position: fixed;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: var(--card-bg, #1a1a2e);
-          border: 1px solid var(--border-color, #333);
-          border-radius: 12px;
-          padding: 16px 20px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-          z-index: 10000;
-          animation: slideUp 0.3s ease-out;
-          max-width: 90vw;
-          width: 420px;
-        }
-        @keyframes slideUp {
-          from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-          to { transform: translateX(-50%) translateY(0); opacity: 1; }
-        }
-        .notification-banner-content {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .notification-banner-icon {
-          width: 40px;
-          height: 40px;
-          background: var(--accent-color, #6c5ce7);
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-        .notification-banner-icon svg {
-          width: 22px;
-          height: 22px;
-          stroke: white;
-        }
-        .notification-banner-text {
-          flex: 1;
-        }
-        .notification-banner-text strong {
-          color: var(--text-primary, #fff);
-          font-size: 14px;
-        }
-        .notification-banner-text p {
-          color: var(--text-secondary, #888);
-          font-size: 12px;
-          margin: 2px 0 0 0;
-        }
-        .notification-banner-actions {
-          display: flex;
-          gap: 8px;
-          flex-shrink: 0;
-        }
-        .notification-btn-enable {
-          background: var(--accent-color, #6c5ce7);
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 8px;
-          font-size: 13px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.2s;
-        }
-        .notification-btn-enable:hover {
-          background: var(--accent-hover, #5b4cdb);
-        }
-        .notification-btn-dismiss {
-          background: transparent;
-          color: var(--text-secondary, #888);
-          border: none;
-          padding: 8px 12px;
-          border-radius: 8px;
-          font-size: 13px;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-        .notification-btn-dismiss:hover {
-          color: var(--text-primary, #fff);
-        }
-        @media (max-width: 480px) {
-          #notification-banner {
-            bottom: 10px;
-            padding: 12px 16px;
-          }
-          .notification-banner-content {
-            flex-wrap: wrap;
-          }
-          .notification-banner-actions {
-            width: 100%;
-            margin-top: 10px;
-            justify-content: flex-end;
-          }
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    // Add animation
+    const style = document.createElement('style');
+    style.textContent = `@keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }`;
+    document.head.appendChild(style);
 
-    document.body.appendChild(banner);
+    document.body.appendChild(prompt);
 
-    // Handle enable button click
-    document.getElementById('notification-enable-btn').addEventListener('click', async () => {
-      try {
+    // Click anywhere on prompt to trigger browser dialog
+    prompt.addEventListener('click', async (e) => {
+      // If clicked the X, just dismiss
+      if (e.target.textContent === '×') {
+        localStorage.setItem('notification_prompt_dismissed', new Date().toISOString());
+        prompt.remove();
+        return;
+      }
+
+      // Trigger browser's standard permission dialog
+      const permission = await Notification.requestPermission();
+
+      if (permission === 'granted') {
         const token = await window.requestNotificationPermission();
         if (token) {
           await window.saveWebFcmToken(userId, token);
           window.setupForegroundMessageHandler();
-          console.log('Web notifications enabled successfully');
           localStorage.setItem('notification_enabled', 'true');
+          console.log('Notifications enabled');
         }
-      } catch (error) {
-        console.error('Failed to enable notifications:', error);
+      } else {
+        localStorage.setItem('notification_prompt_dismissed', new Date().toISOString());
       }
-      banner.remove();
+
+      prompt.remove();
     });
 
-    // Handle dismiss button click
-    document.getElementById('notification-dismiss-btn').addEventListener('click', () => {
-      localStorage.setItem('notification_prompt_dismissed', new Date().toISOString());
-      banner.remove();
-    });
+    // Auto-hide after 10 seconds
+    setTimeout(() => {
+      if (prompt.parentNode) {
+        prompt.remove();
+      }
+    }, 10000);
   }
 
   // Setup notifications for user who already granted permission
