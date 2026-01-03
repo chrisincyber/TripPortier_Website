@@ -6320,3 +6320,213 @@
 [data-theme="dark"] .companions-invite-secondary:hover {
   background: rgba(100, 116, 139, 0.4);
 }
+
+/* ============================================
+   Comprehensive Dark Mode - Hub, Itinerary, Plan, Budget
+   ============================================ */
+
+/* Hub - Action Cards */
+[data-theme="dark"] .trip-action-card {
+  background: #1a1a3e;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .trip-action-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .trip-action-title {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .trip-action-subtitle {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .trip-action-arrow {
+  color: #64748b;
+}
+
+/* Hub - Weather Widget */
+[data-theme="dark"] .weather-widget,
+[data-theme="dark"] .weather-card,
+[data-theme="dark"] .trip-weather-widget {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] .weather-temp,
+[data-theme="dark"] .weather-current-temp {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .weather-condition,
+[data-theme="dark"] .weather-location {
+  color: #94a3b8;
+}
+
+/* Hub - Countdown */
+[data-theme="dark"] .countdown-widget,
+[data-theme="dark"] .trip-countdown {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] .countdown-number,
+[data-theme="dark"] .countdown-value {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .countdown-label {
+  color: #94a3b8;
+}
+
+/* Plan - Packing List */
+[data-theme="dark"] .packing-category {
+  background: #1a1a3e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .packing-category-header {
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .packing-category-count {
+  background: #2d2d5a;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .packing-item-name {
+  color: #f1f5f9;
+}
+
+/* Plan - Todo Items */
+[data-theme="dark"] .todo-item {
+  background: #1a1a3e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .todo-item-due {
+  background: #2d2d5a;
+  color: #a5b4fc;
+}
+
+/* Budget - Expense Items */
+[data-theme="dark"] .expense-item,
+[data-theme="dark"] .expense-card {
+  background: #1a1a3e;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .expense-item-amount {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .expense-category-badge {
+  background: #2d2d5a;
+  color: #94a3b8;
+}
+
+/* Budget - Add Expense Form */
+[data-theme="dark"] .add-expense-form {
+  background: #1a1a3e;
+  border-color: #2d2d5a;
+}
+
+/* Itinerary - Past Days Section */
+[data-theme="dark"] .itinerary-past-section,
+[data-theme="dark"] .itinerary-ideas-section {
+  background: #1a1a3e;
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .itinerary-past-header,
+[data-theme="dark"] .itinerary-ideas-header {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .past-days-count,
+[data-theme="dark"] .trip-ideas-count {
+  color: #94a3b8;
+}
+
+/* Itinerary - Filter Bar */
+[data-theme="dark"] .itinerary-filter-bar {
+  background: #1a1a3e;
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .itinerary-expand-btn {
+  background: #2d2d5a;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .itinerary-expand-btn:hover {
+  background: #3d3d6a;
+  color: #f1f5f9;
+}
+
+/* Itinerary - Idea Items */
+[data-theme="dark"] .itinerary-idea-item {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] .itinerary-idea-item:hover {
+  background: #252550;
+}
+
+/* Tab Content Area */
+[data-theme="dark"] .trip-tab-content {
+  background: #0f0f23;
+}
+
+/* Itinerary - Day Location */
+[data-theme="dark"] .itinerary-day-location,
+[data-theme="dark"] .itinerary-day-location-text {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .itinerary-day-location-select {
+  background: #2d2d5a;
+  color: #f1f5f9;
+  border-color: #3d3d6a;
+}
+
+/* Documents */
+[data-theme="dark"] .document-card {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] .document-name {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .document-date {
+  color: #94a3b8;
+}
+
+/* Empty States */
+[data-theme="dark"] .itinerary-empty,
+[data-theme="dark"] .packing-empty,
+[data-theme="dark"] .todos-empty,
+[data-theme="dark"] .expenses-empty,
+[data-theme="dark"] .documents-empty {
+  color: #64748b;
+}
+
+/* Input placeholders */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #64748b;
+}
+
+/* Scrollbar dark mode */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: #3d3d6a;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: #4d4d7a;
+}
