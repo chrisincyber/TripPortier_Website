@@ -446,8 +446,10 @@ class TripDetailManager {
     document.title = `${trip.name} - TripPortier`;
 
     // Trip title and destination
-    document.getElementById('trip-title').textContent = trip.name;
-    document.getElementById('trip-destination').textContent = trip.destination;
+    const titleEl = document.getElementById('trip-title');
+    const destEl = document.getElementById('trip-destination');
+    if (titleEl) titleEl.textContent = trip.name;
+    if (destEl) destEl.textContent = trip.destination;
 
     // Dates - handle wishlist trips differently
     const tripDatesEl = document.getElementById('trip-dates');
@@ -455,7 +457,7 @@ class TripDetailManager {
 
     if (trip.isSomedayTrip) {
       // Wishlist trips show planned duration instead of dates
-      tripDatesEl.textContent = 'Dates not set yet';
+      if (tripDatesEl) tripDatesEl.textContent = 'Dates not set yet';
       if (itineraryDates) {
         itineraryDates.textContent = `${trip.tripLength || 7} days planned`;
       }
@@ -463,7 +465,7 @@ class TripDetailManager {
       const dateOptions = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
       const startStr = trip.startDate.toLocaleDateString('en-US', dateOptions);
       const endStr = trip.endDate.toLocaleDateString('en-US', dateOptions);
-      tripDatesEl.textContent = `${startStr} - ${endStr}`;
+      if (tripDatesEl) tripDatesEl.textContent = `${startStr} - ${endStr}`;
 
       if (itineraryDates) {
         const shortDateOptions = { month: 'short', day: 'numeric' };
@@ -473,28 +475,34 @@ class TripDetailManager {
 
     // Status badge
     const statusBadge = document.getElementById('trip-status-badge');
-    const statusText = statusBadge.querySelector('.trip-status-text');
+    const statusText = statusBadge?.querySelector('.trip-status-text');
     const phase = this.getTripPhase();
 
-    statusBadge.style.display = 'inline-flex';
-    statusBadge.className = `trip-status-badge ${phase}`;
+    if (statusBadge) {
+      statusBadge.style.display = 'inline-flex';
+      statusBadge.className = `trip-status-badge ${phase}`;
+    }
 
-    if (phase === 'active') {
-      const dayInfo = this.getDayInfo();
-      statusText.textContent = `Day ${dayInfo.current} of ${dayInfo.total}`;
-    } else if (phase === 'upcoming') {
-      const countdown = this.getCountdown();
-      statusText.textContent = countdown;
-    } else if (phase === 'wishlist') {
-      statusText.textContent = `${this.trip.tripLength || 7} days planned`;
-    } else {
-      statusText.textContent = 'Completed';
+    if (statusText) {
+      if (phase === 'active') {
+        const dayInfo = this.getDayInfo();
+        statusText.textContent = `Day ${dayInfo.current} of ${dayInfo.total}`;
+      } else if (phase === 'upcoming') {
+        const countdown = this.getCountdown();
+        statusText.textContent = countdown;
+      } else if (phase === 'wishlist') {
+        statusText.textContent = `${this.trip.tripLength || 7} days planned`;
+      } else {
+        statusText.textContent = 'Completed';
+      }
     }
 
     // Duration
     const days = this.getDurationDays();
-    document.getElementById('trip-duration').textContent =
-      days === 1 ? '1 day' : `${days} days`;
+    const durationEl = document.getElementById('trip-duration');
+    if (durationEl) {
+      durationEl.textContent = days === 1 ? '1 day' : `${days} days`;
+    }
 
     // Context/Trip Type
     if (trip.context) {
