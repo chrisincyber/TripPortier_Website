@@ -792,7 +792,11 @@ class TripDetailManager {
         </div>
         <div class="itinerary-day-items">
           ${dayItems.length > 0
-            ? dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')
+            ? dayItems.map((item, idx) => {
+                const nextItem = idx < dayItems.length - 1 ? dayItems[idx + 1] : null;
+                const isLast = idx === dayItems.length - 1;
+                return this.renderItineraryItemWithGap(item, item._originalIndex, day.date, nextItem, isLast);
+              }).join('')
             : `<div class="itinerary-day-empty">No items planned</div>`
           }
         </div>
@@ -930,17 +934,287 @@ class TripDetailManager {
     const item = items.find(i => (i.id || i._originalIndex) == itemId);
     if (!item) return;
 
-    // For now, show a simple alert with item details
-    // TODO: Implement proper detail modal
-    const details = [
-      `Name: ${item.name || item.title || 'Untitled'}`,
-      `Type: ${item.category || item.type || 'Other'}`,
-      item.location ? `Location: ${item.location}` : null,
-      item.notes ? `Notes: ${item.notes}` : null
-    ].filter(Boolean).join('\n');
+    this.currentDetailItem = item;
+    this.currentDetailItemId = itemId;
 
-    if (confirm(`${details}\n\nDelete this item?`)) {
-      this.deleteItineraryItem(itemId);
+    // Build the detail modal content
+    const modal = document.getElementById('item-detail-modal');
+    if (!modal) {
+      this.createItemDetailModal();
+    }
+
+    this.renderItemDetailContent(item);
+    document.getElementById('item-detail-modal')?.classList.add('active');
+  }
+
+  createItemDetailModal() {
+    const modalHtml = `
+      <div class="itinerary-modal-overlay" id="item-detail-modal" onclick="if(event.target === this) window.tripDetailManager.closeItemDetail()">
+        <div class="itinerary-modal item-detail-modal">
+          <div class="itinerary-modal-header">
+            <button class="itinerary-modal-back" onclick="window.tripDetailManager.closeItemDetail()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </button>
+            <h3 class="itinerary-modal-title" id="item-detail-title">Item Details</h3>
+            <button class="itinerary-modal-action" onclick="window.tripDetailManager.editCurrentItem()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+              </svg>
+            </button>
+          </div>
+          <div class="itinerary-modal-content" id="item-detail-content">
+            <!-- Content injected dynamically -->
+          </div>
+          <div class="item-detail-actions">
+            <button class="item-detail-delete-btn" onclick="window.tripDetailManager.deleteCurrentItem()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+              </svg>
+              Delete Item
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+
+  renderItemDetailContent(item) {
+    const content = document.getElementById('item-detail-content');
+    const titleEl = document.getElementById('item-detail-title');
+    if (!content) return;
+
+    const category = item.category || item.type || 'other';
+    const icon = this.getItineraryIcon(category);
+
+    titleEl.textContent = item.name || item.title || 'Untitled';
+
+    // Format dates
+    const startDate = this.parseDate(item.startDate || item.date);
+    const endDate = this.parseDate(item.endDate);
+    const dateStr = startDate ? startDate.toLocaleDateString('en-US', {
+      weekday: 'long', month: 'short', day: 'numeric', year: 'numeric'
+    }) : '';
+    const timeStr = startDate ? startDate.toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit'
+    }) : '';
+
+    // Build detail rows
+    let detailsHtml = '';
+
+    // Date & Time
+    if (dateStr || timeStr) {
+      detailsHtml += `
+        <div class="item-detail-row">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Date & Time</span>
+            <span class="item-detail-value">${dateStr}${timeStr ? ` at ${timeStr}` : ''}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Location
+    const location = item.location || item.fromLocation || item.toLocation;
+    if (location) {
+      detailsHtml += `
+        <div class="item-detail-row clickable" onclick="window.tripDetailManager.openItemInMaps('${this.escapeHtml(location)}')">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Location</span>
+            <span class="item-detail-value">${this.escapeHtml(location)}</span>
+          </div>
+          <svg class="item-detail-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      `;
+    }
+
+    // Travel-specific: From → To
+    if (item.fromLocation && item.toLocation) {
+      detailsHtml += `
+        <div class="item-detail-row">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="5" cy="6" r="3"/><circle cx="19" cy="18" r="3"/>
+              <path d="M5 9v12h14V6"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Route</span>
+            <span class="item-detail-value">${this.escapeHtml(item.fromLocation)} → ${this.escapeHtml(item.toLocation)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Flight number
+    if (item.flightNumber || item.travelDetails?.flightNumber) {
+      const flightNum = item.flightNumber || item.travelDetails?.flightNumber;
+      detailsHtml += `
+        <div class="item-detail-row">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Flight Number</span>
+            <span class="item-detail-value">${this.escapeHtml(flightNum)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Confirmation number
+    if (item.confirmationNumber || item.bookingRef) {
+      detailsHtml += `
+        <div class="item-detail-row">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.5 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V7.5L14.5 2z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Confirmation</span>
+            <span class="item-detail-value">${this.escapeHtml(item.confirmationNumber || item.bookingRef)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Cost
+    if (item.cost || item.price) {
+      const cost = item.cost || item.price;
+      const currency = item.currency || this.trip.currency || 'USD';
+      detailsHtml += `
+        <div class="item-detail-row">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"/>
+              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Cost</span>
+            <span class="item-detail-value">${currency} ${parseFloat(cost).toFixed(2)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Website
+    if (item.website || item.url) {
+      const url = item.website || item.url;
+      detailsHtml += `
+        <div class="item-detail-row clickable" onclick="window.open('${this.escapeHtml(url)}', '_blank')">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="2" y1="12" x2="22" y2="12"/>
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Website</span>
+            <span class="item-detail-value link">${this.escapeHtml(url)}</span>
+          </div>
+          <svg class="item-detail-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      `;
+    }
+
+    // Notes
+    if (item.notes) {
+      detailsHtml += `
+        <div class="item-detail-row notes">
+          <div class="item-detail-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <div class="item-detail-info">
+            <span class="item-detail-label">Notes</span>
+            <span class="item-detail-value">${this.escapeHtml(item.notes)}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Category badge
+    const categoryName = this.getItineraryTypeName(category);
+    const categoryColor = this.getCategoryColor(category);
+
+    content.innerHTML = `
+      <div class="item-detail-header">
+        <div class="item-detail-type-badge" style="background: ${categoryColor}15; color: ${categoryColor};">
+          ${icon}
+          <span>${categoryName}</span>
+        </div>
+      </div>
+      <div class="item-detail-rows">
+        ${detailsHtml || '<p class="item-detail-empty">No additional details</p>'}
+      </div>
+    `;
+  }
+
+  getCategoryColor(category) {
+    const colors = {
+      'accommodation': '#b399d9',
+      'hotel': '#b399d9',
+      'activity': '#f2b380',
+      'food': '#80cc99',
+      'restaurant': '#80cc99',
+      'travel': '#80b3e6',
+      'flight': '#80b3e6',
+      'transport': '#80b3e6',
+      'other': '#a6a6ad',
+      'event': '#a6a6ad'
+    };
+    return colors[category?.toLowerCase()] || '#a6a6ad';
+  }
+
+  closeItemDetail() {
+    document.getElementById('item-detail-modal')?.classList.remove('active');
+    this.currentDetailItem = null;
+    this.currentDetailItemId = null;
+  }
+
+  editCurrentItem() {
+    // Close detail modal and open edit form (for future implementation)
+    this.closeItemDetail();
+    this.showToast('Edit feature coming soon');
+  }
+
+  deleteCurrentItem() {
+    if (!this.currentDetailItemId) return;
+
+    if (confirm('Are you sure you want to delete this item?')) {
+      this.deleteItineraryItem(this.currentDetailItemId);
+      this.closeItemDetail();
     }
   }
 
@@ -1048,30 +1322,177 @@ class TripDetailManager {
     }
   }
 
-  renderItineraryItem(item, index) {
-    const startDate = this.parseDate(item.startDate || item.date);
-    const timeStr = startDate ? startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+  renderItineraryItemWithGap(item, index, displayDate, nextItem, isLast) {
     const category = item.category || item.type || 'other';
-    const icon = this.getItineraryIcon(category);
+    const cat = category.toLowerCase();
 
-    // Build subtitle based on item type
-    let subtitle = '';
-    if (item.location) {
-      subtitle = this.escapeHtml(item.location);
-    } else if (item.notes) {
-      subtitle = this.escapeHtml(item.notes);
+    // Check if this is a flight - use special flight card
+    const isFlightItem = cat === 'travel' || cat === 'flight';
+    const travelMode = item.travelMode || item.travelDetails?.travelMode || '';
+    const isFlight = isFlightItem && (travelMode === 'flight' || item.flightNumber || item.travelDetails?.flightNumber);
+
+    let itemHtml = '';
+    if (isFlight) {
+      itemHtml = this.renderFlightCard(item, index, displayDate);
+    } else {
+      itemHtml = this.renderItineraryItem(item, index, displayDate);
+    }
+
+    // Calculate time gap to next item
+    let gapHtml = '';
+    if (nextItem && !isLast) {
+      const gap = this.calculateTimeGap(item, nextItem);
+      if (gap) {
+        gapHtml = `
+          <div class="itinerary-time-gap">
+            <div class="itinerary-time-gap-line"></div>
+            <div class="itinerary-time-gap-content">
+              <span class="itinerary-time-gap-duration">${gap.displayString}</span>
+              <svg class="itinerary-time-gap-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12l7 7 7-7"/>
+              </svg>
+            </div>
+          </div>
+        `;
+      } else {
+        // Just show arrow without time
+        gapHtml = `
+          <div class="itinerary-time-gap minimal">
+            <svg class="itinerary-time-gap-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+          </div>
+        `;
+      }
+    }
+
+    return itemHtml + gapHtml;
+  }
+
+  renderFlightCard(item, index, displayDate) {
+    const flightNumber = item.flightNumber || item.travelDetails?.flightNumber || '';
+    const airline = item.airline || item.carrier || item.travelDetails?.airline || '';
+    const fromLocation = item.fromLocation || item.travelDetails?.fromLocation || '';
+    const toLocation = item.toLocation || item.travelDetails?.toLocation || '';
+
+    const departureTime = this.parseDate(item.departureTime || item.travelDetails?.departureTime || item.startDate || item.date);
+    const arrivalTime = this.parseDate(item.arrivalTime || item.travelDetails?.arrivalTime || item.endDate);
+
+    const depTimeStr = departureTime ? departureTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+    const arrTimeStr = arrivalTime ? arrivalTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
+
+    // Calculate flight duration
+    let durationStr = '';
+    if (departureTime && arrivalTime) {
+      const diffMs = arrivalTime - departureTime;
+      const hours = Math.floor(diffMs / (1000 * 60 * 60));
+      const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+      if (hours > 0) {
+        durationStr = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+      } else {
+        durationStr = `${mins}m`;
+      }
+    }
+
+    // Check if arrival is next day
+    const isNextDay = departureTime && arrivalTime &&
+      departureTime.toDateString() !== arrivalTime.toDateString();
+
+    // Extract airport codes (first 3 uppercase letters)
+    const depCode = fromLocation.match(/^[A-Z]{3}/)?.[0] || fromLocation.split(/[,\s]/)[0].substring(0, 3).toUpperCase();
+    const arrCode = toLocation.match(/^[A-Z]{3}/)?.[0] || toLocation.split(/[,\s]/)[0].substring(0, 3).toUpperCase();
+
+    // Get terminal and gate info if available
+    const depTerminal = item.depTerminal || item.travelDetails?.depTerminal || '';
+    const depGate = item.depGate || item.travelDetails?.depGate || '';
+    const arrTerminal = item.arrTerminal || item.travelDetails?.arrTerminal || '';
+    const arrBaggage = item.arrBaggage || item.travelDetails?.arrBaggage || '';
+
+    // Determine context (departing or arriving based on display date)
+    const displayDateStart = new Date(displayDate);
+    displayDateStart.setHours(0, 0, 0, 0);
+    const depDateStart = departureTime ? new Date(departureTime) : null;
+    if (depDateStart) depDateStart.setHours(0, 0, 0, 0);
+    const arrDateStart = arrivalTime ? new Date(arrivalTime) : null;
+    if (arrDateStart) arrDateStart.setHours(0, 0, 0, 0);
+
+    let contextLabel = '';
+    if (isNextDay && arrDateStart && displayDateStart.getTime() === arrDateStart.getTime()) {
+      contextLabel = 'Arriving';
+    } else if (depDateStart && displayDateStart.getTime() === depDateStart.getTime()) {
+      contextLabel = 'Departing';
     }
 
     return `
-      <div class="itinerary-item itinerary-item-${category.toLowerCase()}" data-item-id="${item.id || index}">
+      <div class="flight-card" data-item-id="${item.id || index}" onclick="window.tripDetailManager.openItemDetail('${item.id || index}')">
+        <div class="flight-card-header">
+          <div class="flight-card-live-badge">
+            <span class="flight-live-dot"></span>
+            <span>Live</span>
+          </div>
+          ${flightNumber ? `<span class="flight-card-number">${this.escapeHtml(flightNumber)}</span>` : ''}
+          <span class="flight-card-status scheduled">Scheduled</span>
+        </div>
+
+        <div class="flight-card-route">
+          <div class="flight-card-endpoint departure">
+            <div class="flight-card-code">${this.escapeHtml(depCode)}</div>
+            ${fromLocation && fromLocation !== depCode ? `<div class="flight-card-city">${this.escapeHtml(fromLocation.split(',')[0])}</div>` : ''}
+            ${depTimeStr ? `<div class="flight-card-time">${depTimeStr}</div>` : ''}
+          </div>
+
+          <div class="flight-card-path">
+            <svg class="flight-card-plane" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            ${durationStr ? `<div class="flight-card-duration">${durationStr}</div>` : ''}
+          </div>
+
+          <div class="flight-card-endpoint arrival">
+            <div class="flight-card-code-wrap">
+              <span class="flight-card-code">${this.escapeHtml(arrCode)}</span>
+              ${isNextDay ? '<span class="flight-card-next-day">+1</span>' : ''}
+            </div>
+            ${toLocation && toLocation !== arrCode ? `<div class="flight-card-city">${this.escapeHtml(toLocation.split(',')[0])}</div>` : ''}
+            ${arrTimeStr ? `<div class="flight-card-time">${arrTimeStr}</div>` : ''}
+          </div>
+        </div>
+
+        ${(depTerminal || depGate || arrTerminal || arrBaggage) ? `
+          <div class="flight-card-details">
+            <div class="flight-card-detail-group left">
+              ${depTerminal ? `<span class="flight-detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg>T${depTerminal}</span>` : ''}
+              ${depGate ? `<span class="flight-detail gate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 4h3a2 2 0 012 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 01-1.242.97L5 20V5.562a2 2 0 011.515-1.94l4-1A2 2 0 0113 4.561z"/></svg>Gate ${depGate}</span>` : ''}
+            </div>
+            <div class="flight-card-detail-group right">
+              ${arrTerminal ? `<span class="flight-detail">T${arrTerminal}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></span>` : ''}
+              ${arrBaggage ? `<span class="flight-detail baggage">Belt ${arrBaggage}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 20h0a2 2 0 01-2-2V8a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2h0"/><path d="M8 18V4a2 2 0 012-2h4a2 2 0 012 2v14"/><path d="M10 20h4"/><circle cx="16" cy="20" r="2"/><circle cx="8" cy="20" r="2"/></svg></span>` : ''}
+            </div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }
+
+  renderItineraryItem(item, index, displayDate) {
+    const startDate = this.parseDate(item.startDate || item.date);
+    const endDate = this.parseDate(item.endDate || item.checkOutTime || item.arrivalTime);
+    const category = item.category || item.type || 'other';
+    const icon = this.getItineraryIcon(category);
+
+    // Get context-aware display info
+    const displayInfo = this.getItemDisplayInfo(item, displayDate);
+
+    return `
+      <div class="itinerary-item itinerary-item-${category.toLowerCase()}" data-item-id="${item.id || index}" onclick="window.tripDetailManager.openItemDetail('${item.id || index}')">
         <div class="itinerary-item-icon-wrap">
           ${icon}
         </div>
         <div class="itinerary-item-content">
           <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
-          ${subtitle ? `<div class="itinerary-item-subtitle">${subtitle}</div>` : ''}
+          ${displayInfo.subtitle ? `<div class="itinerary-item-subtitle">${displayInfo.subtitle}</div>` : ''}
         </div>
-        ${timeStr ? `<div class="itinerary-item-time">${timeStr}</div>` : ''}
+        ${displayInfo.timeLabel ? `<div class="itinerary-item-time">${displayInfo.timeLabel}</div>` : ''}
         <div class="itinerary-item-chevron">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <polyline points="9 18 15 12 9 6"/>
@@ -1079,6 +1500,140 @@ class TripDetailManager {
         </div>
       </div>
     `;
+  }
+
+  getItemDisplayInfo(item, displayDate) {
+    const category = (item.category || item.type || 'other').toLowerCase();
+    const calendar = new Date(displayDate);
+    calendar.setHours(0, 0, 0, 0);
+
+    // For accommodations - show check-in/check-out/staying
+    if (category === 'accommodation' || category === 'hotel') {
+      const checkIn = this.parseDate(item.checkInTime || item.startDate || item.date);
+      const checkOut = this.parseDate(item.checkOutTime || item.endDate);
+
+      if (checkIn) {
+        const checkInDay = new Date(checkIn);
+        checkInDay.setHours(0, 0, 0, 0);
+
+        if (checkInDay.getTime() === calendar.getTime()) {
+          return {
+            subtitle: 'Check-in',
+            timeLabel: checkIn.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+          };
+        }
+      }
+
+      if (checkOut) {
+        const checkOutDay = new Date(checkOut);
+        checkOutDay.setHours(0, 0, 0, 0);
+
+        if (checkOutDay.getTime() === calendar.getTime()) {
+          return {
+            subtitle: 'Check-out',
+            timeLabel: checkOut.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+          };
+        }
+      }
+
+      // Middle day - staying here
+      return {
+        subtitle: 'Staying here',
+        timeLabel: null
+      };
+    }
+
+    // For travel items - show departing/arriving
+    if (category === 'travel' || category === 'transport') {
+      const departure = this.parseDate(item.departureTime || item.travelDetails?.departureTime || item.startDate || item.date);
+      const arrival = this.parseDate(item.arrivalTime || item.travelDetails?.arrivalTime || item.endDate);
+
+      if (departure && arrival) {
+        const depDay = new Date(departure);
+        depDay.setHours(0, 0, 0, 0);
+        const arrDay = new Date(arrival);
+        arrDay.setHours(0, 0, 0, 0);
+
+        // Overnight travel
+        if (depDay.getTime() !== arrDay.getTime()) {
+          if (depDay.getTime() === calendar.getTime()) {
+            return {
+              subtitle: 'Departing',
+              timeLabel: departure.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+            };
+          } else if (arrDay.getTime() === calendar.getTime()) {
+            return {
+              subtitle: 'Arriving',
+              timeLabel: arrival.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+            };
+          }
+        }
+      }
+
+      // Regular travel item
+      const time = departure || this.parseDate(item.startDate || item.date);
+      const location = item.fromLocation || item.travelDetails?.fromLocation;
+      const toLocation = item.toLocation || item.travelDetails?.toLocation;
+      const routeStr = location && toLocation ? `${location} → ${toLocation}` : (location || toLocation || '');
+
+      return {
+        subtitle: routeStr || item.location || null,
+        timeLabel: time ? time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
+      };
+    }
+
+    // For activities/food/other - show time range
+    const startTime = this.parseDate(item.startTime || item.startDate || item.date);
+    const endTime = this.parseDate(item.endTime || item.endDate);
+
+    let subtitle = item.location || item.notes || null;
+    let timeLabel = null;
+
+    if (startTime) {
+      timeLabel = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      if (endTime && endTime > startTime) {
+        const endStr = endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        subtitle = `${timeLabel} - ${endStr}` + (subtitle ? ` · ${subtitle}` : '');
+        // Don't double show time
+        timeLabel = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }
+    }
+
+    return { subtitle, timeLabel };
+  }
+
+  calculateTimeGap(fromItem, toItem) {
+    // Get end time of first item
+    const fromEnd = this.parseDate(
+      fromItem.endTime || fromItem.arrivalTime || fromItem.travelDetails?.arrivalTime ||
+      fromItem.checkOutTime || fromItem.endDate || fromItem.startDate || fromItem.date
+    );
+
+    // Get start time of next item
+    const toStart = this.parseDate(
+      toItem.startTime || toItem.departureTime || toItem.travelDetails?.departureTime ||
+      toItem.checkInTime || toItem.startDate || toItem.date
+    );
+
+    if (!fromEnd || !toStart) return null;
+
+    const diffMs = toStart - fromEnd;
+    if (diffMs <= 0) return null;
+
+    const minutes = Math.floor(diffMs / (1000 * 60));
+    if (minutes < 5) return null; // Don't show gaps less than 5 minutes
+
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    let displayString;
+    if (hours > 0) {
+      displayString = mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
+    } else {
+      displayString = `${mins}m`;
+    }
+
+    return { minutes, displayString };
   }
 
   getItineraryTypeName(category) {
@@ -2778,20 +3333,61 @@ class TripDetailManager {
   generateTravelFields(defaultDate, tripStart, tripEnd) {
     return `
       <div class="item-form-section">
-        <div class="item-form-section-title flight">Travel Details</div>
-        <div class="item-form-field">
-          <label class="item-form-label">Travel Mode</label>
-          <select class="item-form-select" id="item-travel-mode" onchange="window.tripDetailManager.onTravelModeChange(this.value)">
-            <option value="flight">Flight</option>
-            <option value="train">Train</option>
-            <option value="bus">Bus</option>
-            <option value="car">Car / Rental</option>
-            <option value="ferry">Ferry</option>
-            <option value="taxi">Taxi / Rideshare</option>
-            <option value="other">Other</option>
-          </select>
+        <div class="item-form-section-title flight">Select Travel Mode</div>
+        <input type="hidden" id="item-travel-mode" value="flight">
+        <div class="travel-mode-picker">
+          <div class="travel-mode-card selected" data-mode="flight" onclick="window.tripDetailManager.selectTravelMode('flight')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Flight</span>
+          </div>
+          <div class="travel-mode-card" data-mode="train" onclick="window.tripDetailManager.selectTravelMode('train')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2c-4 0-8 .5-8 4v9.5C4 17.43 5.57 19 7.5 19L6 20.5v.5h2.23l2-2H14l2 2h2v-.5L16.5 19c1.93 0 3.5-1.57 3.5-3.5V6c0-3.5-3.58-4-8-4zM7.5 17c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm3.5-7H6V6h5v4zm2 0V6h5v4h-5zm3.5 7c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Train</span>
+          </div>
+          <div class="travel-mode-card" data-mode="bus" onclick="window.tripDetailManager.selectTravelMode('bus')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 16c0 .88.39 1.67 1 2.22V20c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h8v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1.78c.61-.55 1-1.34 1-2.22V6c0-3.5-3.58-4-8-4s-8 .5-8 4v10zm3.5 1c-.83 0-1.5-.67-1.5-1.5S6.67 14 7.5 14s1.5.67 1.5 1.5S8.33 17 7.5 17zm9 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm1.5-6H6V6h12v5z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Bus</span>
+          </div>
+          <div class="travel-mode-card" data-mode="car" onclick="window.tripDetailManager.selectTravelMode('car')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Car</span>
+          </div>
+          <div class="travel-mode-card" data-mode="ferry" onclick="window.tripDetailManager.selectTravelMode('ferry')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 21c-1.39 0-2.78-.47-4-1.32-2.44 1.71-5.56 1.71-8 0C6.78 20.53 5.39 21 4 21H2v2h2c1.38 0 2.74-.35 4-.99 2.52 1.29 5.48 1.29 8 0 1.26.65 2.62.99 4 .99h2v-2h-2zM3.95 19H4c1.6 0 3.02-.88 4-2 .98 1.12 2.4 2 4 2s3.02-.88 4-2c.98 1.12 2.4 2 4 2h.05l1.89-6.68c.08-.26.06-.54-.06-.78s-.34-.42-.6-.5L20 10.62V6c0-1.1-.9-2-2-2h-3V1H9v3H6c-1.1 0-2 .9-2 2v4.62l-1.29.42c-.26.08-.48.26-.6.5s-.15.52-.06.78L3.95 19zM6 6h12v3.97L12 8 6 9.97V6z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Ferry</span>
+          </div>
+          <div class="travel-mode-card" data-mode="taxi" onclick="window.tripDetailManager.selectTravelMode('taxi')">
+            <div class="travel-mode-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5H15V3H9v2H6.5c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+              </svg>
+            </div>
+            <span class="travel-mode-label">Taxi</span>
+          </div>
         </div>
+      </div>
 
+      <div class="item-form-section">
         <!-- Flight Search Section (Premium) -->
         <div class="flight-search-section" id="flight-search-section">
           <div class="flight-search-header">
@@ -2879,6 +3475,20 @@ class TripDetailManager {
     `;
   }
 
+  selectTravelMode(mode) {
+    // Update hidden input
+    const modeInput = document.getElementById('item-travel-mode');
+    if (modeInput) modeInput.value = mode;
+
+    // Update visual selection
+    document.querySelectorAll('.travel-mode-card').forEach(card => {
+      card.classList.toggle('selected', card.dataset.mode === mode);
+    });
+
+    // Call the mode change handler
+    this.onTravelModeChange(mode);
+  }
+
   onTravelModeChange(mode) {
     const searchSection = document.getElementById('flight-search-section');
     const manualToggle = document.getElementById('manual-entry-toggle');
@@ -2891,7 +3501,7 @@ class TripDetailManager {
       // Check if premium and update visibility
       this.updateFlightSearchVisibility();
     } else {
-      // Hide flight search, show manual fields
+      // Hide flight search, show manual fields directly
       if (searchSection) searchSection.style.display = 'none';
       if (manualToggle) manualToggle.style.display = 'none';
       if (manualFields) manualFields.style.display = 'block';

@@ -2656,6 +2656,518 @@
   color: #80b3e6;
 }
 
+/* ============================================
+   Flight Card - iOS Real-Time Style
+   ============================================ */
+
+.flight-card {
+  background: var(--theme-bg-secondary, #f8fafc);
+  border-radius: 14px;
+  border: 1px solid rgba(128, 179, 230, 0.3);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.flight-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(128, 179, 230, 0.2);
+}
+
+.flight-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.flight-card-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.25rem 0.5rem;
+  background: rgba(34, 197, 94, 0.15);
+  border-radius: 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #22c55e;
+}
+
+.flight-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pulse-dot 2s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.flight-card-number {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--theme-text-secondary, #64748b);
+  margin-left: auto;
+}
+
+.flight-card-status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: white;
+}
+
+.flight-card-status.scheduled {
+  background: #3b82f6;
+}
+
+.flight-card-status.active,
+.flight-card-status.departed,
+.flight-card-status.en-route {
+  background: #22c55e;
+}
+
+.flight-card-status.landed,
+.flight-card-status.arrived {
+  background: #a855f7;
+}
+
+.flight-card-status.delayed {
+  background: #f97316;
+}
+
+.flight-card-status.cancelled {
+  background: #ef4444;
+}
+
+.flight-card-route {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.flight-card-endpoint {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.flight-card-endpoint.departure {
+  align-items: flex-start;
+}
+
+.flight-card-endpoint.arrival {
+  align-items: flex-end;
+}
+
+.flight-card-code-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.flight-card-code {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--theme-text, #1e293b);
+  letter-spacing: -0.02em;
+}
+
+.flight-card-next-day {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f97316;
+}
+
+.flight-card-city {
+  font-size: 0.75rem;
+  color: var(--theme-text-secondary, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+}
+
+.flight-card-time {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--theme-text, #1e293b);
+}
+
+.flight-card-path {
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.flight-card-plane {
+  width: 24px;
+  height: 24px;
+  color: #80b3e6;
+}
+
+.flight-card-duration {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.flight-card-details {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.flight-card-detail-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.flight-card-detail-group.left {
+  align-items: flex-start;
+}
+
+.flight-card-detail-group.right {
+  align-items: flex-end;
+}
+
+.flight-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.flight-detail svg {
+  width: 12px;
+  height: 12px;
+}
+
+.flight-detail.gate {
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.flight-detail.baggage {
+  font-weight: 600;
+  color: #22c55e;
+}
+
+/* ============================================
+   Time Gap Indicator - iOS Style
+   ============================================ */
+
+.itinerary-time-gap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.itinerary-time-gap.minimal {
+  padding: 0.25rem 0;
+}
+
+.itinerary-time-gap-content {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(128, 179, 230, 0.12);
+  border-radius: 10px;
+}
+
+.itinerary-time-gap-duration {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.itinerary-time-gap-arrow {
+  width: 12px;
+  height: 12px;
+  color: var(--theme-text-tertiary, #94a3b8);
+}
+
+.itinerary-time-gap.minimal .itinerary-time-gap-arrow {
+  width: 14px;
+  height: 14px;
+  color: var(--theme-text-tertiary, #94a3b8);
+}
+
+/* ============================================
+   Travel Mode Picker Grid - iOS Style
+   ============================================ */
+
+.travel-mode-picker {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  padding: 1rem 0;
+}
+
+.travel-mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  background: var(--theme-bg-secondary, #f8fafc);
+  border-radius: 16px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.travel-mode-card:hover {
+  background: var(--theme-bg-tertiary, #e2e8f0);
+  border-color: rgba(128, 179, 230, 0.3);
+}
+
+.travel-mode-card.selected {
+  background: rgba(128, 179, 230, 0.15);
+  border-color: #80b3e6;
+}
+
+.travel-mode-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(128, 179, 230, 0.15);
+}
+
+.travel-mode-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #80b3e6;
+}
+
+.travel-mode-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--theme-text, #1e293b);
+}
+
+/* Dark theme support */
+[data-theme="dark"] .flight-card {
+  background: #252550;
+  border-color: rgba(128, 179, 230, 0.2);
+}
+
+[data-theme="dark"] .flight-card-code {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .flight-card-time {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .flight-card-header {
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .flight-card-details {
+  border-color: #2d2d5a;
+}
+
+[data-theme="dark"] .itinerary-time-gap-content {
+  background: rgba(128, 179, 230, 0.1);
+}
+
+[data-theme="dark"] .travel-mode-card {
+  background: #252550;
+}
+
+[data-theme="dark"] .travel-mode-card:hover {
+  background: #2d2d5a;
+}
+
+[data-theme="dark"] .travel-mode-label {
+  color: #f1f5f9;
+}
+
+/* ============================================
+   Item Detail Modal - iOS Style
+   ============================================ */
+
+.item-detail-modal {
+  max-height: 85vh;
+}
+
+.item-detail-header {
+  margin-bottom: 1rem;
+}
+
+.item-detail-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.item-detail-type-badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+.item-detail-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--theme-bg-secondary, #f8fafc);
+  border-radius: 12px;
+}
+
+.item-detail-row.clickable {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.item-detail-row.clickable:hover {
+  background: var(--theme-bg-tertiary, #e2e8f0);
+}
+
+.item-detail-row.notes {
+  align-items: flex-start;
+}
+
+.item-detail-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--theme-bg-tertiary, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.item-detail-icon svg {
+  width: 18px;
+  height: 18px;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.item-detail-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.item-detail-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--theme-text-tertiary, #94a3b8);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.item-detail-value {
+  font-size: 0.9375rem;
+  color: var(--theme-text, #1e293b);
+  word-break: break-word;
+}
+
+.item-detail-value.link {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.item-detail-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--theme-text-tertiary, #94a3b8);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.item-detail-actions {
+  padding: 1rem;
+  border-top: 1px solid var(--theme-border, #e2e8f0);
+  margin-top: 1rem;
+}
+
+.item-detail-delete-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.875rem;
+  background: rgba(239, 68, 68, 0.1);
+  border: none;
+  border-radius: 12px;
+  color: #ef4444;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.item-detail-delete-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.item-detail-delete-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.item-detail-empty {
+  text-align: center;
+  color: var(--theme-text-tertiary, #94a3b8);
+  padding: 2rem 1rem;
+  font-size: 0.9375rem;
+}
+
+/* Dark theme */
+[data-theme="dark"] .item-detail-row {
+  background: #252550;
+}
+
+[data-theme="dark"] .item-detail-row.clickable:hover {
+  background: #2d2d5a;
+}
+
+[data-theme="dark"] .item-detail-icon {
+  background: #2d2d5a;
+}
+
+[data-theme="dark"] .item-detail-value {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .item-detail-actions {
+  border-color: #2d2d5a;
+}
+
 /* Add Item Modal Overlay */
 .itinerary-modal-overlay {
   position: fixed;
