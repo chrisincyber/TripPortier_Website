@@ -1273,7 +1273,7 @@ class TripDetailManager {
             </button>
           </div>
         </div>
-        <a href="airport-transfers.html" class="suggestion-card-action">
+        <a href="airport-transfers.html" target="_blank" rel="noopener" class="suggestion-card-action">
           <span>Book Transfer</span>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18l6-6-6-6"/>
