@@ -13,6 +13,14 @@ class TripsManager {
     // Same API key as iOS app (PexelsService.swift)
     this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
 
+    // User preferences for AI personalization
+    this.userPreferences = {
+      interests: [],
+      dietaryPreferences: [],
+      travelStyle: 'balanced',
+      budgetPreference: 'medium'
+    };
+
     // Travel styles (matches iOS app - 27 categories)
     this.travelStyles = [
       { id: 'accessibility', name: 'Accessibility', emoji: '♿' },
@@ -158,9 +166,10 @@ class TripsManager {
     this.showLoading();
 
     try {
-      // Check premium status and load trips/flights
+      // Check premium status, load user preferences, and load trips/flights
       await Promise.all([
         this.checkPremiumStatus(),
+        this.loadUserPreferences(user.uid),
         this.loadTrips(user.uid),
         this.loadFlights(user.uid)
       ]);
@@ -202,6 +211,42 @@ class TripsManager {
     } catch (error) {
       console.error('Error checking premium status:', error);
       this.isPremium = false;
+    }
+  }
+
+  async loadUserPreferences(userId) {
+    try {
+      const db = firebase.firestore();
+      const userDoc = await db.collection('users').doc(userId).get();
+
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+
+        // Load interests (for activity recommendations)
+        if (userData.interests && Array.isArray(userData.interests)) {
+          this.userPreferences.interests = userData.interests;
+        }
+
+        // Load dietary preferences (for restaurant/food recommendations)
+        if (userData.dietaryPreferences && Array.isArray(userData.dietaryPreferences)) {
+          this.userPreferences.dietaryPreferences = userData.dietaryPreferences;
+        }
+
+        // Load travel style preference
+        if (userData.travelStyle) {
+          this.userPreferences.travelStyle = userData.travelStyle;
+        }
+
+        // Load budget preference
+        if (userData.budgetPreference) {
+          this.userPreferences.budgetPreference = userData.budgetPreference;
+        }
+
+        console.log('Loaded user preferences for AI personalization:', this.userPreferences);
+      }
+    } catch (error) {
+      console.error('Error loading user preferences:', error);
+      // Continue with defaults - non-critical error
     }
   }
 
@@ -1357,13 +1402,23 @@ class TripsManager {
 
       // Call the aiPlanTrip Firebase function
       const aiPlanTrip = firebase.functions().httpsCallable('aiPlanTrip');
+      // Combine trip-specific travel styles with user's saved interests
+      const combinedInterests = [
+        ...this.newTrip.travelStyles,
+        ...this.userPreferences.interests.filter(i => !this.newTrip.travelStyles.includes(i))
+      ];
+
       const result = await aiPlanTrip({
         destination: this.newTrip.destination,
         startDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.startDate),
         endDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.endDate),
         tripDays: tripDays,
-        interests: this.newTrip.travelStyles,
-        travelStyle: this.newTrip.travelCompanion || 'solo'
+        interests: combinedInterests,
+        travelStyle: this.newTrip.travelCompanion || 'solo',
+        // User preferences for personalization
+        dietaryPreferences: this.userPreferences.dietaryPreferences,
+        budgetPreference: this.userPreferences.budgetPreference,
+        userTravelStyle: this.userPreferences.travelStyle
       });
 
       const itinerary = result.data;
