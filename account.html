@@ -3604,27 +3604,25 @@
 
             userSettings[field] = value;
 
-            try {
-                // Save to settings subcollection
-                await window.firebaseDb
-                    .collection('users')
-                    .doc(user.uid)
-                    .collection('metadata')
-                    .doc('settings')
-                    .set({ [field]: value }, { merge: true });
+            // Save theme to localStorage (doesn't need Firebase)
+            if (field === 'theme') {
+                localStorage.setItem('tripportier-theme', value);
+                return;
+            }
 
-                // Also update main user doc for key fields
-                const mainDocFields = ['homeCountry', 'temperatureUnit', 'passports', 'nationalities'];
-                if (mainDocFields.includes(field) || field.startsWith('show')) {
-                    const updateData = { [field]: value };
-                    if (field.startsWith('show')) {
-                        updateData.friendVisibility = {
-                            showActiveTrips: userSettings.showActiveTripsToFriends,
-                            showUpcomingTrips: userSettings.showUpcomingTripsToFriends
-                        };
-                    }
-                    await window.firebaseDb.collection('users').doc(user.uid).set(updateData, { merge: true });
+            try {
+                // Save all settings to main user document
+                const updateData = { [field]: value };
+
+                // Add friendVisibility object for privacy settings
+                if (field.startsWith('show')) {
+                    updateData.friendVisibility = {
+                        showActiveTrips: userSettings.showActiveTripsToFriends,
+                        showUpcomingTrips: userSettings.showUpcomingTripsToFriends
+                    };
                 }
+
+                await window.firebaseDb.collection('users').doc(user.uid).set(updateData, { merge: true });
             } catch (error) {
                 console.error('Error saving setting:', error);
             }
