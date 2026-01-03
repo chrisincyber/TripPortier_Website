@@ -731,7 +731,6 @@ class TripDetailManager {
               <span class="itinerary-day-date">${formattedDate}</span>
               ${destinationHtml}
             </div>
-            <span class="itinerary-day-count">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
             <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 5v14M5 12h14"/>
@@ -741,15 +740,7 @@ class TripDetailManager {
           <div class="itinerary-day-items">
             ${dayItems.length > 0
               ? dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')
-              : `<div class="itinerary-day-empty">
-                  <span>No events planned</span>
-                  <button class="itinerary-day-empty-add" onclick="window.tripDetailManager.openAddItemForDay('${dateISO}')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M12 5v14M5 12h14"/>
-                    </svg>
-                    Add item
-                  </button>
-                </div>`
+              : `<div class="itinerary-day-empty">No items planned</div>`
             }
           </div>
         </div>
@@ -864,40 +855,31 @@ class TripDetailManager {
   renderItineraryItem(item, index) {
     const startDate = this.parseDate(item.startDate || item.date);
     const timeStr = startDate ? startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
-    const icon = this.getItineraryIcon(item.category || item.type);
-    const category = item.category || item.type || 'event';
-    const typeName = this.getItineraryTypeName(category);
-    const hasLocation = item.location || item.latitude || item.longitude;
+    const category = item.category || item.type || 'other';
+    const icon = this.getItineraryIcon(category);
+
+    // Build subtitle based on item type
+    let subtitle = '';
+    if (item.location) {
+      subtitle = this.escapeHtml(item.location);
+    } else if (item.notes) {
+      subtitle = this.escapeHtml(item.notes);
+    }
 
     return `
       <div class="itinerary-item itinerary-item-${category.toLowerCase()}" data-item-id="${item.id || index}">
-        <div class="itinerary-item-icon">${icon}</div>
+        <div class="itinerary-item-icon-wrap">
+          ${icon}
+        </div>
         <div class="itinerary-item-content">
-          <div class="itinerary-item-header">
-            <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
-            <span class="itinerary-item-type-badge">${typeName}</span>
-          </div>
-          ${timeStr ? `<div class="itinerary-item-time">${timeStr}</div>` : ''}
-          ${item.location ? `<div class="itinerary-item-location">${this.escapeHtml(item.location)}</div>` : ''}
-          ${item.notes ? `<div class="itinerary-item-notes">${this.escapeHtml(item.notes)}</div>` : ''}
+          <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
+          ${subtitle ? `<div class="itinerary-item-subtitle">${subtitle}</div>` : ''}
         </div>
-        <div class="itinerary-item-right">
-          ${item.homeCurrencyAmount ? `<div class="itinerary-item-cost">$${item.homeCurrencyAmount.toFixed(2)}</div>` : ''}
-          ${hasLocation ? `
-            <button class="itinerary-item-map-btn" onclick="event.stopPropagation(); window.tripDetailManager.openItemInMaps('${this.escapeHtml(item.location || item.name || '')}')" title="Open in Maps">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
-              </svg>
-            </button>
-          ` : ''}
-        </div>
-        <div class="itinerary-item-actions">
-          <button class="itinerary-action-btn delete" onclick="event.stopPropagation(); window.tripDetailManager.deleteItineraryItem('${item.id || index}')" title="Delete">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="3 6 5 6 21 6"/>
-              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-          </button>
+        ${timeStr ? `<div class="itinerary-item-time">${timeStr}</div>` : ''}
+        <div class="itinerary-item-chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
         </div>
       </div>
     `;
