@@ -1361,6 +1361,206 @@
         .passports-save-btn:hover {
             background: #4f46e5;
         }
+
+        /* Collapsible Settings Sections */
+        .settings-group {
+            border-bottom: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .settings-group:last-child {
+            border-bottom: none;
+        }
+
+        .settings-group-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .settings-group-header:hover {
+            opacity: 0.8;
+        }
+
+        .settings-group-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            color: var(--theme-text, #1e293b);
+        }
+
+        .settings-group-title svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .settings-group-arrow {
+            transition: transform 0.2s;
+            color: var(--theme-text-secondary);
+        }
+
+        .settings-group.open .settings-group-arrow {
+            transform: rotate(180deg);
+        }
+
+        .settings-group-content {
+            display: none;
+            padding-bottom: 1rem;
+        }
+
+        .settings-group.open .settings-group-content {
+            display: block;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            display: flex;
+            gap: 0.5rem;
+            background: var(--theme-bg-secondary, #f1f5f9);
+            padding: 0.25rem;
+            border-radius: 10px;
+        }
+
+        .theme-btn {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            color: var(--theme-text-secondary);
+            transition: all 0.15s;
+        }
+
+        .theme-btn.active {
+            background: var(--theme-card-bg, white);
+            color: var(--theme-text);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        /* Chips for Interests/Dietary */
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .chip {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid var(--theme-border, #e2e8f0);
+            border-radius: 999px;
+            font-size: 0.8125rem;
+            cursor: pointer;
+            background: transparent;
+            color: var(--theme-text-secondary);
+            transition: all 0.15s;
+        }
+
+        .chip:hover {
+            border-color: #6366f1;
+        }
+
+        .chip.active {
+            background: #6366f1;
+            border-color: #6366f1;
+            color: white;
+        }
+
+        /* Privacy Toggle */
+        .privacy-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+        }
+
+        .privacy-toggle-info {
+            flex: 1;
+        }
+
+        .privacy-toggle-label {
+            font-size: 0.875rem;
+            color: var(--theme-text);
+        }
+
+        .privacy-toggle-desc {
+            font-size: 0.75rem;
+            color: var(--theme-text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #cbd5e1;
+            border-radius: 24px;
+            transition: 0.2s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: #6366f1;
+        }
+
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Compact preference rows */
+        .pref-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 0;
+        }
+
+        .pref-row label {
+            font-size: 0.875rem;
+            color: var(--theme-text);
+        }
+
+        .pref-select {
+            padding: 0.375rem 0.625rem;
+            border: 1px solid var(--theme-border, #e2e8f0);
+            border-radius: 6px;
+            background: var(--theme-bg, white);
+            color: var(--theme-text);
+            font-size: 0.8125rem;
+            min-width: 140px;
+        }
     </style>
 </head>
 <body class="account-page">
@@ -1483,34 +1683,171 @@
                     <p class="referral-description">Share your code and earn $3 for each friend who purchases an eSIM!</p>
                 </div>
 
-                <!-- User Preferences -->
+                <!-- Settings -->
                 <div class="account-preferences">
                     <h3>
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
-                        User Preferences
+                        Settings
                     </h3>
-                    <div class="preference-item">
-                        <span class="preference-label">Home Country</span>
-                        <select class="preference-select" id="pref-home-country" onchange="saveUserPreference('homeCountry', this.value)">
-                            <option value="">Select...</option>
-                        </select>
-                    </div>
-                    <div class="preference-item">
-                        <span class="preference-label">Passports</span>
-                        <div class="passports-display" id="pref-passports-display">
-                            <button onclick="openPassportsModal()" style="background: none; border: 1px solid var(--theme-border); padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.875rem;">
-                                Add passports
-                            </button>
+
+                    <!-- Appearance -->
+                    <div class="settings-group open" data-group="appearance">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('appearance')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+                                Appearance
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="pref-row">
+                                <label>Theme</label>
+                                <div class="theme-toggle">
+                                    <button class="theme-btn" data-theme="system" onclick="setTheme('system')">Auto</button>
+                                    <button class="theme-btn" data-theme="light" onclick="setTheme('light')">Light</button>
+                                    <button class="theme-btn" data-theme="dark" onclick="setTheme('dark')">Dark</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="preference-item">
-                        <span class="preference-label">Temperature Unit</span>
-                        <select class="preference-select" id="pref-temperature-unit" onchange="saveUserPreference('temperatureUnit', this.value)">
-                            <option value="celsius">Celsius (°C)</option>
-                            <option value="fahrenheit">Fahrenheit (°F)</option>
-                        </select>
+
+                    <!-- Location & Regional -->
+                    <div class="settings-group open" data-group="location">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('location')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                                Location & Regional
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="pref-row">
+                                <label>Home Country</label>
+                                <select class="pref-select" id="pref-home-country" onchange="saveSettingsField('homeCountry', this.value)"></select>
+                            </div>
+                            <div class="pref-row">
+                                <label>Currency</label>
+                                <select class="pref-select" id="pref-currency" onchange="saveSettingsField('homeCurrency', this.value)"></select>
+                            </div>
+                            <div class="pref-row">
+                                <label>Passports</label>
+                                <div class="passports-display" id="pref-passports-display">
+                                    <button onclick="openPassportsModal()" style="background: none; border: 1px solid var(--theme-border); padding: 0.375rem 0.625rem; border-radius: 6px; cursor: pointer; font-size: 0.8125rem;">Add</button>
+                                </div>
+                            </div>
+                            <div class="pref-row">
+                                <label>Temperature</label>
+                                <select class="pref-select" id="pref-temperature-unit" onchange="saveSettingsField('temperatureUnit', this.value)">
+                                    <option value="celsius">Celsius (°C)</option>
+                                    <option value="fahrenheit">Fahrenheit (°F)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Travel Profile -->
+                    <div class="settings-group" data-group="travel">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('travel')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+                                Travel Profile
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="pref-row">
+                                <label>Travel Style</label>
+                                <select class="pref-select" id="pref-travel-style" onchange="saveSettingsField('travelStyle', this.value)">
+                                    <option value="balanced">Balanced</option>
+                                    <option value="adventure">Adventure</option>
+                                    <option value="relaxation">Relaxation</option>
+                                    <option value="cultural">Cultural</option>
+                                    <option value="business">Business</option>
+                                    <option value="family">Family</option>
+                                    <option value="romantic">Romantic</option>
+                                </select>
+                            </div>
+                            <div class="pref-row">
+                                <label>Budget</label>
+                                <select class="pref-select" id="pref-budget" onchange="saveSettingsField('budgetPreference', this.value)">
+                                    <option value="budget">Budget</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="luxury">Luxury</option>
+                                </select>
+                            </div>
+                            <div class="pref-row">
+                                <label>Packing</label>
+                                <select class="pref-select" id="pref-packing" onchange="saveSettingsField('packingGender', this.value)">
+                                    <option value="neutral">Neutral</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interests -->
+                    <div class="settings-group" data-group="interests">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('interests')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/></svg>
+                                Interests
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="chips-container" id="interests-chips"></div>
+                        </div>
+                    </div>
+
+                    <!-- Dietary -->
+                    <div class="settings-group" data-group="dietary">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('dietary')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25v-1.5m0 1.5c-1.355 0-2.697.056-4.024.166C6.845 8.51 6 9.473 6 10.608v2.513m6-4.87c1.355 0 2.697.055 4.024.165C17.155 8.51 18 9.473 18 10.608v2.513m-3-4.87v-1.5m-6 1.5v-1.5m12 9.75l-1.5.75a3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0 3.354 3.354 0 00-3 0 3.354 3.354 0 01-3 0L3 16.5m15-3.38a48.474 48.474 0 00-6-.37c-2.032 0-4.034.125-6 .37m12 0c.39.049.777.102 1.163.16 1.07.16 1.837 1.094 1.837 2.175v5.17c0 .62-.504 1.124-1.125 1.124H4.125A1.125 1.125 0 013 20.625v-5.17c0-1.08.768-2.014 1.837-2.174A47.78 47.78 0 016 13.12M12.265 3.11a.375.375 0 11-.53 0L12 2.845l.265.265zm-3 0a.375.375 0 11-.53 0L9 2.845l.265.265zm6 0a.375.375 0 11-.53 0L15 2.845l.265.265z"/></svg>
+                                Dietary Preferences
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="chips-container" id="dietary-chips"></div>
+                        </div>
+                    </div>
+
+                    <!-- Privacy -->
+                    <div class="settings-group" data-group="privacy">
+                        <div class="settings-group-header" onclick="toggleSettingsGroup('privacy')">
+                            <span class="settings-group-title">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+                                Privacy
+                            </span>
+                            <svg class="settings-group-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                        </div>
+                        <div class="settings-group-content">
+                            <div class="privacy-toggle">
+                                <div class="privacy-toggle-info">
+                                    <div class="privacy-toggle-label">Show active trips</div>
+                                    <div class="privacy-toggle-desc">Let friends see your current trip</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="pref-show-active" checked onchange="saveSettingsField('showActiveTripsToFriends', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="privacy-toggle">
+                                <div class="privacy-toggle-info">
+                                    <div class="privacy-toggle-label">Show upcoming trips</div>
+                                    <div class="privacy-toggle-desc">Let friends see your future trips</div>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="pref-show-upcoming" checked onchange="saveSettingsField('showUpcomingTripsToFriends', this.checked)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -2093,11 +2430,11 @@
                 // Update 2FA toggle
                 updateTwoFactorToggle(profile?.twoFactorEnabled || false);
 
-                // Load referral code, preferences, and friends
+                // Load referral code, settings, and friends
                 loadReferralCode(user.uid);
-                loadUserPreferences(user.uid, profile);
+                populateDropdowns();
+                loadAllSettings(user.uid);
                 loadFriends(user.uid);
-                populateCountryDropdown();
             } else {
                 guestEl.style.display = 'block';
                 contentEl.style.display = 'none';
@@ -3268,6 +3605,234 @@
         });
 
         // ============================================
+        // Settings Data & Functions
+        // ============================================
+
+        const CURRENCIES = [
+            { code: 'USD', name: 'US Dollar' }, { code: 'EUR', name: 'Euro' },
+            { code: 'GBP', name: 'British Pound' }, { code: 'JPY', name: 'Japanese Yen' },
+            { code: 'CHF', name: 'Swiss Franc' }, { code: 'AUD', name: 'Australian Dollar' },
+            { code: 'CAD', name: 'Canadian Dollar' }, { code: 'CNY', name: 'Chinese Yuan' },
+            { code: 'INR', name: 'Indian Rupee' }, { code: 'KRW', name: 'South Korean Won' },
+            { code: 'SGD', name: 'Singapore Dollar' }, { code: 'THB', name: 'Thai Baht' },
+            { code: 'MXN', name: 'Mexican Peso' }, { code: 'BRL', name: 'Brazilian Real' }
+        ];
+
+        const INTERESTS = [
+            "Photography", "Food tours", "History", "Art", "Architecture",
+            "Nature", "Hiking", "Beaches", "Nightlife", "Shopping",
+            "Local markets", "Museums", "Wine & spirits", "Adventure sports",
+            "Wildlife", "Wellness & spa"
+        ];
+
+        const DIETARY_OPTIONS = [
+            "Vegetarian", "Vegan", "Pescatarian", "Halal", "Kosher",
+            "Gluten-free", "Dairy-free", "Nut allergy", "No pork", "No seafood"
+        ];
+
+        let userSettings = {
+            theme: 'system',
+            homeCountry: '',
+            homeCurrency: 'USD',
+            temperatureUnit: 'celsius',
+            travelStyle: 'balanced',
+            budgetPreference: 'medium',
+            packingGender: 'neutral',
+            interests: [],
+            dietaryPreferences: [],
+            showActiveTripsToFriends: true,
+            showUpcomingTripsToFriends: true
+        };
+
+        function toggleSettingsGroup(group) {
+            const el = document.querySelector(`.settings-group[data-group="${group}"]`);
+            if (el) el.classList.toggle('open');
+        }
+
+        function setTheme(theme) {
+            userSettings.theme = theme;
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === theme);
+            });
+
+            const root = document.documentElement;
+            if (theme === 'dark') {
+                root.setAttribute('data-theme', 'dark');
+            } else if (theme === 'light') {
+                root.setAttribute('data-theme', 'light');
+            } else {
+                root.removeAttribute('data-theme');
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    root.setAttribute('data-theme', 'dark');
+                }
+            }
+            localStorage.setItem('theme', theme);
+            saveSettingsField('theme', theme);
+        }
+
+        async function saveSettingsField(field, value) {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            userSettings[field] = value;
+
+            try {
+                // Save to settings subcollection
+                await window.firebaseDb
+                    .collection('users')
+                    .doc(user.uid)
+                    .collection('metadata')
+                    .doc('settings')
+                    .set({ [field]: value }, { merge: true });
+
+                // Also update main user doc for key fields
+                const mainDocFields = ['homeCountry', 'temperatureUnit', 'passports', 'nationalities'];
+                if (mainDocFields.includes(field) || field.startsWith('show')) {
+                    const updateData = { [field]: value };
+                    if (field.startsWith('show')) {
+                        updateData.friendVisibility = {
+                            showActiveTrips: userSettings.showActiveTripsToFriends,
+                            showUpcomingTrips: userSettings.showUpcomingTripsToFriends
+                        };
+                    }
+                    await window.firebaseDb.collection('users').doc(user.uid).set(updateData, { merge: true });
+                }
+            } catch (error) {
+                console.error('Error saving setting:', error);
+            }
+        }
+
+        function populateDropdowns() {
+            // Countries
+            const countrySelect = document.getElementById('pref-home-country');
+            if (countrySelect) {
+                countrySelect.innerHTML = '<option value="">Select...</option>';
+                COUNTRIES.forEach(country => {
+                    const option = document.createElement('option');
+                    option.value = country;
+                    option.textContent = `${getFlagEmoji(COUNTRY_TO_CODE[country])} ${country}`;
+                    countrySelect.appendChild(option);
+                });
+            }
+
+            // Currencies
+            const currencySelect = document.getElementById('pref-currency');
+            if (currencySelect) {
+                currencySelect.innerHTML = '';
+                CURRENCIES.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.code;
+                    option.textContent = `${c.code} - ${c.name}`;
+                    currencySelect.appendChild(option);
+                });
+            }
+        }
+
+        function renderChips() {
+            // Interests
+            const interestsContainer = document.getElementById('interests-chips');
+            if (interestsContainer) {
+                interestsContainer.innerHTML = INTERESTS.map(i => {
+                    const isActive = userSettings.interests.includes(i);
+                    return `<button class="chip ${isActive ? 'active' : ''}" onclick="toggleChip('interests', '${i}', this)">${i}</button>`;
+                }).join('');
+            }
+
+            // Dietary
+            const dietaryContainer = document.getElementById('dietary-chips');
+            if (dietaryContainer) {
+                dietaryContainer.innerHTML = DIETARY_OPTIONS.map(d => {
+                    const isActive = userSettings.dietaryPreferences.includes(d);
+                    return `<button class="chip ${isActive ? 'active' : ''}" onclick="toggleChip('dietaryPreferences', '${d}', this)">${d}</button>`;
+                }).join('');
+            }
+        }
+
+        function toggleChip(settingKey, value, btn) {
+            const idx = userSettings[settingKey].indexOf(value);
+            if (idx > -1) {
+                userSettings[settingKey].splice(idx, 1);
+                btn.classList.remove('active');
+            } else {
+                userSettings[settingKey].push(value);
+                btn.classList.add('active');
+            }
+            saveSettingsField(settingKey, userSettings[settingKey]);
+        }
+
+        async function loadAllSettings(userId) {
+            try {
+                // Load from settings subcollection
+                const settingsDoc = await window.firebaseDb
+                    .collection('users')
+                    .doc(userId)
+                    .collection('metadata')
+                    .doc('settings')
+                    .get();
+
+                if (settingsDoc.exists) {
+                    userSettings = { ...userSettings, ...settingsDoc.data() };
+                }
+
+                // Also load from main user doc
+                const userDoc = await window.firebaseDb.collection('users').doc(userId).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    if (userData.homeCountry) userSettings.homeCountry = userData.homeCountry;
+                    if (userData.temperatureUnit) userSettings.temperatureUnit = userData.temperatureUnit;
+                    if (userData.passports) selectedPassports = userData.passports;
+                }
+
+                applySettingsToUI();
+            } catch (error) {
+                console.error('Error loading settings:', error);
+            }
+        }
+
+        function applySettingsToUI() {
+            // Theme
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === userSettings.theme);
+            });
+
+            // Dropdowns
+            const countrySelect = document.getElementById('pref-home-country');
+            if (countrySelect) countrySelect.value = userSettings.homeCountry || '';
+
+            const currencySelect = document.getElementById('pref-currency');
+            if (currencySelect) currencySelect.value = userSettings.homeCurrency || 'USD';
+
+            const tempSelect = document.getElementById('pref-temperature-unit');
+            if (tempSelect) tempSelect.value = userSettings.temperatureUnit || 'celsius';
+
+            const travelSelect = document.getElementById('pref-travel-style');
+            if (travelSelect) travelSelect.value = userSettings.travelStyle || 'balanced';
+
+            const budgetSelect = document.getElementById('pref-budget');
+            if (budgetSelect) budgetSelect.value = userSettings.budgetPreference || 'medium';
+
+            const packingSelect = document.getElementById('pref-packing');
+            if (packingSelect) packingSelect.value = userSettings.packingGender || 'neutral';
+
+            // Privacy toggles
+            const showActive = document.getElementById('pref-show-active');
+            if (showActive) showActive.checked = userSettings.showActiveTripsToFriends !== false;
+
+            const showUpcoming = document.getElementById('pref-show-upcoming');
+            if (showUpcoming) showUpcoming.checked = userSettings.showUpcomingTripsToFriends !== false;
+
+            // Passports display
+            const passportsDisplay = document.getElementById('pref-passports-display');
+            if (passportsDisplay && selectedPassports.length > 0) {
+                const flags = selectedPassports.map(code => getFlagEmoji(code)).join(' ');
+                passportsDisplay.innerHTML = `<span style="font-size: 1.125rem; cursor: pointer;" onclick="openPassportsModal()">${flags}</span>`;
+            }
+
+            // Render chips
+            renderChips();
+        }
+
+        // ============================================
         // Referral Code Functions
         // ============================================
 
@@ -3362,69 +3927,8 @@
         }
 
         // ============================================
-        // User Preferences Functions
+        // Passports Functions
         // ============================================
-
-        function populateCountryDropdown() {
-            const select = document.getElementById('pref-home-country');
-            if (!select) return;
-
-            COUNTRIES.forEach(country => {
-                const option = document.createElement('option');
-                option.value = country;
-                option.textContent = `${getFlagEmoji(COUNTRY_TO_CODE[country])} ${country}`;
-                select.appendChild(option);
-            });
-        }
-
-        async function loadUserPreferences(userId, profile) {
-            try {
-                // Load from user document
-                const userDoc = await window.firebaseDb.collection('users').doc(userId).get();
-                const userData = userDoc.exists ? userDoc.data() : {};
-
-                // Home country
-                const homeCountrySelect = document.getElementById('pref-home-country');
-                if (homeCountrySelect && userData.homeCountry) {
-                    homeCountrySelect.value = userData.homeCountry;
-                }
-
-                // Temperature unit
-                const tempUnitSelect = document.getElementById('pref-temperature-unit');
-                if (tempUnitSelect && userData.temperatureUnit) {
-                    tempUnitSelect.value = userData.temperatureUnit;
-                }
-
-                // Passports
-                const passportsDisplay = document.getElementById('pref-passports-display');
-                if (passportsDisplay) {
-                    if (userData.passports && userData.passports.length > 0) {
-                        const flags = userData.passports.map(code => getFlagEmoji(code)).join(' ');
-                        passportsDisplay.innerHTML = `<span style="font-size: 1.25rem; cursor: pointer;" onclick="openPassportsModal()">${flags}</span>`;
-                    } else {
-                        passportsDisplay.innerHTML = `<button onclick="openPassportsModal()" style="background: none; border: 1px solid var(--theme-border); padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.875rem;">Add passports</button>`;
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading user preferences:', error);
-            }
-        }
-
-        async function saveUserPreference(field, value) {
-            const user = firebase.auth().currentUser;
-            if (!user) return;
-
-            try {
-                await window.firebaseDb.collection('users').doc(user.uid).set({
-                    [field]: value
-                }, { merge: true });
-
-                showToast('Preference saved');
-            } catch (error) {
-                console.error('Error saving preference:', error);
-                showToast('Failed to save preference');
-            }
-        }
 
         let selectedPassports = [];
 
