@@ -303,13 +303,22 @@
 
         <!-- ===== ITINERARY TAB ===== -->
         <div id="tab-itinerary" class="trip-tab-content">
-            <div class="trip-tab-header">
-                <h2>Itinerary</h2>
-                <p class="trip-tab-subtitle" id="itinerary-dates"></p>
-            </div>
-            <div class="trip-tab-body">
-                <!-- Itinerary Days -->
+            <div class="trip-tab-body" style="padding-top: 0;">
+                <!-- Itinerary Container -->
                 <div class="itinerary-container" id="itinerary-container">
+                    <!-- Filter Bar -->
+                    <div class="itinerary-filter-bar">
+                        <div class="itinerary-filters" id="itinerary-filters">
+                            <!-- Filters rendered by JS -->
+                        </div>
+                        <button class="itinerary-expand-btn" id="itinerary-expand-btn" onclick="window.tripDetailManager.toggleAllDays()" title="Expand/Collapse All">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Empty State -->
                     <div class="itinerary-empty" id="itinerary-empty">
                         <div class="itinerary-empty-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -319,8 +328,60 @@
                         <h3>No Events Yet</h3>
                         <p>Add flights, hotels, and activities to build your itinerary.</p>
                     </div>
-                    <!-- Itinerary items will be rendered here -->
+
+                    <!-- Upcoming Days -->
                     <div id="itinerary-days"></div>
+
+                    <!-- Past Days Section -->
+                    <div class="itinerary-past-section" id="itinerary-past-section" style="display: none;">
+                        <div class="itinerary-past-header" onclick="window.tripDetailManager.togglePastDays()">
+                            <div class="itinerary-past-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                            </div>
+                            <div class="itinerary-past-info">
+                                <span class="itinerary-past-title">Past Days</span>
+                                <span class="itinerary-past-count" id="past-days-count">0 days</span>
+                            </div>
+                            <div class="itinerary-past-chevron">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="itinerary-past-content" id="itinerary-past-content"></div>
+                    </div>
+
+                    <!-- Trip Ideas Section -->
+                    <div class="itinerary-ideas-section" id="itinerary-ideas-section">
+                        <div class="itinerary-ideas-header" onclick="window.tripDetailManager.toggleTripIdeas()">
+                            <div class="itinerary-ideas-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                                </svg>
+                            </div>
+                            <div class="itinerary-ideas-info">
+                                <span class="itinerary-ideas-title">Trip Ideas</span>
+                                <span class="itinerary-ideas-count" id="trip-ideas-count">0 ideas</span>
+                            </div>
+                            <div class="itinerary-ideas-chevron">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                    <polyline points="6 9 12 15 18 9"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="itinerary-ideas-content" id="itinerary-ideas-content">
+                            <div class="itinerary-ideas-empty">No ideas yet. Add items without dates to save them as ideas.</div>
+                        </div>
+                        <button class="itinerary-ideas-add" onclick="window.tripDetailManager.openAddIdeaModal()">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                            </svg>
+                            Add Idea
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

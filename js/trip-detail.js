@@ -616,29 +616,56 @@ class TripDetailManager {
     const items = this.trip.itineraryItems || [];
     const container = document.getElementById('itinerary-days');
     const emptyState = document.getElementById('itinerary-empty');
+    const pastSection = document.getElementById('itinerary-past-section');
+    const pastContent = document.getElementById('itinerary-past-content');
+    const pastCountEl = document.getElementById('past-days-count');
+    const ideasSection = document.getElementById('itinerary-ideas-section');
+    const ideasContent = document.getElementById('itinerary-ideas-content');
+    const ideasCountEl = document.getElementById('trip-ideas-count');
 
-    // Hide empty state - we always show all days
-    if (emptyState) emptyState.style.display = 'none';
+    // Render filter chips
+    this.renderItineraryFilterChips();
 
     // Get trip date range
     const tripStartDate = this.trip.startDate ? new Date(this.trip.startDate) : null;
     const tripEndDate = this.trip.endDate ? new Date(this.trip.endDate) : null;
 
     if (!tripStartDate || !tripEndDate) {
-      // Someday trip - show message or items grouped by date
       if (emptyState) emptyState.style.display = 'flex';
       container.innerHTML = '';
       return;
     }
 
-    // Add original index to items for tracking
+    // Hide empty state - we show all days
+    if (emptyState) emptyState.style.display = 'none';
+
+    // Add original index and filter items
     items.forEach((item, index) => {
       item._originalIndex = index;
     });
 
+    // Separate items with dates from ideas (no date)
+    const scheduledItems = items.filter(item => {
+      const date = this.parseDate(item.startDate || item.date);
+      return date !== null;
+    });
+    const tripIdeas = items.filter(item => {
+      const date = this.parseDate(item.startDate || item.date);
+      return date === null;
+    });
+
+    // Apply active filters
+    const activeFilters = this.activeItineraryFilters || ['all'];
+    const filteredItems = activeFilters.includes('all')
+      ? scheduledItems
+      : scheduledItems.filter(item => {
+          const cat = (item.category || item.type || 'other').toLowerCase();
+          return activeFilters.includes(cat);
+        });
+
     // Group items by date
     const itemsByDate = {};
-    items.forEach(item => {
+    filteredItems.forEach(item => {
       const date = this.parseDate(item.startDate || item.date);
       if (!date) return;
       const dateKey = date.toDateString();
@@ -648,7 +675,7 @@ class TripDetailManager {
       itemsByDate[dateKey].push(item);
     });
 
-    // Generate all days from trip start to end
+    // Generate all days
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -663,89 +690,258 @@ class TripDetailManager {
       allDays.push({
         date: new Date(currentDate),
         dateKey: currentDate.toDateString(),
-        dayNumber: dayNumber
+        dayNumber: dayNumber,
+        isPast: currentDate < today,
+        isToday: currentDate.getTime() === today.getTime()
       });
       currentDate.setDate(currentDate.getDate() + 1);
       dayNumber++;
     }
 
-    // Get available destinations for multi-destination trips
+    // Split into upcoming and past days
+    const upcomingDays = allDays.filter(d => !d.isPast);
+    const pastDays = allDays.filter(d => d.isPast);
+
+    // Get available destinations
     const availableDestinations = this.getAvailableDestinations();
     const isMultiDestination = availableDestinations.length > 1;
 
-    // Render all days
-    container.innerHTML = allDays.map(day => {
-      const dayItems = itemsByDate[day.dateKey] || [];
-      // Sort items by time
-      dayItems.sort((a, b) => {
-        const aDate = this.parseDate(a.startDate || a.date);
-        const bDate = this.parseDate(b.startDate || b.date);
-        return (aDate || 0) - (bDate || 0);
-      });
+    // Render upcoming days
+    container.innerHTML = upcomingDays.map(day => this.renderDaySection(day, itemsByDate, availableDestinations, isMultiDestination, true)).join('');
 
-      const isToday = day.date.getTime() === today.getTime();
-      const isPast = day.date < today;
-      const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-      const formattedDate = day.date.toLocaleDateString('en-US', dateOptions);
-      const dateISO = day.date.toISOString().split('T')[0];
+    // Render past days section
+    if (pastDays.length > 0 && pastSection) {
+      pastSection.style.display = 'block';
+      const pastItemCount = pastDays.reduce((count, day) => count + (itemsByDate[day.dateKey] || []).length, 0);
+      if (pastCountEl) pastCountEl.textContent = `${pastDays.length} days, ${pastItemCount} items`;
+      pastContent.innerHTML = pastDays.map(day => this.renderDaySection(day, itemsByDate, availableDestinations, isMultiDestination, false)).join('');
+    } else if (pastSection) {
+      pastSection.style.display = 'none';
+    }
 
-      // Get destination for this day
-      const dayDestination = this.getDestinationForDay(day.date);
-
-      // Auto-expand today and future days with items, collapse past days
-      const shouldExpand = isToday || (!isPast && dayItems.length > 0) || dayItems.length > 0;
-
-      // Build destination selector HTML (dropdown if multi-destination, plain text otherwise)
-      let destinationHtml = '';
-      if (dayDestination) {
-        if (isMultiDestination) {
-          destinationHtml = `
-            <div class="itinerary-day-location-selector" onclick="event.stopPropagation();">
-              <select class="itinerary-day-location-select" onchange="window.tripDetailManager.updateDestinationFromDay(new Date('${dateISO}'), this.value)">
-                ${availableDestinations.map(dest => `
-                  <option value="${this.escapeHtml(dest)}" ${dest === dayDestination ? 'selected' : ''}>
-                    ${this.escapeHtml(dest)}
-                  </option>
-                `).join('')}
-              </select>
-              <span class="itinerary-day-location-text">in ${this.escapeHtml(dayDestination)}</span>
-              <svg class="itinerary-day-location-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="6 9 12 15 18 9"/>
-              </svg>
-            </div>`;
-        } else {
-          destinationHtml = `<span class="itinerary-day-location">in ${this.escapeHtml(dayDestination)}</span>`;
-        }
+    // Render trip ideas section
+    if (ideasSection) {
+      if (ideasCountEl) ideasCountEl.textContent = `${tripIdeas.length} idea${tripIdeas.length !== 1 ? 's' : ''}`;
+      if (tripIdeas.length > 0) {
+        ideasContent.innerHTML = tripIdeas.map(idea => this.renderIdeaItem(idea)).join('');
+      } else {
+        ideasContent.innerHTML = '<div class="itinerary-ideas-empty">No ideas yet. Add items without dates to save them as ideas.</div>';
       }
+    }
+  }
 
-      return `
-        <div class="itinerary-day${shouldExpand ? ' expanded' : ''}${isToday ? ' today' : ''}${isPast ? ' past' : ''}" data-date="${day.dateKey}">
-          <div class="itinerary-day-header" onclick="window.tripDetailManager.toggleItineraryDay(this)">
-            <div class="itinerary-day-chevron">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
-              </svg>
-            </div>
-            <div class="itinerary-day-badge">Day ${day.dayNumber}</div>
-            <div class="itinerary-day-info">
-              <span class="itinerary-day-date">${formattedDate}</span>
-              ${destinationHtml}
-            </div>
-            <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </button>
+  renderDaySection(day, itemsByDate, availableDestinations, isMultiDestination, autoExpand) {
+    const dayItems = itemsByDate[day.dateKey] || [];
+
+    // Sort items by time
+    dayItems.sort((a, b) => {
+      const aDate = this.parseDate(a.startDate || a.date);
+      const bDate = this.parseDate(b.startDate || b.date);
+      return (aDate || 0) - (bDate || 0);
+    });
+
+    const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+    const formattedDate = day.date.toLocaleDateString('en-US', dateOptions);
+    const dateISO = day.date.toISOString().split('T')[0];
+    const dayDestination = this.getDestinationForDay(day.date);
+
+    // Auto-expand logic
+    const shouldExpand = autoExpand && (day.isToday || dayItems.length > 0);
+
+    // Build destination selector HTML
+    let destinationHtml = '';
+    if (dayDestination) {
+      if (isMultiDestination) {
+        destinationHtml = `
+          <div class="itinerary-day-location-selector" onclick="event.stopPropagation();">
+            <select class="itinerary-day-location-select" onchange="window.tripDetailManager.updateDestinationFromDay(new Date('${dateISO}'), this.value)">
+              ${availableDestinations.map(dest => `
+                <option value="${this.escapeHtml(dest)}" ${dest === dayDestination ? 'selected' : ''}>
+                  ${this.escapeHtml(dest)}
+                </option>
+              `).join('')}
+            </select>
+            <span class="itinerary-day-location-text">in ${this.escapeHtml(dayDestination)}</span>
+            <svg class="itinerary-day-location-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>`;
+      } else {
+        destinationHtml = `<span class="itinerary-day-location">in ${this.escapeHtml(dayDestination)}</span>`;
+      }
+    }
+
+    return `
+      <div class="itinerary-day${shouldExpand ? ' expanded' : ''}${day.isToday ? ' today' : ''}${day.isPast ? ' past' : ''}" data-date="${day.dateKey}">
+        <div class="itinerary-day-header" onclick="window.tripDetailManager.toggleItineraryDay(this)">
+          <div class="itinerary-day-chevron">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
           </div>
-          <div class="itinerary-day-items">
-            ${dayItems.length > 0
-              ? dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')
-              : `<div class="itinerary-day-empty">No items planned</div>`
-            }
+          <div class="itinerary-day-badge">Day ${day.dayNumber}</div>
+          <div class="itinerary-day-info">
+            <span class="itinerary-day-date">${formattedDate}</span>
+            ${destinationHtml}
           </div>
+          <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 5v14M5 12h14"/>
+            </svg>
+          </button>
         </div>
+        <div class="itinerary-day-items">
+          ${dayItems.length > 0
+            ? dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')
+            : `<div class="itinerary-day-empty">No items planned</div>`
+          }
+        </div>
+      </div>
+    `;
+  }
+
+  renderItineraryFilterChips() {
+    const container = document.getElementById('itinerary-filters');
+    if (!container) return;
+
+    if (!this.activeItineraryFilters) {
+      this.activeItineraryFilters = ['all'];
+    }
+
+    const filterTypes = [
+      { type: 'all', label: 'All', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>' },
+      { type: 'accommodation', label: 'Hotel', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V8a2 2 0 012-2h14a2 2 0 012 2v13"/><path d="M3 11h18"/><path d="M12 11v10"/></svg>', color: '#b399d9' },
+      { type: 'activity', label: 'Activity', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 22V8M5 12h14"/></svg>', color: '#f2b380' },
+      { type: 'food', label: 'Food', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3"/></svg>', color: '#80cc99' },
+      { type: 'travel', label: 'Travel', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>', color: '#80b3e6' },
+      { type: 'other', label: 'Other', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>', color: '#a6a6ad' }
+    ];
+
+    container.innerHTML = filterTypes.map(filter => {
+      const isActive = this.activeItineraryFilters.includes(filter.type);
+      const colorStyle = filter.color && isActive ? `style="color: ${filter.color}; border-color: ${filter.color}40;"` : '';
+      return `
+        <button class="itinerary-filter-chip${isActive ? ' active' : ''}" data-type="${filter.type}" ${colorStyle} onclick="window.tripDetailManager.toggleItineraryFilter('${filter.type}')">
+          ${filter.icon}
+          <span>${filter.label}</span>
+        </button>
       `;
     }).join('');
+  }
+
+  renderIdeaItem(idea) {
+    const category = idea.category || idea.type || 'other';
+    const icon = this.getItineraryIcon(category);
+
+    return `
+      <div class="itinerary-idea-item itinerary-item-${category.toLowerCase()}" data-item-id="${idea.id || idea._originalIndex}" onclick="window.tripDetailManager.openItemDetail('${idea.id || idea._originalIndex}')">
+        <div class="itinerary-item-icon-wrap">
+          ${icon}
+        </div>
+        <div class="itinerary-item-content">
+          <div class="itinerary-item-title">${this.escapeHtml(idea.name || idea.title || 'Untitled')}</div>
+          <div class="itinerary-item-subtitle">${this.escapeHtml((idea.category || idea.type || 'Other').charAt(0).toUpperCase() + (idea.category || idea.type || 'Other').slice(1))}</div>
+        </div>
+        <div class="itinerary-item-chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+        </div>
+      </div>
+    `;
+  }
+
+  toggleItineraryFilter(type) {
+    if (!this.activeItineraryFilters) {
+      this.activeItineraryFilters = ['all'];
+    }
+
+    if (type === 'all') {
+      this.activeItineraryFilters = ['all'];
+    } else {
+      // Remove 'all' if selecting specific filter
+      this.activeItineraryFilters = this.activeItineraryFilters.filter(f => f !== 'all');
+
+      if (this.activeItineraryFilters.includes(type)) {
+        this.activeItineraryFilters = this.activeItineraryFilters.filter(f => f !== type);
+      } else {
+        this.activeItineraryFilters.push(type);
+      }
+
+      // If no filters selected, default to 'all'
+      if (this.activeItineraryFilters.length === 0) {
+        this.activeItineraryFilters = ['all'];
+      }
+    }
+
+    this.renderItinerary();
+  }
+
+  toggleAllDays() {
+    const days = document.querySelectorAll('.itinerary-day');
+    const allExpanded = Array.from(days).every(d => d.classList.contains('expanded'));
+
+    days.forEach(day => {
+      if (allExpanded) {
+        day.classList.remove('expanded');
+      } else {
+        day.classList.add('expanded');
+      }
+    });
+
+    // Update button icon
+    const btn = document.getElementById('itinerary-expand-btn');
+    if (btn) {
+      btn.classList.toggle('collapsed', allExpanded);
+    }
+  }
+
+  togglePastDays() {
+    const section = document.getElementById('itinerary-past-section');
+    if (section) {
+      section.classList.toggle('expanded');
+    }
+  }
+
+  toggleTripIdeas() {
+    const section = document.getElementById('itinerary-ideas-section');
+    if (section) {
+      section.classList.toggle('expanded');
+    }
+  }
+
+  openAddIdeaModal() {
+    // Open add item modal without a date (creates an idea)
+    this.selectedAddDate = null;
+    const modal = document.getElementById('add-item-type-modal');
+    const dateEl = document.getElementById('add-item-modal-date');
+
+    if (modal) {
+      modal.classList.add('active');
+      if (dateEl) {
+        dateEl.textContent = 'Trip Idea (no date)';
+      }
+    }
+  }
+
+  openItemDetail(itemId) {
+    // Find the item
+    const items = this.trip.itineraryItems || [];
+    const item = items.find(i => (i.id || i._originalIndex) == itemId);
+    if (!item) return;
+
+    // For now, show a simple alert with item details
+    // TODO: Implement proper detail modal
+    const details = [
+      `Name: ${item.name || item.title || 'Untitled'}`,
+      `Type: ${item.category || item.type || 'Other'}`,
+      item.location ? `Location: ${item.location}` : null,
+      item.notes ? `Notes: ${item.notes}` : null
+    ].filter(Boolean).join('\n');
+
+    if (confirm(`${details}\n\nDelete this item?`)) {
+      this.deleteItineraryItem(itemId);
+    }
   }
 
   openAddItemForDay(dateStr) {
