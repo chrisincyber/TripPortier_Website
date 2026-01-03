@@ -532,36 +532,32 @@ class TripDetailManager {
   }
 
   renderItinerary() {
-    const items = this.trip.itineraryItems;
+    const items = this.trip.itineraryItems || [];
     const container = document.getElementById('itinerary-days');
     const emptyState = document.getElementById('itinerary-empty');
-    const itineraryContainer = document.getElementById('itinerary-container');
 
-    // Render filter chips (only once)
-    this.renderItineraryFilters(itineraryContainer, items);
+    // Hide empty state - we always show all days
+    if (emptyState) emptyState.style.display = 'none';
 
-    if (!items || items.length === 0) {
-      emptyState.style.display = 'flex';
+    // Get trip date range
+    const tripStartDate = this.trip.startDate ? new Date(this.trip.startDate) : null;
+    const tripEndDate = this.trip.endDate ? new Date(this.trip.endDate) : null;
+
+    if (!tripStartDate || !tripEndDate) {
+      // Someday trip - show message or items grouped by date
+      if (emptyState) emptyState.style.display = 'flex';
       container.innerHTML = '';
       return;
     }
 
-    emptyState.style.display = 'none';
-
-    // Get active filters
-    const activeFilters = this.getActiveItineraryFilters();
-
-    // Filter items based on active filters
-    const filteredItems = activeFilters.length === 0
-      ? items
-      : items.filter(item => {
-          const category = (item.category || item.type || 'event').toLowerCase();
-          return activeFilters.includes(category) || activeFilters.includes('all');
-        });
+    // Add original index to items for tracking
+    items.forEach((item, index) => {
+      item._originalIndex = index;
+    });
 
     // Group items by date
     const itemsByDate = {};
-    filteredItems.forEach(item => {
+    items.forEach(item => {
       const date = this.parseDate(item.startDate || item.date);
       if (!date) return;
       const dateKey = date.toDateString();
@@ -571,63 +567,100 @@ class TripDetailManager {
       itemsByDate[dateKey].push(item);
     });
 
-    // Sort dates
-    const sortedDates = Object.keys(itemsByDate).sort((a, b) => new Date(a) - new Date(b));
-
-    // Add original index to items for tracking
-    items.forEach((item, index) => {
-      item._originalIndex = index;
-    });
-
-    // Calculate day numbers based on trip start date
-    const tripStartDate = this.trip.startDate ? new Date(this.trip.startDate) : null;
+    // Generate all days from trip start to end
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Render days
-    container.innerHTML = sortedDates.map((dateKey, idx) => {
-      const date = new Date(dateKey);
-      date.setHours(0, 0, 0, 0);
-      const dayItems = itemsByDate[dateKey].sort((a, b) => {
+    const allDays = [];
+    const currentDate = new Date(tripStartDate);
+    currentDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(tripEndDate);
+    endDate.setHours(0, 0, 0, 0);
+
+    let dayNumber = 1;
+    while (currentDate <= endDate) {
+      allDays.push({
+        date: new Date(currentDate),
+        dateKey: currentDate.toDateString(),
+        dayNumber: dayNumber
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+      dayNumber++;
+    }
+
+    // Render all days
+    container.innerHTML = allDays.map(day => {
+      const dayItems = itemsByDate[day.dateKey] || [];
+      // Sort items by time
+      dayItems.sort((a, b) => {
         const aDate = this.parseDate(a.startDate || a.date);
         const bDate = this.parseDate(b.startDate || b.date);
         return (aDate || 0) - (bDate || 0);
       });
 
-      // Calculate day number from trip start
-      let dayNumber = idx + 1;
-      if (tripStartDate) {
-        const tripStart = new Date(tripStartDate);
-        tripStart.setHours(0, 0, 0, 0);
-        const diffTime = date - tripStart;
-        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-        dayNumber = diffDays + 1;
-      }
-
-      const isToday = date.getTime() === today.getTime();
+      const isToday = day.date.getTime() === today.getTime();
+      const isPast = day.date < today;
       const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
-      const formattedDate = date.toLocaleDateString('en-US', dateOptions);
+      const formattedDate = day.date.toLocaleDateString('en-US', dateOptions);
+      const dateISO = day.date.toISOString().split('T')[0];
+
+      // Auto-expand today and future days with items, collapse past days
+      const shouldExpand = isToday || (!isPast && dayItems.length > 0) || dayItems.length > 0;
 
       return `
-        <div class="itinerary-day expanded${isToday ? ' today' : ''}" data-date="${dateKey}">
-          <div class="itinerary-day-header" onclick="window.tripDetailManager.toggleItineraryDay(this)">
-            <div class="itinerary-day-chevron">
+        <div class="itinerary-day${shouldExpand ? ' expanded' : ''}${isToday ? ' today' : ''}${isPast ? ' past' : ''}" data-date="${day.dateKey}">
+          <div class="itinerary-day-header">
+            <div class="itinerary-day-chevron" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </div>
-            <div class="itinerary-day-badge">Day ${dayNumber}</div>
-            <div class="itinerary-day-info">
+            <div class="itinerary-day-badge">Day ${day.dayNumber}</div>
+            <div class="itinerary-day-info" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">
               <span class="itinerary-day-date">${formattedDate}</span>
             </div>
-            <span class="itinerary-day-count">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
+            <span class="itinerary-day-count" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
+            <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
           </div>
           <div class="itinerary-day-items">
-            ${dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')}
+            ${dayItems.length > 0
+              ? dayItems.map(item => this.renderItineraryItem(item, item._originalIndex)).join('')
+              : `<div class="itinerary-day-empty">
+                  <span>No events planned</span>
+                  <button class="itinerary-day-empty-add" onclick="window.tripDetailManager.openAddItemForDay('${dateISO}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Add item
+                  </button>
+                </div>`
+            }
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  openAddItemForDay(dateStr) {
+    // Store the selected date and open the type selector
+    this.selectedAddDate = new Date(dateStr);
+
+    const modal = document.getElementById('add-item-type-modal');
+    const dateEl = document.getElementById('add-item-modal-date');
+
+    if (modal) {
+      modal.classList.add('active');
+
+      // Set the date display
+      if (dateEl) {
+        const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+        dateEl.textContent = this.selectedAddDate.toLocaleDateString('en-US', options);
+      }
+    }
   }
 
   renderItineraryFilters(container, items) {

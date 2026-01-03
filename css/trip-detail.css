@@ -1778,6 +1778,83 @@
   flex-shrink: 0;
 }
 
+.itinerary-day-add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.itinerary-day-add-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.itinerary-day-add-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Past days styling */
+.itinerary-day.past .itinerary-day-header {
+  opacity: 0.7;
+}
+
+.itinerary-day.past .itinerary-day-badge {
+  background: var(--theme-bg-tertiary, #e2e8f0);
+}
+
+/* Empty day state */
+.itinerary-day-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  color: var(--theme-text-tertiary, #94a3b8);
+  text-align: center;
+}
+
+.itinerary-day-empty span {
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.itinerary-day-empty-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px dashed var(--theme-text-tertiary, #94a3b8);
+  border-radius: 8px;
+  color: var(--theme-text-secondary, #64748b);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.itinerary-day-empty-add:hover {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.itinerary-day-empty-add svg {
+  width: 14px;
+  height: 14px;
+}
+
 .itinerary-day-items {
   display: none;
   flex-direction: column;
@@ -4193,6 +4270,29 @@
 
 [data-theme="dark"] .itinerary-day-count {
   color: #94a3b8;
+}
+
+[data-theme="dark"] .itinerary-day-add-btn {
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+[data-theme="dark"] .itinerary-day.past .itinerary-day-badge {
+  background: #2d2d5a;
+}
+
+[data-theme="dark"] .itinerary-day-empty {
+  color: #64748b;
+}
+
+[data-theme="dark"] .itinerary-day-empty-add {
+  border-color: #3d3d6a;
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .itinerary-day-empty-add:hover {
+  border-color: #818cf8;
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.1);
 }
 
 [data-theme="dark"] .itinerary-item {
