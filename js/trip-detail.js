@@ -88,9 +88,6 @@ class TripDetailManager {
       this.switchPlanSubtab(subtab);
     }
 
-    // Update FAB visibility
-    this.updateFabVisibility();
-
     // Scroll to top when switching tabs
     window.scrollTo(0, 0);
   }
@@ -403,7 +400,6 @@ class TripDetailManager {
       this.renderSuggestions();
       this.renderEssentials();
       this.showContent();
-      this.updateFabVisibility();
     } catch (error) {
       console.error('Error loading trip:', error);
       this.showError();
@@ -609,17 +605,17 @@ class TripDetailManager {
 
       return `
         <div class="itinerary-day${shouldExpand ? ' expanded' : ''}${isToday ? ' today' : ''}${isPast ? ' past' : ''}" data-date="${day.dateKey}">
-          <div class="itinerary-day-header">
-            <div class="itinerary-day-chevron" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">
+          <div class="itinerary-day-header" onclick="window.tripDetailManager.toggleItineraryDay(this)">
+            <div class="itinerary-day-chevron">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"/>
               </svg>
             </div>
             <div class="itinerary-day-badge">Day ${day.dayNumber}</div>
-            <div class="itinerary-day-info" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">
+            <div class="itinerary-day-info">
               <span class="itinerary-day-date">${formattedDate}</span>
             </div>
-            <span class="itinerary-day-count" onclick="window.tripDetailManager.toggleItineraryDay(this.parentElement)">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
+            <span class="itinerary-day-count">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
             <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                 <path d="M12 5v14M5 12h14"/>
@@ -2197,14 +2193,6 @@ class TripDetailManager {
         this.closeAddItemModal();
       }
     });
-  }
-
-  // Show/hide FAB based on current tab
-  updateFabVisibility() {
-    const fab = document.getElementById('itinerary-fab');
-    if (fab) {
-      fab.classList.toggle('visible', this.selectedTab === 'itinerary');
-    }
   }
 
   openAddItemModal() {
