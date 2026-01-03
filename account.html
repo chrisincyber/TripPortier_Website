@@ -334,6 +334,49 @@
             transition: width 0.5s ease;
         }
 
+        .cashback-referral {
+            background: var(--theme-bg-secondary, #f8fafc);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+        }
+
+        .cashback-referral-code {
+            font-family: monospace;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--theme-primary, #6366f1);
+            letter-spacing: 0.1em;
+            margin-top: 0.25rem;
+        }
+
+        .cashback-referral-desc {
+            font-size: 0.75rem;
+            color: var(--theme-text-muted, #94a3b8);
+            margin-top: 0.25rem;
+        }
+
+        .cashback-copy-btn {
+            background: var(--theme-primary, #6366f1);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .cashback-copy-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
         /* Subscription Section */
         .subscription-section {
             padding: 1.5rem 2rem;
@@ -859,69 +902,6 @@
             .account-actions {
                 padding: 1.25rem 1.5rem;
             }
-        }
-
-        /* Referral Code Section */
-        .account-referral {
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--theme-border, #e2e8f0);
-        }
-
-        .account-referral h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--theme-text, #1e293b);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .account-referral h3 svg {
-            width: 20px;
-            height: 20px;
-            color: #8b5cf6;
-        }
-
-        .referral-code-container {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--theme-bg-secondary, #f8fafc);
-            padding: 1rem;
-            border-radius: 12px;
-        }
-
-        .referral-code {
-            font-size: 1.5rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--theme-text, #1e293b);
-            flex: 1;
-        }
-
-        .referral-copy-btn {
-            background: #6366f1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .referral-copy-btn:hover {
-            background: #4f46e5;
-        }
-
-        .referral-description {
-            font-size: 0.875rem;
-            color: var(--theme-text-secondary, #64748b);
-            margin-top: 0.75rem;
         }
 
         /* Friends Section */
@@ -1639,26 +1619,6 @@
                     </div>
                 </div>
 
-                <!-- Referral Code -->
-                <div class="account-referral">
-                    <h3>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/>
-                        </svg>
-                        Referral Code
-                    </h3>
-                    <div class="referral-code-container">
-                        <span class="referral-code" id="referral-code">--------</span>
-                        <button class="referral-copy-btn" onclick="copyReferralCode()">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184"/>
-                            </svg>
-                            Copy
-                        </button>
-                    </div>
-                    <p class="referral-description">Share your code and earn $3 for each friend who purchases an eSIM!</p>
-                </div>
-
                 <!-- Friends -->
                 <div class="account-friends">
                     <h3>
@@ -2161,6 +2121,14 @@
                         <div class="cashback-progress-fill" id="progress-fill" style="width: 0%;"></div>
                     </div>
                 </div>
+            </div>
+            <div class="cashback-referral">
+                <div>
+                    <div class="cashback-row-label">Your Referral Code</div>
+                    <div class="cashback-referral-code" id="referral-code">--------</div>
+                    <div class="cashback-referral-desc">Share & earn $3 per eSIM purchase</div>
+                </div>
+                <button class="cashback-copy-btn" onclick="copyReferralCode()">Copy</button>
             </div>
         </div>
 
@@ -3877,8 +3845,14 @@
 
         function copyReferralCode() {
             const code = document.getElementById('referral-code').textContent;
+            const btn = document.querySelector('.cashback-copy-btn');
             if (code && code !== '--------') {
                 navigator.clipboard.writeText(code).then(() => {
+                    if (btn) {
+                        const originalText = btn.textContent;
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => btn.textContent = originalText, 2000);
+                    }
                     showToast('Referral code copied!');
                 }).catch(() => {
                     showToast('Failed to copy code');
