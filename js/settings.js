@@ -95,6 +95,7 @@ class SettingsManager {
             homeCountry: '',
             homeCurrency: 'USD',
             passports: [],
+            temperatureUnit: 'celsius',
             travelStyle: 'balanced',
             budgetPreference: 'medium',
             packingGender: 'neutral',
@@ -160,6 +161,15 @@ class SettingsManager {
         if (currencySelect) {
             currencySelect.addEventListener('change', () => {
                 this.settings.homeCurrency = currencySelect.value;
+                this.saveSettings();
+            });
+        }
+
+        // Temperature unit
+        const tempUnitSelect = document.getElementById('temperature-unit-select');
+        if (tempUnitSelect) {
+            tempUnitSelect.addEventListener('change', () => {
+                this.settings.temperatureUnit = tempUnitSelect.value;
                 this.saveSettings();
             });
         }
@@ -426,6 +436,9 @@ class SettingsManager {
         const currencySelect = document.getElementById('home-currency-select');
         if (currencySelect) currencySelect.value = this.settings.homeCurrency;
 
+        const tempUnitSelect = document.getElementById('temperature-unit-select');
+        if (tempUnitSelect) tempUnitSelect.value = this.settings.temperatureUnit || 'celsius';
+
         const travelStyleSelect = document.getElementById('travel-style-select');
         if (travelStyleSelect) travelStyleSelect.value = this.settings.travelStyle;
 
@@ -499,19 +512,20 @@ class SettingsManager {
                     .doc('settings')
                     .set(this.settings, { merge: true });
 
-                // Also update passports in main user doc for visibility
-                if (this.settings.passports) {
-                    await window.firebaseDb
-                        .collection('users')
-                        .doc(this.user.uid)
-                        .set({
-                            passports: this.settings.passports,
-                            friendVisibility: {
-                                showActiveTrips: this.settings.showActiveTripsToFriends,
-                                showUpcomingTrips: this.settings.showUpcomingTripsToFriends
-                            }
-                        }, { merge: true });
-                }
+                // Also update key fields in main user doc
+                await window.firebaseDb
+                    .collection('users')
+                    .doc(this.user.uid)
+                    .set({
+                        passports: this.settings.passports || [],
+                        nationalities: this.settings.passports || [],
+                        homeCountry: this.settings.homeCountry,
+                        temperatureUnit: this.settings.temperatureUnit || 'celsius',
+                        friendVisibility: {
+                            showActiveTrips: this.settings.showActiveTripsToFriends,
+                            showUpcomingTrips: this.settings.showUpcomingTripsToFriends
+                        }
+                    }, { merge: true });
 
                 this.showToast('Settings saved');
             } catch (error) {

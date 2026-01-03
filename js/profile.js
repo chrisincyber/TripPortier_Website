@@ -55,6 +55,18 @@ class ProfileManager {
         if (avatarEditBtn) {
             avatarEditBtn.addEventListener('click', () => this.openAvatarModal());
         }
+
+        // Referral code copy button
+        const copyReferralBtn = document.getElementById('copy-referral-btn');
+        if (copyReferralBtn) {
+            copyReferralBtn.addEventListener('click', () => this.copyReferralCode());
+        }
+
+        // Add friend button
+        const addFriendBtn = document.getElementById('add-friend-btn');
+        if (addFriendBtn) {
+            addFriendBtn.addEventListener('click', () => this.showAddFriendModal());
+        }
     }
 
     async handleAuthChange(user) {
@@ -76,6 +88,8 @@ class ProfileManager {
             await this.loadUserProfile();
             await this.loadTrips();
             this.loadEsimOrders(); // Load async, don't await
+            this.loadReferralCode(); // Load async
+            this.loadFriends(); // Load async
 
             // Update UI
             this.updateProfileHeader();
@@ -677,6 +691,252 @@ class ProfileManager {
         const modal = document.getElementById('order-detail-modal');
         if (modal) {
             modal.remove();
+        }
+    }
+
+    // Referral Code Methods
+    async loadReferralCode() {
+        if (!this.user) return;
+
+        try {
+            const doc = await window.firebaseDb.collection('esimRewards').doc(this.user.uid).get();
+            const referralCodeEl = document.getElementById('referral-code');
+
+            if (doc.exists && doc.data().referralCode) {
+                referralCodeEl.textContent = doc.data().referralCode;
+            } else {
+                referralCodeEl.textContent = '--------';
+            }
+        } catch (error) {
+            console.error('Error loading referral code:', error);
+        }
+    }
+
+    copyReferralCode() {
+        const code = document.getElementById('referral-code').textContent;
+        if (code && code !== '--------') {
+            navigator.clipboard.writeText(code).then(() => {
+                this.showToast('Referral code copied!');
+            }).catch(() => {
+                this.showToast('Failed to copy code');
+            });
+        }
+    }
+
+    // Friends Methods
+    async loadFriends() {
+        if (!this.user) return;
+
+        const friendsList = document.getElementById('friends-list');
+        const friendsEmpty = document.getElementById('friends-empty');
+        const friendsCountBadge = document.getElementById('friends-count-badge');
+
+        try {
+            const snapshot = await window.firebaseDb
+                .collection('users')
+                .doc(this.user.uid)
+                .collection('friends')
+                .get();
+
+            if (snapshot.empty) {
+                friendsList.innerHTML = '';
+                friendsEmpty.style.display = 'block';
+                friendsCountBadge.style.display = 'none';
+                return;
+            }
+
+            friendsEmpty.style.display = 'none';
+            friendsCountBadge.style.display = 'inline';
+            friendsCountBadge.textContent = snapshot.size;
+
+            let html = '';
+            for (const doc of snapshot.docs) {
+                const friend = doc.data();
+                const friendId = doc.id;
+
+                // Get friend's profile
+                const friendProfile = await this.getFriendProfile(friendId);
+                const displayName = friendProfile?.displayName || friend.displayName || 'Friend';
+                const username = friendProfile?.username || friend.username || '';
+                const avatar = friendProfile?.profileImageURL || friendProfile?.photoURL;
+                const initials = displayName.charAt(0).toUpperCase();
+
+                html += `
+                    <div class="profile-friend-item" data-friend-id="${friendId}">
+                        <div class="profile-friend-avatar">
+                            ${avatar ? `<img src="${avatar}" alt="${displayName}">` : initials}
+                        </div>
+                        <div class="profile-friend-info">
+                            <div class="profile-friend-name">${displayName}</div>
+                            ${username ? `<div class="profile-friend-username">@${username}</div>` : ''}
+                        </div>
+                        <button class="profile-friend-remove-btn" onclick="profileManager.removeFriend('${friendId}')" title="Remove friend">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+            }
+
+            friendsList.innerHTML = html;
+        } catch (error) {
+            console.error('Error loading friends:', error);
+            friendsEmpty.style.display = 'block';
+        }
+    }
+
+    async getFriendProfile(friendId) {
+        try {
+            const doc = await window.firebaseDb.collection('users').doc(friendId).get();
+            return doc.exists ? doc.data() : null;
+        } catch (error) {
+            console.error('Error getting friend profile:', error);
+            return null;
+        }
+    }
+
+    showAddFriendModal() {
+        // Create modal if it doesn't exist
+        let modal = document.getElementById('add-friend-modal');
+        if (modal) {
+            modal.remove();
+        }
+
+        modal = document.createElement('div');
+        modal.id = 'add-friend-modal';
+        modal.className = 'profile-modal active';
+        modal.innerHTML = `
+            <div class="profile-modal-backdrop" onclick="profileManager.closeAddFriendModal()"></div>
+            <div class="profile-modal-content">
+                <div class="profile-modal-header">
+                    <h3>Add Friend</h3>
+                    <button class="profile-modal-close" onclick="profileManager.closeAddFriendModal()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="profile-modal-body">
+                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Enter your friend's username to send a friend request.</p>
+                    <input type="text" id="friend-username-input" placeholder="Username" class="profile-input" style="width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); font-size: 14px;">
+                    <div id="friend-search-error" style="color: #e74c3c; font-size: 12px; margin-top: 8px; display: none;"></div>
+                </div>
+                <div class="profile-modal-footer">
+                    <button class="profile-modal-btn-secondary" onclick="profileManager.closeAddFriendModal()">Cancel</button>
+                    <button class="profile-modal-btn-primary" onclick="profileManager.sendFriendRequest()">Send Request</button>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Focus input
+        document.getElementById('friend-username-input').focus();
+    }
+
+    closeAddFriendModal() {
+        const modal = document.getElementById('add-friend-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    async sendFriendRequest() {
+        const input = document.getElementById('friend-username-input');
+        const errorEl = document.getElementById('friend-search-error');
+        const username = input.value.trim().toLowerCase().replace('@', '');
+
+        if (!username) {
+            errorEl.textContent = 'Please enter a username';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Search for user by username
+            const snapshot = await window.firebaseDb
+                .collection('users')
+                .where('username', '==', username)
+                .limit(1)
+                .get();
+
+            if (snapshot.empty) {
+                errorEl.textContent = 'User not found';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            const targetUser = snapshot.docs[0];
+            const targetUserId = targetUser.id;
+
+            if (targetUserId === this.user.uid) {
+                errorEl.textContent = "You can't add yourself as a friend";
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Check if already friends
+            const existingFriend = await window.firebaseDb
+                .collection('users')
+                .doc(this.user.uid)
+                .collection('friends')
+                .doc(targetUserId)
+                .get();
+
+            if (existingFriend.exists) {
+                errorEl.textContent = 'Already friends with this user';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            // Create friend request
+            await window.firebaseDb.collection('friendRequests').add({
+                fromUserId: this.user.uid,
+                fromUsername: this.userProfile?.username || '',
+                fromDisplayName: this.userProfile?.displayName || this.user.displayName || '',
+                toUserId: targetUserId,
+                toUsername: targetUser.data().username,
+                status: 'pending',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            this.closeAddFriendModal();
+            this.showToast('Friend request sent!');
+        } catch (error) {
+            console.error('Error sending friend request:', error);
+            errorEl.textContent = 'Failed to send request';
+            errorEl.style.display = 'block';
+        }
+    }
+
+    async removeFriend(friendId) {
+        if (!confirm('Are you sure you want to remove this friend?')) {
+            return;
+        }
+
+        try {
+            // Remove from both users' friends lists
+            await window.firebaseDb
+                .collection('users')
+                .doc(this.user.uid)
+                .collection('friends')
+                .doc(friendId)
+                .delete();
+
+            await window.firebaseDb
+                .collection('users')
+                .doc(friendId)
+                .collection('friends')
+                .doc(this.user.uid)
+                .delete();
+
+            // Reload friends list
+            this.loadFriends();
+            this.showToast('Friend removed');
+        } catch (error) {
+            console.error('Error removing friend:', error);
+            this.showToast('Failed to remove friend');
         }
     }
 }
