@@ -88,6 +88,9 @@ class TripDetailManager {
       this.switchPlanSubtab(subtab);
     }
 
+    // Update FAB visibility
+    this.updateFabVisibility();
+
     // Scroll to top when switching tabs
     window.scrollTo(0, 0);
   }
@@ -400,6 +403,7 @@ class TripDetailManager {
       this.renderSuggestions();
       this.renderEssentials();
       this.showContent();
+      this.updateFabVisibility();
     } catch (error) {
       console.error('Error loading trip:', error);
       this.showError();
@@ -2144,50 +2148,552 @@ class TripDetailManager {
   // ============================================
 
   setupItineraryForm() {
-    const nameInput = document.getElementById('itinerary-name-input');
-    const dateInput = document.getElementById('itinerary-date-input');
-    const timeInput = document.getElementById('itinerary-time-input');
-    const categorySelect = document.getElementById('itinerary-category-select');
-    const locationInput = document.getElementById('itinerary-location-input');
-    const notesInput = document.getElementById('itinerary-notes-input');
-    const addBtn = document.getElementById('add-itinerary-btn');
+    // New modal-based add item system
+    this.currentItemType = null;
+    this.newItemData = {};
 
-    // Set default date to trip start date when trip loads
-    if (dateInput && this.trip) {
-      const startDate = this.trip.startDate;
-      if (startDate) {
-        dateInput.value = startDate.toISOString().split('T')[0];
+    // Close modals when clicking overlay
+    document.getElementById('add-item-type-modal')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('itinerary-modal-overlay')) {
+        this.closeAddItemModal();
+      }
+    });
+
+    document.getElementById('add-item-form-modal')?.addEventListener('click', (e) => {
+      if (e.target.classList.contains('itinerary-modal-overlay')) {
+        this.closeAddItemModal();
+      }
+    });
+  }
+
+  // Show/hide FAB based on current tab
+  updateFabVisibility() {
+    const fab = document.getElementById('itinerary-fab');
+    if (fab) {
+      fab.classList.toggle('visible', this.selectedTab === 'itinerary');
+    }
+  }
+
+  openAddItemModal() {
+    const modal = document.getElementById('add-item-type-modal');
+    const dateEl = document.getElementById('add-item-modal-date');
+
+    if (modal) {
+      modal.classList.add('active');
+
+      // Set the date display
+      if (dateEl && this.trip) {
+        const today = new Date();
+        const tripStart = this.trip.startDate || today;
+        const displayDate = today >= tripStart && today <= (this.trip.endDate || today) ? today : tripStart;
+        const options = { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' };
+        dateEl.textContent = displayDate.toLocaleDateString('en-US', options);
+        this.selectedAddDate = displayDate;
       }
     }
+  }
 
-    if (nameInput && addBtn) {
-      const addItineraryItem = () => {
-        const name = nameInput.value.trim();
-        const dateStr = dateInput ? dateInput.value : '';
-        const timeStr = timeInput ? timeInput.value : '09:00';
-        const category = categorySelect ? categorySelect.value : 'activity';
-        const location = locationInput ? locationInput.value.trim() : '';
-        const notes = notesInput ? notesInput.value.trim() : '';
+  closeAddItemModal() {
+    document.getElementById('add-item-type-modal')?.classList.remove('active');
+    document.getElementById('add-item-form-modal')?.classList.remove('active');
+    this.currentItemType = null;
+    this.newItemData = {};
+  }
 
-        if (name && dateStr) {
-          this.addItineraryItem(name, dateStr, timeStr, category, location, notes);
-          nameInput.value = '';
-          if (locationInput) locationInput.value = '';
-          if (notesInput) notesInput.value = '';
-        } else if (!name) {
-          this.showToast('Please enter an event name');
-        } else if (!dateStr) {
-          this.showToast('Please select a date');
-        }
+  openItemForm(type) {
+    this.currentItemType = type;
+    this.newItemData = { type };
+
+    // Hide type selector, show form
+    document.getElementById('add-item-type-modal')?.classList.remove('active');
+    const formModal = document.getElementById('add-item-form-modal');
+    const titleEl = document.getElementById('item-form-title');
+    const contentEl = document.getElementById('item-form-content');
+
+    if (formModal && contentEl) {
+      formModal.classList.add('active');
+
+      // Set title based on type
+      const titles = {
+        activity: 'Add Activity',
+        hotel: 'Add Accommodation',
+        food: 'Add Food & Dining',
+        flight: 'Add Travel',
+        other: 'Add Other'
       };
+      if (titleEl) titleEl.textContent = titles[type] || 'Add Item';
 
-      addBtn.addEventListener('click', addItineraryItem);
-      nameInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          addItineraryItem();
-        }
-      });
+      // Generate form fields based on type
+      contentEl.innerHTML = this.generateItemForm(type);
     }
+  }
+
+  backToTypeSelector() {
+    document.getElementById('add-item-form-modal')?.classList.remove('active');
+    document.getElementById('add-item-type-modal')?.classList.add('active');
+    this.currentItemType = null;
+  }
+
+  generateItemForm(type) {
+    const tripStart = this.trip?.startDate ? this.trip.startDate.toISOString().split('T')[0] : '';
+    const tripEnd = this.trip?.endDate ? this.trip.endDate.toISOString().split('T')[0] : '';
+    const today = new Date().toISOString().split('T')[0];
+    const defaultDate = this.selectedAddDate ? this.selectedAddDate.toISOString().split('T')[0] : (tripStart || today);
+
+    // Common fields for all types
+    let html = `
+      <div class="item-form-section">
+        <div class="item-form-field">
+          <label class="item-form-label">Title</label>
+          <input type="text" class="item-form-input" id="item-title" placeholder="Enter title..." autofocus>
+        </div>
+      </div>
+    `;
+
+    // Type-specific fields
+    switch (type) {
+      case 'activity':
+        html += this.generateActivityFields(defaultDate, tripStart, tripEnd);
+        break;
+      case 'hotel':
+        html += this.generateHotelFields(defaultDate, tripStart, tripEnd);
+        break;
+      case 'food':
+        html += this.generateFoodFields(defaultDate, tripStart, tripEnd);
+        break;
+      case 'flight':
+        html += this.generateTravelFields(defaultDate, tripStart, tripEnd);
+        break;
+      case 'other':
+        html += this.generateOtherFields(defaultDate, tripStart, tripEnd);
+        break;
+    }
+
+    // Common fields at bottom
+    html += `
+      <div class="item-form-section">
+        <div class="item-form-field">
+          <label class="item-form-label">Cost</label>
+          <div class="item-form-row">
+            <select class="item-form-select" id="item-currency" style="flex: 0 0 80px;">
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="CHF">CHF</option>
+              <option value="JPY">JPY</option>
+              <option value="AUD">AUD</option>
+              <option value="CAD">CAD</option>
+            </select>
+            <input type="number" class="item-form-input" id="item-cost" placeholder="0.00" step="0.01">
+          </div>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Website</label>
+          <input type="url" class="item-form-input" id="item-website" placeholder="https://...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Phone</label>
+          <input type="tel" class="item-form-input" id="item-phone" placeholder="+1 234 567 8900">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Notes</label>
+          <textarea class="item-form-textarea" id="item-notes" placeholder="Additional notes..."></textarea>
+        </div>
+      </div>
+    `;
+
+    return html;
+  }
+
+  generateActivityFields(defaultDate, tripStart, tripEnd) {
+    return `
+      <div class="item-form-section">
+        <div class="item-form-section-title activity">Activity Details</div>
+        <div class="item-form-field">
+          <label class="item-form-label">Location</label>
+          <input type="text" class="item-form-input" id="item-location" placeholder="Search for a place...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Activity Type</label>
+          <select class="item-form-select" id="item-activity-type">
+            <option value="">Select type...</option>
+            <option value="tour">Tour</option>
+            <option value="sightseeing">Sightseeing</option>
+            <option value="adventure">Adventure</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="shopping">Shopping</option>
+            <option value="relaxation">Relaxation</option>
+            <option value="sports">Sports</option>
+            <option value="cultural">Cultural</option>
+            <option value="nightlife">Nightlife</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Booking Status</label>
+          <select class="item-form-select" id="item-booking-status">
+            <option value="">Not specified</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Participants</label>
+          <input type="number" class="item-form-input" id="item-participants" placeholder="Number of people" min="1">
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Start Date & Time</label>
+            <input type="date" class="item-form-input" id="item-start-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-start-time" value="09:00" style="margin-top: 0.5rem;">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">End Date & Time</label>
+            <input type="date" class="item-form-input" id="item-end-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-end-time" value="12:00" style="margin-top: 0.5rem;">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  generateHotelFields(defaultDate, tripStart, tripEnd) {
+    // Default check-out to next day
+    const checkOutDate = new Date(defaultDate);
+    checkOutDate.setDate(checkOutDate.getDate() + 1);
+    const checkOutStr = checkOutDate.toISOString().split('T')[0];
+
+    return `
+      <div class="item-form-section">
+        <div class="item-form-section-title hotel">Accommodation Details</div>
+        <div class="item-form-field">
+          <label class="item-form-label">Location</label>
+          <input type="text" class="item-form-input" id="item-location" placeholder="Search for hotel, Airbnb...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Board Type</label>
+          <select class="item-form-select" id="item-board-type">
+            <option value="">Not specified</option>
+            <option value="room-only">Room Only</option>
+            <option value="bed-breakfast">Bed & Breakfast</option>
+            <option value="half-board">Half Board</option>
+            <option value="full-board">Full Board</option>
+            <option value="all-inclusive">All Inclusive</option>
+          </select>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Booking Status</label>
+          <select class="item-form-select" id="item-booking-status">
+            <option value="">Not specified</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Check-in</label>
+            <input type="date" class="item-form-input" id="item-checkin-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-checkin-time" value="15:00" style="margin-top: 0.5rem;">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Check-out</label>
+            <input type="date" class="item-form-input" id="item-checkout-date" value="${checkOutStr}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-checkout-time" value="11:00" style="margin-top: 0.5rem;">
+          </div>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Confirmation Number</label>
+          <input type="text" class="item-form-input" id="item-confirmation" placeholder="Booking reference...">
+        </div>
+      </div>
+    `;
+  }
+
+  generateFoodFields(defaultDate, tripStart, tripEnd) {
+    return `
+      <div class="item-form-section">
+        <div class="item-form-section-title food">Food & Dining Details</div>
+        <div class="item-form-field">
+          <label class="item-form-label">Location</label>
+          <input type="text" class="item-form-input" id="item-location" placeholder="Search for restaurant, cafe...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Meal Type</label>
+          <select class="item-form-select" id="item-meal-type">
+            <option value="">Select meal...</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="brunch">Brunch</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+            <option value="coffee">Coffee / Tea</option>
+            <option value="drinks">Drinks</option>
+            <option value="dessert">Dessert</option>
+          </select>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Cuisine</label>
+          <input type="text" class="item-form-input" id="item-cuisine" placeholder="Italian, Japanese, Local...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Booking Status</label>
+          <select class="item-form-select" id="item-booking-status">
+            <option value="">Not specified</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Reservation Date</label>
+            <input type="date" class="item-form-input" id="item-reservation-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Time</label>
+            <input type="time" class="item-form-input" id="item-reservation-time" value="19:00">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  generateTravelFields(defaultDate, tripStart, tripEnd) {
+    return `
+      <div class="item-form-section">
+        <div class="item-form-section-title flight">Travel Details</div>
+        <div class="item-form-field">
+          <label class="item-form-label">Travel Mode</label>
+          <select class="item-form-select" id="item-travel-mode">
+            <option value="flight">Flight</option>
+            <option value="train">Train</option>
+            <option value="bus">Bus</option>
+            <option value="car">Car / Rental</option>
+            <option value="ferry">Ferry</option>
+            <option value="taxi">Taxi / Rideshare</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">From</label>
+            <input type="text" class="item-form-input" id="item-from-location" placeholder="Departure location...">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">To</label>
+            <input type="text" class="item-form-input" id="item-to-location" placeholder="Arrival location...">
+          </div>
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Departure</label>
+            <input type="date" class="item-form-input" id="item-departure-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-departure-time" value="09:00" style="margin-top: 0.5rem;">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Arrival</label>
+            <input type="date" class="item-form-input" id="item-arrival-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            <input type="time" class="item-form-input" id="item-arrival-time" value="12:00" style="margin-top: 0.5rem;">
+          </div>
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Carrier / Airline</label>
+            <input type="text" class="item-form-input" id="item-carrier" placeholder="Airline, train company...">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Flight / Train Number</label>
+            <input type="text" class="item-form-input" id="item-flight-number" placeholder="AA123, IC456...">
+          </div>
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Confirmation Number</label>
+          <input type="text" class="item-form-input" id="item-confirmation" placeholder="Booking reference...">
+        </div>
+        <div class="item-form-field">
+          <label class="item-form-label">Booking Status</label>
+          <select class="item-form-select" id="item-booking-status">
+            <option value="">Not specified</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  generateOtherFields(defaultDate, tripStart, tripEnd) {
+    return `
+      <div class="item-form-section">
+        <div class="item-form-section-title">Other Details</div>
+        <div class="item-form-field">
+          <label class="item-form-label">Location</label>
+          <input type="text" class="item-form-input" id="item-location" placeholder="Location (optional)...">
+        </div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Date</label>
+            <input type="date" class="item-form-input" id="item-start-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Time</label>
+            <input type="time" class="item-form-input" id="item-start-time" value="09:00">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async saveNewItem() {
+    const title = document.getElementById('item-title')?.value.trim();
+
+    if (!title) {
+      this.showToast('Please enter a title');
+      return;
+    }
+
+    // Collect common data
+    const itemData = {
+      id: `itinerary_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      name: title,
+      category: this.currentItemType,
+      location: document.getElementById('item-location')?.value.trim() || null,
+      notes: document.getElementById('item-notes')?.value.trim() || null,
+      websiteURL: document.getElementById('item-website')?.value.trim() || null,
+      phoneNumber: document.getElementById('item-phone')?.value.trim() || null,
+      bookingStatus: document.getElementById('item-booking-status')?.value || null,
+      createdAt: new Date().toISOString()
+    };
+
+    // Add cost if provided
+    const cost = parseFloat(document.getElementById('item-cost')?.value);
+    if (!isNaN(cost) && cost > 0) {
+      itemData.currencyAmount = cost;
+      itemData.currency = document.getElementById('item-currency')?.value || 'USD';
+    }
+
+    // Add type-specific fields
+    switch (this.currentItemType) {
+      case 'activity':
+        const startDate = document.getElementById('item-start-date')?.value;
+        const startTime = document.getElementById('item-start-time')?.value || '09:00';
+        if (startDate) {
+          const [h, m] = startTime.split(':').map(Number);
+          const dt = new Date(startDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.startDate = dt.toISOString();
+        }
+        const endDate = document.getElementById('item-end-date')?.value;
+        const endTime = document.getElementById('item-end-time')?.value || '12:00';
+        if (endDate) {
+          const [h, m] = endTime.split(':').map(Number);
+          const dt = new Date(endDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.endDate = dt.toISOString();
+        }
+        itemData.activityType = document.getElementById('item-activity-type')?.value || null;
+        itemData.participants = parseInt(document.getElementById('item-participants')?.value) || null;
+        break;
+
+      case 'hotel':
+        const checkinDate = document.getElementById('item-checkin-date')?.value;
+        const checkinTime = document.getElementById('item-checkin-time')?.value || '15:00';
+        if (checkinDate) {
+          const [h, m] = checkinTime.split(':').map(Number);
+          const dt = new Date(checkinDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.startDate = dt.toISOString();
+          itemData.checkInTime = dt.toISOString();
+        }
+        const checkoutDate = document.getElementById('item-checkout-date')?.value;
+        const checkoutTime = document.getElementById('item-checkout-time')?.value || '11:00';
+        if (checkoutDate) {
+          const [h, m] = checkoutTime.split(':').map(Number);
+          const dt = new Date(checkoutDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.endDate = dt.toISOString();
+          itemData.checkOutTime = dt.toISOString();
+        }
+        itemData.boardType = document.getElementById('item-board-type')?.value || null;
+        itemData.confirmationNumber = document.getElementById('item-confirmation')?.value.trim() || null;
+        break;
+
+      case 'food':
+        const resDate = document.getElementById('item-reservation-date')?.value;
+        const resTime = document.getElementById('item-reservation-time')?.value || '19:00';
+        if (resDate) {
+          const [h, m] = resTime.split(':').map(Number);
+          const dt = new Date(resDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.startDate = dt.toISOString();
+          itemData.reservationTime = dt.toISOString();
+        }
+        itemData.mealType = document.getElementById('item-meal-type')?.value || null;
+        itemData.cuisine = document.getElementById('item-cuisine')?.value.trim() || null;
+        break;
+
+      case 'flight':
+        const depDate = document.getElementById('item-departure-date')?.value;
+        const depTime = document.getElementById('item-departure-time')?.value || '09:00';
+        if (depDate) {
+          const [h, m] = depTime.split(':').map(Number);
+          const dt = new Date(depDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.startDate = dt.toISOString();
+          itemData.departureTime = dt.toISOString();
+        }
+        const arrDate = document.getElementById('item-arrival-date')?.value;
+        const arrTime = document.getElementById('item-arrival-time')?.value || '12:00';
+        if (arrDate) {
+          const [h, m] = arrTime.split(':').map(Number);
+          const dt = new Date(arrDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.endDate = dt.toISOString();
+          itemData.arrivalTime = dt.toISOString();
+        }
+        itemData.travelMode = document.getElementById('item-travel-mode')?.value || 'flight';
+        itemData.fromLocation = document.getElementById('item-from-location')?.value.trim() || null;
+        itemData.toLocation = document.getElementById('item-to-location')?.value.trim() || null;
+        itemData.carrier = document.getElementById('item-carrier')?.value.trim() || null;
+        itemData.flightNumber = document.getElementById('item-flight-number')?.value.trim() || null;
+        itemData.confirmationNumber = document.getElementById('item-confirmation')?.value.trim() || null;
+        // For travel items, build a display location
+        if (itemData.fromLocation && itemData.toLocation) {
+          itemData.location = `${itemData.fromLocation} → ${itemData.toLocation}`;
+        }
+        break;
+
+      case 'other':
+        const otherDate = document.getElementById('item-start-date')?.value;
+        const otherTime = document.getElementById('item-start-time')?.value || '09:00';
+        if (otherDate) {
+          const [h, m] = otherTime.split(':').map(Number);
+          const dt = new Date(otherDate);
+          dt.setHours(h, m, 0, 0);
+          itemData.startDate = dt.toISOString();
+        }
+        break;
+    }
+
+    // Initialize itineraryItems if needed
+    if (!this.trip.itineraryItems) {
+      this.trip.itineraryItems = [];
+    }
+
+    // Add to trip
+    this.trip.itineraryItems.push(itemData);
+
+    // Close modal and re-render
+    this.closeAddItemModal();
+    this.renderItinerary();
+
+    // Save to Firestore
+    await this.saveItineraryToFirestore();
+
+    this.showToast(`${title} added to itinerary`);
   }
 
   async addItineraryItem(name, dateStr, timeStr, category, location, notes = '') {

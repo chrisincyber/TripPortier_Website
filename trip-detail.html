@@ -310,36 +310,6 @@
             <div class="trip-tab-body">
                 <!-- Itinerary Days -->
                 <div class="itinerary-container" id="itinerary-container">
-                    <!-- Add Itinerary Item Form -->
-                    <div class="add-itinerary-form" id="add-itinerary-form">
-                        <div class="add-itinerary-row">
-                            <input type="text" id="itinerary-name-input" placeholder="Event name..." class="add-item-input">
-                        </div>
-                        <div class="add-itinerary-row">
-                            <input type="date" id="itinerary-date-input" class="add-item-input add-item-date">
-                            <input type="time" id="itinerary-time-input" class="add-item-input add-item-time" value="09:00">
-                            <select id="itinerary-category-select" class="add-item-select">
-                                <option value="activity">Activity</option>
-                                <option value="flight">Flight</option>
-                                <option value="hotel">Hotel</option>
-                                <option value="restaurant">Restaurant</option>
-                                <option value="transport">Transport</option>
-                                <option value="event">Event</option>
-                            </select>
-                            <button id="add-itinerary-btn" class="add-item-btn">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M12 5v14M5 12h14"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="add-itinerary-row add-itinerary-row-extra">
-                            <input type="text" id="itinerary-location-input" placeholder="Location (optional)" class="add-item-input">
-                        </div>
-                        <div class="add-itinerary-row add-itinerary-row-extra">
-                            <input type="text" id="itinerary-notes-input" placeholder="Notes (optional)" class="add-item-input">
-                        </div>
-                    </div>
-
                     <div class="itinerary-empty" id="itinerary-empty">
                         <div class="itinerary-empty-icon">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -740,10 +710,102 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
 
+    <!-- Add Item Type Selector Modal -->
+    <div class="itinerary-modal-overlay" id="add-item-type-modal">
+        <div class="itinerary-modal add-item-type-modal">
+            <div class="itinerary-modal-header">
+                <h3>Add Item</h3>
+                <p class="itinerary-modal-date" id="add-item-modal-date"></p>
+                <button class="itinerary-modal-close" onclick="window.tripDetailManager.closeAddItemModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="itinerary-modal-body">
+                <div class="add-item-type-grid">
+                    <button class="add-item-type-card" data-type="activity" onclick="window.tripDetailManager.openItemForm('activity')">
+                        <div class="add-item-type-icon activity">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 5.5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zM9.8 8.9L7 23h2.1l1.8-8 2.1 2v6h2v-7.5l-2.1-2 .6-3C14.8 12 16.8 13 19 13v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1L6 8.3V13h2V9.6l1.8-.7"/></svg>
+                        </div>
+                        <div class="add-item-type-info">
+                            <span class="add-item-type-name">Activity</span>
+                            <span class="add-item-type-desc">Tours, Events, Attractions...</span>
+                        </div>
+                        <svg class="add-item-type-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <button class="add-item-type-card" data-type="hotel" onclick="window.tripDetailManager.openItemForm('hotel')">
+                        <div class="add-item-type-icon hotel">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 13c1.66 0 3-1.34 3-3S8.66 7 7 7s-3 1.34-3 3 1.34 3 3 3zm12-6h-8v7H3V5H1v15h2v-3h18v3h2v-9c0-2.21-1.79-4-4-4z"/></svg>
+                        </div>
+                        <div class="add-item-type-info">
+                            <span class="add-item-type-name">Accommodation</span>
+                            <span class="add-item-type-desc">Hotel, Airbnb, Hostel...</span>
+                        </div>
+                        <svg class="add-item-type-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <button class="add-item-type-card" data-type="food" onclick="window.tripDetailManager.openItemForm('food')">
+                        <div class="add-item-type-icon food">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z"/></svg>
+                        </div>
+                        <div class="add-item-type-info">
+                            <span class="add-item-type-name">Food & Dining</span>
+                            <span class="add-item-type-desc">Restaurant, Cafe, Bar...</span>
+                        </div>
+                        <svg class="add-item-type-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <button class="add-item-type-card" data-type="flight" onclick="window.tripDetailManager.openItemForm('flight')">
+                        <div class="add-item-type-icon flight">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                        </div>
+                        <div class="add-item-type-info">
+                            <span class="add-item-type-name">Travel</span>
+                            <span class="add-item-type-desc">Flight, Train, Bus, Car...</span>
+                        </div>
+                        <svg class="add-item-type-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                    <button class="add-item-type-card" data-type="other" onclick="window.tripDetailManager.openItemForm('other')">
+                        <div class="add-item-type-icon other">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+                        </div>
+                        <div class="add-item-type-info">
+                            <span class="add-item-type-name">Other</span>
+                            <span class="add-item-type-desc">Custom item...</span>
+                        </div>
+                        <svg class="add-item-type-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Item Form Modal -->
+    <div class="itinerary-modal-overlay" id="add-item-form-modal">
+        <div class="itinerary-modal add-item-form-modal">
+            <div class="itinerary-modal-header">
+                <button class="itinerary-modal-back" onclick="window.tripDetailManager.backToTypeSelector()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <h3 id="item-form-title">Add Activity</h3>
+                <button class="itinerary-modal-save" onclick="window.tripDetailManager.saveNewItem()">Save</button>
+            </div>
+            <div class="itinerary-modal-body" id="item-form-content">
+                <!-- Form fields will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Add Button for Itinerary -->
+    <button class="itinerary-fab" id="itinerary-fab" onclick="window.tripDetailManager.openAddItemModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 5v14M5 12h14"/>
+        </svg>
+    </button>
+
     <!-- TripPortier Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/trip-hub-config.js"></script>
-    <script src="js/trip-detail.js?v=5"></script>
+    <script src="js/trip-detail.js?v=6"></script>
 </body>
 </html>
