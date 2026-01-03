@@ -2781,7 +2781,7 @@ class TripDetailManager {
         <div class="item-form-section-title flight">Travel Details</div>
         <div class="item-form-field">
           <label class="item-form-label">Travel Mode</label>
-          <select class="item-form-select" id="item-travel-mode">
+          <select class="item-form-select" id="item-travel-mode" onchange="window.tripDetailManager.onTravelModeChange(this.value)">
             <option value="flight">Flight</option>
             <option value="train">Train</option>
             <option value="bus">Bus</option>
@@ -2791,53 +2791,347 @@ class TripDetailManager {
             <option value="other">Other</option>
           </select>
         </div>
-        <div class="item-form-row">
-          <div class="item-form-field">
-            <label class="item-form-label">From</label>
-            <input type="text" class="item-form-input" id="item-from-location" placeholder="Departure location...">
+
+        <!-- Flight Search Section (Premium) -->
+        <div class="flight-search-section" id="flight-search-section">
+          <div class="flight-search-header">
+            <span class="flight-search-label">Search Flight</span>
+            <span class="flight-search-premium-badge" id="flight-search-premium-badge">TripPortier+</span>
           </div>
-          <div class="item-form-field">
-            <label class="item-form-label">To</label>
-            <input type="text" class="item-form-input" id="item-to-location" placeholder="Arrival location...">
+          <div class="flight-search-row">
+            <div class="item-form-field" style="flex: 1;">
+              <input type="text" class="item-form-input" id="item-flight-search" placeholder="e.g. UA123, BA456..." style="text-transform: uppercase;">
+            </div>
+            <div class="item-form-field" style="flex: 1;">
+              <input type="date" class="item-form-input" id="item-flight-search-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+            </div>
+            <button type="button" class="flight-search-btn" id="flight-search-btn" onclick="window.tripDetailManager.searchFlight()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="M21 21l-4.35-4.35"/>
+              </svg>
+            </button>
           </div>
+          <div class="flight-search-result" id="flight-search-result" style="display: none;"></div>
+          <div class="flight-search-error" id="flight-search-error" style="display: none;"></div>
         </div>
-        <div class="item-form-row">
-          <div class="item-form-field">
-            <label class="item-form-label">Departure</label>
-            <input type="date" class="item-form-input" id="item-departure-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
-            <input type="time" class="item-form-input" id="item-departure-time" value="09:00" style="margin-top: 0.5rem;">
-          </div>
-          <div class="item-form-field">
-            <label class="item-form-label">Arrival</label>
-            <input type="date" class="item-form-input" id="item-arrival-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
-            <input type="time" class="item-form-input" id="item-arrival-time" value="12:00" style="margin-top: 0.5rem;">
-          </div>
+
+        <!-- Manual Entry Toggle -->
+        <div class="manual-entry-toggle" id="manual-entry-toggle">
+          <button type="button" class="manual-entry-btn" onclick="window.tripDetailManager.toggleManualFlightEntry()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            <span id="manual-entry-text">Enter manually instead</span>
+          </button>
         </div>
-        <div class="item-form-row">
-          <div class="item-form-field">
-            <label class="item-form-label">Carrier / Airline</label>
-            <input type="text" class="item-form-input" id="item-carrier" placeholder="Airline, train company...">
+
+        <!-- Manual Entry Fields (shown by default for non-flights, or when toggled) -->
+        <div class="manual-flight-fields" id="manual-flight-fields">
+          <div class="item-form-row">
+            <div class="item-form-field">
+              <label class="item-form-label">From</label>
+              <input type="text" class="item-form-input" id="item-from-location" placeholder="Departure location...">
+            </div>
+            <div class="item-form-field">
+              <label class="item-form-label">To</label>
+              <input type="text" class="item-form-input" id="item-to-location" placeholder="Arrival location...">
+            </div>
+          </div>
+          <div class="item-form-row">
+            <div class="item-form-field">
+              <label class="item-form-label">Departure</label>
+              <input type="date" class="item-form-input" id="item-departure-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+              <input type="time" class="item-form-input" id="item-departure-time" value="09:00" style="margin-top: 0.5rem;">
+            </div>
+            <div class="item-form-field">
+              <label class="item-form-label">Arrival</label>
+              <input type="date" class="item-form-input" id="item-arrival-date" value="${defaultDate}" min="${tripStart}" max="${tripEnd}">
+              <input type="time" class="item-form-input" id="item-arrival-time" value="12:00" style="margin-top: 0.5rem;">
+            </div>
+          </div>
+          <div class="item-form-row">
+            <div class="item-form-field">
+              <label class="item-form-label">Carrier / Airline</label>
+              <input type="text" class="item-form-input" id="item-carrier" placeholder="Airline, train company...">
+            </div>
+            <div class="item-form-field">
+              <label class="item-form-label">Flight / Train Number</label>
+              <input type="text" class="item-form-input" id="item-flight-number" placeholder="AA123, IC456...">
+            </div>
           </div>
           <div class="item-form-field">
-            <label class="item-form-label">Flight / Train Number</label>
-            <input type="text" class="item-form-input" id="item-flight-number" placeholder="AA123, IC456...">
+            <label class="item-form-label">Confirmation Number</label>
+            <input type="text" class="item-form-input" id="item-confirmation" placeholder="Booking reference...">
           </div>
-        </div>
-        <div class="item-form-field">
-          <label class="item-form-label">Confirmation Number</label>
-          <input type="text" class="item-form-input" id="item-confirmation" placeholder="Booking reference...">
-        </div>
-        <div class="item-form-field">
-          <label class="item-form-label">Booking Status</label>
-          <select class="item-form-select" id="item-booking-status">
-            <option value="">Not specified</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
+          <div class="item-form-field">
+            <label class="item-form-label">Booking Status</label>
+            <select class="item-form-select" id="item-booking-status">
+              <option value="">Not specified</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
         </div>
       </div>
     `;
+  }
+
+  onTravelModeChange(mode) {
+    const searchSection = document.getElementById('flight-search-section');
+    const manualToggle = document.getElementById('manual-entry-toggle');
+    const manualFields = document.getElementById('manual-flight-fields');
+
+    if (mode === 'flight') {
+      // Show flight search section
+      if (searchSection) searchSection.style.display = 'block';
+      if (manualToggle) manualToggle.style.display = 'block';
+      // Check if premium and update visibility
+      this.updateFlightSearchVisibility();
+    } else {
+      // Hide flight search, show manual fields
+      if (searchSection) searchSection.style.display = 'none';
+      if (manualToggle) manualToggle.style.display = 'none';
+      if (manualFields) manualFields.style.display = 'block';
+    }
+  }
+
+  async updateFlightSearchVisibility() {
+    const isPremium = await this.checkPremiumStatus();
+    const premiumBadge = document.getElementById('flight-search-premium-badge');
+    const searchBtn = document.getElementById('flight-search-btn');
+    const searchInput = document.getElementById('item-flight-search');
+    const manualFields = document.getElementById('manual-flight-fields');
+    const manualToggle = document.getElementById('manual-entry-toggle');
+
+    if (isPremium) {
+      // Premium user - enable search, hide manual by default
+      if (premiumBadge) premiumBadge.style.display = 'none';
+      if (searchBtn) searchBtn.disabled = false;
+      if (searchInput) searchInput.disabled = false;
+      if (manualFields) manualFields.style.display = 'none';
+      if (manualToggle) manualToggle.style.display = 'block';
+    } else {
+      // Non-premium - show badge, show manual fields by default
+      if (premiumBadge) premiumBadge.style.display = 'inline-flex';
+      if (manualFields) manualFields.style.display = 'block';
+      if (manualToggle) manualToggle.style.display = 'none';
+    }
+  }
+
+  toggleManualFlightEntry() {
+    const manualFields = document.getElementById('manual-flight-fields');
+    const toggleText = document.getElementById('manual-entry-text');
+
+    if (manualFields) {
+      const isHidden = manualFields.style.display === 'none';
+      manualFields.style.display = isHidden ? 'block' : 'none';
+      if (toggleText) {
+        toggleText.textContent = isHidden ? 'Hide manual entry' : 'Enter manually instead';
+      }
+    }
+  }
+
+  async searchFlight() {
+    const isPremium = await this.checkPremiumStatus();
+
+    if (!isPremium) {
+      // Show premium prompt
+      this.showPremiumFlightPrompt();
+      return;
+    }
+
+    const flightNumber = document.getElementById('item-flight-search')?.value.trim().toUpperCase();
+    const flightDate = document.getElementById('item-flight-search-date')?.value;
+
+    if (!flightNumber) {
+      this.showToast('Please enter a flight number');
+      return;
+    }
+
+    const searchBtn = document.getElementById('flight-search-btn');
+    const resultEl = document.getElementById('flight-search-result');
+    const errorEl = document.getElementById('flight-search-error');
+
+    // Show loading state
+    if (searchBtn) {
+      searchBtn.disabled = true;
+      searchBtn.innerHTML = '<div class="flight-search-spinner"></div>';
+    }
+    if (resultEl) resultEl.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'none';
+
+    try {
+      const getFlightStatus = firebase.functions().httpsCallable('getFlightStatusFn');
+      const result = await getFlightStatus({
+        flightNumber: flightNumber,
+        date: flightDate
+      });
+
+      if (result.data && result.data.success && result.data.flight) {
+        this.displayFlightSearchResult(result.data.flight);
+      } else {
+        this.showFlightSearchError(result.data?.error || 'Flight not found. Try entering details manually.');
+      }
+    } catch (error) {
+      console.error('Flight search error:', error);
+      this.showFlightSearchError('Could not search flight. Try entering details manually.');
+    } finally {
+      if (searchBtn) {
+        searchBtn.disabled = false;
+        searchBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>`;
+      }
+    }
+  }
+
+  displayFlightSearchResult(flight) {
+    const resultEl = document.getElementById('flight-search-result');
+    if (!resultEl) return;
+
+    // Format flight info
+    const airline = flight.airline_name || flight.airline_iata || '';
+    const flightNum = flight.flight_iata || flight.flight_number || '';
+    const depAirport = flight.dep_iata || '';
+    const arrAirport = flight.arr_iata || '';
+    const depTime = flight.dep_time || '';
+    const arrTime = flight.arr_time || '';
+    const status = flight.status || 'scheduled';
+
+    resultEl.innerHTML = `
+      <div class="flight-result-card">
+        <div class="flight-result-header">
+          <span class="flight-result-airline">${this.escapeHtml(airline)}</span>
+          <span class="flight-result-number">${this.escapeHtml(flightNum)}</span>
+          <span class="flight-result-status flight-status-${status.toLowerCase()}">${status}</span>
+        </div>
+        <div class="flight-result-route">
+          <div class="flight-result-airport">
+            <span class="airport-code">${this.escapeHtml(depAirport)}</span>
+            <span class="airport-time">${this.formatFlightTime(depTime)}</span>
+          </div>
+          <div class="flight-result-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+              <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+            </svg>
+          </div>
+          <div class="flight-result-airport">
+            <span class="airport-code">${this.escapeHtml(arrAirport)}</span>
+            <span class="airport-time">${this.formatFlightTime(arrTime)}</span>
+          </div>
+        </div>
+        <button type="button" class="flight-result-use-btn" onclick="window.tripDetailManager.useFlightResult(${JSON.stringify(flight).replace(/"/g, '&quot;')})">
+          Use This Flight
+        </button>
+      </div>
+    `;
+    resultEl.style.display = 'block';
+  }
+
+  formatFlightTime(timeStr) {
+    if (!timeStr) return '--:--';
+    try {
+      const date = new Date(timeStr);
+      return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    } catch {
+      return timeStr.split(' ')[1] || timeStr;
+    }
+  }
+
+  useFlightResult(flight) {
+    // Auto-fill the form fields with flight data
+    const fromEl = document.getElementById('item-from-location');
+    const toEl = document.getElementById('item-to-location');
+    const carrierEl = document.getElementById('item-carrier');
+    const flightNumEl = document.getElementById('item-flight-number');
+    const depDateEl = document.getElementById('item-departure-date');
+    const depTimeEl = document.getElementById('item-departure-time');
+    const arrDateEl = document.getElementById('item-arrival-date');
+    const arrTimeEl = document.getElementById('item-arrival-time');
+    const titleEl = document.getElementById('item-title');
+
+    // Set airport codes as locations
+    if (fromEl) fromEl.value = flight.dep_iata || '';
+    if (toEl) toEl.value = flight.arr_iata || '';
+    if (carrierEl) carrierEl.value = flight.airline_name || flight.airline_iata || '';
+    if (flightNumEl) flightNumEl.value = flight.flight_iata || flight.flight_number || '';
+
+    // Parse and set times
+    if (flight.dep_time) {
+      try {
+        const depDate = new Date(flight.dep_time);
+        if (depDateEl) depDateEl.value = depDate.toISOString().split('T')[0];
+        if (depTimeEl) depTimeEl.value = depDate.toTimeString().slice(0, 5);
+      } catch (e) {}
+    }
+
+    if (flight.arr_time) {
+      try {
+        const arrDate = new Date(flight.arr_time);
+        if (arrDateEl) arrDateEl.value = arrDate.toISOString().split('T')[0];
+        if (arrTimeEl) arrTimeEl.value = arrDate.toTimeString().slice(0, 5);
+      } catch (e) {}
+    }
+
+    // Auto-set title
+    if (titleEl && !titleEl.value) {
+      titleEl.value = `${flight.airline_iata || ''} ${flight.flight_iata || flight.flight_number || ''} ${flight.dep_iata || ''} → ${flight.arr_iata || ''}`.trim();
+    }
+
+    // Show manual fields with populated data
+    const manualFields = document.getElementById('manual-flight-fields');
+    if (manualFields) manualFields.style.display = 'block';
+
+    // Hide search result
+    const resultEl = document.getElementById('flight-search-result');
+    if (resultEl) resultEl.style.display = 'none';
+
+    this.showToast('Flight details added!');
+  }
+
+  showFlightSearchError(message) {
+    const errorEl = document.getElementById('flight-search-error');
+    if (!errorEl) return;
+
+    errorEl.innerHTML = `
+      <div class="flight-error-message">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <span>${this.escapeHtml(message)}</span>
+      </div>
+      <button type="button" class="flight-error-manual-btn" onclick="window.tripDetailManager.toggleManualFlightEntry()">
+        Enter manually
+      </button>
+    `;
+    errorEl.style.display = 'block';
+  }
+
+  showPremiumFlightPrompt() {
+    const errorEl = document.getElementById('flight-search-error');
+    if (!errorEl) return;
+
+    errorEl.innerHTML = `
+      <div class="flight-premium-prompt">
+        <div class="flight-premium-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="24" height="24">
+            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+          </svg>
+        </div>
+        <div class="flight-premium-text">
+          <strong>TripPortier+ Feature</strong>
+          <p>Upgrade to automatically search and track flights with real-time updates.</p>
+        </div>
+        <div class="flight-premium-actions">
+          <a href="/premium.html?feature=flight-search" class="flight-premium-upgrade-btn">Upgrade Now</a>
+          <button type="button" class="flight-premium-manual-btn" onclick="window.tripDetailManager.toggleManualFlightEntry()">Add Manually</button>
+        </div>
+      </div>
+    `;
+    errorEl.style.display = 'block';
   }
 
   generateOtherFields(defaultDate, tripStart, tripEnd) {
