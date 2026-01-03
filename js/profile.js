@@ -699,15 +699,32 @@ class ProfileManager {
         if (!this.user) return;
 
         try {
-            const doc = await window.firebaseDb.collection('esimRewards').doc(this.user.uid).get();
+            const docRef = window.firebaseDb.collection('esimRewards').doc(this.user.uid);
+            const doc = await docRef.get();
             const referralCodeEl = document.getElementById('referral-code');
 
             if (doc.exists && doc.data().referralCode) {
-                // Display the existing referral code (same as iOS)
+                // Display existing referral code (from iOS or previous web visit)
                 referralCodeEl.textContent = doc.data().referralCode;
             } else {
-                // No referral code yet - user needs to use the app first
-                referralCodeEl.textContent = 'Use app to get code';
+                // No referral code yet - create one for web-only users
+                const newReferralCode = this.generateReferralCode();
+                const newRewardsProfile = {
+                    totalCredits: 0,
+                    totalSpend: 0,
+                    level: 'Explorer',
+                    referralCode: newReferralCode,
+                    referralCount: 0,
+                    referredBy: null,
+                    hasReceivedReferralBonus: false,
+                    creditsHistory: [],
+                    preferredCurrency: 'USD',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await docRef.set(newRewardsProfile);
+                referralCodeEl.textContent = newReferralCode;
             }
         } catch (error) {
             console.error('Error loading referral code:', error);
@@ -718,16 +735,24 @@ class ProfileManager {
         }
     }
 
+    // Generate a referral code (same algorithm as iOS and Firebase Functions)
+    generateReferralCode() {
+        const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+            code += letters.charAt(Math.floor(Math.random() * letters.length));
+        }
+        return code;
+    }
+
     copyReferralCode() {
         const code = document.getElementById('referral-code').textContent;
-        if (code && code !== '--------' && code !== 'Use app to get code') {
+        if (code && code !== '--------') {
             navigator.clipboard.writeText(code).then(() => {
                 this.showToast('Referral code copied!');
             }).catch(() => {
                 this.showToast('Failed to copy code');
             });
-        } else {
-            this.showToast('Open the TripPortier app to get your referral code');
         }
     }
 
