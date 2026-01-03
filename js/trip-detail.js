@@ -11,6 +11,7 @@ class TripDetailManager {
     this.pexelsApiKey = 'fiziyDodPH9hgsBsgMmMbojhWIBuOQD6TNarSRS4MRx96j0c7Rq0pL0h';
     this.selectedTab = 'hub';
     this.selectedPlanSubtab = 'packing';
+    this.temperatureUnit = 'celsius'; // Default to celsius
 
     // DOM elements
     this.loadingEl = document.getElementById('trip-loading');
@@ -2144,6 +2145,9 @@ class TripDetailManager {
     if (!weatherSection) return;
 
     try {
+      // Load user's temperature preference
+      await this.loadTemperaturePreference();
+
       let lat, lon;
 
       // If we have coordinates, use them
@@ -2173,10 +2177,10 @@ class TripDetailManager {
       // Show the weather section
       weatherSection.style.display = 'block';
 
-      // Update temperature
+      // Update temperature (using user's preferred unit)
       const tempEl = document.getElementById('trip-weather-temp');
       if (tempEl) {
-        tempEl.textContent = `${Math.round(current.temperature_2m)}°`;
+        tempEl.textContent = `${this.convertTemperature(current.temperature_2m)}°`;
       }
 
       // Update description and icon
@@ -2198,10 +2202,10 @@ class TripDetailManager {
         locationEl.textContent = this.trip.destination;
       }
 
-      // Update extra stats
+      // Update extra stats (using user's preferred unit)
       const feelsEl = document.getElementById('trip-weather-feels');
       if (feelsEl) {
-        feelsEl.textContent = `${Math.round(current.apparent_temperature)}°`;
+        feelsEl.textContent = `${this.convertTemperature(current.apparent_temperature)}°`;
       }
 
       const humidityEl = document.getElementById('trip-weather-humidity');
@@ -2287,8 +2291,8 @@ class TripDetailManager {
         const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
         const weatherInfo = this.getWeatherInfo(daily.weather_code[i]);
-        const highTemp = Math.round(daily.temperature_2m_max[i]);
-        const lowTemp = Math.round(daily.temperature_2m_min[i]);
+        const highTemp = this.convertTemperature(daily.temperature_2m_max[i]);
+        const lowTemp = this.convertTemperature(daily.temperature_2m_min[i]);
 
         // Check if this date falls within trip dates
         const isTripDate = this.isDateInTripRange(date, tripStart, tripEnd);
@@ -2341,6 +2345,40 @@ class TripDetailManager {
 
     // If no end date, just check start date
     return checkDate.getTime() === start.getTime();
+  }
+
+  // Load user's temperature unit preference from Firestore
+  async loadTemperaturePreference() {
+    if (!this.userId) return;
+
+    try {
+      const userDoc = await firebase.firestore()
+        .collection('users')
+        .doc(this.userId)
+        .get();
+
+      if (userDoc.exists) {
+        const userData = userDoc.data();
+        if (userData.temperatureUnit) {
+          this.temperatureUnit = userData.temperatureUnit;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load temperature preference:', error);
+    }
+  }
+
+  // Convert temperature based on user preference
+  convertTemperature(celsiusTemp) {
+    if (this.temperatureUnit === 'fahrenheit') {
+      return Math.round(celsiusTemp * 9/5 + 32);
+    }
+    return Math.round(celsiusTemp);
+  }
+
+  // Get temperature unit symbol
+  getTempSymbol() {
+    return this.temperatureUnit === 'fahrenheit' ? '°F' : '°C';
   }
 
   async geocodeDestination(destination) {
