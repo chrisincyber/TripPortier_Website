@@ -384,13 +384,7 @@ class TripDetailManager {
         currency: data.currency || 'USD'
       };
 
-      console.log('Loaded trip data:', {
-        id: this.trip.id,
-        name: this.trip.name,
-        itineraryCount: this.trip.itineraryItems.length,
-        packingCount: this.trip.packingItems.length,
-        todosCount: this.trip.todos.length
-      });
+      // Trip data loaded successfully
 
       // Wishlist trips don't need dates, regular trips do
       if (!this.trip.isSomedayTrip && (!this.trip.startDate || !this.trip.endDate)) {

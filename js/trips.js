@@ -242,7 +242,7 @@ class TripsManager {
           this.userPreferences.budgetPreference = userData.budgetPreference;
         }
 
-        console.log('Loaded user preferences for AI personalization:', this.userPreferences);
+        // User preferences loaded for AI personalization
       }
     } catch (error) {
       console.error('Error loading user preferences:', error);
