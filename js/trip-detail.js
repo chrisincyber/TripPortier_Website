@@ -2862,56 +2862,64 @@ class TripDetailManager {
       }
     }
 
-    // Fetch directly from Gemini API (matching iOS app)
-    console.log('🔄 Fetching essentials directly from Gemini for:', destination);
+    // Fetch from Gemini via Firebase Cloud Function (API key stays server-side)
+    console.log('🔄 Fetching essentials via Firebase Function for:', destination);
 
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) {
+        console.warn('User not authenticated, using fallback data');
+        return this.getFallbackEssentialsData();
+      }
+
       // Get country code
       const countryCode = await this.getCountryCodeFromDestination(destination);
       console.log('📍 Country code:', countryCode);
-
-      // Check if GeminiService is available
-      if (!window.geminiService) {
-        console.error('GeminiService not loaded');
-        return this.getFallbackEssentialsData();
-      }
 
       // Get user's home country from profile if available
       let userHomeCountry = 'Switzerland';
       let userNationalities = [];
 
       try {
-        const user = firebase.auth().currentUser;
-        if (user) {
-          const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-          if (userDoc.exists) {
-            const userData = userDoc.data();
-            userHomeCountry = userData.homeCountry || userData.country || 'Switzerland';
-            userNationalities = userData.nationalities || [];
-          }
+        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          const userData = userDoc.data();
+          userHomeCountry = userData.homeCountry || userData.country || 'Switzerland';
+          userNationalities = userData.nationalities || [];
         }
       } catch (e) {
         console.warn('Could not fetch user profile, using defaults');
       }
 
-      console.log('📡 Calling Gemini directly...');
-      const essentialsData = await window.geminiService.fetchEssentialsData(
-        destination,
-        countryCode || 'US',
-        userHomeCountry,
-        userNationalities
-      );
+      // Call Firebase Function (API key is secure on server)
+      const functions = firebase.functions();
+      const fetchEssentials = functions.httpsCallable('fetchTravelEssentials');
 
-      console.log('📦 Gemini result:', essentialsData);
+      console.log('📡 Calling fetchTravelEssentials Firebase Function...');
+      const result = await fetchEssentials({
+        destination: destination,
+        countryCode: countryCode || 'US',
+        userHomeCountry: userHomeCountry,
+        userNationalities: userNationalities
+      });
 
-      // Cache the result
-      localStorage.setItem(cacheKey, JSON.stringify({
-        data: essentialsData,
-        cachedAt: Date.now()
-      }));
+      console.log('📦 Function result:', result.data);
 
-      console.log('✅ Essentials data cached successfully');
-      return essentialsData;
+      if (result.data && result.data.success) {
+        const essentialsData = result.data.essentials;
+
+        // Cache the result
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: essentialsData,
+          cachedAt: Date.now()
+        }));
+
+        console.log('✅ Essentials data cached successfully');
+        return essentialsData;
+      } else {
+        console.error('Function returned error:', result.data?.error);
+        throw new Error(result.data?.error || 'Failed to fetch essentials');
+      }
     } catch (error) {
       console.error('❌ Error fetching essentials:', error);
 
