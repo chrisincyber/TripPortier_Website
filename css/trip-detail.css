@@ -1771,6 +1771,56 @@
   color: #3b82f6;
 }
 
+/* Destination display below date */
+.itinerary-day-location {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--theme-text-secondary, #64748b);
+  margin-top: 2px;
+}
+
+/* Multi-destination selector */
+.itinerary-day-location-selector {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  position: relative;
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.itinerary-day-location-select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  font-size: 16px; /* Prevent iOS zoom */
+}
+
+.itinerary-day-location-text {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--theme-text-secondary, #64748b);
+}
+
+.itinerary-day-location-chevron {
+  width: 10px;
+  height: 10px;
+  color: var(--theme-text-tertiary, #94a3b8);
+  flex-shrink: 0;
+}
+
+.itinerary-day-location-selector:hover .itinerary-day-location-text {
+  color: #6366f1;
+}
+
+.itinerary-day-location-selector:hover .itinerary-day-location-chevron {
+  color: #6366f1;
+}
+
 .itinerary-day-count {
   font-size: 0.8125rem;
   font-weight: 500;

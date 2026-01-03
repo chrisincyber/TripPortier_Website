@@ -11,6 +11,7 @@ class TripDetailManager {
     this.selectedTab = 'hub';
     this.selectedPlanSubtab = 'packing';
     this.temperatureUnit = 'celsius'; // Default to celsius
+    this.dayLocationOverrides = {}; // Key: dateKey, Value: destination name
 
     // DOM elements
     this.loadingEl = document.getElementById('trip-loading');
@@ -380,7 +381,8 @@ class TripDetailManager {
         expenses: data.expenses || [],
         budget: data.budget || null,
         budgetSpent: data.budgetSpent || 0,
-        currency: data.currency || 'USD'
+        currency: data.currency || 'USD',
+        legs: data.legs || [] // Multi-destination trip legs
       };
 
       // Trip data loaded successfully
@@ -527,6 +529,89 @@ class TripDetailManager {
     }
   }
 
+  // Get all available destinations from trip legs or main destination
+  getAvailableDestinations() {
+    if (this.trip.legs && this.trip.legs.length > 1) {
+      // Multi-leg trip - return unique destination names
+      const destinations = this.trip.legs.map(leg => leg.destinationName);
+      return [...new Set(destinations)];
+    }
+    // Single destination - extract just the city name
+    if (this.trip.destination) {
+      const primaryDest = this.trip.destination.split(',')[0].trim();
+      return [primaryDest];
+    }
+    return [];
+  }
+
+  // Get the destination for a specific day based on legs or overrides
+  getDestinationForDay(date) {
+    const dateKey = date.toDateString();
+
+    // Check if there's a manual override first
+    if (this.dayLocationOverrides[dateKey]) {
+      return this.dayLocationOverrides[dateKey];
+    }
+
+    // Check trip legs for multi-destination trips
+    if (this.trip.legs && this.trip.legs.length > 1) {
+      const dayStart = new Date(date);
+      dayStart.setHours(0, 0, 0, 0);
+
+      for (const leg of this.trip.legs) {
+        const legStart = this.parseDate(leg.startDate);
+        const legEnd = this.parseDate(leg.endDate) || legStart;
+
+        if (legStart && legEnd) {
+          legStart.setHours(0, 0, 0, 0);
+          legEnd.setHours(0, 0, 0, 0);
+
+          if (dayStart >= legStart && dayStart <= legEnd) {
+            return leg.destinationName;
+          }
+        }
+      }
+
+      // If no matching leg, use first leg's destination
+      if (this.trip.legs[0]) {
+        return this.trip.legs[0].destinationName;
+      }
+    }
+
+    // Fallback to main destination
+    if (this.trip.destination) {
+      return this.trip.destination.split(',')[0].trim();
+    }
+
+    return null;
+  }
+
+  // Update destination for a day and all subsequent days
+  updateDestinationFromDay(selectedDate, destination) {
+    const tripStart = new Date(this.trip.startDate);
+    const tripEnd = new Date(this.trip.endDate);
+    const selectedDayStart = new Date(selectedDate);
+    selectedDayStart.setHours(0, 0, 0, 0);
+
+    const currentDate = new Date(tripStart);
+    currentDate.setHours(0, 0, 0, 0);
+
+    while (currentDate <= tripEnd) {
+      const dayStart = new Date(currentDate);
+      dayStart.setHours(0, 0, 0, 0);
+
+      if (dayStart >= selectedDayStart) {
+        const dayKey = currentDate.toDateString();
+        this.dayLocationOverrides[dayKey] = destination;
+      }
+
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    // Re-render itinerary to reflect changes
+    this.renderItinerary();
+  }
+
   renderItinerary() {
     const items = this.trip.itineraryItems || [];
     const container = document.getElementById('itinerary-days');
@@ -584,6 +669,10 @@ class TripDetailManager {
       dayNumber++;
     }
 
+    // Get available destinations for multi-destination trips
+    const availableDestinations = this.getAvailableDestinations();
+    const isMultiDestination = availableDestinations.length > 1;
+
     // Render all days
     container.innerHTML = allDays.map(day => {
       const dayItems = itemsByDate[day.dateKey] || [];
@@ -600,8 +689,34 @@ class TripDetailManager {
       const formattedDate = day.date.toLocaleDateString('en-US', dateOptions);
       const dateISO = day.date.toISOString().split('T')[0];
 
+      // Get destination for this day
+      const dayDestination = this.getDestinationForDay(day.date);
+
       // Auto-expand today and future days with items, collapse past days
       const shouldExpand = isToday || (!isPast && dayItems.length > 0) || dayItems.length > 0;
+
+      // Build destination selector HTML (dropdown if multi-destination, plain text otherwise)
+      let destinationHtml = '';
+      if (dayDestination) {
+        if (isMultiDestination) {
+          destinationHtml = `
+            <div class="itinerary-day-location-selector" onclick="event.stopPropagation();">
+              <select class="itinerary-day-location-select" onchange="window.tripDetailManager.updateDestinationFromDay(new Date('${dateISO}'), this.value)">
+                ${availableDestinations.map(dest => `
+                  <option value="${this.escapeHtml(dest)}" ${dest === dayDestination ? 'selected' : ''}>
+                    ${this.escapeHtml(dest)}
+                  </option>
+                `).join('')}
+              </select>
+              <span class="itinerary-day-location-text">in ${this.escapeHtml(dayDestination)}</span>
+              <svg class="itinerary-day-location-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"/>
+              </svg>
+            </div>`;
+        } else {
+          destinationHtml = `<span class="itinerary-day-location">in ${this.escapeHtml(dayDestination)}</span>`;
+        }
+      }
 
       return `
         <div class="itinerary-day${shouldExpand ? ' expanded' : ''}${isToday ? ' today' : ''}${isPast ? ' past' : ''}" data-date="${day.dateKey}">
@@ -614,6 +729,7 @@ class TripDetailManager {
             <div class="itinerary-day-badge">Day ${day.dayNumber}</div>
             <div class="itinerary-day-info">
               <span class="itinerary-day-date">${formattedDate}</span>
+              ${destinationHtml}
             </div>
             <span class="itinerary-day-count">${dayItems.length} ${dayItems.length === 1 ? 'event' : 'events'}</span>
             <button class="itinerary-day-add-btn" onclick="event.stopPropagation(); window.tripDetailManager.openAddItemForDay('${dateISO}')" title="Add item">
