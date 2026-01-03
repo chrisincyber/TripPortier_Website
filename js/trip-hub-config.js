@@ -63,11 +63,15 @@ class TripHubConfigService {
    */
   async dismissSuggestion(tripId, suggestionId) {
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       await this.db
         .collection('tripHubConfigurations')
         .doc(tripId)
         .set(
           {
+            userId: user.uid,
             dismissedSuggestions: firebase.firestore.FieldValue.arrayUnion(suggestionId),
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           },
@@ -91,6 +95,9 @@ class TripHubConfigService {
    */
   async setReminder(tripId, suggestionId, reminderDate) {
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       const fieldName = `${suggestionId}ReminderDate`;
 
       await this.db
@@ -98,6 +105,7 @@ class TripHubConfigService {
         .doc(tripId)
         .set(
           {
+            userId: user.uid,
             [fieldName]: firebase.firestore.Timestamp.fromDate(reminderDate),
             dismissedSuggestions: firebase.firestore.FieldValue.arrayUnion(suggestionId),
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -134,11 +142,15 @@ class TripHubConfigService {
 
       if (reminderTimestamp <= now) {
         // Reminder is due - remove from dismissed and clear reminder date
+        const user = firebase.auth().currentUser;
+        if (!user) return false;
+
         await this.db
           .collection('tripHubConfigurations')
           .doc(tripId)
           .set(
             {
+              userId: user.uid,
               dismissedSuggestions: config.dismissedSuggestions.filter(id => id !== suggestionId),
               [fieldName]: null,
               updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -166,11 +178,15 @@ class TripHubConfigService {
    */
   async updateESIMState(tripId, state) {
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       await this.db
         .collection('tripHubConfigurations')
         .doc(tripId)
         .set(
           {
+            userId: user.uid,
             esimState: state,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           },
@@ -192,11 +208,15 @@ class TripHubConfigService {
    */
   async declineCompanionInvite(tripId) {
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       await this.db
         .collection('tripHubConfigurations')
         .doc(tripId)
         .set(
           {
+            userId: user.uid,
             hasDeclinedCompanionInvite: true,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           },
@@ -218,11 +238,15 @@ class TripHubConfigService {
    */
   async hideCompanionsWidget(tripId) {
     try {
+      const user = firebase.auth().currentUser;
+      if (!user) return;
+
       await this.db
         .collection('tripHubConfigurations')
         .doc(tripId)
         .set(
           {
+            userId: user.uid,
             hideCompanionsWidget: true,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp()
           },
