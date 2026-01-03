@@ -699,17 +699,49 @@ class ProfileManager {
         if (!this.user) return;
 
         try {
-            const doc = await window.firebaseDb.collection('esimRewards').doc(this.user.uid).get();
+            const docRef = window.firebaseDb.collection('esimRewards').doc(this.user.uid);
+            const doc = await docRef.get();
             const referralCodeEl = document.getElementById('referral-code');
 
             if (doc.exists && doc.data().referralCode) {
                 referralCodeEl.textContent = doc.data().referralCode;
             } else {
-                referralCodeEl.textContent = '--------';
+                // Create new rewards profile with referral code (same as iOS app)
+                const newReferralCode = this.generateReferralCode();
+                const newRewardsProfile = {
+                    totalCredits: 0,
+                    totalSpend: 0,
+                    level: 'Explorer',
+                    referralCode: newReferralCode,
+                    referralCount: 0,
+                    referredBy: null,
+                    hasReceivedReferralBonus: false,
+                    creditsHistory: [],
+                    preferredCurrency: 'USD',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await docRef.set(newRewardsProfile);
+                referralCodeEl.textContent = newReferralCode;
             }
         } catch (error) {
             console.error('Error loading referral code:', error);
+            const referralCodeEl = document.getElementById('referral-code');
+            if (referralCodeEl) {
+                referralCodeEl.textContent = '--------';
+            }
         }
+    }
+
+    // Generate a referral code (same algorithm as iOS and Firebase Functions)
+    generateReferralCode() {
+        const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        let code = '';
+        for (let i = 0; i < 8; i++) {
+            code += letters.charAt(Math.floor(Math.random() * letters.length));
+        }
+        return code;
     }
 
     copyReferralCode() {
