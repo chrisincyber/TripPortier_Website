@@ -1238,6 +1238,12 @@
             border-radius: 10px;
             font-size: 0.9375rem;
             margin-bottom: 1rem;
+            background: var(--theme-bg, white);
+            color: var(--theme-text, #1e293b);
+        }
+
+        .passports-search::placeholder {
+            color: var(--theme-text-muted, #94a3b8);
         }
 
         .passports-list {
@@ -1273,6 +1279,7 @@
         .passport-item .name {
             flex: 1;
             font-size: 0.9375rem;
+            color: var(--theme-text, #1e293b);
         }
 
         .passports-modal-footer {
@@ -1286,10 +1293,16 @@
             flex: 1;
             padding: 0.75rem;
             border: 1px solid var(--theme-border, #e2e8f0);
-            background: none;
+            background: var(--theme-bg-secondary, #f8fafc);
+            color: var(--theme-text, #1e293b);
             border-radius: 10px;
             cursor: pointer;
             font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .passports-cancel-btn:hover {
+            background: var(--theme-bg-tertiary, #f1f5f9);
         }
 
         .passports-save-btn {
