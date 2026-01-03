@@ -2711,7 +2711,7 @@ class TripDetailManager {
     // Get country code from destination
     const countryCode = await this.getCountryCodeFromDestination(this.trip.destination);
 
-    // Define essentials tiles - matching iOS app
+    // Define essentials tiles - ALL are TripPortier+ features
     const essentials = [
       {
         id: 'plug',
@@ -2738,21 +2738,21 @@ class TripDetailManager {
         id: 'emergency',
         title: 'Emergency',
         icon: this.getEmergencyIcon(),
-        isPremium: false,
+        isPremium: true,
         dataKey: 'emergency'
       },
       {
         id: 'timezone',
         title: 'Timezone',
         icon: this.getTimezoneIcon(),
-        isPremium: false,
+        isPremium: true,
         dataKey: 'timezone'
       },
       {
         id: 'water-food',
         title: 'Water & Food',
         icon: this.getWaterFoodIcon(),
-        isPremium: false,
+        isPremium: true,
         dataKey: 'waterFood'
       }
     ];
