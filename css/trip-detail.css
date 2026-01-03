@@ -3767,6 +3767,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 /* Desktop: Grid layout for suggestions */
@@ -4138,7 +4139,8 @@
 
 /* Companions Section Styles */
 .trip-companions-section {
-  /* No extra padding - the suggestion card inside handles its own styling */
+  /* Override default .trip-section margin for consistent spacing */
+  margin-bottom: 12px;
 }
 
 .companions-header {
