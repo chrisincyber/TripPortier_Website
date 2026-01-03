@@ -1265,7 +1265,7 @@ class TripDetailManager {
     filtersEl = document.createElement('div');
     filtersEl.className = 'itinerary-filters';
     filtersEl.innerHTML = filterOptions.map(opt => `
-      <button class="itinerary-filter-chip${opt.type === 'all' ? ' active' : ''}" data-type="${opt.type}" onclick="window.tripDetailManager.toggleItineraryFilter(this)">
+      <button class="itinerary-filter-chip${opt.type === 'all' ? ' active' : ''}" data-type="${opt.type}" onclick="window.tripDetailManager.toggleItineraryFilter('${opt.type}')">
         ${opt.icon}
         <span>${opt.label}</span>
       </button>
@@ -1284,35 +1284,6 @@ class TripDetailManager {
     const activeChips = document.querySelectorAll('.itinerary-filter-chip.active');
     const filters = Array.from(activeChips).map(chip => chip.dataset.type);
     return filters.includes('all') ? [] : filters;
-  }
-
-  toggleItineraryFilter(chip) {
-    const type = chip.dataset.type;
-
-    if (type === 'all') {
-      // Toggle all: if all is active, deactivate all; otherwise activate only all
-      const allChips = document.querySelectorAll('.itinerary-filter-chip');
-      if (chip.classList.contains('active')) {
-        allChips.forEach(c => c.classList.remove('active'));
-      } else {
-        allChips.forEach(c => c.classList.remove('active'));
-        chip.classList.add('active');
-      }
-    } else {
-      // Toggle individual filter
-      const allChip = document.querySelector('.itinerary-filter-chip[data-type="all"]');
-      if (allChip) allChip.classList.remove('active');
-      chip.classList.toggle('active');
-
-      // If no filters active, activate "all"
-      const activeCount = document.querySelectorAll('.itinerary-filter-chip.active').length;
-      if (activeCount === 0 && allChip) {
-        allChip.classList.add('active');
-      }
-    }
-
-    // Re-render itinerary with new filters
-    this.renderItinerary();
   }
 
   toggleItineraryDay(header) {
