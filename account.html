@@ -334,40 +334,6 @@
             transition: width 0.5s ease;
         }
 
-        .cashback-referral {
-            background: var(--theme-bg-secondary, #f8fafc);
-            padding: 1rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .cashback-referral-code {
-            font-family: monospace;
-            font-size: 1.125rem;
-            font-weight: 700;
-            color: var(--theme-primary, #6366f1);
-            letter-spacing: 0.1em;
-        }
-
-        .cashback-copy-btn {
-            background: var(--theme-primary, #6366f1);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .cashback-copy-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-        }
-
         /* Subscription Section */
         .subscription-section {
             padding: 1.5rem 2rem;
@@ -2196,13 +2162,6 @@
                     </div>
                 </div>
             </div>
-            <div class="cashback-referral">
-                <div>
-                    <div class="cashback-row-label">Your Referral Code</div>
-                    <div class="cashback-referral-code" id="referral-code">--------</div>
-                </div>
-                <button class="cashback-copy-btn" onclick="copyReferralCode()">Copy</button>
-            </div>
         </div>
 
         <!-- App Promo -->
@@ -2479,8 +2438,7 @@
                     updateCashbackUI({
                         totalCredits: 0,
                         totalSpend: 0,
-                        level: 'Explorer',
-                        referralCode: '--------'
+                        level: 'Explorer'
                     });
                     cashbackCard.style.display = 'block';
                 }
@@ -2496,7 +2454,6 @@
             const spend = data.totalSpend || 0;
             const level = (data.level || 'Explorer').toLowerCase();
             const levelConfig = REWARD_LEVELS[level] || REWARD_LEVELS.explorer;
-            const referralCode = data.referralCode || '--------';
 
             // Update balance
             document.getElementById('cashback-balance').textContent = `$${balance.toFixed(2)}`;
@@ -2507,9 +2464,6 @@
 
             // Update total spend
             document.getElementById('total-spend').textContent = `$${spend.toFixed(2)}`;
-
-            // Update referral code
-            document.getElementById('referral-code').textContent = referralCode;
 
             // Update progress to next level
             const nextLevel = getNextLevel(level);
@@ -2607,22 +2561,6 @@
                 detailsEl.textContent = 'Upgrade to unlock all features';
                 actionEl.textContent = 'Upgrade';
                 actionEl.href = 'premium.html';
-            }
-        }
-
-        function copyReferralCode() {
-            const code = document.getElementById('referral-code').textContent;
-            if (code && code !== '--------') {
-                navigator.clipboard.writeText(code).then(() => {
-                    const btn = document.querySelector('.cashback-copy-btn');
-                    const originalText = btn.textContent;
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy:', err);
-                });
             }
         }
 
