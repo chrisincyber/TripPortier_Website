@@ -1220,6 +1220,147 @@
             cursor: pointer;
             font-weight: 500;
         }
+
+        /* Passports Modal */
+        .passports-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+        }
+
+        .passports-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .passports-modal-backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .passports-modal-content {
+            position: relative;
+            background: var(--theme-card-bg, white);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .passports-modal-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--theme-border, #e2e8f0);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .passports-modal-header h3 {
+            font-size: 1.125rem;
+            margin: 0;
+        }
+
+        .passports-modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            color: var(--theme-text-secondary);
+        }
+
+        .passports-modal-body {
+            padding: 1rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .passports-search {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--theme-border, #e2e8f0);
+            border-radius: 10px;
+            font-size: 0.9375rem;
+            margin-bottom: 1rem;
+        }
+
+        .passports-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .passport-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .passport-item:hover {
+            background: var(--theme-bg-secondary, #f8fafc);
+        }
+
+        .passport-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #6366f1;
+        }
+
+        .passport-item .flag {
+            font-size: 1.25rem;
+        }
+
+        .passport-item .name {
+            flex: 1;
+            font-size: 0.9375rem;
+        }
+
+        .passports-modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--theme-border, #e2e8f0);
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .passports-cancel-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--theme-border, #e2e8f0);
+            background: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9375rem;
+        }
+
+        .passports-save-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        .passports-save-btn:hover {
+            background: #4f46e5;
+        }
     </style>
 </head>
 <body class="account-page">
@@ -3256,9 +3397,13 @@
 
                 // Passports
                 const passportsDisplay = document.getElementById('pref-passports-display');
-                if (passportsDisplay && userData.passports && userData.passports.length > 0) {
-                    const flags = userData.passports.map(code => getFlagEmoji(code)).join(' ');
-                    passportsDisplay.innerHTML = `<span style="font-size: 1.25rem;">${flags}</span>`;
+                if (passportsDisplay) {
+                    if (userData.passports && userData.passports.length > 0) {
+                        const flags = userData.passports.map(code => getFlagEmoji(code)).join(' ');
+                        passportsDisplay.innerHTML = `<span style="font-size: 1.25rem; cursor: pointer;" onclick="openPassportsModal()">${flags}</span>`;
+                    } else {
+                        passportsDisplay.innerHTML = `<button onclick="openPassportsModal()" style="background: none; border: 1px solid var(--theme-border); padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.875rem;">Add passports</button>`;
+                    }
                 }
             } catch (error) {
                 console.error('Error loading user preferences:', error);
@@ -3281,9 +3426,122 @@
             }
         }
 
-        function openPassportsModal() {
-            // Redirect to settings page for now
-            window.location.href = 'settings.html';
+        let selectedPassports = [];
+
+        async function openPassportsModal() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            // Load current passports
+            try {
+                const userDoc = await window.firebaseDb.collection('users').doc(user.uid).get();
+                if (userDoc.exists && userDoc.data().passports) {
+                    selectedPassports = [...userDoc.data().passports];
+                } else {
+                    selectedPassports = [];
+                }
+            } catch (error) {
+                selectedPassports = [];
+            }
+
+            // Create modal
+            let modal = document.getElementById('passports-modal');
+            if (modal) modal.remove();
+
+            modal = document.createElement('div');
+            modal.id = 'passports-modal';
+            modal.className = 'passports-modal active';
+            modal.innerHTML = `
+                <div class="passports-modal-backdrop" onclick="closePassportsModal()"></div>
+                <div class="passports-modal-content">
+                    <div class="passports-modal-header">
+                        <h3>Your Passports</h3>
+                        <button class="passports-modal-close" onclick="closePassportsModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="passports-modal-body">
+                        <input type="text" class="passports-search" id="passports-search" placeholder="Search countries..." oninput="filterPassports(this.value)">
+                        <div class="passports-list" id="passports-list"></div>
+                    </div>
+                    <div class="passports-modal-footer">
+                        <button class="passports-cancel-btn" onclick="closePassportsModal()">Cancel</button>
+                        <button class="passports-save-btn" onclick="savePassports()">Save</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+            renderPassportsList();
+        }
+
+        function closePassportsModal() {
+            const modal = document.getElementById('passports-modal');
+            if (modal) modal.remove();
+        }
+
+        function renderPassportsList(filter = '') {
+            const list = document.getElementById('passports-list');
+            if (!list) return;
+
+            const filterLower = filter.toLowerCase();
+            const filtered = COUNTRIES.filter(c => c.toLowerCase().includes(filterLower));
+
+            list.innerHTML = filtered.map(country => {
+                const code = COUNTRY_TO_CODE[country];
+                const isSelected = selectedPassports.includes(code);
+                return `
+                    <label class="passport-item">
+                        <input type="checkbox" value="${code}" ${isSelected ? 'checked' : ''} onchange="togglePassport('${code}')">
+                        <span class="flag">${getFlagEmoji(code)}</span>
+                        <span class="name">${country}</span>
+                    </label>
+                `;
+            }).join('');
+        }
+
+        function filterPassports(value) {
+            renderPassportsList(value);
+        }
+
+        function togglePassport(code) {
+            const idx = selectedPassports.indexOf(code);
+            if (idx > -1) {
+                selectedPassports.splice(idx, 1);
+            } else {
+                selectedPassports.push(code);
+            }
+        }
+
+        async function savePassports() {
+            const user = firebase.auth().currentUser;
+            if (!user) return;
+
+            try {
+                await window.firebaseDb.collection('users').doc(user.uid).set({
+                    passports: selectedPassports,
+                    nationalities: selectedPassports
+                }, { merge: true });
+
+                // Update display
+                const passportsDisplay = document.getElementById('pref-passports-display');
+                if (passportsDisplay) {
+                    if (selectedPassports.length > 0) {
+                        const flags = selectedPassports.map(code => getFlagEmoji(code)).join(' ');
+                        passportsDisplay.innerHTML = `<span style="font-size: 1.25rem; cursor: pointer;" onclick="openPassportsModal()">${flags}</span>`;
+                    } else {
+                        passportsDisplay.innerHTML = `<button onclick="openPassportsModal()" style="background: none; border: 1px solid var(--theme-border); padding: 0.5rem 0.75rem; border-radius: 8px; cursor: pointer; font-size: 0.875rem;">Add passports</button>`;
+                    }
+                }
+
+                closePassportsModal();
+                showToast('Passports saved');
+            } catch (error) {
+                console.error('Error saving passports:', error);
+                showToast('Failed to save passports');
+            }
         }
 
         // ============================================
