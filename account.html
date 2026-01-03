@@ -3690,30 +3690,33 @@
 
         async function loadAllSettings(userId) {
             try {
-                // Load from settings subcollection
-                const settingsDoc = await window.firebaseDb
-                    .collection('users')
-                    .doc(userId)
-                    .collection('metadata')
-                    .doc('settings')
-                    .get();
-
-                if (settingsDoc.exists) {
-                    userSettings = { ...userSettings, ...settingsDoc.data() };
-                }
-
-                // Also load from main user doc
+                // Load from main user doc (this has proper permissions)
                 const userDoc = await window.firebaseDb.collection('users').doc(userId).get();
                 if (userDoc.exists) {
                     const userData = userDoc.data();
+                    // Load all settings from user document
                     if (userData.homeCountry) userSettings.homeCountry = userData.homeCountry;
+                    if (userData.homeCurrency) userSettings.homeCurrency = userData.homeCurrency;
                     if (userData.temperatureUnit) userSettings.temperatureUnit = userData.temperatureUnit;
+                    if (userData.travelStyle) userSettings.travelStyle = userData.travelStyle;
+                    if (userData.budgetPreference) userSettings.budgetPreference = userData.budgetPreference;
+                    if (userData.packingGender) userSettings.packingGender = userData.packingGender;
+                    if (userData.interests) userSettings.interests = userData.interests;
+                    if (userData.dietaryPreferences) userSettings.dietaryPreferences = userData.dietaryPreferences;
+                    if (userData.showActiveTripsToFriends !== undefined) userSettings.showActiveTripsToFriends = userData.showActiveTripsToFriends;
+                    if (userData.showUpcomingTripsToFriends !== undefined) userSettings.showUpcomingTripsToFriends = userData.showUpcomingTripsToFriends;
                     if (userData.passports) selectedPassports = userData.passports;
                 }
+
+                // Try to load theme from localStorage
+                const savedTheme = localStorage.getItem('tripportier-theme');
+                if (savedTheme) userSettings.theme = savedTheme;
 
                 applySettingsToUI();
             } catch (error) {
                 console.error('Error loading settings:', error);
+                // Still apply defaults to UI
+                applySettingsToUI();
             }
         }
 
