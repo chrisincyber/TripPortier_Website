@@ -45,6 +45,7 @@ class TripDetailManager {
     this.setupExpenseForm();
     this.setupItineraryForm();
     this.setupForecastModalHandlers();
+    this.setupEssentialsModal();
 
     // Wait for auth to be ready
     if (window.tripPortierAuth) {
@@ -403,6 +404,7 @@ class TripDetailManager {
       this.renderBudget();
       this.loadWeather();
       this.renderSuggestions();
+      this.renderEssentials();
       this.showContent();
     } catch (error) {
       console.error('Error loading trip:', error);
@@ -2665,6 +2667,552 @@ class TripDetailManager {
     if (menuBtn) {
       menuBtn.style.display = 'flex';
     }
+  }
+
+  // ============================================
+  // Trip Essentials (Gemini AI Integration)
+  // ============================================
+
+  setupEssentialsModal() {
+    const modal = document.getElementById('essential-modal');
+    const closeBtn = document.getElementById('essential-modal-close');
+
+    if (closeBtn && modal) {
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+    }
+
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  async renderEssentials() {
+    const gridEl = document.getElementById('trip-essentials-grid');
+    const sectionEl = document.getElementById('trip-essentials-section');
+    if (!gridEl || !sectionEl) return;
+
+    // Check if premium user
+    const isPremium = await this.checkPremiumStatus();
+
+    // Get country code from destination
+    const countryCode = await this.getCountryCodeFromDestination(this.trip.destination);
+
+    // Define essentials tiles - matching iOS app
+    const essentials = [
+      {
+        id: 'plug',
+        title: 'Plug & Voltage',
+        icon: this.getPlugIcon(),
+        isPremium: true,
+        dataKey: 'plug'
+      },
+      {
+        id: 'visa',
+        title: 'Visa Requirements',
+        icon: this.getPassportIcon(),
+        isPremium: true,
+        dataKey: 'visa'
+      },
+      {
+        id: 'language',
+        title: 'Language',
+        icon: this.getLanguageIcon(),
+        isPremium: true,
+        dataKey: 'culture'
+      },
+      {
+        id: 'emergency',
+        title: 'Emergency',
+        icon: this.getEmergencyIcon(),
+        isPremium: false,
+        dataKey: 'emergency'
+      },
+      {
+        id: 'timezone',
+        title: 'Timezone',
+        icon: this.getTimezoneIcon(),
+        isPremium: false,
+        dataKey: 'timezone'
+      },
+      {
+        id: 'water-food',
+        title: 'Water & Food',
+        icon: this.getWaterFoodIcon(),
+        isPremium: false,
+        dataKey: 'waterFood'
+      }
+    ];
+
+    let html = '';
+    for (const essential of essentials) {
+      const isLocked = essential.isPremium && !isPremium;
+
+      html += `
+        <div class="trip-essential-card ${essential.id}"
+             data-essential-id="${essential.id}"
+             data-data-key="${essential.dataKey}"
+             ${isLocked ? 'data-locked="true"' : ''}
+             onclick="window.tripDetailManager.openEssentialDetail('${essential.id}', '${essential.dataKey}', ${isLocked})">
+          ${isLocked ? '<span class="essential-premium-badge">TripPortier+</span>' : ''}
+          <div class="trip-essential-icon">
+            ${essential.icon}
+          </div>
+          <span class="trip-essential-title">${essential.title}</span>
+        </div>
+      `;
+    }
+
+    gridEl.innerHTML = html;
+  }
+
+  async openEssentialDetail(essentialId, dataKey, isLocked) {
+    if (isLocked) {
+      // Show premium upgrade prompt
+      this.showPremiumPrompt();
+      return;
+    }
+
+    const modal = document.getElementById('essential-modal');
+    const iconEl = document.getElementById('essential-modal-icon');
+    const titleEl = document.getElementById('essential-modal-title');
+    const destEl = document.getElementById('essential-modal-destination');
+    const bodyEl = document.getElementById('essential-modal-body');
+
+    if (!modal) return;
+
+    // Show loading state
+    modal.classList.add('active');
+    bodyEl.innerHTML = '<div class="essential-loading"><div class="essential-loading-spinner"></div><p>Loading essential info...</p></div>';
+
+    // Set header info
+    const titles = {
+      plug: 'Plug & Voltage',
+      visa: 'Visa Requirements',
+      language: 'Language',
+      emergency: 'Emergency',
+      timezone: 'Timezone',
+      'water-food': 'Water & Food'
+    };
+
+    const icons = {
+      plug: this.getPlugIcon(),
+      visa: this.getPassportIcon(),
+      language: this.getLanguageIcon(),
+      emergency: this.getEmergencyIcon(),
+      timezone: this.getTimezoneIcon(),
+      'water-food': this.getWaterFoodIcon()
+    };
+
+    titleEl.textContent = titles[essentialId] || 'Essential Info';
+    iconEl.innerHTML = icons[essentialId] || '';
+    iconEl.className = `essential-modal-icon ${essentialId}`;
+    destEl.textContent = this.trip.destination;
+
+    try {
+      // Fetch or load cached data
+      const essentialsData = await this.fetchEssentialsData();
+
+      if (!essentialsData) {
+        bodyEl.innerHTML = '<div class="essential-error">Unable to load essentials data. Please try again later.</div>';
+        return;
+      }
+
+      // Render the specific essential detail
+      bodyEl.innerHTML = this.renderEssentialContent(essentialId, dataKey, essentialsData);
+
+    } catch (error) {
+      console.error('Error fetching essential:', error);
+      bodyEl.innerHTML = '<div class="essential-error">Failed to load essentials. Please try again.</div>';
+    }
+  }
+
+  async fetchEssentialsData() {
+    const destination = this.trip.destination;
+    if (!destination) return null;
+
+    // Check cache first
+    const cacheKey = `essentials_${destination.toLowerCase().replace(/\s+/g, '_')}`;
+    const cached = localStorage.getItem(cacheKey);
+
+    if (cached) {
+      try {
+        const { data, cachedAt } = JSON.parse(cached);
+        // Cache expires after 30 days
+        const expiryMs = 30 * 24 * 60 * 60 * 1000;
+        if (Date.now() - cachedAt < expiryMs) {
+          console.log('✅ Using cached essentials for:', destination);
+          return data;
+        }
+      } catch (e) {
+        // Invalid cache, continue to fetch
+      }
+    }
+
+    // Fetch from Gemini via Firebase function
+    console.log('🔄 Fetching essentials from Gemini for:', destination);
+
+    try {
+      const user = firebase.auth().currentUser;
+      if (!user) throw new Error('Not authenticated');
+
+      // Get country code
+      const countryCode = await this.getCountryCodeFromDestination(destination);
+
+      // Call Firebase function
+      const fetchEssentials = firebase.functions().httpsCallable('fetchTravelEssentials');
+      const result = await fetchEssentials({
+        destination: destination,
+        countryCode: countryCode || 'US'
+      });
+
+      if (result.data && result.data.success) {
+        const essentialsData = result.data.essentials;
+
+        // Cache the result
+        localStorage.setItem(cacheKey, JSON.stringify({
+          data: essentialsData,
+          cachedAt: Date.now()
+        }));
+
+        return essentialsData;
+      } else {
+        throw new Error(result.data?.error || 'Failed to fetch essentials');
+      }
+    } catch (error) {
+      console.error('Error fetching essentials:', error);
+
+      // Return fallback data for timezone at least
+      return this.getFallbackEssentialsData();
+    }
+  }
+
+  getFallbackEssentialsData() {
+    // Basic fallback data
+    return {
+      timezone: {
+        offset: 'Unknown',
+        name: this.trip.destination
+      },
+      emergency: {
+        police: '911',
+        ambulance: '911',
+        fire: '911',
+        phrases: []
+      }
+    };
+  }
+
+  renderEssentialContent(essentialId, dataKey, data) {
+    switch (essentialId) {
+      case 'plug':
+        return this.renderPlugContent(data.plug || data.electrical);
+
+      case 'visa':
+        return this.renderVisaContent(data.visa);
+
+      case 'language':
+        return this.renderLanguageContent(data.culture);
+
+      case 'emergency':
+        return this.renderEmergencyContent(data.emergency);
+
+      case 'timezone':
+        return this.renderTimezoneContent(data.timezone);
+
+      case 'water-food':
+        return this.renderWaterFoodContent(data.waterFood);
+
+      default:
+        return '<p>No information available.</p>';
+    }
+  }
+
+  renderPlugContent(data) {
+    if (!data) return '<p>Plug and voltage information not available.</p>';
+
+    return `
+      <div class="essential-detail-section">
+        <h3>Plug Types</h3>
+        <p>${data.plugTypes || data.types || 'Standard plug types'}</p>
+      </div>
+      <div class="essential-detail-section">
+        <h3>Voltage</h3>
+        <p>${data.voltage || '220-240V'}</p>
+      </div>
+      <div class="essential-detail-section">
+        <h3>Frequency</h3>
+        <p>${data.frequency || '50Hz'}</p>
+      </div>
+      ${data.adapterNeeded !== undefined ? `
+        <div class="essential-detail-section">
+          <h3>Adapter Needed?</h3>
+          <p>${data.adapterNeeded ? 'Yes, you may need an adapter' : 'No adapter needed'}</p>
+        </div>
+      ` : ''}
+    `;
+  }
+
+  renderVisaContent(data) {
+    if (!data) return '<p>Visa information not available. Please check official sources.</p>';
+
+    let html = `
+      <div class="essential-detail-section">
+        <h3>Overview</h3>
+        <p>${data.description || 'Check visa requirements for your nationality.'}</p>
+      </div>
+    `;
+
+    if (data.officialURL) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>Official Source</h3>
+          <a href="${data.officialURL}" target="_blank" rel="noopener" class="essential-link">
+            Visit official immigration website →
+          </a>
+        </div>
+      `;
+    }
+
+    if (data.entryRequirements && data.entryRequirements.length > 0) {
+      html += `<div class="essential-detail-section"><h3>Entry Requirements</h3>`;
+      for (const req of data.entryRequirements) {
+        html += `
+          <div class="essential-requirement">
+            <strong>${req.name}</strong>
+            <p>${req.description}</p>
+            ${req.timing ? `<p class="essential-timing">${req.timing}</p>` : ''}
+            ${req.url ? `<a href="${req.url}" target="_blank" rel="noopener" class="essential-link">Complete online →</a>` : ''}
+          </div>
+        `;
+      }
+      html += '</div>';
+    }
+
+    return html;
+  }
+
+  renderLanguageContent(data) {
+    if (!data) return '<p>Language information not available.</p>';
+
+    let html = `
+      <div class="essential-detail-section">
+        <h3>Official Language</h3>
+        <p>${data.primaryLanguage || data.language || 'Local language'}</p>
+      </div>
+    `;
+
+    if (data.englishLevel) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>English Proficiency</h3>
+          <p>${data.englishLevel}</p>
+        </div>
+      `;
+    }
+
+    if (data.usefulPhrases && data.usefulPhrases.length > 0) {
+      html += `<div class="essential-detail-section"><h3>Useful Phrases</h3><div class="essential-phrases">`;
+      for (const phrase of data.usefulPhrases.slice(0, 10)) {
+        html += `
+          <div class="essential-phrase">
+            <span class="phrase-english">${phrase.english}</span>
+            <span class="phrase-local">${phrase.local}</span>
+            ${phrase.pronunciation ? `<span class="phrase-pronunciation">${phrase.pronunciation}</span>` : ''}
+          </div>
+        `;
+      }
+      html += '</div></div>';
+    }
+
+    return html;
+  }
+
+  renderEmergencyContent(data) {
+    if (!data) return '<p>Emergency numbers not available. Dial local emergency services.</p>';
+
+    let html = `
+      <div class="essential-detail-section emergency-numbers">
+        <h3>Emergency Numbers</h3>
+        <div class="emergency-number-grid">
+          <div class="emergency-number-item">
+            <span class="emergency-label">Police</span>
+            <a href="tel:${data.police}" class="emergency-number">${data.police}</a>
+          </div>
+          <div class="emergency-number-item">
+            <span class="emergency-label">Ambulance</span>
+            <a href="tel:${data.ambulance}" class="emergency-number">${data.ambulance}</a>
+          </div>
+          <div class="emergency-number-item">
+            <span class="emergency-label">Fire</span>
+            <a href="tel:${data.fire}" class="emergency-number">${data.fire}</a>
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (data.phrases && data.phrases.length > 0) {
+      html += `<div class="essential-detail-section"><h3>Emergency Phrases</h3><div class="essential-phrases">`;
+      for (const phrase of data.phrases) {
+        html += `
+          <div class="essential-phrase">
+            <span class="phrase-english">${phrase.english}</span>
+            <span class="phrase-local">${phrase.local}</span>
+            ${phrase.pronunciation ? `<span class="phrase-pronunciation">${phrase.pronunciation}</span>` : ''}
+          </div>
+        `;
+      }
+      html += '</div></div>';
+    }
+
+    return html;
+  }
+
+  renderTimezoneContent(data) {
+    // Calculate timezone info based on destination
+    const now = new Date();
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    let html = `
+      <div class="essential-detail-section">
+        <h3>Destination Timezone</h3>
+        <p>${data?.name || this.trip.destination}</p>
+        ${data?.offset ? `<p class="timezone-offset">${data.offset}</p>` : ''}
+      </div>
+      <div class="essential-detail-section">
+        <h3>Your Current Time</h3>
+        <p>${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}</p>
+      </div>
+    `;
+
+    if (data?.currentTime) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>Time in ${this.trip.destination}</h3>
+          <p>${data.currentTime}</p>
+        </div>
+      `;
+    }
+
+    if (data?.difference) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>Time Difference</h3>
+          <p>${data.difference}</p>
+        </div>
+      `;
+    }
+
+    return html;
+  }
+
+  renderWaterFoodContent(data) {
+    if (!data) return '<p>Water and food safety information not available.</p>';
+
+    let html = '';
+
+    if (data.tapWaterSafe !== undefined) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>Tap Water</h3>
+          <p class="safety-indicator ${data.tapWaterSafe ? 'safe' : 'caution'}">
+            ${data.tapWaterSafe ? '✓ Generally safe to drink' : '⚠ Bottled water recommended'}
+          </p>
+          ${data.waterNotes ? `<p>${data.waterNotes}</p>` : ''}
+        </div>
+      `;
+    }
+
+    if (data.streetFoodSafe !== undefined) {
+      html += `
+        <div class="essential-detail-section">
+          <h3>Street Food</h3>
+          <p class="safety-indicator ${data.streetFoodSafe ? 'safe' : 'caution'}">
+            ${data.streetFoodSafe ? '✓ Generally safe' : '⚠ Exercise caution'}
+          </p>
+          ${data.foodNotes ? `<p>${data.foodNotes}</p>` : ''}
+        </div>
+      `;
+    }
+
+    if (data.tips && data.tips.length > 0) {
+      html += `<div class="essential-detail-section"><h3>Tips</h3><ul class="essential-tips">`;
+      for (const tip of data.tips) {
+        html += `<li>${tip}</li>`;
+      }
+      html += '</ul></div>';
+    }
+
+    return html || '<p>Water and food information not available.</p>';
+  }
+
+  async getCountryCodeFromDestination(destination) {
+    if (!destination) return null;
+
+    try {
+      // Use geocoding API to get country
+      const response = await fetch(
+        `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(destination)}&count=1&language=en&format=json`
+      );
+
+      if (!response.ok) return null;
+
+      const data = await response.json();
+      if (data.results && data.results.length > 0) {
+        return data.results[0].country_code;
+      }
+      return null;
+    } catch (error) {
+      console.warn('Failed to get country code:', error);
+      return null;
+    }
+  }
+
+  showPremiumPrompt() {
+    // Show a toast or modal prompting upgrade
+    this.showToast('Upgrade to TripPortier+ to access this feature');
+  }
+
+  // Essential Icons
+  getPlugIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93s3.06-7.44 7-7.93v15.86zm2 0V4.07c3.94.49 7 3.85 7 7.93s-3.06 7.44-7 7.93z"/>
+    </svg>`;
+  }
+
+  getPassportIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M6 2c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2H6zm6 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H6v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1z"/>
+    </svg>`;
+  }
+
+  getLanguageIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+    </svg>`;
+  }
+
+  getEmergencyIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+    </svg>`;
+  }
+
+  getTimezoneIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/>
+    </svg>`;
+  }
+
+  getWaterFoodIcon() {
+    return `<svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2c-5.33 4.55-8 8.48-8 11.8 0 4.98 3.8 8.2 8 8.2s8-3.22 8-8.2c0-3.32-2.67-7.25-8-11.8zm0 18c-3.35 0-6-2.57-6-6.2 0-2.34 1.95-5.44 6-9.14 4.05 3.7 6 6.79 6 9.14 0 3.63-2.65 6.2-6 6.2z"/>
+    </svg>`;
   }
 }
 

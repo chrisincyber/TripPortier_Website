@@ -189,43 +189,33 @@
                 </section>
 
                 <!-- Essentials Grid -->
-                <section class="trip-section">
+                <section class="trip-section" id="trip-essentials-section">
                     <h2 class="trip-section-title">Trip Essentials</h2>
                     <div class="trip-essentials-grid" id="trip-essentials-grid">
-                        <!-- Duration -->
-                        <div class="trip-essential-card">
-                            <div class="trip-essential-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                                    <line x1="16" y1="2" x2="16" y2="6"/>
-                                    <line x1="8" y1="2" x2="8" y2="6"/>
-                                    <line x1="3" y1="10" x2="21" y2="10"/>
-                                </svg>
-                            </div>
-                            <div class="trip-essential-label">Duration</div>
-                            <div class="trip-essential-value" id="trip-duration"></div>
-                        </div>
-
-                        <!-- Context/Type -->
-                        <div class="trip-essential-card" id="trip-context-card" style="display: none;">
-                            <div class="trip-essential-icon" id="trip-context-icon"></div>
-                            <div class="trip-essential-label">Trip Type</div>
-                            <div class="trip-essential-value" id="trip-context"></div>
-                        </div>
-
-                        <!-- Timezone -->
-                        <div class="trip-essential-card" id="trip-timezone-card" style="display: none;">
-                            <div class="trip-essential-icon">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="10"/>
-                                    <polyline points="12 6 12 12 16 14"/>
-                                </svg>
-                            </div>
-                            <div class="trip-essential-label">Local Time</div>
-                            <div class="trip-essential-value" id="trip-timezone"></div>
-                        </div>
+                        <!-- Essentials will be dynamically inserted here -->
                     </div>
                 </section>
+
+                <!-- Essential Detail Modal -->
+                <div class="essential-modal" id="essential-modal">
+                    <div class="essential-modal-content">
+                        <div class="essential-modal-header">
+                            <div class="essential-modal-icon" id="essential-modal-icon"></div>
+                            <div class="essential-modal-title-area">
+                                <h2 id="essential-modal-title">Essential Info</h2>
+                                <span class="essential-modal-destination" id="essential-modal-destination"></span>
+                            </div>
+                            <button class="essential-modal-close" id="essential-modal-close">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="essential-modal-body" id="essential-modal-body">
+                            <!-- Content will be dynamically inserted -->
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Quick Actions -->
                 <section class="trip-section">

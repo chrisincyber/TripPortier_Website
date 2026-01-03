@@ -746,50 +746,540 @@
 
 .trip-essentials-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .trip-essential-card {
-  background: white;
+  background: #f8fafc;
   border-radius: 16px;
-  padding: 1.25rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 12px;
   text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.trip-essential-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.trip-essential-card.premium {
+  position: relative;
+}
+
+.trip-essential-card.premium::after {
+  content: '';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trip-essential-card .premium-lock {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trip-essential-card .premium-lock svg {
+  width: 10px;
+  height: 10px;
+  color: white;
 }
 
 .trip-essential-icon {
   width: 48px;
   height: 48px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 12px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 0.75rem;
+  margin: 0 auto 8px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.3));
+  border: 1.5px solid rgba(255,255,255,0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .trip-essential-icon svg {
-  width: 24px;
-  height: 24px;
-  color: white;
+  width: 22px;
+  height: 22px;
 }
 
-.trip-essential-icon.emoji {
-  background: #f1f5f9;
-  font-size: 1.5rem;
-}
+/* Essential icon colors matching iOS app */
+.trip-essential-card.plug .trip-essential-icon { color: #d97706; }
+.trip-essential-card.visa .trip-essential-icon { color: #7c3aed; }
+.trip-essential-card.language .trip-essential-icon { color: #db2777; }
+.trip-essential-card.emergency .trip-essential-icon { color: #dc2626; }
+.trip-essential-card.timezone .trip-essential-icon { color: #3b82f6; }
+.trip-essential-card.water .trip-essential-icon { color: #0ea5e9; }
+.trip-essential-card.legal .trip-essential-icon { color: #ea580c; }
+.trip-essential-card.currency .trip-essential-icon { color: #059669; }
 
 .trip-essential-label {
-  font-size: 0.75rem;
-  color: #64748b;
-  margin-bottom: 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.2;
 }
 
 .trip-essential-value {
+  font-size: 0.6875rem;
+  color: #64748b;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Essential Modal */
+.essential-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.essential-modal.active {
+  display: flex;
+}
+
+.essential-modal-content {
+  background: white;
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
+}
+
+.essential-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background: white;
+  border-radius: 24px 24px 0 0;
+}
+
+.essential-modal-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.5));
+  border: 2px solid rgba(255,255,255,0.8);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.essential-modal-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.essential-modal-title-area {
+  flex: 1;
+}
+
+.essential-modal-title-area h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.essential-modal-destination {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.essential-modal-close {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.essential-modal-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.essential-modal-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.essential-modal-body {
+  padding: 20px;
+}
+
+.essential-info-section {
+  margin-bottom: 20px;
+}
+
+.essential-info-section:last-child {
+  margin-bottom: 0;
+}
+
+.essential-info-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.essential-info-content {
+  font-size: 0.9375rem;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+.essential-info-highlight {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.essential-info-highlight-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.essential-info-highlight-text {
+  flex: 1;
+}
+
+.essential-info-highlight-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.essential-info-highlight-value {
   font-size: 1rem;
   font-weight: 600;
   color: #1e293b;
+}
+
+.essential-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.essential-loading-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Essential Premium Badge */
+.essential-premium-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.trip-essential-card[data-locked="true"] {
+  opacity: 0.85;
+}
+
+.trip-essential-card[data-locked="true"]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(99, 102, 241, 0.08);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Essential Title Styling */
+.trip-essential-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #475569;
+  text-align: center;
+  margin-top: 4px;
+}
+
+/* Essential Detail Section */
+.essential-detail-section {
+  margin-bottom: 24px;
+}
+
+.essential-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.essential-detail-section h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.essential-detail-section p {
+  font-size: 1rem;
+  color: #475569;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Essential Links */
+.essential-link {
+  display: inline-block;
+  color: #6366f1;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 4px;
+  transition: color 0.2s;
+}
+
+.essential-link:hover {
+  color: #4f46e5;
+  text-decoration: underline;
+}
+
+/* Essential Error */
+.essential-error {
+  text-align: center;
+  padding: 40px 20px;
+  color: #ef4444;
+}
+
+/* Essential Requirement */
+.essential-requirement {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+}
+
+.essential-requirement:last-child {
+  margin-bottom: 0;
+}
+
+.essential-requirement strong {
+  display: block;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.essential-requirement p {
+  font-size: 0.875rem;
+  margin: 4px 0;
+}
+
+.essential-timing {
+  color: #6366f1 !important;
+  font-weight: 500;
+  font-size: 0.8rem !important;
+}
+
+/* Essential Phrases */
+.essential-phrases {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.essential-phrase {
+  background: #f8fafc;
+  border-radius: 10px;
+  padding: 12px 16px;
+}
+
+.phrase-english {
+  display: block;
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.phrase-local {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.phrase-pronunciation {
+  display: block;
+  font-size: 0.8rem;
+  color: #6366f1;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* Emergency Numbers Grid */
+.emergency-number-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.emergency-number-item {
+  text-align: center;
+  background: #fef2f2;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.emergency-label {
+  display: block;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.emergency-number {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #dc2626;
+  text-decoration: none;
+}
+
+.emergency-number:hover {
+  text-decoration: underline;
+}
+
+/* Timezone Offset */
+.timezone-offset {
+  font-size: 0.875rem;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+/* Safety Indicators */
+.safety-indicator {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.safety-indicator.safe {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.safety-indicator.caution {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+/* Essential Tips */
+.essential-tips {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+
+.essential-tips li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.essential-tips li:last-child {
+  margin-bottom: 0;
+}
+
+.essential-tips li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #6366f1;
+  font-weight: bold;
+}
+
+/* Water-food icon color */
+.trip-essential-card.water-food .trip-essential-icon { color: #0ea5e9; }
+
+@media (min-width: 768px) {
+  .essential-modal {
+    align-items: center;
+  }
+
+  .essential-modal-content {
+    border-radius: 24px;
+    max-height: 70vh;
+  }
+
+  .essential-modal-header {
+    border-radius: 24px 24px 0 0;
+  }
 }
 
 /* ============================================
@@ -3067,6 +3557,58 @@
 
 [data-theme="dark"] .trip-essential-value {
   color: #f1f5f9;
+}
+
+[data-theme="dark"] .trip-essential-title {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .essential-modal-content {
+  background: #0f0f23;
+}
+
+[data-theme="dark"] .essential-modal-header {
+  background: linear-gradient(135deg, #1a1a3e 0%, #2d2d5a 100%);
+}
+
+[data-theme="dark"] .essential-modal-body {
+  background: #0f0f23;
+}
+
+[data-theme="dark"] .essential-detail-section h3 {
+  color: #e2e8f0;
+}
+
+[data-theme="dark"] .essential-detail-section p {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .essential-phrase,
+[data-theme="dark"] .essential-requirement {
+  background: #1a1a3e;
+}
+
+[data-theme="dark"] .phrase-local,
+[data-theme="dark"] .essential-requirement strong {
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .emergency-number-item {
+  background: rgba(220, 38, 38, 0.1);
+}
+
+[data-theme="dark"] .safety-indicator.safe {
+  background: rgba(22, 163, 74, 0.15);
+  color: #4ade80;
+}
+
+[data-theme="dark"] .safety-indicator.caution {
+  background: rgba(217, 119, 6, 0.15);
+  color: #fbbf24;
+}
+
+[data-theme="dark"] .essential-tips li {
+  color: #94a3b8;
 }
 
 [data-theme="dark"] .trip-action-card {
