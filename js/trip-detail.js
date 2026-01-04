@@ -4,6 +4,8 @@
  * Loads real data from Firestore for cross-device sync
  */
 
+console.log('🚀 trip-detail.js loaded');
+
 class TripDetailManager {
   constructor() {
     this.trip = null;
@@ -346,6 +348,7 @@ class TripDetailManager {
   }
 
   async loadTrip(userId, tripId) {
+    console.log('📂 loadTrip called with userId:', userId, 'tripId:', tripId);
     try {
       const db = firebase.firestore();
       const doc = await db
@@ -361,6 +364,14 @@ class TripDetailManager {
       }
 
       const data = doc.data();
+
+      // Debug: Log raw itinerary items from Firestore
+      console.log('🔍 Raw itineraryItems from Firestore:', data.itineraryItems);
+      console.log('🔍 itineraryItems count:', data.itineraryItems?.length || 0);
+      if (data.itineraryItems?.length > 0) {
+        console.log('🔍 First item structure:', JSON.stringify(data.itineraryItems[0], null, 2));
+      }
+
       this.trip = {
         id: doc.id,
         name: data.name || 'Untitled Trip',
