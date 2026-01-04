@@ -10,6 +10,8 @@ class TripDetailManager {
   constructor() {
     this.trip = null;
     this.userId = null;
+    this.ownerUserId = null; // For shared trips, this is the actual owner
+    this.isSharedTrip = false;
     this.selectedTab = 'hub';
     this.selectedPlanSubtab = 'packing';
     this.temperatureUnit = 'celsius'; // Default to celsius
@@ -351,19 +353,53 @@ class TripDetailManager {
     console.log('📂 loadTrip called with userId:', userId, 'tripId:', tripId);
     try {
       const db = firebase.firestore();
-      const doc = await db
+
+      // First, load from user's collection to check if it's a shared trip
+      const userDoc = await db
         .collection('users')
         .doc(userId)
         .collection('trips')
         .doc(tripId)
         .get();
 
-      if (!doc.exists) {
+      if (!userDoc.exists) {
         this.showError();
         return;
       }
 
-      const data = doc.data();
+      const userData = userDoc.data();
+
+      // Check if this is a shared trip
+      this.isSharedTrip = userData.isSharedTrip || false;
+      const sharedFromUserId = userData.sharedFromUserId || null;
+
+      // Determine which collection to read from
+      let data;
+      if (this.isSharedTrip && sharedFromUserId) {
+        console.log('🔗 This is a shared trip, loading from owner:', sharedFromUserId);
+        this.ownerUserId = sharedFromUserId;
+
+        // Load the actual trip data from the owner's collection
+        const ownerDoc = await db
+          .collection('users')
+          .doc(sharedFromUserId)
+          .collection('trips')
+          .doc(tripId)
+          .get();
+
+        if (!ownerDoc.exists) {
+          console.warn('⚠️ Owner trip not found, falling back to user copy');
+          data = userData;
+          this.ownerUserId = userId; // Fall back to user's copy
+        } else {
+          data = ownerDoc.data();
+          console.log('✅ Loaded trip from owner collection');
+        }
+      } else {
+        // Regular trip - user owns it
+        this.ownerUserId = userId;
+        data = userData;
+      }
 
       // Debug: Log raw itinerary items from Firestore
       console.log('🔍 Raw itineraryItems from Firestore:', data.itineraryItems);
@@ -373,7 +409,7 @@ class TripDetailManager {
       }
 
       this.trip = {
-        id: doc.id,
+        id: userDoc.id,
         name: data.name || 'Untitled Trip',
         destination: data.destination || '',
         startDate: this.parseDate(data.startDate),
@@ -1973,13 +2009,14 @@ class TripDetailManager {
   }
 
   async savePackingItemsToFirestore() {
-    if (!this.userId || !this.tripId) return;
+    if (!this.ownerUserId || !this.tripId) return;
 
     try {
       const db = firebase.firestore();
+      // Use ownerUserId for shared trips to write to owner's collection
       await db
         .collection('users')
-        .doc(this.userId)
+        .doc(this.ownerUserId)
         .collection('trips')
         .doc(this.tripId)
         .update({
@@ -2119,13 +2156,14 @@ class TripDetailManager {
   }
 
   async saveTodosToFirestore() {
-    if (!this.userId || !this.tripId) return;
+    if (!this.ownerUserId || !this.tripId) return;
 
     try {
       const db = firebase.firestore();
+      // Use ownerUserId for shared trips to write to owner's collection
       await db
         .collection('users')
-        .doc(this.userId)
+        .doc(this.ownerUserId)
         .collection('trips')
         .doc(this.tripId)
         .update({
@@ -3186,13 +3224,14 @@ class TripDetailManager {
   }
 
   async saveExpensesToFirestore() {
-    if (!this.userId || !this.tripId || !this.trip) return;
+    if (!this.ownerUserId || !this.tripId || !this.trip) return;
 
     try {
       const db = firebase.firestore();
+      // Use ownerUserId for shared trips to write to owner's collection
       await db
         .collection('users')
-        .doc(this.userId)
+        .doc(this.ownerUserId)
         .collection('trips')
         .doc(this.tripId)
         .update({
@@ -4806,13 +4845,14 @@ class TripDetailManager {
   }
 
   async saveItineraryToFirestore() {
-    if (!this.userId || !this.tripId || !this.trip) return;
+    if (!this.ownerUserId || !this.tripId || !this.trip) return;
 
     try {
       const db = firebase.firestore();
+      // Use ownerUserId for shared trips to write to owner's collection
       await db
         .collection('users')
-        .doc(this.userId)
+        .doc(this.ownerUserId)
         .collection('trips')
         .doc(this.tripId)
         .update({
@@ -5301,9 +5341,10 @@ class TripDetailManager {
 
     try {
       const db = firebase.firestore();
+      // Use ownerUserId for shared trips to write to owner's collection
       await db
         .collection('users')
-        .doc(this.userId)
+        .doc(this.ownerUserId)
         .collection('trips')
         .doc(this.tripId)
         .update({
