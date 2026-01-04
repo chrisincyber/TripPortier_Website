@@ -3000,6 +3000,8 @@ class TripDetailManager {
     // New modal-based add item system
     this.currentItemType = null;
     this.newItemData = {};
+    this.selectedLocationData = null; // Store selected location with coordinates
+    this.locationSearchTimeout = null; // Debounce timer for location search
 
     // Close modals when clicking overlay
     document.getElementById('add-item-type-modal')?.addEventListener('click', (e) => {
@@ -3013,6 +3015,261 @@ class TripDetailManager {
         this.closeAddItemModal();
       }
     });
+
+    // Close location results when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.location-autocomplete-wrapper')) {
+        this.hideLocationResults();
+      }
+    });
+  }
+
+  // ============================================
+  // Location Autocomplete
+  // ============================================
+
+  setupLocationAutocomplete() {
+    const locationInput = document.getElementById('item-location');
+    if (!locationInput) return;
+
+    // Wrap the input in an autocomplete container if not already wrapped
+    if (!locationInput.closest('.location-autocomplete-wrapper')) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'location-autocomplete-wrapper';
+      locationInput.parentNode.insertBefore(wrapper, locationInput);
+      wrapper.appendChild(locationInput);
+
+      // Add results container
+      const resultsContainer = document.createElement('div');
+      resultsContainer.className = 'location-autocomplete-results';
+      resultsContainer.id = 'location-results';
+      wrapper.appendChild(resultsContainer);
+    }
+
+    // Add event listeners
+    locationInput.addEventListener('input', (e) => {
+      this.onLocationInput(e.target.value);
+    });
+
+    locationInput.addEventListener('focus', (e) => {
+      if (e.target.value.trim().length >= 2) {
+        this.onLocationInput(e.target.value);
+      }
+    });
+
+    // Clear selected location when user types
+    locationInput.addEventListener('keydown', () => {
+      this.selectedLocationData = null;
+    });
+  }
+
+  onLocationInput(query) {
+    // Clear previous timeout
+    if (this.locationSearchTimeout) {
+      clearTimeout(this.locationSearchTimeout);
+    }
+
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
+      this.hideLocationResults();
+      return;
+    }
+
+    // Debounce the search (300ms)
+    this.locationSearchTimeout = setTimeout(() => {
+      this.searchLocation(trimmed);
+    }, 300);
+  }
+
+  async searchLocation(query) {
+    const resultsContainer = document.getElementById('location-results');
+    if (!resultsContainer) return;
+
+    // Show loading state
+    resultsContainer.innerHTML = `
+      <div class="location-result-item location-loading">
+        <div class="location-result-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <div class="location-result-text">
+          <span class="location-result-name">Searching...</span>
+        </div>
+      </div>
+    `;
+    resultsContainer.classList.add('active');
+
+    try {
+      // Use OpenStreetMap Nominatim API (free, no API key required)
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'TripPortier Web App'
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Search failed');
+      }
+
+      const results = await response.json();
+      this.renderLocationResults(results);
+    } catch (error) {
+      console.warn('Location search error:', error);
+      resultsContainer.innerHTML = `
+        <div class="location-result-item location-error">
+          <div class="location-result-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div class="location-result-text">
+            <span class="location-result-name">Search failed. Try again.</span>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  renderLocationResults(results) {
+    const resultsContainer = document.getElementById('location-results');
+    if (!resultsContainer) return;
+
+    if (results.length === 0) {
+      resultsContainer.innerHTML = `
+        <div class="location-result-item location-empty">
+          <div class="location-result-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <div class="location-result-text">
+            <span class="location-result-name">No locations found</span>
+          </div>
+        </div>
+      `;
+      resultsContainer.classList.add('active');
+      return;
+    }
+
+    resultsContainer.innerHTML = results.map((result, index) => {
+      const name = this.getLocationName(result);
+      const address = this.getLocationAddress(result);
+      const icon = this.getLocationIcon(result.type, result.class);
+
+      return `
+        <div class="location-result-item" data-index="${index}" onclick="window.tripDetailManager.selectLocationResult(${index})">
+          <div class="location-result-icon">
+            ${icon}
+          </div>
+          <div class="location-result-text">
+            <span class="location-result-name">${this.escapeHtml(name)}</span>
+            ${address ? `<span class="location-result-address">${this.escapeHtml(address)}</span>` : ''}
+          </div>
+          <div class="location-result-chevron">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Store results for selection
+    this.locationResults = results;
+    resultsContainer.classList.add('active');
+  }
+
+  getLocationName(result) {
+    // Try to get a clean name
+    if (result.namedetails?.name) return result.namedetails.name;
+    if (result.address) {
+      // Build name from address components
+      const parts = [];
+      if (result.address.amenity) parts.push(result.address.amenity);
+      else if (result.address.shop) parts.push(result.address.shop);
+      else if (result.address.tourism) parts.push(result.address.tourism);
+      else if (result.address.building) parts.push(result.address.building);
+      else if (result.address.road) parts.push(result.address.road);
+      else if (result.address.neighbourhood) parts.push(result.address.neighbourhood);
+
+      if (parts.length > 0) return parts.join(', ');
+    }
+    // Fallback to display_name first part
+    return result.display_name?.split(',')[0] || 'Unknown Location';
+  }
+
+  getLocationAddress(result) {
+    if (!result.address) return null;
+
+    const parts = [];
+    const addr = result.address;
+
+    // Build a readable address
+    if (addr.house_number && addr.road) {
+      parts.push(`${addr.house_number} ${addr.road}`);
+    } else if (addr.road) {
+      parts.push(addr.road);
+    }
+
+    if (addr.city || addr.town || addr.village) {
+      parts.push(addr.city || addr.town || addr.village);
+    }
+
+    if (addr.country) {
+      parts.push(addr.country);
+    }
+
+    return parts.length > 0 ? parts.join(', ') : null;
+  }
+
+  getLocationIcon(type, osm_class) {
+    // Return appropriate icon based on location type
+    if (type === 'hotel' || type === 'hostel' || type === 'guest_house' || osm_class === 'tourism') {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+    }
+    if (type === 'restaurant' || type === 'cafe' || type === 'fast_food' || osm_class === 'amenity') {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>`;
+    }
+    if (type === 'airport' || type === 'aerodrome') {
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>`;
+    }
+    // Default map pin icon
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  }
+
+  selectLocationResult(index) {
+    const result = this.locationResults?.[index];
+    if (!result) return;
+
+    const locationInput = document.getElementById('item-location');
+    if (!locationInput) return;
+
+    // Create LocationData object matching iOS structure
+    const name = this.getLocationName(result);
+    const address = this.getLocationAddress(result);
+
+    this.selectedLocationData = {
+      name: name,
+      address: address || result.display_name,
+      latitude: parseFloat(result.lat),
+      longitude: parseFloat(result.lon)
+    };
+
+    // Set input value to the name
+    locationInput.value = name;
+
+    // Hide results
+    this.hideLocationResults();
+  }
+
+  hideLocationResults() {
+    const resultsContainer = document.getElementById('location-results');
+    if (resultsContainer) {
+      resultsContainer.classList.remove('active');
+    }
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   openAddItemModal() {
@@ -3039,11 +3296,14 @@ class TripDetailManager {
     document.getElementById('add-item-form-modal')?.classList.remove('active');
     this.currentItemType = null;
     this.newItemData = {};
+    this.selectedLocationData = null;
+    this.hideLocationResults();
   }
 
   openItemForm(type) {
     this.currentItemType = type;
     this.newItemData = { type };
+    this.selectedLocationData = null; // Clear any previous location data
 
     // Hide type selector, show form
     document.getElementById('add-item-type-modal')?.classList.remove('active');
@@ -3066,6 +3326,11 @@ class TripDetailManager {
 
       // Generate form fields based on type
       contentEl.innerHTML = this.generateItemForm(type);
+
+      // Setup location autocomplete after form is rendered
+      requestAnimationFrame(() => {
+        this.setupLocationAutocomplete();
+      });
     }
   }
 
@@ -3746,11 +4011,28 @@ class TripDetailManager {
     }
 
     // Collect common data
+    const locationInputValue = document.getElementById('item-location')?.value.trim() || null;
+
+    // Use selectedLocationData if available, otherwise create from text input
+    let locationData = null;
+    if (this.selectedLocationData) {
+      locationData = this.selectedLocationData;
+    } else if (locationInputValue) {
+      // Fallback: create basic location data from text input
+      locationData = {
+        name: locationInputValue,
+        address: null,
+        latitude: null,
+        longitude: null
+      };
+    }
+
     const itemData = {
       id: `itinerary_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       name: title,
       category: this.currentItemType,
-      location: document.getElementById('item-location')?.value.trim() || null,
+      location: locationData?.name || locationInputValue, // Keep backward compatibility
+      locationData: locationData, // Full location object with coordinates
       notes: document.getElementById('item-notes')?.value.trim() || null,
       websiteURL: document.getElementById('item-website')?.value.trim() || null,
       phoneNumber: document.getElementById('item-phone')?.value.trim() || null,
