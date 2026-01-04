@@ -1454,13 +1454,19 @@ class TripDetailManager {
     // Get context-aware display info
     const displayInfo = this.getItemDisplayInfo(item, displayDate);
 
+    // Build status badges
+    const statusBadges = this.buildStatusBadges(item);
+
     return `
       <div class="itinerary-item itinerary-item-${category.toLowerCase()}" data-item-id="${item.id || index}" onclick="window.tripDetailManager.openItemDetail('${item.id || index}')">
         <div class="itinerary-item-icon-wrap">
           ${icon}
         </div>
         <div class="itinerary-item-content">
-          <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
+          <div class="itinerary-item-header">
+            <div class="itinerary-item-title">${this.escapeHtml(item.name || item.title || 'Untitled')}</div>
+            ${statusBadges}
+          </div>
           ${displayInfo.subtitle ? `<div class="itinerary-item-subtitle">${displayInfo.subtitle}</div>` : ''}
         </div>
         ${displayInfo.timeLabel ? `<div class="itinerary-item-time">${displayInfo.timeLabel}</div>` : ''}
@@ -1471,6 +1477,49 @@ class TripDetailManager {
         </div>
       </div>
     `;
+  }
+
+  buildStatusBadges(item) {
+    const badges = [];
+
+    // Payment status badge
+    if (item.paymentStatus) {
+      const paymentConfig = {
+        'paid': { label: 'Paid', class: 'status-paid' },
+        'unpaid': { label: 'Unpaid', class: 'status-unpaid' },
+        'partially_paid': { label: 'Partial', class: 'status-partial' }
+      };
+      const config = paymentConfig[item.paymentStatus];
+      if (config) {
+        badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
+      }
+    }
+
+    // Booking status badge (only show if not confirmed - confirmed is the "normal" state)
+    if (item.bookingStatus && item.bookingStatus !== 'confirmed') {
+      const bookingConfig = {
+        'pending': { label: 'Pending', class: 'status-pending' },
+        'cancelled': { label: 'Cancelled', class: 'status-cancelled' }
+      };
+      const config = bookingConfig[item.bookingStatus];
+      if (config) {
+        badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
+      }
+    }
+
+    // Cost badge if has amount
+    if (item.currencyAmount && item.currencyAmount > 0) {
+      const currency = item.currency || 'USD';
+      const formatted = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(item.currencyAmount);
+      badges.push(`<span class="itinerary-status-badge status-cost">${formatted}</span>`);
+    }
+
+    return badges.length > 0 ? `<div class="itinerary-item-badges">${badges.join('')}</div>` : '';
   }
 
   getItemDisplayInfo(item, displayDate) {
@@ -3375,11 +3424,32 @@ class TripDetailManager {
         break;
     }
 
-    // Common fields at bottom
+    // Common fields at bottom - Booking, Payment & Cost
     html += `
       <div class="item-form-section">
+        <div class="item-form-section-title">Booking & Payment</div>
+        <div class="item-form-row">
+          <div class="item-form-field">
+            <label class="item-form-label">Booking Status</label>
+            <select class="item-form-select" id="item-booking-status">
+              <option value="">Not specified</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div class="item-form-field">
+            <label class="item-form-label">Payment Status</label>
+            <select class="item-form-select" id="item-payment-status">
+              <option value="">Not specified</option>
+              <option value="unpaid">Unpaid</option>
+              <option value="partially_paid">Partially Paid</option>
+              <option value="paid">Paid</option>
+            </select>
+          </div>
+        </div>
         <div class="item-form-field">
-          <label class="item-form-label">Cost</label>
+          <label class="item-form-label">Cost / Amount</label>
           <div class="item-form-row">
             <select class="item-form-select" id="item-currency" style="flex: 0 0 80px;">
               <option value="USD">USD</option>
@@ -3390,9 +3460,16 @@ class TripDetailManager {
               <option value="AUD">AUD</option>
               <option value="CAD">CAD</option>
             </select>
-            <input type="number" class="item-form-input" id="item-cost" placeholder="0.00" step="0.01">
+            <input type="number" class="item-form-input" id="item-cost" placeholder="0.00" step="0.01" min="0">
           </div>
+          <span class="item-form-hint">This amount will be included in your trip budget</span>
         </div>
+      </div>
+    `;
+
+    // Contact & Notes
+    html += `
+      <div class="item-form-section">
         <div class="item-form-field">
           <label class="item-form-label">Website</label>
           <input type="url" class="item-form-input" id="item-website" placeholder="https://...">
@@ -3433,15 +3510,6 @@ class TripDetailManager {
             <option value="cultural">Cultural</option>
             <option value="nightlife">Nightlife</option>
             <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="item-form-field">
-          <label class="item-form-label">Booking Status</label>
-          <select class="item-form-select" id="item-booking-status">
-            <option value="">Not specified</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
           </select>
         </div>
         <div class="item-form-field">
@@ -3486,15 +3554,6 @@ class TripDetailManager {
             <option value="half-board">Half Board</option>
             <option value="full-board">Full Board</option>
             <option value="all-inclusive">All Inclusive</option>
-          </select>
-        </div>
-        <div class="item-form-field">
-          <label class="item-form-label">Booking Status</label>
-          <select class="item-form-select" id="item-booking-status">
-            <option value="">Not specified</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
           </select>
         </div>
         <div class="item-form-row">
@@ -3542,15 +3601,6 @@ class TripDetailManager {
         <div class="item-form-field">
           <label class="item-form-label">Cuisine</label>
           <input type="text" class="item-form-input" id="item-cuisine" placeholder="Italian, Japanese, Local...">
-        </div>
-        <div class="item-form-field">
-          <label class="item-form-label">Booking Status</label>
-          <select class="item-form-select" id="item-booking-status">
-            <option value="">Not specified</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
         </div>
         <div class="item-form-row">
           <div class="item-form-field">
@@ -3696,15 +3746,6 @@ class TripDetailManager {
           <div class="item-form-field">
             <label class="item-form-label">Confirmation Number</label>
             <input type="text" class="item-form-input" id="item-confirmation" placeholder="Booking reference...">
-          </div>
-          <div class="item-form-field">
-            <label class="item-form-label">Booking Status</label>
-            <select class="item-form-select" id="item-booking-status">
-              <option value="">Not specified</option>
-              <option value="pending">Pending</option>
-              <option value="confirmed">Confirmed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
           </div>
         </div>
       </div>
@@ -4037,10 +4078,11 @@ class TripDetailManager {
       websiteURL: document.getElementById('item-website')?.value.trim() || null,
       phoneNumber: document.getElementById('item-phone')?.value.trim() || null,
       bookingStatus: document.getElementById('item-booking-status')?.value || null,
+      paymentStatus: document.getElementById('item-payment-status')?.value || null,
       createdAt: new Date().toISOString()
     };
 
-    // Add cost if provided
+    // Add cost if provided - this will be used for budget calculations
     const cost = parseFloat(document.getElementById('item-cost')?.value);
     if (!isNaN(cost) && cost > 0) {
       itemData.currencyAmount = cost;
