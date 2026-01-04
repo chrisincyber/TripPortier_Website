@@ -987,14 +987,52 @@ class TripDetailManager {
     const titleEl = document.getElementById('item-detail-title');
     if (!content) return;
 
-    const category = item.category || item.type || 'other';
+    const category = (item.category || item.type || 'other').toLowerCase();
     const icon = this.getItineraryIcon(category);
 
     titleEl.textContent = item.name || item.title || 'Untitled';
 
-    // Format dates
-    const startDate = this.parseDate(item.startDate || item.date);
-    const endDate = this.parseDate(item.endDate);
+    // Get dates based on item type (handle iOS nested structures)
+    let startDate = null;
+    if (category === 'accommodation' || category === 'hotel') {
+      startDate = this.parseDate(
+        item.accommodationDetails?.checkInTime ||
+        item.checkInTime ||
+        item.startDate ||
+        item.date
+      );
+    } else if (category === 'travel' || category === 'flight') {
+      startDate = this.parseDate(
+        item.travelDetails?.departureTime ||
+        item.departureTime ||
+        item.startDate ||
+        item.date
+      );
+    } else if (category === 'food') {
+      startDate = this.parseDate(
+        item.foodDetails?.reservationTime ||
+        item.foodDetails?.startTime ||
+        item.reservationTime ||
+        item.startTime ||
+        item.startDate ||
+        item.date
+      );
+    } else if (category === 'activity') {
+      startDate = this.parseDate(
+        item.activityDetails?.startTime ||
+        item.startTime ||
+        item.startDate ||
+        item.date
+      );
+    } else {
+      startDate = this.parseDate(
+        item.otherDetails?.startTime ||
+        item.startTime ||
+        item.startDate ||
+        item.date
+      );
+    }
+
     const dateStr = startDate ? startDate.toLocaleDateString('en-US', {
       weekday: 'long', month: 'short', day: 'numeric', year: 'numeric'
     }) : '';
@@ -1025,11 +1063,20 @@ class TripDetailManager {
       `;
     }
 
-    // Location
-    const location = item.location || item.fromLocation || item.toLocation;
-    if (location) {
+    // Location (handle iOS LocationData object)
+    let locationStr = null;
+    let locationForMaps = null;
+    if (typeof item.location === 'object' && item.location?.name) {
+      locationStr = item.location.name;
+      locationForMaps = item.location.address || item.location.name;
+    } else if (item.location) {
+      locationStr = item.location;
+      locationForMaps = item.location;
+    }
+
+    if (locationStr) {
       detailsHtml += `
-        <div class="item-detail-row clickable" onclick="window.tripDetailManager.openItemInMaps('${this.escapeHtml(location)}')">
+        <div class="item-detail-row clickable" onclick="window.tripDetailManager.openItemInMaps('${this.escapeHtml(locationForMaps)}')">
           <div class="item-detail-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
@@ -1038,7 +1085,7 @@ class TripDetailManager {
           </div>
           <div class="item-detail-info">
             <span class="item-detail-label">Location</span>
-            <span class="item-detail-value">${this.escapeHtml(location)}</span>
+            <span class="item-detail-value">${this.escapeHtml(locationStr)}</span>
           </div>
           <svg class="item-detail-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
@@ -1047,8 +1094,10 @@ class TripDetailManager {
       `;
     }
 
-    // Travel-specific: From → To
-    if (item.fromLocation && item.toLocation) {
+    // Travel-specific: From → To (handle iOS travelDetails)
+    const fromLoc = item.fromLocation || item.travelDetails?.fromLocation;
+    const toLoc = item.toLocation || item.travelDetails?.toLocation;
+    if (fromLoc && toLoc) {
       detailsHtml += `
         <div class="item-detail-row">
           <div class="item-detail-icon">
@@ -1059,7 +1108,7 @@ class TripDetailManager {
           </div>
           <div class="item-detail-info">
             <span class="item-detail-label">Route</span>
-            <span class="item-detail-value">${this.escapeHtml(item.fromLocation)} → ${this.escapeHtml(item.toLocation)}</span>
+            <span class="item-detail-value">${this.escapeHtml(fromLoc)} → ${this.escapeHtml(toLoc)}</span>
           </div>
         </div>
       `;
@@ -1083,8 +1132,9 @@ class TripDetailManager {
       `;
     }
 
-    // Confirmation number
-    if (item.confirmationNumber || item.bookingRef) {
+    // Confirmation/Booking reference (handle iOS travelDetails.bookingReference)
+    const bookingRef = item.confirmationNumber || item.bookingRef || item.travelDetails?.bookingReference;
+    if (bookingRef) {
       detailsHtml += `
         <div class="item-detail-row">
           <div class="item-detail-icon">
@@ -1095,16 +1145,22 @@ class TripDetailManager {
           </div>
           <div class="item-detail-info">
             <span class="item-detail-label">Confirmation</span>
-            <span class="item-detail-value">${this.escapeHtml(item.confirmationNumber || item.bookingRef)}</span>
+            <span class="item-detail-value">${this.escapeHtml(bookingRef)}</span>
           </div>
         </div>
       `;
     }
 
-    // Cost
-    if (item.cost || item.price) {
-      const cost = item.cost || item.price;
-      const currency = item.currency || this.trip.currency || 'USD';
+    // Cost (handle iOS currencyAmount)
+    const cost = item.currencyAmount || item.cost || item.price;
+    if (cost) {
+      const currency = item.currency || this.trip?.currency || 'USD';
+      let costDisplay = `${currency} ${parseFloat(cost).toFixed(2)}`;
+      // Show home currency conversion if available
+      if (item.homeCurrencyAmount && item.currency !== (this.trip?.currency || 'USD')) {
+        const homeCurrency = this.trip?.currency || 'USD';
+        costDisplay += ` (≈ ${homeCurrency} ${parseFloat(item.homeCurrencyAmount).toFixed(2)})`;
+      }
       detailsHtml += `
         <div class="item-detail-row">
           <div class="item-detail-icon">
@@ -1115,17 +1171,17 @@ class TripDetailManager {
           </div>
           <div class="item-detail-info">
             <span class="item-detail-label">Cost</span>
-            <span class="item-detail-value">${currency} ${parseFloat(cost).toFixed(2)}</span>
+            <span class="item-detail-value">${costDisplay}</span>
           </div>
         </div>
       `;
     }
 
-    // Website
-    if (item.website || item.url) {
-      const url = item.website || item.url;
+    // Website (handle iOS websiteURL)
+    const websiteUrl = item.websiteURL || item.website || item.url;
+    if (websiteUrl) {
       detailsHtml += `
-        <div class="item-detail-row clickable" onclick="window.open('${this.escapeHtml(url)}', '_blank')">
+        <div class="item-detail-row clickable" onclick="window.open('${this.escapeHtml(websiteUrl)}', '_blank')">
           <div class="item-detail-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10"/>
@@ -1135,7 +1191,7 @@ class TripDetailManager {
           </div>
           <div class="item-detail-info">
             <span class="item-detail-label">Website</span>
-            <span class="item-detail-value link">${this.escapeHtml(url)}</span>
+            <span class="item-detail-value link">${this.escapeHtml(websiteUrl)}</span>
           </div>
           <svg class="item-detail-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 18 15 12 9 6"/>
@@ -1482,28 +1538,60 @@ class TripDetailManager {
   buildStatusBadges(item) {
     const badges = [];
 
-    // Payment status badge
-    if (item.paymentStatus) {
-      const paymentConfig = {
-        'paid': { label: 'Paid', class: 'status-paid' },
-        'unpaid': { label: 'Unpaid', class: 'status-unpaid' },
-        'partially_paid': { label: 'Partial', class: 'status-partial' }
+    // Get booking status from nested details (iOS structure) or directly
+    const category = (item.category || item.type || 'other').toLowerCase();
+    let iOSBookingStatus = null;
+    if (category === 'accommodation' || category === 'hotel') {
+      iOSBookingStatus = item.accommodationDetails?.bookingStatus;
+    } else if (category === 'activity') {
+      iOSBookingStatus = item.activityDetails?.bookingStatus;
+    } else if (category === 'food') {
+      iOSBookingStatus = item.foodDetails?.bookingStatus;
+    } else if (category === 'travel' || category === 'flight') {
+      iOSBookingStatus = item.travelDetails?.bookingStatus;
+    } else if (category === 'other') {
+      iOSBookingStatus = item.otherDetails?.bookingStatus;
+    }
+
+    // Handle iOS BookingStatus enum values
+    if (iOSBookingStatus) {
+      const iOSStatusConfig = {
+        'To Book': { label: 'To Book', class: 'status-pending' },
+        'Booked': { label: 'Booked', class: 'status-confirmed' },
+        'Booked (Deposit Paid)': { label: 'Deposit', class: 'status-partial' },
+        'Booked (Paid)': { label: 'Paid', class: 'status-paid' },
+        'Paid': { label: 'Paid', class: 'status-paid' },
+        'Unpaid': { label: 'Unpaid', class: 'status-unpaid' }
       };
-      const config = paymentConfig[item.paymentStatus];
+      const config = iOSStatusConfig[iOSBookingStatus];
       if (config) {
         badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
       }
-    }
+    } else {
+      // Fallback to web payment/booking status fields
+      if (item.paymentStatus) {
+        const paymentConfig = {
+          'paid': { label: 'Paid', class: 'status-paid' },
+          'unpaid': { label: 'Unpaid', class: 'status-unpaid' },
+          'partial': { label: 'Partial', class: 'status-partial' },
+          'partially_paid': { label: 'Partial', class: 'status-partial' }
+        };
+        const config = paymentConfig[item.paymentStatus];
+        if (config) {
+          badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
+        }
+      }
 
-    // Booking status badge (only show if not confirmed - confirmed is the "normal" state)
-    if (item.bookingStatus && item.bookingStatus !== 'confirmed') {
-      const bookingConfig = {
-        'pending': { label: 'Pending', class: 'status-pending' },
-        'cancelled': { label: 'Cancelled', class: 'status-cancelled' }
-      };
-      const config = bookingConfig[item.bookingStatus];
-      if (config) {
-        badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
+      // Booking status badge (only show if not confirmed - confirmed is the "normal" state)
+      if (item.bookingStatus && item.bookingStatus !== 'confirmed') {
+        const bookingConfig = {
+          'pending': { label: 'Pending', class: 'status-pending' },
+          'cancelled': { label: 'Cancelled', class: 'status-cancelled' }
+        };
+        const config = bookingConfig[item.bookingStatus];
+        if (config) {
+          badges.push(`<span class="itinerary-status-badge ${config.class}">${config.label}</span>`);
+        }
       }
     }
 
@@ -1527,10 +1615,28 @@ class TripDetailManager {
     const calendar = new Date(displayDate);
     calendar.setHours(0, 0, 0, 0);
 
+    // Helper to get location display string (handles iOS LocationData object)
+    const getLocationString = (item) => {
+      if (typeof item.location === 'object' && item.location?.name) {
+        return item.location.name;
+      }
+      return item.location || null;
+    };
+
     // For accommodations - show check-in/check-out/staying
     if (category === 'accommodation' || category === 'hotel') {
-      const checkIn = this.parseDate(item.checkInTime || item.startDate || item.date);
-      const checkOut = this.parseDate(item.checkOutTime || item.endDate);
+      // Handle iOS accommodationDetails structure
+      const checkIn = this.parseDate(
+        item.accommodationDetails?.checkInTime ||
+        item.checkInTime ||
+        item.startDate ||
+        item.date
+      );
+      const checkOut = this.parseDate(
+        item.accommodationDetails?.checkOutTime ||
+        item.checkOutTime ||
+        item.endDate
+      );
 
       if (checkIn) {
         const checkInDay = new Date(checkIn);
@@ -1597,16 +1703,65 @@ class TripDetailManager {
       const routeStr = location && toLocation ? `${location} → ${toLocation}` : (location || toLocation || '');
 
       return {
-        subtitle: routeStr || item.location || null,
+        subtitle: routeStr || getLocationString(item) || null,
         timeLabel: time ? time.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : null
       };
     }
 
-    // For activities/food/other - show time range
-    const startTime = this.parseDate(item.startTime || item.startDate || item.date);
-    const endTime = this.parseDate(item.endTime || item.endDate);
+    // For food items - handle iOS foodDetails structure
+    if (category === 'food') {
+      const startTime = this.parseDate(
+        item.foodDetails?.reservationTime ||
+        item.foodDetails?.startTime ||
+        item.reservationTime ||
+        item.startTime ||
+        item.startDate ||
+        item.date
+      );
+      const endTime = this.parseDate(item.foodDetails?.endTime || item.endTime || item.endDate);
+      let subtitle = getLocationString(item) || item.foodDetails?.locationName || item.notes || null;
+      let timeLabel = null;
 
-    let subtitle = item.location || item.notes || null;
+      if (startTime) {
+        timeLabel = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      }
+
+      return { subtitle, timeLabel };
+    }
+
+    // For activities - handle iOS activityDetails structure
+    if (category === 'activity') {
+      const startTime = this.parseDate(
+        item.activityDetails?.startTime ||
+        item.startTime ||
+        item.startDate ||
+        item.date
+      );
+      const endTime = this.parseDate(item.activityDetails?.endTime || item.endTime || item.endDate);
+      let subtitle = getLocationString(item) || item.activityDetails?.locationName || item.notes || null;
+      let timeLabel = null;
+
+      if (startTime) {
+        timeLabel = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        if (endTime && endTime > startTime) {
+          const endStr = endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          subtitle = `${timeLabel} - ${endStr}` + (subtitle ? ` · ${subtitle}` : '');
+        }
+      }
+
+      return { subtitle, timeLabel };
+    }
+
+    // For other items - handle iOS otherDetails structure
+    const startTime = this.parseDate(
+      item.otherDetails?.startTime ||
+      item.startTime ||
+      item.startDate ||
+      item.date
+    );
+    const endTime = this.parseDate(item.otherDetails?.endTime || item.endTime || item.endDate);
+
+    let subtitle = getLocationString(item) || item.otherDetails?.locationName || item.notes || null;
     let timeLabel = null;
 
     if (startTime) {
@@ -1614,8 +1769,6 @@ class TripDetailManager {
       if (endTime && endTime > startTime) {
         const endStr = endTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
         subtitle = `${timeLabel} - ${endStr}` + (subtitle ? ` · ${subtitle}` : '');
-        // Don't double show time
-        timeLabel = startTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
       }
     }
 
@@ -1623,16 +1776,34 @@ class TripDetailManager {
   }
 
   calculateTimeGap(fromItem, toItem) {
-    // Get end time of first item
+    // Get end time of first item (handle iOS nested structures)
     const fromEnd = this.parseDate(
-      fromItem.endTime || fromItem.arrivalTime || fromItem.travelDetails?.arrivalTime ||
-      fromItem.checkOutTime || fromItem.endDate || fromItem.startDate || fromItem.date
+      fromItem.activityDetails?.endTime ||
+      fromItem.foodDetails?.endTime ||
+      fromItem.otherDetails?.endTime ||
+      fromItem.endTime ||
+      fromItem.arrivalTime ||
+      fromItem.travelDetails?.arrivalTime ||
+      fromItem.accommodationDetails?.checkOutTime ||
+      fromItem.checkOutTime ||
+      fromItem.endDate ||
+      fromItem.startDate ||
+      fromItem.date
     );
 
-    // Get start time of next item
+    // Get start time of next item (handle iOS nested structures)
     const toStart = this.parseDate(
-      toItem.startTime || toItem.departureTime || toItem.travelDetails?.departureTime ||
-      toItem.checkInTime || toItem.startDate || toItem.date
+      toItem.activityDetails?.startTime ||
+      toItem.foodDetails?.reservationTime ||
+      toItem.foodDetails?.startTime ||
+      toItem.otherDetails?.startTime ||
+      toItem.startTime ||
+      toItem.departureTime ||
+      toItem.travelDetails?.departureTime ||
+      toItem.accommodationDetails?.checkInTime ||
+      toItem.checkInTime ||
+      toItem.startDate ||
+      toItem.date
     );
 
     if (!fromEnd || !toStart) return null;
@@ -4304,16 +4475,18 @@ class TripDetailManager {
       return;
     }
 
-    // Collect common data
+    // Build location object matching iOS LocationData structure
     const locationInputValue = document.getElementById('item-location')?.value.trim() || null;
-
-    // Use selectedLocationData if available, otherwise create from text input
-    let locationData = null;
+    let location = null;
     if (this.selectedLocationData) {
-      locationData = this.selectedLocationData;
+      location = {
+        name: this.selectedLocationData.name,
+        address: this.selectedLocationData.address || null,
+        latitude: this.selectedLocationData.latitude || null,
+        longitude: this.selectedLocationData.longitude || null
+      };
     } else if (locationInputValue) {
-      // Fallback: create basic location data from text input
-      locationData = {
+      location = {
         name: locationInputValue,
         address: null,
         latitude: null,
@@ -4321,21 +4494,40 @@ class TripDetailManager {
       };
     }
 
+    // Map web type to iOS type
+    const typeMapping = {
+      'activity': 'activity',
+      'hotel': 'accommodation',
+      'food': 'food',
+      'flight': 'travel',
+      'other': 'other'
+    };
+    const itemType = typeMapping[this.currentItemType] || 'other';
+
+    // Map booking/payment status to iOS BookingStatus enum values
+    const bookingStatusValue = document.getElementById('item-booking-status')?.value;
+    const paymentStatusValue = document.getElementById('item-payment-status')?.value;
+    const bookingStatus = this.mapToiOSBookingStatus(bookingStatusValue, paymentStatusValue);
+
+    // Generate UUID-like ID for iOS compatibility
+    const itemId = this.generateUUID();
+
+    // Build base item matching iOS ItineraryItem structure
     const itemData = {
-      id: `itinerary_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      name: title,
-      category: this.currentItemType,
-      location: locationData?.name || locationInputValue, // Keep backward compatibility
-      locationData: locationData, // Full location object with coordinates
+      id: itemId,
+      type: itemType,
+      title: title,
+      date: null, // Will be set from type-specific dates
       notes: document.getElementById('item-notes')?.value.trim() || null,
+      isStarred: false,
+      location: location,
       websiteURL: document.getElementById('item-website')?.value.trim() || null,
       phoneNumber: document.getElementById('item-phone')?.value.trim() || null,
-      bookingStatus: document.getElementById('item-booking-status')?.value || null,
-      paymentStatus: document.getElementById('item-payment-status')?.value || null,
-      createdAt: new Date().toISOString()
+      tasks: [],
+      attachments: []
     };
 
-    // Add cost if provided - this will be used for budget calculations
+    // Add cost if provided
     const cost = parseFloat(document.getElementById('item-cost')?.value);
     if (!isNaN(cost) && cost > 0) {
       itemData.currencyAmount = cost;
@@ -4345,116 +4537,173 @@ class TripDetailManager {
       const homeCurrency = this.trip?.currency || 'USD';
       if (this.convertedAmount && this.exchangeRate) {
         itemData.homeCurrencyAmount = this.convertedAmount;
-        itemData.homeCurrency = homeCurrency;
-        itemData.exchangeRate = this.exchangeRate;
+        itemData.conversionRate = this.exchangeRate; // iOS uses conversionRate
       } else if (itemData.currency === homeCurrency) {
-        // Same currency, no conversion needed
         itemData.homeCurrencyAmount = cost;
-        itemData.homeCurrency = homeCurrency;
-        itemData.exchangeRate = 1;
+        itemData.conversionRate = 1;
       }
     }
 
-    // Add type-specific fields
+    // Add type-specific details matching iOS structure
     switch (this.currentItemType) {
       case 'activity':
-        const startDate = document.getElementById('item-start-date')?.value;
-        const startTime = document.getElementById('item-start-time')?.value || '09:00';
-        if (startDate) {
-          const [h, m] = startTime.split(':').map(Number);
-          const dt = new Date(startDate);
+        const actStartDate = document.getElementById('item-start-date')?.value;
+        const actStartTime = document.getElementById('item-start-time')?.value || '09:00';
+        const actEndDate = document.getElementById('item-end-date')?.value;
+        const actEndTime = document.getElementById('item-end-time')?.value || '12:00';
+
+        let actStartDateTime = null;
+        let actEndDateTime = null;
+
+        if (actStartDate) {
+          const [h, m] = actStartTime.split(':').map(Number);
+          const dt = new Date(actStartDate);
           dt.setHours(h, m, 0, 0);
-          itemData.startDate = dt.toISOString();
+          actStartDateTime = dt.toISOString();
+          itemData.date = actStartDateTime; // Main date for sorting
         }
-        const endDate = document.getElementById('item-end-date')?.value;
-        const endTime = document.getElementById('item-end-time')?.value || '12:00';
-        if (endDate) {
-          const [h, m] = endTime.split(':').map(Number);
-          const dt = new Date(endDate);
+        if (actEndDate) {
+          const [h, m] = actEndTime.split(':').map(Number);
+          const dt = new Date(actEndDate);
           dt.setHours(h, m, 0, 0);
-          itemData.endDate = dt.toISOString();
+          actEndDateTime = dt.toISOString();
         }
-        itemData.activityType = document.getElementById('item-activity-type')?.value || null;
-        itemData.participants = parseInt(document.getElementById('item-participants')?.value) || null;
+
+        itemData.activityDetails = {
+          locationName: location?.name || null,
+          address: location?.address || null,
+          latitude: location?.latitude || null,
+          longitude: location?.longitude || null,
+          startTime: actStartDateTime,
+          endTime: actEndDateTime,
+          participants: parseInt(document.getElementById('item-participants')?.value) || null,
+          activityType: this.mapActivityType(document.getElementById('item-activity-type')?.value),
+          bookingStatus: bookingStatus
+        };
         break;
 
       case 'hotel':
         const checkinDate = document.getElementById('item-checkin-date')?.value;
         const checkinTime = document.getElementById('item-checkin-time')?.value || '15:00';
+        const checkoutDate = document.getElementById('item-checkout-date')?.value;
+        const checkoutTime = document.getElementById('item-checkout-time')?.value || '11:00';
+
+        let checkInDateTime = null;
+        let checkOutDateTime = null;
+
         if (checkinDate) {
           const [h, m] = checkinTime.split(':').map(Number);
           const dt = new Date(checkinDate);
           dt.setHours(h, m, 0, 0);
-          itemData.startDate = dt.toISOString();
-          itemData.checkInTime = dt.toISOString();
+          checkInDateTime = dt.toISOString();
+          itemData.date = checkInDateTime; // Main date for sorting
         }
-        const checkoutDate = document.getElementById('item-checkout-date')?.value;
-        const checkoutTime = document.getElementById('item-checkout-time')?.value || '11:00';
         if (checkoutDate) {
           const [h, m] = checkoutTime.split(':').map(Number);
           const dt = new Date(checkoutDate);
           dt.setHours(h, m, 0, 0);
-          itemData.endDate = dt.toISOString();
-          itemData.checkOutTime = dt.toISOString();
+          checkOutDateTime = dt.toISOString();
         }
-        itemData.boardType = document.getElementById('item-board-type')?.value || null;
-        itemData.confirmationNumber = document.getElementById('item-confirmation')?.value.trim() || null;
+
+        itemData.accommodationDetails = {
+          locationName: location?.name || null,
+          address: location?.address || null,
+          latitude: location?.latitude || null,
+          longitude: location?.longitude || null,
+          checkInTime: checkInDateTime,
+          checkOutTime: checkOutDateTime,
+          boardType: this.mapBoardType(document.getElementById('item-board-type')?.value),
+          bookingStatus: bookingStatus
+        };
         break;
 
       case 'food':
         const resDate = document.getElementById('item-reservation-date')?.value;
         const resTime = document.getElementById('item-reservation-time')?.value || '19:00';
+
+        let reservationDateTime = null;
         if (resDate) {
           const [h, m] = resTime.split(':').map(Number);
           const dt = new Date(resDate);
           dt.setHours(h, m, 0, 0);
-          itemData.startDate = dt.toISOString();
-          itemData.reservationTime = dt.toISOString();
+          reservationDateTime = dt.toISOString();
+          itemData.date = reservationDateTime;
         }
-        itemData.mealType = document.getElementById('item-meal-type')?.value || null;
-        itemData.cuisine = document.getElementById('item-cuisine')?.value.trim() || null;
+
+        itemData.foodDetails = {
+          locationName: location?.name || null,
+          address: location?.address || null,
+          latitude: location?.latitude || null,
+          longitude: location?.longitude || null,
+          reservationTime: reservationDateTime,
+          startTime: reservationDateTime,
+          endTime: null,
+          cuisine: document.getElementById('item-cuisine')?.value.trim() || null,
+          foodType: this.mapFoodType(document.getElementById('item-meal-type')?.value),
+          bookingStatus: bookingStatus
+        };
         break;
 
       case 'flight':
         const depDate = document.getElementById('item-departure-date')?.value;
         const depTime = document.getElementById('item-departure-time')?.value || '09:00';
+        const arrDate = document.getElementById('item-arrival-date')?.value;
+        const arrTime = document.getElementById('item-arrival-time')?.value || '12:00';
+
+        let departureDateTime = null;
+        let arrivalDateTime = null;
+
         if (depDate) {
           const [h, m] = depTime.split(':').map(Number);
           const dt = new Date(depDate);
           dt.setHours(h, m, 0, 0);
-          itemData.startDate = dt.toISOString();
-          itemData.departureTime = dt.toISOString();
+          departureDateTime = dt.toISOString();
+          itemData.date = departureDateTime;
         }
-        const arrDate = document.getElementById('item-arrival-date')?.value;
-        const arrTime = document.getElementById('item-arrival-time')?.value || '12:00';
         if (arrDate) {
           const [h, m] = arrTime.split(':').map(Number);
           const dt = new Date(arrDate);
           dt.setHours(h, m, 0, 0);
-          itemData.endDate = dt.toISOString();
-          itemData.arrivalTime = dt.toISOString();
+          arrivalDateTime = dt.toISOString();
         }
-        itemData.travelMode = document.getElementById('item-travel-mode')?.value || 'flight';
-        itemData.fromLocation = document.getElementById('item-from-location')?.value.trim() || null;
-        itemData.toLocation = document.getElementById('item-to-location')?.value.trim() || null;
-        itemData.carrier = document.getElementById('item-carrier')?.value.trim() || null;
-        itemData.flightNumber = document.getElementById('item-flight-number')?.value.trim() || null;
-        itemData.confirmationNumber = document.getElementById('item-confirmation')?.value.trim() || null;
-        // For travel items, build a display location
-        if (itemData.fromLocation && itemData.toLocation) {
-          itemData.location = `${itemData.fromLocation} → ${itemData.toLocation}`;
-        }
+
+        const travelModeValue = document.getElementById('item-travel-mode')?.value || 'flight';
+        itemData.travelDetails = {
+          travelMode: this.mapTravelMode(travelModeValue),
+          fromLocation: document.getElementById('item-from-location')?.value.trim() || null,
+          toLocation: document.getElementById('item-to-location')?.value.trim() || null,
+          departureTime: departureDateTime,
+          arrivalTime: arrivalDateTime,
+          bookingReference: document.getElementById('item-confirmation')?.value.trim() || null,
+          bookingStatus: bookingStatus,
+          flightNumber: document.getElementById('item-flight-number')?.value.trim() || null,
+          airline: document.getElementById('item-carrier')?.value.trim() || null
+        };
         break;
 
       case 'other':
-        const otherDate = document.getElementById('item-start-date')?.value;
-        const otherTime = document.getElementById('item-start-time')?.value || '09:00';
-        if (otherDate) {
-          const [h, m] = otherTime.split(':').map(Number);
-          const dt = new Date(otherDate);
+        const otherStartDate = document.getElementById('item-start-date')?.value;
+        const otherStartTime = document.getElementById('item-start-time')?.value || '09:00';
+
+        let otherStartDateTime = null;
+        if (otherStartDate) {
+          const [h, m] = otherStartTime.split(':').map(Number);
+          const dt = new Date(otherStartDate);
           dt.setHours(h, m, 0, 0);
-          itemData.startDate = dt.toISOString();
+          otherStartDateTime = dt.toISOString();
+          itemData.date = otherStartDateTime;
         }
+
+        itemData.otherDetails = {
+          description: null,
+          locationName: location?.name || null,
+          address: location?.address || null,
+          latitude: location?.latitude || null,
+          longitude: location?.longitude || null,
+          startTime: otherStartDateTime,
+          endTime: null,
+          bookingStatus: bookingStatus
+        };
         break;
     }
 
@@ -5149,6 +5398,184 @@ class TripDetailManager {
     if (menuBtn) {
       menuBtn.style.display = 'flex';
     }
+  }
+
+  // ============================================
+  // iOS Sync Helper Functions
+  // ============================================
+
+  // Generate UUID matching iOS format
+  generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16).toUpperCase();
+    });
+  }
+
+  // Map booking/payment status to iOS BookingStatus enum
+  mapToiOSBookingStatus(bookingStatus, paymentStatus) {
+    // iOS BookingStatus: "To Book", "Booked", "Booked (Deposit Paid)", "Booked (Paid)", "Paid", "Unpaid"
+    if (paymentStatus === 'paid') {
+      return bookingStatus === 'confirmed' ? 'Booked (Paid)' : 'Paid';
+    }
+    if (paymentStatus === 'partial') {
+      return 'Booked (Deposit Paid)';
+    }
+    // paymentStatus is 'unpaid' or not set
+    if (bookingStatus === 'confirmed') {
+      return 'Booked';
+    }
+    if (bookingStatus === 'cancelled') {
+      return 'To Book'; // Cancelled means needs to be rebooked
+    }
+    return 'To Book'; // Default for pending
+  }
+
+  // Map from iOS BookingStatus to web booking/payment statuses
+  mapFromiOSBookingStatus(iOSStatus) {
+    const mapping = {
+      'To Book': { bookingStatus: 'pending', paymentStatus: 'unpaid' },
+      'Booked': { bookingStatus: 'confirmed', paymentStatus: 'unpaid' },
+      'Booked (Deposit Paid)': { bookingStatus: 'confirmed', paymentStatus: 'partial' },
+      'Booked (Paid)': { bookingStatus: 'confirmed', paymentStatus: 'paid' },
+      'Paid': { bookingStatus: 'confirmed', paymentStatus: 'paid' },
+      'Unpaid': { bookingStatus: 'confirmed', paymentStatus: 'unpaid' }
+    };
+    return mapping[iOSStatus] || { bookingStatus: 'pending', paymentStatus: 'unpaid' };
+  }
+
+  // Map activity type to iOS ActivityType enum
+  mapActivityType(type) {
+    if (!type) return null;
+    const mapping = {
+      'adventure': 'Adventure',
+      'gallery': 'Gallery',
+      'beach': 'Beach',
+      'nightlife': 'Nightlife',
+      'museum': 'Museum',
+      'nature': 'Nature',
+      'sports': 'Sports',
+      'shopping': 'Shopping',
+      'event': 'Event',
+      'festival': 'Festival',
+      'hiking': 'Hiking',
+      'spa': 'Spa',
+      'historical': 'Historical',
+      'waterpark': 'Waterpark',
+      'themepark': 'Themepark',
+      'concert': 'Concert',
+      'cityTour': 'City Tour',
+      'city_tour': 'City Tour',
+      'casino': 'Casino',
+      'amusement': 'Amusement',
+      'markets': 'Markets',
+      'sightseeing': 'Sightseeing',
+      'other': 'Other'
+    };
+    return mapping[type.toLowerCase()] || 'Other';
+  }
+
+  // Map board type to iOS BoardType enum
+  mapBoardType(type) {
+    if (!type) return null;
+    const mapping = {
+      'all_inclusive': 'All Inclusive',
+      'all-inclusive': 'All Inclusive',
+      'allinclusive': 'All Inclusive',
+      'bed_and_breakfast': 'Bed & Breakfast',
+      'bed-and-breakfast': 'Bed & Breakfast',
+      'bb': 'Bed & Breakfast',
+      'bed_only': 'Bed Only',
+      'bed-only': 'Bed Only',
+      'room_only': 'Bed Only',
+      'full_board': 'Full Board',
+      'full-board': 'Full Board',
+      'half_board': 'Half Board',
+      'half-board': 'Half Board'
+    };
+    return mapping[type.toLowerCase()] || type;
+  }
+
+  // Map food type to iOS FoodType enum
+  mapFoodType(type) {
+    if (!type) return null;
+    const mapping = {
+      'bar': 'Bar',
+      'cafe': 'Cafe',
+      'coffee': 'Cafe',
+      'food_tour': 'Food Tour',
+      'food-tour': 'Food Tour',
+      'food_market': 'Food Market',
+      'food-market': 'Food Market',
+      'market': 'Food Market',
+      'restaurant': 'Restaurant',
+      'street_food': 'Street Food',
+      'street-food': 'Street Food',
+      'brewery': 'Brewery',
+      'ice_cream': 'Ice Cream',
+      'ice-cream': 'Ice Cream',
+      'dessert': 'Dessert Shop',
+      'vineyard': 'Vineyard',
+      'winery': 'Vineyard',
+      'tapas': 'Tapas',
+      'diner': 'Diner',
+      'pub': 'Pub',
+      'buffet': 'Buffet',
+      'dessert_shop': 'Dessert Shop',
+      'steakhouse': 'Steakhouse',
+      'breakfast': 'Cafe',
+      'lunch': 'Restaurant',
+      'dinner': 'Restaurant',
+      'brunch': 'Cafe'
+    };
+    return mapping[type.toLowerCase()] || 'Restaurant';
+  }
+
+  // Map travel mode to iOS TravelMode enum
+  mapTravelMode(mode) {
+    if (!mode) return 'Flight';
+    const mapping = {
+      'flight': 'Flight',
+      'plane': 'Flight',
+      'airplane': 'Flight',
+      'train': 'Train',
+      'rail': 'Train',
+      'drive': 'Drive',
+      'car': 'Drive',
+      'rental': 'Drive',
+      'taxi': 'Taxi',
+      'uber': 'Taxi',
+      'lyft': 'Taxi',
+      'bus': 'Bus Coach',
+      'coach': 'Bus Coach',
+      'bus_coach': 'Bus Coach',
+      'public_transport': 'Public Transport',
+      'public-transport': 'Public Transport',
+      'metro': 'Tube/Metro',
+      'subway': 'Tube/Metro',
+      'tube': 'Tube/Metro',
+      'underground': 'Tube/Metro',
+      'tram': 'Tram',
+      'private_transfer': 'Private Transfer',
+      'private-transfer': 'Private Transfer',
+      'shared_transfer': 'Shared Transfer',
+      'shared-transfer': 'Shared Transfer',
+      'shuttle': 'Shared Transfer',
+      'boat': 'Boat',
+      'ferry': 'Boat',
+      'cruise': 'Cruise',
+      'walk': 'Walk',
+      'walking': 'Walk',
+      'cycle': 'Cycle',
+      'bike': 'Cycle',
+      'bicycle': 'Cycle',
+      'scooter': 'Scooter',
+      'motorcycle': 'Motorcycle',
+      'motorbike': 'Motorcycle',
+      'suv': 'SUV'
+    };
+    return mapping[mode.toLowerCase()] || 'Flight';
   }
 
   // ============================================
