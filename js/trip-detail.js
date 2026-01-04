@@ -3293,19 +3293,250 @@ class TripDetailManager {
     // Create LocationData object matching iOS structure
     const name = this.getLocationName(result);
     const address = this.getLocationAddress(result);
+    const countryCode = result.address?.country_code?.toUpperCase();
 
     this.selectedLocationData = {
       name: name,
       address: address || result.display_name,
       latitude: parseFloat(result.lat),
-      longitude: parseFloat(result.lon)
+      longitude: parseFloat(result.lon),
+      countryCode: countryCode
     };
 
     // Set input value to the name
     locationInput.value = name;
 
+    // Auto-set currency based on country
+    if (countryCode) {
+      const currency = this.getCurrencyForCountry(countryCode);
+      this.setItemCurrency(currency);
+    }
+
     // Hide results
     this.hideLocationResults();
+  }
+
+  // Country code to currency mapping
+  getCurrencyForCountry(countryCode) {
+    const currencyMap = {
+      // Europe
+      'AT': 'EUR', 'BE': 'EUR', 'CY': 'EUR', 'EE': 'EUR', 'FI': 'EUR',
+      'FR': 'EUR', 'DE': 'EUR', 'GR': 'EUR', 'IE': 'EUR', 'IT': 'EUR',
+      'LV': 'EUR', 'LT': 'EUR', 'LU': 'EUR', 'MT': 'EUR', 'NL': 'EUR',
+      'PT': 'EUR', 'SK': 'EUR', 'SI': 'EUR', 'ES': 'EUR', 'AD': 'EUR',
+      'MC': 'EUR', 'SM': 'EUR', 'VA': 'EUR', 'ME': 'EUR', 'XK': 'EUR',
+      'GB': 'GBP', 'UK': 'GBP',
+      'CH': 'CHF', 'LI': 'CHF',
+      'DK': 'DKK', 'NO': 'NOK', 'SE': 'SEK', 'IS': 'ISK',
+      'PL': 'PLN', 'CZ': 'CZK', 'HU': 'HUF', 'RO': 'RON', 'BG': 'BGN',
+      'HR': 'EUR', 'RS': 'RSD', 'BA': 'BAM', 'MK': 'MKD', 'AL': 'ALL',
+      'UA': 'UAH', 'BY': 'BYN', 'MD': 'MDL', 'RU': 'RUB',
+      // Americas
+      'US': 'USD', 'CA': 'CAD', 'MX': 'MXN',
+      'BR': 'BRL', 'AR': 'ARS', 'CL': 'CLP', 'CO': 'COP', 'PE': 'PEN',
+      'VE': 'VES', 'EC': 'USD', 'UY': 'UYU', 'PY': 'PYG', 'BO': 'BOB',
+      'CR': 'CRC', 'PA': 'USD', 'GT': 'GTQ', 'HN': 'HNL', 'SV': 'USD',
+      'NI': 'NIO', 'CU': 'CUP', 'DO': 'DOP', 'PR': 'USD', 'JM': 'JMD',
+      'TT': 'TTD', 'BB': 'BBD', 'BS': 'BSD', 'BZ': 'BZD',
+      // Asia
+      'JP': 'JPY', 'CN': 'CNY', 'HK': 'HKD', 'TW': 'TWD', 'KR': 'KRW',
+      'SG': 'SGD', 'MY': 'MYR', 'TH': 'THB', 'VN': 'VND', 'ID': 'IDR',
+      'PH': 'PHP', 'IN': 'INR', 'PK': 'PKR', 'BD': 'BDT', 'LK': 'LKR',
+      'NP': 'NPR', 'MM': 'MMK', 'KH': 'KHR', 'LA': 'LAK', 'MN': 'MNT',
+      // Middle East
+      'AE': 'AED', 'SA': 'SAR', 'QA': 'QAR', 'KW': 'KWD', 'BH': 'BHD',
+      'OM': 'OMR', 'JO': 'JOD', 'LB': 'LBP', 'IL': 'ILS', 'TR': 'TRY',
+      'IR': 'IRR', 'IQ': 'IQD', 'SY': 'SYP', 'YE': 'YER', 'EG': 'EGP',
+      // Africa
+      'ZA': 'ZAR', 'NG': 'NGN', 'KE': 'KES', 'GH': 'GHS', 'TZ': 'TZS',
+      'UG': 'UGX', 'ET': 'ETB', 'MA': 'MAD', 'TN': 'TND', 'DZ': 'DZD',
+      'LY': 'LYD', 'SD': 'SDG', 'AO': 'AOA', 'MZ': 'MZN', 'ZM': 'ZMW',
+      'ZW': 'ZWL', 'BW': 'BWP', 'NA': 'NAD', 'MU': 'MUR', 'SC': 'SCR',
+      // Oceania
+      'AU': 'AUD', 'NZ': 'NZD', 'FJ': 'FJD', 'PG': 'PGK',
+      'WS': 'WST', 'TO': 'TOP', 'VU': 'VUV', 'SB': 'SBD',
+    };
+    return currencyMap[countryCode] || 'USD';
+  }
+
+  setItemCurrency(currency) {
+    const currencySelect = document.getElementById('item-currency');
+    if (!currencySelect) return;
+
+    // Check if currency exists in dropdown, if not add it
+    let optionExists = false;
+    for (const option of currencySelect.options) {
+      if (option.value === currency) {
+        optionExists = true;
+        break;
+      }
+    }
+
+    if (!optionExists) {
+      const option = document.createElement('option');
+      option.value = currency;
+      option.textContent = currency;
+      currencySelect.appendChild(option);
+    }
+
+    currencySelect.value = currency;
+
+    // Trigger conversion calculation
+    this.updateCurrencyConversion();
+  }
+
+  // Exchange rate cache (to avoid repeated API calls)
+  exchangeRateCache = {};
+  exchangeRateCacheTime = {};
+  RATE_CACHE_DURATION = 60 * 60 * 1000; // 1 hour
+
+  async getExchangeRate(fromCurrency, toCurrency) {
+    if (fromCurrency === toCurrency) return 1;
+
+    const cacheKey = `${fromCurrency}_${toCurrency}`;
+    const now = Date.now();
+
+    // Check cache
+    if (this.exchangeRateCache[cacheKey] &&
+        this.exchangeRateCacheTime[cacheKey] &&
+        (now - this.exchangeRateCacheTime[cacheKey]) < this.RATE_CACHE_DURATION) {
+      return this.exchangeRateCache[cacheKey];
+    }
+
+    try {
+      // Using exchangerate.host API (free, no key required)
+      const response = await fetch(
+        `https://api.exchangerate.host/convert?from=${fromCurrency}&to=${toCurrency}&amount=1`
+      );
+
+      if (!response.ok) {
+        // Fallback to frankfurter.app (another free API)
+        const fallbackResponse = await fetch(
+          `https://api.frankfurter.app/latest?from=${fromCurrency}&to=${toCurrency}`
+        );
+        if (fallbackResponse.ok) {
+          const data = await fallbackResponse.json();
+          const rate = data.rates?.[toCurrency];
+          if (rate) {
+            this.exchangeRateCache[cacheKey] = rate;
+            this.exchangeRateCacheTime[cacheKey] = now;
+            return rate;
+          }
+        }
+        throw new Error('Exchange rate fetch failed');
+      }
+
+      const data = await response.json();
+      const rate = data.result || data.info?.rate;
+
+      if (rate) {
+        this.exchangeRateCache[cacheKey] = rate;
+        this.exchangeRateCacheTime[cacheKey] = now;
+        return rate;
+      }
+
+      throw new Error('No rate in response');
+    } catch (error) {
+      console.warn('Exchange rate fetch error:', error);
+      // Return a fallback rate from static data if available
+      return this.getStaticExchangeRate(fromCurrency, toCurrency);
+    }
+  }
+
+  // Static fallback rates (approximate, for when API fails)
+  getStaticExchangeRate(from, to) {
+    // Rates relative to USD (approximate)
+    const usdRates = {
+      'USD': 1, 'EUR': 0.92, 'GBP': 0.79, 'CHF': 0.88, 'JPY': 149,
+      'CAD': 1.36, 'AUD': 1.53, 'CNY': 7.24, 'INR': 83.1, 'MXN': 17.1,
+      'BRL': 4.97, 'KRW': 1320, 'SGD': 1.34, 'HKD': 7.82, 'THB': 35.5,
+      'SEK': 10.4, 'NOK': 10.6, 'DKK': 6.87, 'PLN': 3.95, 'CZK': 22.7,
+      'ZAR': 18.5, 'AED': 3.67, 'SAR': 3.75, 'NZD': 1.64, 'TRY': 32.1
+    };
+
+    const fromRate = usdRates[from] || 1;
+    const toRate = usdRates[to] || 1;
+
+    // Convert: from -> USD -> to
+    return toRate / fromRate;
+  }
+
+  async updateCurrencyConversion() {
+    const costInput = document.getElementById('item-cost');
+    const currencySelect = document.getElementById('item-currency');
+    const conversionDisplay = document.getElementById('currency-conversion-display');
+
+    if (!costInput || !currencySelect || !conversionDisplay) return;
+
+    const amount = parseFloat(costInput.value);
+    const localCurrency = currencySelect.value;
+    const homeCurrency = this.trip?.currency || 'USD';
+
+    // Hide if no amount or same currency
+    if (!amount || isNaN(amount) || amount <= 0 || localCurrency === homeCurrency) {
+      conversionDisplay.style.display = 'none';
+      return;
+    }
+
+    // Show loading state
+    conversionDisplay.style.display = 'block';
+    conversionDisplay.innerHTML = `
+      <span class="conversion-loading">Converting...</span>
+    `;
+
+    try {
+      const rate = await this.getExchangeRate(localCurrency, homeCurrency);
+      const convertedAmount = amount * rate;
+
+      const formattedAmount = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: homeCurrency,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }).format(convertedAmount);
+
+      conversionDisplay.innerHTML = `
+        <span class="conversion-result">
+          <span class="conversion-equals">≈</span>
+          <span class="conversion-amount">${formattedAmount}</span>
+          <span class="conversion-label">in your currency</span>
+        </span>
+      `;
+
+      // Store for saving
+      this.convertedAmount = convertedAmount;
+      this.exchangeRate = rate;
+    } catch (error) {
+      conversionDisplay.innerHTML = `
+        <span class="conversion-error">Conversion unavailable</span>
+      `;
+    }
+  }
+
+  setupCurrencyConversionListeners() {
+    const costInput = document.getElementById('item-cost');
+    const currencySelect = document.getElementById('item-currency');
+
+    if (costInput) {
+      costInput.addEventListener('input', () => {
+        this.debouncedUpdateConversion();
+      });
+    }
+
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        this.updateCurrencyConversion();
+      });
+    }
+  }
+
+  debouncedUpdateConversion() {
+    if (this.conversionTimeout) {
+      clearTimeout(this.conversionTimeout);
+    }
+    this.conversionTimeout = setTimeout(() => {
+      this.updateCurrencyConversion();
+    }, 300);
   }
 
   hideLocationResults() {
@@ -3376,9 +3607,13 @@ class TripDetailManager {
       // Generate form fields based on type
       contentEl.innerHTML = this.generateItemForm(type);
 
-      // Setup location autocomplete after form is rendered
+      // Setup location autocomplete and currency conversion after form is rendered
       requestAnimationFrame(() => {
         this.setupLocationAutocomplete();
+        this.setupCurrencyConversionListeners();
+        // Clear any previous conversion data
+        this.convertedAmount = null;
+        this.exchangeRate = null;
       });
     }
   }
@@ -3459,10 +3694,28 @@ class TripDetailManager {
               <option value="JPY">JPY</option>
               <option value="AUD">AUD</option>
               <option value="CAD">CAD</option>
+              <option value="MXN">MXN</option>
+              <option value="BRL">BRL</option>
+              <option value="INR">INR</option>
+              <option value="CNY">CNY</option>
+              <option value="KRW">KRW</option>
+              <option value="THB">THB</option>
+              <option value="SGD">SGD</option>
+              <option value="HKD">HKD</option>
+              <option value="SEK">SEK</option>
+              <option value="NOK">NOK</option>
+              <option value="DKK">DKK</option>
+              <option value="PLN">PLN</option>
+              <option value="CZK">CZK</option>
+              <option value="ZAR">ZAR</option>
+              <option value="AED">AED</option>
+              <option value="NZD">NZD</option>
+              <option value="TRY">TRY</option>
             </select>
             <input type="number" class="item-form-input" id="item-cost" placeholder="0.00" step="0.01" min="0">
           </div>
-          <span class="item-form-hint">This amount will be included in your trip budget</span>
+          <div id="currency-conversion-display" class="currency-conversion-display" style="display: none;"></div>
+          <span class="item-form-hint">Currency auto-detected from location. Amount included in trip budget.</span>
         </div>
       </div>
     `;
@@ -4087,6 +4340,19 @@ class TripDetailManager {
     if (!isNaN(cost) && cost > 0) {
       itemData.currencyAmount = cost;
       itemData.currency = document.getElementById('item-currency')?.value || 'USD';
+
+      // Add converted amount in home currency for budget calculations
+      const homeCurrency = this.trip?.currency || 'USD';
+      if (this.convertedAmount && this.exchangeRate) {
+        itemData.homeCurrencyAmount = this.convertedAmount;
+        itemData.homeCurrency = homeCurrency;
+        itemData.exchangeRate = this.exchangeRate;
+      } else if (itemData.currency === homeCurrency) {
+        // Same currency, no conversion needed
+        itemData.homeCurrencyAmount = cost;
+        itemData.homeCurrency = homeCurrency;
+        itemData.exchangeRate = 1;
+      }
     }
 
     // Add type-specific fields
