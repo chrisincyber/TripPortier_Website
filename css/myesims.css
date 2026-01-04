@@ -1,0 +1,627 @@
+/**
+ * TripPortier My eSIMs Page Styles
+ * eSIM orders display with real-time status
+ */
+
+/* ============================================
+   Page Header
+   ============================================ */
+
+.esims-header {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+    padding: 8rem 2rem 3rem;
+    color: white;
+    text-align: center;
+}
+
+.esims-header-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.esims-header-content p {
+    font-size: 1.125rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* ============================================
+   Main Container
+   ============================================ */
+
+.esims-main {
+    min-height: 60vh;
+    padding: 2rem;
+    background: var(--theme-bg, #f8fafc);
+}
+
+/* ============================================
+   Tab Selector
+   ============================================ */
+
+.esims-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    background: var(--theme-card-bg, white);
+    padding: 0.375rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.esims-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.esims-tab:hover {
+    color: var(--theme-text, #1e293b);
+    background: var(--theme-bg, #f8fafc);
+}
+
+.esims-tab.active {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+}
+
+.esims-tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.esims-tab.active .esims-tab-count {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+
+.esims-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    gap: 1rem;
+}
+
+.esims-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--theme-border, #e2e8f0);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: esims-spin 0.8s linear infinite;
+}
+
+@keyframes esims-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.esims-loading p {
+    color: var(--theme-text-secondary, #64748b);
+    font-size: 1rem;
+}
+
+/* ============================================
+   Empty States
+   ============================================ */
+
+.esims-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.esims-empty-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.esims-empty-icon svg {
+    width: 40px;
+    height: 40px;
+    color: white;
+}
+
+.esims-empty h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--theme-text, #1e293b);
+    margin: 0 0 0.75rem;
+}
+
+.esims-empty p {
+    color: var(--theme-text-secondary, #64748b);
+    font-size: 1rem;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+}
+
+.esims-signin-btn,
+.esims-browse-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.esims-signin-btn:hover,
+.esims-browse-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+/* ============================================
+   Orders List Grid
+   ============================================ */
+
+.esims-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   Order Card
+   ============================================ */
+
+.esim-card {
+    background: var(--theme-card-bg, white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.esim-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+.esim-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.esim-card-flag {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.esim-card-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.esim-card-country {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--theme-text, #1e293b);
+    margin-bottom: 0.25rem;
+}
+
+.esim-card-package {
+    font-size: 0.875rem;
+    color: var(--theme-text-secondary, #64748b);
+}
+
+/* Status Badge */
+.esim-card-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-installed {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-expired {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+.status-depleted {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.status-unknown {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* Card Details Grid */
+.esim-card-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--theme-border, #e2e8f0);
+    border-bottom: 1px solid var(--theme-border, #e2e8f0);
+    margin-bottom: 1rem;
+}
+
+.esim-card-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.esim-card-label {
+    font-size: 0.75rem;
+    color: var(--theme-text-secondary, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.esim-card-value {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--theme-text, #1e293b);
+}
+
+/* Card Footer */
+.esim-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.esim-card-view {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6366f1;
+}
+
+/* ============================================
+   Order Detail Modal
+   ============================================ */
+
+.esim-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.esim-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.esim-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+.esim-modal-content {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: var(--theme-card-bg, white);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    animation: esim-modal-in 0.3s ease;
+}
+
+@keyframes esim-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.esim-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.esim-modal-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.esim-modal-flag {
+    font-size: 2rem;
+}
+
+.esim-modal-title h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--theme-text, #1e293b);
+    margin: 0;
+}
+
+.esim-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--theme-bg, #f8fafc);
+    border: none;
+    border-radius: 10px;
+    color: var(--theme-text-secondary, #64748b);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.esim-modal-close:hover {
+    background: var(--theme-border, #e2e8f0);
+    color: var(--theme-text, #1e293b);
+}
+
+.esim-modal-body {
+    padding: 1.5rem;
+}
+
+.esim-modal-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+/* QR Code Section */
+.esim-modal-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.esim-modal-qr img {
+    width: 200px;
+    height: 200px;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+}
+
+.esim-modal-qr p {
+    font-size: 0.875rem;
+    color: var(--theme-text-secondary, #64748b);
+    margin: 0;
+}
+
+.esim-modal-qr-placeholder {
+    padding: 3rem 1.5rem;
+    background: var(--theme-bg, #f8fafc);
+}
+
+.esim-modal-qr-placeholder svg {
+    color: var(--theme-text-secondary, #64748b);
+    margin-bottom: 1rem;
+}
+
+/* Details Rows */
+.esim-modal-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.esim-modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--theme-border, #e2e8f0);
+}
+
+.esim-modal-row:last-child {
+    border-bottom: none;
+}
+
+.esim-modal-label {
+    font-size: 0.9375rem;
+    color: var(--theme-text-secondary, #64748b);
+}
+
+.esim-modal-value {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--theme-text, #1e293b);
+    text-align: right;
+}
+
+.esim-modal-mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.8125rem;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+    .esims-header {
+        padding: 6rem 1.5rem 2rem;
+    }
+
+    .esims-header-content h1 {
+        font-size: 2rem;
+    }
+
+    .esims-main {
+        padding: 1.5rem 1rem;
+    }
+
+    .esims-list {
+        grid-template-columns: 1fr;
+    }
+
+    .esim-card-details {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .esim-modal-content {
+        max-height: 85vh;
+    }
+
+    .esim-modal-qr img {
+        width: 180px;
+        height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .esims-tabs {
+        flex-direction: row;
+    }
+
+    .esims-tab {
+        padding: 0.625rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .esim-card {
+        padding: 1.25rem;
+    }
+
+    .esim-card-flag {
+        font-size: 2rem;
+    }
+
+    .esim-modal-content {
+        border-radius: 16px 16px 0 0;
+        max-height: 90vh;
+        margin-top: auto;
+    }
+}
+
+/* ============================================
+   Dark Theme Support
+   ============================================ */
+
+[data-theme="dark"] .esim-card,
+[data-theme="dark"] .esim-modal-content {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .esims-tabs {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .esim-modal-qr {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .status-active {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+[data-theme="dark"] .status-installed {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+[data-theme="dark"] .status-pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+[data-theme="dark"] .status-expired,
+[data-theme="dark"] .status-unknown {
+    background: rgba(107, 114, 128, 0.2);
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .status-depleted {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}

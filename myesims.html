@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/cookie-consent.css">
+    <script src="js/cookie-consent.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>My eSIMs - TripPortier | View & Manage Your eSIM Orders</title>
+    <meta name="title" content="My eSIMs - TripPortier | View & Manage Your eSIM Orders">
+    <meta name="description" content="View and manage your eSIM orders. Check data usage, installation status, and access QR codes for your travel eSIMs.">
+    <meta name="keywords" content="esim orders, esim management, travel esim, data plan, esim qr code, esim status">
+    <meta name="author" content="TripPortier">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://tripportier.com/myesims.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tripportier.com/myesims.html">
+    <meta property="og:site_name" content="TripPortier">
+    <meta property="og:title" content="My eSIMs - TripPortier">
+    <meta property="og:description" content="View and manage your eSIM orders. Check status and access QR codes.">
+    <meta property="og:image" content="https://tripportier.com/assets/images/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://tripportier.com/myesims.html">
+    <meta name="twitter:title" content="My eSIMs - TripPortier">
+    <meta name="twitter:description" content="View and manage your eSIM orders. Check status and access QR codes.">
+    <meta name="twitter:image" content="https://tripportier.com/assets/images/twitter-card.png">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/myesims.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li><a href="esim.html">eSIM</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="dropdown-toggle">Transport <span class="dropdown-arrow">&#9660;</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                        <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown" id="myorders-nav" style="display: none;">
+                    <a href="#" class="dropdown-toggle">My Orders <span class="dropdown-arrow">&#9660;</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="myesims.html" class="active">My eSIMs</a></li>
+                        <li><a href="trips.html">My Trips</a></li>
+                    </ul>
+                </li>
+                <li id="premium-nav"><a href="premium.html">TripPortier+</a></li>
+            </ul>
+
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="esims-header">
+        <div class="esims-header-content">
+            <h1>My eSIMs</h1>
+            <p>View and manage your eSIM orders</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="esims-main">
+        <!-- Tab Selector -->
+        <div class="esims-tabs" id="esims-tabs" style="display: none;">
+            <button class="esims-tab active" data-tab="active">
+                Active
+                <span class="esims-tab-count" id="active-count">0</span>
+            </button>
+            <button class="esims-tab" data-tab="history">
+                History
+                <span class="esims-tab-count" id="history-count">0</span>
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="esims-loading" class="esims-loading">
+            <div class="esims-spinner"></div>
+            <p>Loading your eSIMs...</p>
+        </div>
+
+        <!-- Not Signed In State -->
+        <div id="esims-not-signed-in" class="esims-empty" style="display: none;">
+            <div class="esims-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                </svg>
+            </div>
+            <h2>Sign in to view your eSIMs</h2>
+            <p>Access your eSIM orders by signing in to your TripPortier account.</p>
+            <button class="esims-signin-btn" onclick="window.authUI.showModal('signin')">
+                Sign In
+            </button>
+        </div>
+
+        <!-- No Orders State -->
+        <div id="esims-empty" class="esims-empty" style="display: none;">
+            <div class="esims-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25z"/>
+                </svg>
+            </div>
+            <h2>No eSIM orders yet</h2>
+            <p>Purchase an eSIM to stay connected on your travels.</p>
+            <a href="esim.html" class="esims-browse-btn">Browse eSIMs</a>
+        </div>
+
+        <!-- Empty Tab State (Active or History) -->
+        <div id="esims-tab-empty" class="esims-empty" style="display: none;">
+            <div class="esims-empty-icon" id="esims-tab-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25z"/>
+                </svg>
+            </div>
+            <h2 id="esims-tab-empty-title">No active eSIMs</h2>
+            <p id="esims-tab-empty-text">Your active eSIMs will appear here.</p>
+        </div>
+
+        <!-- Orders List -->
+        <div id="esims-list" class="esims-list" style="display: none;"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <img src="assets/images/logo.png" alt="TripPortier Logo" class="footer-logo">
+                    <p>Your AI-powered travel companion for seamless journeys worldwide.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>Services</h4>
+                        <ul>
+                            <li><a href="esim.html">Travel eSIM</a></li>
+                            <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                            <li><a href="https://asiatransport.tripportier.com">Asia Transport</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="contact.html">Contact</a></li>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TripPortier. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-check-compat.js"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/myesims.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

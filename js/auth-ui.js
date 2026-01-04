@@ -655,25 +655,32 @@ class AuthUI {
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
 
-    // Handle My Trips nav link visibility (look for existing element first)
+    // Handle My Orders nav link visibility (look for existing element first)
+    const existingMyOrdersNav = document.getElementById('myorders-nav');
     const existingMyTripsNav = document.getElementById('mytrips-nav');
     const existingTripsLink = navLinks.querySelector('.nav-trips-link');
-    if (existingTripsLink && !existingMyTripsNav) existingTripsLink.remove();
+    if (existingTripsLink && !existingMyTripsNav && !existingMyOrdersNav) existingTripsLink.remove();
 
     // Skip adding Sign In button on account page (it has its own Sign In UI)
     const isAccountPage = window.location.pathname.includes('account.html');
     if (!user && isAccountPage) {
-      // Hide My Trips if exists
+      // Hide My Orders/Trips if exists
+      if (existingMyOrdersNav) existingMyOrdersNav.style.display = 'none';
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Also update mobile menu
       this.updateMobileMenu(user, profile);
       return;
     }
 
-    // Show/hide My Trips nav link based on login state
+    // Show/hide My Orders nav link based on login state
     if (user) {
-      if (existingMyTripsNav) {
-        // Use the existing element
+      // Prefer the new My Orders dropdown if it exists
+      if (existingMyOrdersNav) {
+        existingMyOrdersNav.style.display = '';
+        // Hide the old mytrips-nav if My Orders exists
+        if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
+      } else if (existingMyTripsNav) {
+        // Fallback to old My Trips nav
         existingMyTripsNav.style.display = '';
         const isTripsPage = window.location.pathname.includes('trips.html');
         const tripsLink = existingMyTripsNav.querySelector('a');
@@ -690,6 +697,7 @@ class AuthUI {
       // Check subscription status and hide TripPortier+ for premium users
       this.checkAndHidePremiumNav(user.uid);
     } else {
+      if (existingMyOrdersNav) existingMyOrdersNav.style.display = 'none';
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Show TripPortier+ for logged out users
       const premiumNav = document.getElementById('premium-nav');
