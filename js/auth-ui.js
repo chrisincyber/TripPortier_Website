@@ -655,49 +655,47 @@ class AuthUI {
     const existingAuth = navLinks.querySelector('.nav-auth');
     if (existingAuth) existingAuth.remove();
 
-    // Handle My Orders nav link visibility (look for existing element first)
-    const existingMyOrdersNav = document.getElementById('myorders-nav');
+    // Handle My Trips nav link visibility - only show when logged in
     const existingMyTripsNav = document.getElementById('mytrips-nav');
     const existingTripsLink = navLinks.querySelector('.nav-trips-link');
-    if (existingTripsLink && !existingMyTripsNav && !existingMyOrdersNav) existingTripsLink.remove();
+    if (existingTripsLink && !existingMyTripsNav) existingTripsLink.remove();
 
     // Skip adding Sign In button on account page (it has its own Sign In UI)
     const isAccountPage = window.location.pathname.includes('account.html');
     if (!user && isAccountPage) {
-      // Hide My Orders/Trips if exists
-      if (existingMyOrdersNav) existingMyOrdersNav.style.display = 'none';
+      // Hide My Trips if exists
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Also update mobile menu
       this.updateMobileMenu(user, profile);
       return;
     }
 
-    // Show/hide My Orders nav link based on login state
+    // Show/hide My Trips nav link based on login state
     if (user) {
-      // Prefer the new My Orders dropdown if it exists
-      if (existingMyOrdersNav) {
-        existingMyOrdersNav.style.display = '';
-        // Hide the old mytrips-nav if My Orders exists
-        if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
-      } else if (existingMyTripsNav) {
-        // Fallback to old My Trips nav
+      // Show My Trips nav when logged in
+      if (existingMyTripsNav) {
         existingMyTripsNav.style.display = '';
         const isTripsPage = window.location.pathname.includes('trips.html');
         const tripsLink = existingMyTripsNav.querySelector('a');
         if (tripsLink && isTripsPage) tripsLink.classList.add('active');
-      } else {
+      } else if (!existingTripsLink) {
         // Create dynamically if not found
+        const premiumNav = document.getElementById('premium-nav');
         const tripsLi = document.createElement('li');
         tripsLi.className = 'nav-trips-link';
+        tripsLi.id = 'mytrips-nav';
         const isTripsPage = window.location.pathname.includes('trips.html');
         tripsLi.innerHTML = `<a href="/trips.html" ${isTripsPage ? 'class="active"' : ''}>My Trips</a>`;
-        navLinks.appendChild(tripsLi);
+        if (premiumNav) {
+          premiumNav.parentNode.insertBefore(tripsLi, premiumNav);
+        } else {
+          navLinks.appendChild(tripsLi);
+        }
       }
 
       // Check subscription status and hide TripPortier+ for premium users
       this.checkAndHidePremiumNav(user.uid);
     } else {
-      if (existingMyOrdersNav) existingMyOrdersNav.style.display = 'none';
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Show TripPortier+ for logged out users
       const premiumNav = document.getElementById('premium-nav');

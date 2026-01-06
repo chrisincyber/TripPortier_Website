@@ -172,9 +172,15 @@
                 TripPortier
             </a>
             <ul class="nav-links">
-                <li><a href="esim.html">eSIM</a></li>
                 <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle active">Transport <span class="dropdown-arrow">▼</span></a>
+                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">eSIM <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="esim.html">eSIM Plans</a></li>
+                        <li><a href="myesims.html">My Orders</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="#" class="dropdown-toggle active" onclick="toggleMobileDropdown(this, event)">Transport <span class="dropdown-arrow">▼</span></a>
                     <ul class="dropdown-menu">
                         <li><a href="airport-transfers.html">Airport Transfers</a></li>
                         <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>

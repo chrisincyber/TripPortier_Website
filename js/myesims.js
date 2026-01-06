@@ -58,22 +58,22 @@ class MyEsimsManager {
         const tabsEl = document.getElementById('esims-tabs');
         const listEl = document.getElementById('esims-list');
         const tabEmptyEl = document.getElementById('esims-tab-empty');
-        const myOrdersNav = document.getElementById('myorders-nav');
+        const myTripsNav = document.getElementById('mytrips-nav');
 
         if (!user) {
-            // Not signed in
+            // Not signed in - show email lookup form
             loadingEl.style.display = 'none';
             notSignedInEl.style.display = 'flex';
             emptyEl.style.display = 'none';
             tabsEl.style.display = 'none';
             listEl.style.display = 'none';
             tabEmptyEl.style.display = 'none';
-            if (myOrdersNav) myOrdersNav.style.display = 'none';
+            if (myTripsNav) myTripsNav.style.display = 'none';
             return;
         }
 
-        // Show My Orders nav
-        if (myOrdersNav) myOrdersNav.style.display = 'block';
+        // Show My Trips nav when logged in
+        if (myTripsNav) myTripsNav.style.display = '';
 
         // User is signed in, load orders
         notSignedInEl.style.display = 'none';
@@ -409,8 +409,67 @@ class MyEsimsManager {
             document.body.style.overflow = '';
         }
     }
+
+    async lookupOrdersByEmail(event) {
+        event.preventDefault();
+
+        const emailInput = document.getElementById('lookup-email');
+        const lookupBtn = document.getElementById('lookup-btn');
+        const errorEl = document.getElementById('lookup-error');
+        const loadingEl = document.getElementById('esims-loading');
+        const notSignedInEl = document.getElementById('esims-not-signed-in');
+        const emptyEl = document.getElementById('esims-empty');
+        const tabsEl = document.getElementById('esims-tabs');
+        const listEl = document.getElementById('esims-list');
+
+        const email = emailInput.value.trim();
+        if (!email) {
+            errorEl.textContent = 'Please enter your email address';
+            errorEl.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Show loading state
+            lookupBtn.disabled = true;
+            lookupBtn.textContent = 'Searching...';
+            errorEl.style.display = 'none';
+
+            const functions = firebase.functions();
+            const lookupEsimOrdersByEmail = functions.httpsCallable('lookupEsimOrdersByEmail');
+            const result = await lookupEsimOrdersByEmail({ email });
+
+            if (result.data?.success && result.data.orders && result.data.orders.length > 0) {
+                this.orders = result.data.orders;
+
+                // Hide not signed in, show tabs and list
+                notSignedInEl.style.display = 'none';
+                emptyEl.style.display = 'none';
+                tabsEl.style.display = 'flex';
+                listEl.style.display = 'grid';
+
+                // Update tab counts
+                this.updateTabCounts();
+
+                // Render orders
+                this.renderOrders();
+            } else {
+                // No orders found
+                errorEl.textContent = 'No eSIM orders found for this email address. Please check and try again.';
+                errorEl.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Email lookup error:', error);
+            errorEl.textContent = error.message || 'Failed to find orders. Please try again.';
+            errorEl.style.display = 'block';
+        } finally {
+            lookupBtn.disabled = false;
+            lookupBtn.textContent = 'Find Orders';
+        }
+    }
 }
 
 // Initialize manager
 const myEsimsManager = new MyEsimsManager();
 window.myEsimsManager = myEsimsManager;
+window.esimManager = myEsimsManager; // Alias for HTML onclick

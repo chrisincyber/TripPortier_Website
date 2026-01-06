@@ -201,6 +201,77 @@
 }
 
 /* ============================================
+   Email Lookup Form (for non-signed-in users)
+   ============================================ */
+
+.email-lookup-form {
+    width: 100%;
+    max-width: 400px;
+    margin: 1.5rem auto;
+}
+
+.email-lookup-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.email-lookup-input-wrapper input {
+    flex: 1;
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--theme-border, #e2e8f0);
+    border-radius: 12px;
+    font-size: 1rem;
+    background: var(--theme-card-bg, white);
+    color: var(--theme-text, #1e293b);
+    transition: border-color 0.2s;
+}
+
+.email-lookup-input-wrapper input:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.email-lookup-input-wrapper .esims-signin-btn {
+    padding: 0.875rem 1.5rem;
+    white-space: nowrap;
+}
+
+.lookup-error {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #dc2626;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.esims-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.esims-divider::before,
+.esims-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--theme-border, #e2e8f0);
+}
+
+.esims-divider span {
+    padding: 0 1rem;
+    color: var(--theme-text-secondary, #64748b);
+    font-size: 0.875rem;
+}
+
+/* ============================================
    Orders List Grid
    ============================================ */
 
