@@ -3262,6 +3262,10 @@
                 // Calculate TripCoins to earn (default 3%)
                 const tripcoinsToEarn = finalPrice * 0.03;
 
+                // Get user ID if logged in (to link order to account)
+                const currentUser = firebase.auth().currentUser;
+                const userId = currentUser ? currentUser.uid : null;
+
                 // Call Firebase function to create checkout session
                 const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
@@ -3283,6 +3287,7 @@
                         originalPrice: selectedPackage.price,
                         tripcoinsToEarn: tripcoinsToEarn,
                         language: currentLanguage || 'en',
+                        userId: userId,  // Link order to user account if logged in
                     }),
                 });
 

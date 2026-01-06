@@ -148,6 +148,15 @@ class MyEsimsManager {
         });
     }
 
+    updateTabCounts() {
+        const activeCount = this.getActiveOrders().length;
+        const historyCount = this.getHistoryOrders().length;
+        const activeCountEl = document.getElementById('active-count');
+        const historyCountEl = document.getElementById('history-count');
+        if (activeCountEl) activeCountEl.textContent = activeCount;
+        if (historyCountEl) historyCountEl.textContent = historyCount;
+    }
+
     renderOrders() {
         const emptyEl = document.getElementById('esims-empty');
         const tabsEl = document.getElementById('esims-tabs');
