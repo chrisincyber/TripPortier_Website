@@ -970,7 +970,6 @@ class AuthUI {
 
     mobileMenu.appendChild(authSection);
   }
-}
 
   // Update mobile navigation bar (booking.com style)
   updateMobileNavBar(user, profile) {
@@ -1014,24 +1013,6 @@ class AuthUI {
         if (mobileSigninBtn) mobileSigninBtn.style.display = '';
       }
     }
-
-    // Handle My Trips tab visibility
-    const mobileTripsTab = document.getElementById('mobile-tab-trips');
-    if (mobileTripsTab) {
-      mobileTripsTab.style.display = user ? '' : 'none';
-    }
-
-    // Set active state on current page tab
-    const currentPath = window.location.pathname;
-    const mobileTabs = document.querySelectorAll('.mobile-tab');
-    mobileTabs.forEach(tab => {
-      const href = tab.getAttribute('href');
-      if (href && currentPath.includes(href.replace('.html', '').replace('/', ''))) {
-        tab.classList.add('active');
-      } else {
-        tab.classList.remove('active');
-      }
-    });
   }
 }
 
