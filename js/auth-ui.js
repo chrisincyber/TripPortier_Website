@@ -927,6 +927,9 @@ class AuthUI {
   }
 
   updateMobileMenu(user, profile) {
+    // Update mobile navigation bar elements (booking.com style tabs)
+    this.updateMobileNavBar(user, profile);
+
     // Check if there's a mobile menu section
     const mobileMenu = document.querySelector('.mobile-nav-links');
     if (!mobileMenu) return;
@@ -966,6 +969,69 @@ class AuthUI {
     }
 
     mobileMenu.appendChild(authSection);
+  }
+}
+
+  // Update mobile navigation bar (booking.com style)
+  updateMobileNavBar(user, profile) {
+    // Handle mobile sign-in button
+    const mobileSigninBtn = document.getElementById('mobile-signin-btn');
+    const mobileNavRight = document.querySelector('.mobile-nav-right');
+
+    if (mobileNavRight) {
+      // Remove existing mobile user avatar if present
+      const existingAvatar = mobileNavRight.querySelector('.mobile-user-avatar-btn');
+      if (existingAvatar) existingAvatar.remove();
+
+      if (user) {
+        // User is logged in - show avatar instead of sign-in button
+        if (mobileSigninBtn) mobileSigninBtn.style.display = 'none';
+
+        const displayName = profile?.displayName || user.displayName || user.email.split('@')[0];
+        const avatarURL = profile?.profileImageURL || user.photoURL;
+        const initial = displayName.charAt(0).toUpperCase();
+
+        const avatarBtn = document.createElement('a');
+        avatarBtn.href = '/account.html';
+        avatarBtn.className = 'mobile-user-avatar-btn';
+        avatarBtn.title = displayName;
+
+        if (avatarURL) {
+          avatarBtn.innerHTML = `<img src="${avatarURL}" alt="${displayName}" class="mobile-user-avatar-img">`;
+        } else {
+          avatarBtn.innerHTML = `<span class="mobile-user-avatar-placeholder">${initial}</span>`;
+        }
+
+        // Insert before the hamburger menu
+        const mobileMenuBtn = mobileNavRight.querySelector('.mobile-menu');
+        if (mobileMenuBtn) {
+          mobileNavRight.insertBefore(avatarBtn, mobileMenuBtn);
+        } else {
+          mobileNavRight.appendChild(avatarBtn);
+        }
+      } else {
+        // User is logged out - show sign-in button
+        if (mobileSigninBtn) mobileSigninBtn.style.display = '';
+      }
+    }
+
+    // Handle My Trips tab visibility
+    const mobileTripsTab = document.getElementById('mobile-tab-trips');
+    if (mobileTripsTab) {
+      mobileTripsTab.style.display = user ? '' : 'none';
+    }
+
+    // Set active state on current page tab
+    const currentPath = window.location.pathname;
+    const mobileTabs = document.querySelectorAll('.mobile-tab');
+    mobileTabs.forEach(tab => {
+      const href = tab.getAttribute('href');
+      if (href && currentPath.includes(href.replace('.html', '').replace('/', ''))) {
+        tab.classList.add('active');
+      } else {
+        tab.classList.remove('active');
+      }
+    });
   }
 }
 
