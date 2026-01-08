@@ -20,6 +20,8 @@ class TripPortierAuth {
       if (user) {
         // Fetch user profile from Firestore
         await this.fetchUserProfile(user.uid);
+        // Check subscription status (including iOS subscriptions synced to Firestore)
+        await this.checkSubscriptionStatus(user.uid);
         // Update last login
         this.updateLastLogin(user.uid);
       } else {
@@ -39,6 +41,21 @@ class TripPortierAuth {
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
+    }
+  }
+
+  // Check subscription status (supports both web and iOS subscriptions)
+  async checkSubscriptionStatus(userId) {
+    try {
+      if (window.subscriptionManager) {
+        const status = await window.subscriptionManager.getSubscriptionStatus(userId);
+        if (status.isSubscribed) {
+          const platform = status.subscription?.platform || 'unknown';
+          console.log(`✅ Active subscription found (platform: ${platform})`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking subscription status:', error);
     }
   }
 
@@ -220,6 +237,16 @@ class TripPortierAuth {
   // Check if user is authenticated
   isAuthenticated() {
     return this.user !== null;
+  }
+
+  // Check if user has premium subscription (works with iOS and web subscriptions)
+  isPremium() {
+    return window.subscriptionManager?.isSubscribed || false;
+  }
+
+  // Get subscription info (platform, expiration, etc.)
+  getSubscription() {
+    return window.subscriptionManager?.subscription || null;
   }
 
   // Get current user
