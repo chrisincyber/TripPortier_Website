@@ -56,6 +56,7 @@ class TripsManager {
       destinationDisplay: '',
       latitude: null,
       longitude: null,
+      countryCode: null,    // ISO country code for eSIM/international features
       startDate: null,
       endDate: null,
       tripLength: 7,        // For wishlist trips (days)
@@ -790,6 +791,7 @@ class TripsManager {
       destinationDisplay: '',
       latitude: null,
       longitude: null,
+      countryCode: null,
       startDate: null,
       endDate: null,
       tripLength: 7,
@@ -1069,47 +1071,47 @@ class TripsManager {
     const suggestions = document.getElementById('destination-suggestions');
     if (!suggestions) return;
 
-    // Use a simple list of popular destinations + geocoding
+    // Use a simple list of popular destinations + geocoding (with ISO country codes)
     const popularDestinations = [
-      { name: 'Paris', country: 'France', lat: 48.8566, lng: 2.3522 },
-      { name: 'Tokyo', country: 'Japan', lat: 35.6762, lng: 139.6503 },
-      { name: 'New York', country: 'United States', lat: 40.7128, lng: -74.0060 },
-      { name: 'London', country: 'United Kingdom', lat: 51.5074, lng: -0.1278 },
-      { name: 'Barcelona', country: 'Spain', lat: 41.3851, lng: 2.1734 },
-      { name: 'Rome', country: 'Italy', lat: 41.9028, lng: 12.4964 },
-      { name: 'Sydney', country: 'Australia', lat: -33.8688, lng: 151.2093 },
-      { name: 'Dubai', country: 'UAE', lat: 25.2048, lng: 55.2708 },
-      { name: 'Amsterdam', country: 'Netherlands', lat: 52.3676, lng: 4.9041 },
-      { name: 'Bangkok', country: 'Thailand', lat: 13.7563, lng: 100.5018 },
-      { name: 'Singapore', country: 'Singapore', lat: 1.3521, lng: 103.8198 },
-      { name: 'Los Angeles', country: 'United States', lat: 34.0522, lng: -118.2437 },
-      { name: 'Miami', country: 'United States', lat: 25.7617, lng: -80.1918 },
-      { name: 'Berlin', country: 'Germany', lat: 52.5200, lng: 13.4050 },
-      { name: 'Vienna', country: 'Austria', lat: 48.2082, lng: 16.3738 },
-      { name: 'Prague', country: 'Czech Republic', lat: 50.0755, lng: 14.4378 },
-      { name: 'Lisbon', country: 'Portugal', lat: 38.7223, lng: -9.1393 },
-      { name: 'Athens', country: 'Greece', lat: 37.9838, lng: 23.7275 },
-      { name: 'Istanbul', country: 'Turkey', lat: 41.0082, lng: 28.9784 },
-      { name: 'Bali', country: 'Indonesia', lat: -8.3405, lng: 115.0920 },
-      { name: 'Maldives', country: 'Maldives', lat: 3.2028, lng: 73.2207 },
-      { name: 'Cancun', country: 'Mexico', lat: 21.1619, lng: -86.8515 },
-      { name: 'Hawaii', country: 'United States', lat: 19.8968, lng: -155.5828 },
-      { name: 'Santorini', country: 'Greece', lat: 36.3932, lng: 25.4615 },
-      { name: 'Zurich', country: 'Switzerland', lat: 47.3769, lng: 8.5417 },
-      { name: 'Geneva', country: 'Switzerland', lat: 46.2044, lng: 6.1432 },
-      { name: 'Lucerne', country: 'Switzerland', lat: 47.0502, lng: 8.3093 },
-      { name: 'Munich', country: 'Germany', lat: 48.1351, lng: 11.5820 },
-      { name: 'Nice', country: 'France', lat: 43.7102, lng: 7.2620 },
-      { name: 'Monaco', country: 'Monaco', lat: 43.7384, lng: 7.4246 },
-      { name: 'Milan', country: 'Italy', lat: 45.4642, lng: 9.1900 },
-      { name: 'Venice', country: 'Italy', lat: 45.4408, lng: 12.3155 },
-      { name: 'Florence', country: 'Italy', lat: 43.7696, lng: 11.2558 },
-      { name: 'Seoul', country: 'South Korea', lat: 37.5665, lng: 126.9780 },
-      { name: 'Hong Kong', country: 'China', lat: 22.3193, lng: 114.1694 },
-      { name: 'Kyoto', country: 'Japan', lat: 35.0116, lng: 135.7681 },
-      { name: 'Cairo', country: 'Egypt', lat: 30.0444, lng: 31.2357 },
-      { name: 'Marrakech', country: 'Morocco', lat: 31.6295, lng: -7.9811 },
-      { name: 'Cape Town', country: 'South Africa', lat: -33.9249, lng: 18.4241 },
+      { name: 'Paris', country: 'France', code: 'FR', lat: 48.8566, lng: 2.3522 },
+      { name: 'Tokyo', country: 'Japan', code: 'JP', lat: 35.6762, lng: 139.6503 },
+      { name: 'New York', country: 'United States', code: 'US', lat: 40.7128, lng: -74.0060 },
+      { name: 'London', country: 'United Kingdom', code: 'GB', lat: 51.5074, lng: -0.1278 },
+      { name: 'Barcelona', country: 'Spain', code: 'ES', lat: 41.3851, lng: 2.1734 },
+      { name: 'Rome', country: 'Italy', code: 'IT', lat: 41.9028, lng: 12.4964 },
+      { name: 'Sydney', country: 'Australia', code: 'AU', lat: -33.8688, lng: 151.2093 },
+      { name: 'Dubai', country: 'UAE', code: 'AE', lat: 25.2048, lng: 55.2708 },
+      { name: 'Amsterdam', country: 'Netherlands', code: 'NL', lat: 52.3676, lng: 4.9041 },
+      { name: 'Bangkok', country: 'Thailand', code: 'TH', lat: 13.7563, lng: 100.5018 },
+      { name: 'Singapore', country: 'Singapore', code: 'SG', lat: 1.3521, lng: 103.8198 },
+      { name: 'Los Angeles', country: 'United States', code: 'US', lat: 34.0522, lng: -118.2437 },
+      { name: 'Miami', country: 'United States', code: 'US', lat: 25.7617, lng: -80.1918 },
+      { name: 'Berlin', country: 'Germany', code: 'DE', lat: 52.5200, lng: 13.4050 },
+      { name: 'Vienna', country: 'Austria', code: 'AT', lat: 48.2082, lng: 16.3738 },
+      { name: 'Prague', country: 'Czech Republic', code: 'CZ', lat: 50.0755, lng: 14.4378 },
+      { name: 'Lisbon', country: 'Portugal', code: 'PT', lat: 38.7223, lng: -9.1393 },
+      { name: 'Athens', country: 'Greece', code: 'GR', lat: 37.9838, lng: 23.7275 },
+      { name: 'Istanbul', country: 'Turkey', code: 'TR', lat: 41.0082, lng: 28.9784 },
+      { name: 'Bali', country: 'Indonesia', code: 'ID', lat: -8.3405, lng: 115.0920 },
+      { name: 'Maldives', country: 'Maldives', code: 'MV', lat: 3.2028, lng: 73.2207 },
+      { name: 'Cancun', country: 'Mexico', code: 'MX', lat: 21.1619, lng: -86.8515 },
+      { name: 'Hawaii', country: 'United States', code: 'US', lat: 19.8968, lng: -155.5828 },
+      { name: 'Santorini', country: 'Greece', code: 'GR', lat: 36.3932, lng: 25.4615 },
+      { name: 'Zurich', country: 'Switzerland', code: 'CH', lat: 47.3769, lng: 8.5417 },
+      { name: 'Geneva', country: 'Switzerland', code: 'CH', lat: 46.2044, lng: 6.1432 },
+      { name: 'Lucerne', country: 'Switzerland', code: 'CH', lat: 47.0502, lng: 8.3093 },
+      { name: 'Munich', country: 'Germany', code: 'DE', lat: 48.1351, lng: 11.5820 },
+      { name: 'Nice', country: 'France', code: 'FR', lat: 43.7102, lng: 7.2620 },
+      { name: 'Monaco', country: 'Monaco', code: 'MC', lat: 43.7384, lng: 7.4246 },
+      { name: 'Milan', country: 'Italy', code: 'IT', lat: 45.4642, lng: 9.1900 },
+      { name: 'Venice', country: 'Italy', code: 'IT', lat: 45.4408, lng: 12.3155 },
+      { name: 'Florence', country: 'Italy', code: 'IT', lat: 43.7696, lng: 11.2558 },
+      { name: 'Seoul', country: 'South Korea', code: 'KR', lat: 37.5665, lng: 126.9780 },
+      { name: 'Hong Kong', country: 'China', code: 'HK', lat: 22.3193, lng: 114.1694 },
+      { name: 'Kyoto', country: 'Japan', code: 'JP', lat: 35.0116, lng: 135.7681 },
+      { name: 'Cairo', country: 'Egypt', code: 'EG', lat: 30.0444, lng: 31.2357 },
+      { name: 'Marrakech', country: 'Morocco', code: 'MA', lat: 31.6295, lng: -7.9811 },
+      { name: 'Cape Town', country: 'South Africa', code: 'ZA', lat: -33.9249, lng: 18.4241 },
     ];
 
     // Filter by query
@@ -1122,7 +1124,7 @@ class TripsManager {
     if (matches.length === 0) {
       // If no match, allow custom destination
       suggestions.innerHTML = `
-        <div class="destination-suggestion" data-name="${this.escapeHtml(query)}" data-country="" data-lat="" data-lng="">
+        <div class="destination-suggestion" data-name="${this.escapeHtml(query)}" data-country="" data-code="" data-lat="" data-lng="">
           <div class="destination-suggestion-icon">📍</div>
           <div class="destination-suggestion-text">
             <div class="destination-suggestion-name">${this.escapeHtml(query)}</div>
@@ -1132,7 +1134,7 @@ class TripsManager {
       `;
     } else {
       suggestions.innerHTML = matches.map(dest => `
-        <div class="destination-suggestion" data-name="${dest.name}" data-country="${dest.country}" data-lat="${dest.lat}" data-lng="${dest.lng}">
+        <div class="destination-suggestion" data-name="${dest.name}" data-country="${dest.country}" data-code="${dest.code || ''}" data-lat="${dest.lat}" data-lng="${dest.lng}">
           <div class="destination-suggestion-icon">📍</div>
           <div class="destination-suggestion-text">
             <div class="destination-suggestion-name">${dest.name}</div>
@@ -1155,6 +1157,7 @@ class TripsManager {
   selectDestination(item) {
     const name = item.dataset.name;
     const country = item.dataset.country;
+    const code = item.dataset.code || null;
     const lat = item.dataset.lat ? parseFloat(item.dataset.lat) : null;
     const lng = item.dataset.lng ? parseFloat(item.dataset.lng) : null;
 
@@ -1162,6 +1165,7 @@ class TripsManager {
     this.newTrip.destinationDisplay = country ? `${name}, ${country}` : name;
     this.newTrip.latitude = lat;
     this.newTrip.longitude = lng;
+    this.newTrip.countryCode = code;
 
     const input = document.getElementById('destination-input');
     const suggestions = document.getElementById('destination-suggestions');
@@ -1546,6 +1550,7 @@ class TripsManager {
         context: derivedContext,
         latitude: this.newTrip.latitude,
         longitude: this.newTrip.longitude,
+        countryCodes: this.newTrip.countryCode ? [this.newTrip.countryCode] : [],
         customImageURL: null,
         isArchived: false,
         isSomedayTrip: this.newTrip.isSomedayTrip,
