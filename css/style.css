@@ -953,38 +953,17 @@ h1, h2, h3, h4, h5, h6,
     opacity: 1;
 }
 
-/* Payment icon badges */
-.payment-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* Payment logos image */
+.payment-logos {
     height: 28px;
-    padding: 0 8px;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #1e293b;
-    transition: all 0.2s ease;
-}
-
-.payment-icon:hover {
-    border-color: #cbd5e1;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.payment-icon svg {
-    height: 16px;
     width: auto;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
 }
 
-.payment-icon.visa { color: #1434CB; }
-.payment-icon.mastercard { color: #EB001B; }
-.payment-icon.amex { color: #2E77BC; }
-.payment-icon.paypal { color: #003087; }
-.payment-icon.applepay { color: #000; }
-.payment-icon.googlepay { color: #4285F4; }
+.payment-logos:hover {
+    opacity: 1;
+}
 
 /* Checkout Trust Badges */
 .checkout-trust-badges {
