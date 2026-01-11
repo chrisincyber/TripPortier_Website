@@ -1583,18 +1583,42 @@ class TripsManager {
                 ? null
                 : new Date(this.newTrip.startDate.getTime() + dayIndex * 24 * 60 * 60 * 1000);
 
+              // Map category to iOS ItineraryItemType
+              const categoryToType = {
+                'accommodation': 'accommodation',
+                'hotel': 'accommodation',
+                'lodging': 'accommodation',
+                'activity': 'activity',
+                'attraction': 'activity',
+                'sightseeing': 'activity',
+                'food': 'food',
+                'restaurant': 'food',
+                'dining': 'food',
+                'travel': 'travel',
+                'transport': 'travel',
+                'flight': 'travel',
+                'other': 'other'
+              };
+              const itemType = categoryToType[activity.category?.toLowerCase()] || 'activity';
+
               itineraryItems.push({
-                id: `${tripId}-${dayIndex}-${actIndex}`,
+                id: crypto.randomUUID(),
+                type: itemType,
                 title: activity.title || activity.name || 'Activity',
-                description: activity.description || '',
+                notes: activity.description || null,
                 date: itemDate ? firebase.firestore.Timestamp.fromDate(itemDate) : null,
-                dayIndex: dayIndex,
-                time: activity.time || null,
-                category: activity.category || 'activity',
-                estimatedCost: activity.estimatedCost || null,
+                isStarred: false,
+                tasks: [],
+                attachments: [],
+                backgroundImageURL: null,
+                currencyAmount: activity.estimatedCost || null,
+                currency: null,
+                homeCurrencyAmount: null,
+                conversionRate: null,
                 location: activity.location || null,
-                isCompleted: false,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                websiteURL: null,
+                phoneNumber: null,
+                flightTrackingId: null
               });
             }
           });
@@ -2228,20 +2252,46 @@ class TripsManager {
   async addFlightToTripItinerary(trip, flightData, departureDate) {
     const db = firebase.firestore();
 
-    // Create itinerary item for the flight
+    // Create itinerary item for the flight (matching iOS ItineraryItem structure)
     const itineraryItem = {
-      id: db.collection('temp').doc().id,
-      type: 'flight',
+      id: crypto.randomUUID(),
+      type: 'travel',
       title: `${flightData.dep_iata} → ${flightData.arr_iata}`,
-      description: `Flight ${flightData.flight_iata || flightData.flightNumber}`,
+      notes: `Flight ${flightData.flight_iata || flightData.flightNumber}`,
       date: firebase.firestore.Timestamp.fromDate(new Date(departureDate)),
-      startTime: flightData.dep_time || flightData.std || null,
-      endTime: flightData.arr_time || flightData.sta || null,
-      location: flightData.dep_city || '',
-      flightNumber: flightData.flight_iata || flightData.flightNumber,
-      departureAirport: flightData.dep_iata,
-      arrivalAirport: flightData.arr_iata,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      isStarred: false,
+      tasks: [],
+      attachments: [],
+      backgroundImageURL: null,
+      currencyAmount: null,
+      currency: null,
+      homeCurrencyAmount: null,
+      conversionRate: null,
+      location: null,
+      websiteURL: null,
+      phoneNumber: null,
+      flightTrackingId: null,
+      // Travel-specific details (matching iOS TravelDetails structure)
+      travelDetails: {
+        travelMode: 'Flight',
+        fromLocation: flightData.dep_city || flightData.dep_iata || null,
+        toLocation: flightData.arr_city || flightData.arr_iata || null,
+        departureTime: null,
+        arrivalTime: null,
+        bookingReference: null,
+        bookingStatus: null,
+        flightNumber: flightData.flight_iata || flightData.flightNumber || null,
+        airline: flightData.airline_iata || null,
+        flight: null,
+        flightClass: null,
+        seatNumbers: null,
+        trainNumber: null,
+        trainClass: null,
+        carRentalCompany: null,
+        vehicleType: null,
+        pickupLocation: null,
+        dropoffLocation: null
+      }
     };
 
     // Add to trip's itineraryItems array
