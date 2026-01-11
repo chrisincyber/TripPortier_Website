@@ -658,6 +658,49 @@ class TripsManager {
     return div.innerHTML;
   }
 
+  // Geocode a destination using Nominatim (OpenStreetMap) - free, no API key required
+  async geocodeDestination(query) {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&addressdetails=1`,
+        {
+          headers: {
+            'Accept': 'application/json',
+            'User-Agent': 'TripPortier/1.0'
+          }
+        }
+      );
+
+      if (!response.ok) return null;
+
+      const results = await response.json();
+      if (results && results.length > 0) {
+        const result = results[0];
+        // Extract country code from address if available
+        let countryCode = null;
+        if (result.address && result.address.country_code) {
+          countryCode = result.address.country_code.toUpperCase();
+        }
+        // Also try to get a better display name
+        let country = null;
+        if (result.address && result.address.country) {
+          country = result.address.country;
+        }
+        return {
+          lat: parseFloat(result.lat),
+          lng: parseFloat(result.lon),
+          displayName: result.display_name,
+          country: country,
+          countryCode: countryCode
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error('Geocoding failed:', error);
+      return null;
+    }
+  }
+
   // UI State Methods
   showLoading() {
     this.loadingEl.style.display = 'flex';
@@ -1194,12 +1237,41 @@ class TripsManager {
     });
   }
 
-  selectDestination(item) {
+  async selectDestination(item) {
     const name = item.dataset.name;
-    const country = item.dataset.country;
-    const code = item.dataset.code || null;
-    const lat = item.dataset.lat ? parseFloat(item.dataset.lat) : null;
-    const lng = item.dataset.lng ? parseFloat(item.dataset.lng) : null;
+    let country = item.dataset.country;
+    let code = item.dataset.code || null;
+    let lat = item.dataset.lat ? parseFloat(item.dataset.lat) : null;
+    let lng = item.dataset.lng ? parseFloat(item.dataset.lng) : null;
+
+    const input = document.getElementById('destination-input');
+    const suggestions = document.getElementById('destination-suggestions');
+    const nextBtn = document.getElementById('next-to-dates');
+
+    // Hide suggestions immediately
+    if (suggestions) suggestions.classList.remove('active');
+
+    // If no coordinates (custom destination), geocode it
+    if (!lat || !lng) {
+      // Show loading state
+      if (input) input.value = `${name} (locating...)`;
+      if (nextBtn) nextBtn.disabled = true;
+
+      const geocoded = await this.geocodeDestination(name);
+      if (geocoded) {
+        lat = geocoded.lat;
+        lng = geocoded.lng;
+        if (!code && geocoded.countryCode) {
+          code = geocoded.countryCode;
+        }
+        if (!country && geocoded.country) {
+          country = geocoded.country;
+        }
+        console.log(`Geocoded "${name}" to (${lat}, ${lng}), country: ${country} (${code})`);
+      } else {
+        console.warn(`Could not geocode "${name}" - weather may not work`);
+      }
+    }
 
     this.newTrip.destination = name;
     this.newTrip.destinationDisplay = country ? `${name}, ${country}` : name;
@@ -1207,12 +1279,7 @@ class TripsManager {
     this.newTrip.longitude = lng;
     this.newTrip.countryCode = code;
 
-    const input = document.getElementById('destination-input');
-    const suggestions = document.getElementById('destination-suggestions');
-    const nextBtn = document.getElementById('next-to-dates');
-
     if (input) input.value = this.newTrip.destinationDisplay;
-    if (suggestions) suggestions.classList.remove('active');
     if (nextBtn) nextBtn.disabled = false;
   }
 
