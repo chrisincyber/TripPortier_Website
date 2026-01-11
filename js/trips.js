@@ -1516,8 +1516,8 @@ class TripsManager {
     try {
       const db = firebase.firestore();
 
-      // Generate unique ID
-      const tripId = db.collection('users').doc().id;
+      // Generate unique ID (must be UUID format for iOS compatibility)
+      const tripId = crypto.randomUUID();
 
       // Derive context from travel styles (for backwards compatibility)
       let derivedContext = null;
