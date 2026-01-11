@@ -2330,6 +2330,56 @@ class TripsManager {
       upgradePrompt.style.display = 'block';
     }
   }
+
+  // ============================================
+  // Delete Trip
+  // ============================================
+
+  async deleteTrip(tripId) {
+    if (!this.currentUser) {
+      console.error('User not authenticated');
+      return false;
+    }
+
+    try {
+      const db = firebase.firestore();
+
+      // Delete from Firestore
+      await db
+        .collection('users')
+        .doc(this.currentUser.uid)
+        .collection('trips')
+        .doc(tripId)
+        .delete();
+
+      // Remove from local array
+      this.trips = this.trips.filter(t => t.id !== tripId);
+
+      console.log(`Trip ${tripId} deleted successfully`);
+      return true;
+    } catch (error) {
+      console.error('Error deleting trip:', error);
+      return false;
+    }
+  }
+
+  // Confirm and delete trip with UI feedback
+  async confirmDeleteTrip(tripId, tripName) {
+    const confirmed = confirm(`Delete "${tripName}"?\n\nThis will permanently remove the trip from all your devices. This action cannot be undone.`);
+
+    if (confirmed) {
+      const success = await this.deleteTrip(tripId);
+      if (success) {
+        // Re-render the trips list
+        this.renderTrips();
+        return true;
+      } else {
+        alert('Failed to delete trip. Please try again.');
+        return false;
+      }
+    }
+    return false;
+  }
 }
 
 // Create global instance
