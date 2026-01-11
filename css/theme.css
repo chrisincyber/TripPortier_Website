@@ -1,23 +1,23 @@
 /**
  * TripPortier Theme System
- * Light mode styles
+ * Modernized with 60-30-10 color rule
  */
 
 /* ============================================
-   CSS Variables
+   CSS Variables (Theme Layer)
    ============================================ */
 :root {
-  /* Base colors */
-  --theme-bg: #ffffff;
-  --theme-bg-secondary: #f8fafc;
-  --theme-bg-tertiary: #f1f5f9;
-  --theme-text: #1e293b;
-  --theme-text-secondary: #64748b;
-  --theme-text-muted: #94a3b8;
+  /* Base colors - mapped to design system */
+  --theme-bg: var(--bg-primary, #ffffff);
+  --theme-bg-secondary: var(--bg-secondary, #f8fafc);
+  --theme-bg-tertiary: var(--bg-tertiary, #f1f5f9);
+  --theme-text: var(--text-primary, #0f172a);
+  --theme-text-secondary: var(--text-secondary, #475569);
+  --theme-text-muted: var(--text-muted, #94a3b8);
   --theme-border: #e2e8f0;
 
-  /* Primary brand colors */
-  --theme-primary: #6366f1;
+  /* Primary brand colors - 10% accent usage */
+  --theme-primary: var(--accent-primary, #6366f1);
   --theme-primary-dark: #4f46e5;
   --theme-primary-light: #818cf8;
 
@@ -25,20 +25,20 @@
   --theme-hero-gradient: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
 
   /* Navbar */
-  --theme-navbar-bg: rgba(255, 255, 255, 0.95);
-  --theme-navbar-text: #1e293b;
-  --theme-navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --theme-navbar-bg: rgba(255, 255, 255, 0.98);
+  --theme-navbar-text: var(--text-primary, #0f172a);
+  --theme-navbar-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 
   /* Cards */
   --theme-card-bg: #ffffff;
   --theme-card-border: #e2e8f0;
-  --theme-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --theme-card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.12);
+  --theme-card-shadow: var(--shadow-md, 0 4px 20px rgba(0, 0, 0, 0.08));
+  --theme-card-shadow-hover: var(--shadow-lg, 0 20px 40px rgba(0, 0, 0, 0.1));
 
   /* Inputs */
   --theme-input-bg: #ffffff;
   --theme-input-border: #e2e8f0;
-  --theme-input-focus-border: #6366f1;
+  --theme-input-focus-border: var(--accent-primary, #6366f1);
 
   /* Status colors */
   --theme-success: #10b981;

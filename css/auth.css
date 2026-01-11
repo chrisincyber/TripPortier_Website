@@ -161,11 +161,12 @@
   justify-content: center;
   gap: 0.75rem;
   padding: 0.875rem 1.5rem;
-  border-radius: 12px;
+  min-height: 48px;
+  border-radius: var(--radius-md, 12px);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base, 0.3s ease);
   border: none;
   width: 100%;
   font-family: inherit;
@@ -261,18 +262,26 @@
 
 .auth-field input {
   padding: 0.875rem 1rem;
+  min-height: 48px;
   border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  border-radius: var(--radius-md, 12px);
   font-size: 1rem;
   font-family: inherit;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color var(--transition-base, 0.3s ease),
+              box-shadow var(--transition-base, 0.3s ease),
+              background var(--transition-base, 0.3s ease);
   background: white;
+}
+
+.auth-field input:hover {
+  border-color: #cbd5e1;
 }
 
 .auth-field input:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: var(--accent-primary, #6366f1);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  background: #fafafa;
 }
 
 .auth-field input::placeholder {

@@ -350,3 +350,69 @@ function getCurrentLanguage() {
 document.addEventListener('DOMContentLoaded', function() {
     TripPortierLocale.init();
 });
+
+// ============================================
+// Scroll Animation System (Intersection Observer)
+// ============================================
+
+// Check for reduced motion preference
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+if (!prefersReducedMotion) {
+    // Create Intersection Observer for scroll animations
+    const scrollObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                // Optionally unobserve after animation (better performance)
+                // scrollObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe all elements with animation classes
+    document.addEventListener('DOMContentLoaded', () => {
+        const animatedElements = document.querySelectorAll(
+            '.animate-on-scroll, .animate-fade-in, .animate-slide-up, .animate-slide-left, .animate-slide-right, .animate-scale, ' +
+            '.feature-card-new, .feature-card, .booking-card, .testimonial-card, ' +
+            '.section-header, .features-compact-header'
+        );
+
+        animatedElements.forEach(el => {
+            scrollObserver.observe(el);
+        });
+    });
+
+    // Also observe dynamically added elements (for SPAs)
+    const observeNewElements = () => {
+        const animatedElements = document.querySelectorAll(
+            '.animate-on-scroll:not(.observed), .animate-fade-in:not(.observed), .animate-slide-up:not(.observed), ' +
+            '.animate-slide-left:not(.observed), .animate-slide-right:not(.observed), .animate-scale:not(.observed), ' +
+            '.feature-card-new:not(.observed), .feature-card:not(.observed), .booking-card:not(.observed), ' +
+            '.testimonial-card:not(.observed), .section-header:not(.observed), .features-compact-header:not(.observed)'
+        );
+
+        animatedElements.forEach(el => {
+            el.classList.add('observed');
+            scrollObserver.observe(el);
+        });
+    };
+
+    // Run on page load and expose for manual calls
+    document.addEventListener('DOMContentLoaded', observeNewElements);
+    window.TripPortierAnimations = { observeNewElements };
+} else {
+    // If reduced motion is preferred, make all elements visible immediately
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll(
+            '.animate-on-scroll, .animate-fade-in, .animate-slide-up, .animate-slide-left, .animate-slide-right, .animate-scale, ' +
+            '.feature-card-new, .feature-card, .booking-card, .testimonial-card, ' +
+            '.section-header, .features-compact-header'
+        ).forEach(el => {
+            el.classList.add('visible');
+        });
+    });
+}
