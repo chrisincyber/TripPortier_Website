@@ -2788,10 +2788,16 @@
 
         // Render grid based on category
         function renderGrid(category) {
+            console.log('renderGrid called with category:', category);
             const grid = document.getElementById('countriesGrid');
+            console.log('Grid element found:', !!grid);
 
             if (category === 'popular') {
-                grid.innerHTML = popularCountries.map(c => createCountryCard(c)).join('');
+                console.log('Rendering popular countries:', popularCountries.length);
+                const html = popularCountries.map(c => createCountryCard(c)).join('');
+                console.log('Generated HTML length:', html.length);
+                grid.innerHTML = html;
+                console.log('Grid innerHTML set, children count:', grid.children.length);
                 loadPricesForCountries(popularCountries);
             } else if (category === 'local') {
                 grid.innerHTML = allCountries.map(c => createCountryCard(c)).join('');
@@ -3540,7 +3546,15 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
-            renderGrid('popular');
+            console.log('eSIM page: DOMContentLoaded fired');
+            console.log('eSIM page: countriesGrid element:', document.getElementById('countriesGrid'));
+            console.log('eSIM page: popularCountries count:', popularCountries?.length);
+            try {
+                renderGrid('popular');
+                console.log('eSIM page: renderGrid completed');
+            } catch (e) {
+                console.error('eSIM page: renderGrid error:', e);
+            }
         });
     </script>
 </body>
