@@ -2575,11 +2575,8 @@
         // ==========================================
         // eSIM Store Data & Functions
         // ==========================================
-        // Supabase Edge Functions URL
-        const SUPABASE_FUNCTIONS_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1';
-        // Legacy Firebase Functions URL (for backwards compatibility)
-        const SUPABASE_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co';
-        const API_URL = `${SUPABASE_URL}/functions/v1`;
+        // Supabase Edge Functions URL (SUPABASE_URL is already defined in supabase-config.js)
+        const SUPABASE_FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 
         // Cache for package data
         const packageCache = {};
