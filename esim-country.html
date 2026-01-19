@@ -832,6 +832,17 @@
                 <div class="modal-package-summary">
                     <h4 id="modalPackageName">5GB - 30 Days</h4>
                     <p id="modalPackageCountry">Japan</p>
+                    <p id="modalNetworkProvider" style="display: none; margin-top: 0.5rem; font-size: 0.875rem; color: #0369a1;">
+                        <span style="display: inline-flex; align-items: center; gap: 4px;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                                <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                                <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                                <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                            </svg>
+                            Network: <span id="modalNetworkName"></span>
+                        </span>
+                    </p>
                     <div class="modal-package-price" id="modalPackagePrice">$12.00</div>
                 </div>
 
@@ -907,7 +918,10 @@
         </svg>
     </a>
 
-    <!-- Firebase SDK for auth and firestore -->
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <!-- Firebase SDK for auth (legacy support during migration) -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -1088,7 +1102,9 @@
         let currentCountry = null;
         let selectedPackage = null;
 
-        // Firebase Functions URL
+        // Supabase Edge Functions URL
+        const SUPABASE_FUNCTIONS_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1';
+        // Legacy Firebase Functions URL (for backwards compatibility)
         const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         // Get country code from URL
@@ -1122,14 +1138,25 @@
             }
         }
 
-        // Load packages from Airalo API
+        // Load packages from Airalo API via Supabase Edge Function
         async function loadPackages() {
             const grid = document.getElementById('packagesGrid');
             grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
 
             try {
                 const countryCode = getCountryCode();
-                const response = await fetch(`${API_URL}/getAiraloPackagesHttp?countryCode=${countryCode}&type=local`);
+
+                // Call Supabase Edge Function (POST with JSON body)
+                const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/airalo-packages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        countryCode: countryCode,
+                        type: 'local'
+                    })
+                });
                 const data = await response.json();
 
                 if (data.success && data.packages && data.packages.length > 0) {
@@ -1161,6 +1188,15 @@
                 <div class="package-card ${index === popularIndex ? 'popular' : ''}" onclick="selectPackage('${pkg.id}')">
                     <div class="package-data">${pkg.data}</div>
                     <div class="package-validity">${pkg.days} days validity</div>
+                    ${pkg.networkProvider ? `<div class="package-network" style="display: flex; align-items: center; gap: 6px; margin-bottom: 1rem; padding: 8px 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; font-size: 0.875rem; color: #0369a1;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg>
+                        <span>${pkg.networkProvider}</span>
+                    </div>` : ''}
                     <ul class="package-features">
                         <li>4G/LTE data speeds</li>
                         <li>Instant QR code delivery</li>
@@ -1183,6 +1219,16 @@
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
                 document.getElementById('modalPackageCountry').textContent = currentCountry.name;
+
+                // Show network provider in modal
+                const networkProviderEl = document.getElementById('modalNetworkProvider');
+                const networkNameEl = document.getElementById('modalNetworkName');
+                if (selectedPackage.networkProvider) {
+                    networkNameEl.textContent = selectedPackage.networkProvider;
+                    networkProviderEl.style.display = 'block';
+                } else {
+                    networkProviderEl.style.display = 'none';
+                }
 
                 // Check if TripCoins discount applies
                 const tripcoinsToUse = Math.min(tripcoinsFromUrl, Math.floor(selectedPackage.price));

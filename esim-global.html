@@ -979,21 +979,34 @@
         </svg>
     </a>
 
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Firebase Functions URL
+        // Supabase Edge Functions URL
+        const SUPABASE_FUNCTIONS_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1';
+        // Legacy Firebase Functions URL
         const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         let selectedPackage = null;
         let loadedPackages = [];
 
-        // Load packages from Airalo API
+        // Load packages from Airalo API via Supabase Edge Function
         async function loadPackages() {
             const grid = document.getElementById('packagesGrid');
             grid.innerHTML = '<div style="text-align:center;padding:2rem;color:#64748b;">Loading packages...</div>';
 
             try {
-                const response = await fetch(`${API_URL}/getAiraloPackagesHttp?type=global`);
+                const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/airalo-packages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        type: 'global'
+                    })
+                });
                 const data = await response.json();
 
                 if (data.success && data.packages && data.packages.length > 0) {
@@ -1025,6 +1038,15 @@
                 <div class="package-card ${index === featuredIndex ? 'featured' : ''}" onclick="selectPackage('${pkg.id}')">
                     <div class="package-data">${pkg.data}</div>
                     <div class="package-validity">${pkg.days} days validity</div>
+                    ${pkg.networkProvider ? `<div class="package-network" style="display: flex; align-items: center; gap: 6px; margin-bottom: 1rem; padding: 8px 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; font-size: 0.875rem; color: #0369a1;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg>
+                        <span>${pkg.networkProvider}</span>
+                    </div>` : ''}
                     <ul class="package-features">
                         <li>100+ countries worldwide</li>
                         <li>Instant QR code delivery</li>
