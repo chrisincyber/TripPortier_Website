@@ -2519,6 +2519,10 @@
 
         // Apply translations to all elements with data-i18n
         function applyTranslations() {
+            // Guard against missing translation objects
+            if (typeof translations === 'undefined' || typeof faqTranslations === 'undefined') {
+                return;
+            }
             const trans = translations[currentLanguage] || translations['en'];
             const faqTrans = faqTranslations[currentLanguage] || faqTranslations['en'];
 
@@ -2556,12 +2560,14 @@
         // Initialize language system on page load
         document.addEventListener('DOMContentLoaded', () => {
             initLanguageDropdown();
-            // Set initial language from storage
-            const lang = languages?.find(l => l.code === currentLanguage);
-            if (lang) {
-                document.getElementById('currentLanguageFlag').textContent = lang.flag;
-                document.getElementById('currentLanguageName').textContent = currentLanguage.toUpperCase().split('-')[0];
-                document.body.dir = lang.dir || 'ltr';
+            // Set initial language from storage (guard against missing languages array)
+            if (typeof languages !== 'undefined') {
+                const lang = languages.find(l => l.code === currentLanguage);
+                if (lang) {
+                    document.getElementById('currentLanguageFlag').textContent = lang.flag;
+                    document.getElementById('currentLanguageName').textContent = currentLanguage.toUpperCase().split('-')[0];
+                    document.body.dir = lang.dir || 'ltr';
+                }
             }
             applyTranslations();
         });
