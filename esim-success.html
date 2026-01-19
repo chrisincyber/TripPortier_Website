@@ -1169,34 +1169,23 @@
         </svg>
     </a>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script src="js/main.js"></script>
     <script>
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBBUz7xqSzJJN3bvZ3IU1JYxMgdrI5EW-c",
-            authDomain: "tripportier.firebaseapp.com",
-            projectId: "tripportier",
-            storageBucket: "tripportier.appspot.com",
-            messagingSenderId: "926276849879",
-            appId: "1:926276849879:web:YOUR_WEB_APP_ID"
-        };
+        // Supabase config
+        const SUPABASE_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvbWtkaHVja3Fvc3Z1aGZoeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0NTY4MjAsImV4cCI6MjA1MzAzMjgyMH0.SRKstB6BFJV6CXGV-IHO7gTsqfC22LCow4HPq7yZsFE';
 
-        // Initialize Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
+        // Initialize Supabase
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const db = firebase.firestore();
         let currentUser = null;
         let currentOrderData = null;
 
-        // Firebase Functions URL
-        const FUNCTIONS_URL = 'https://us-central1-tripportier.cloudfunctions.net';
+        // Supabase Functions URL
+        const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 
         // Get session ID from URL
         function getSessionId() {
@@ -1214,7 +1203,7 @@
             }
 
             try {
-                const response = await fetch(`${FUNCTIONS_URL}/getEsimOrderBySession?session_id=${encodeURIComponent(sessionId)}`);
+                const response = await fetch(`${FUNCTIONS_URL}/esim-order-by-session?session_id=${encodeURIComponent(sessionId)}`);
                 const data = await response.json();
 
                 if (data.success && data.order) {
@@ -1319,31 +1308,26 @@
                     throw new Error('Order data not found');
                 }
 
-                // Save arrival date to Firestore for reminder scheduling
-                const reminderData = {
-                    orderCode: orderCode,
-                    email: email,
-                    arrivalDate: arrivalDate,
-                    packageName: currentOrderData?.packageName || 'eSIM',
-                    countryTitle: currentOrderData?.countryTitle || 'your destination',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    reminderSent: false,
-                    userId: currentUser?.uid || null
-                };
-
-                // Save to esimReminders collection
-                await db.collection('esimReminders').add(reminderData);
-
-                // Also update the order with arrival date
-                const ordersRef = db.collection('esimOrders');
-                const querySnapshot = await ordersRef.where('orderCode', '==', orderCode).limit(1).get();
-
-                if (!querySnapshot.empty) {
-                    const orderDoc = querySnapshot.docs[0];
-                    await orderDoc.ref.update({
+                // Call Supabase Edge Function to create reminder
+                const response = await fetch(`${FUNCTIONS_URL}/esim-reminder`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'create',
+                        email: email,
+                        orderCode: orderCode,
                         arrivalDate: arrivalDate,
-                        reminderSet: true
-                    });
+                        packageName: currentOrderData?.packageName || 'eSIM',
+                        countryTitle: currentOrderData?.countryTitle || 'your destination',
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to set reminder');
                 }
 
                 // Show success state
@@ -1389,16 +1373,15 @@
             if (!orderCode) return;
 
             try {
-                // Update the esimOrders document to include the userId
-                const ordersRef = db.collection('esimOrders');
-                const querySnapshot = await ordersRef.where('orderCode', '==', orderCode).limit(1).get();
+                // Update the esim_orders record to include the user_id
+                const { error } = await supabase
+                    .from('esim_orders')
+                    .update({ user_id: userId })
+                    .eq('order_code', orderCode);
 
-                if (!querySnapshot.empty) {
-                    const orderDoc = querySnapshot.docs[0];
-                    await orderDoc.ref.update({
-                        userId: userId,
-                        linkedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                if (error) {
+                    console.error('Error linking order:', error);
+                } else {
                     console.log('Order linked to user:', userId);
                 }
             } catch (error) {
@@ -1411,21 +1394,29 @@
             // Initialize arrival date input
             initArrivalDateInput();
 
-            // Set up auth state listener
-            firebase.auth().onAuthStateChanged(async (user) => {
-                if (user) {
-                    currentUser = user;
-                    console.log('User logged in:', user.email);
+            // Set up Supabase auth state listener
+            supabase.auth.onAuthStateChange(async (event, session) => {
+                if (session?.user) {
+                    currentUser = session.user;
+                    console.log('User logged in:', session.user.email);
 
                     // If we have order data, try to link it to the user
                     if (currentOrderData && currentOrderData.orderCode) {
-                        await linkOrderToUser(user.uid, currentOrderData.orderCode);
+                        await linkOrderToUser(session.user.id, currentOrderData.orderCode);
                     }
 
                     // Update UI
                     updateRegisterPrompt();
                 } else {
                     currentUser = null;
+                    updateRegisterPrompt();
+                }
+            });
+
+            // Check current session
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session?.user) {
+                    currentUser = session.user;
                     updateRegisterPrompt();
                 }
             });

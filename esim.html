@@ -2572,7 +2572,8 @@
         // Supabase Edge Functions URL
         const SUPABASE_FUNCTIONS_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1';
         // Legacy Firebase Functions URL (for backwards compatibility)
-        const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
+        const SUPABASE_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co';
+        const API_URL = `${SUPABASE_URL}/functions/v1`;
 
         // Cache for package data
         const packageCache = {};
@@ -3415,15 +3416,15 @@
                 const countryCode = currentModalData.code || '';
                 const countryTitle = currentModalData.title || currentModalData.name || '';
 
-                // Calculate TripCoins to earn (default 3%)
-                const tripcoinsToEarn = finalPrice * 0.03;
+                // Get user ID if logged in (check Supabase session)
+                let userId = null;
+                if (typeof supabase !== 'undefined') {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    userId = session?.user?.id || null;
+                }
 
-                // Get user ID if logged in (to link order to account)
-                const currentUser = firebase.auth().currentUser;
-                const userId = currentUser ? currentUser.uid : null;
-
-                // Call Firebase function to create checkout session
-                const response = await fetch(`${API_URL}/createEsimCheckout`, {
+                // Call Supabase Edge Function to create checkout session
+                const response = await fetch(`${API_URL}/esim-checkout-session`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -3432,18 +3433,17 @@
                         email: email,
                         packageId: selectedPackage.id,
                         packageName: `${selectedPackage.data} - ${selectedPackage.days} Days`,
-                        amount: amountInCents,
-                        currency: 'USD',
                         countryCode: countryCode,
                         countryTitle: countryTitle,
                         data: selectedPackage.data,
                         days: selectedPackage.days,
+                        price: selectedPackage.price,
+                        netPrice: selectedPackage.netPrice || selectedPackage.price,
                         operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
+                        hasVoice: selectedPackage.hasVoice || false,
+                        hasText: selectedPackage.hasText || false,
                         tripcoinsUsed: coinsToUse,
-                        originalPrice: selectedPackage.price,
-                        tripcoinsToEarn: tripcoinsToEarn,
-                        language: currentLanguage || 'en',
-                        userId: userId,  // Link order to user account if logged in
+                        userId: userId,
                     }),
                 });
 
