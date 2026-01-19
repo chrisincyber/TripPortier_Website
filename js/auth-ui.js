@@ -1,6 +1,7 @@
 /**
  * TripPortier Authentication UI
  * Handles login modal and navbar authentication state
+ * Uses Supabase Auth via window.tripPortierAuth (from supabase-auth.js)
  */
 
 class AuthUI {
@@ -231,36 +232,33 @@ class AuthUI {
       errorEl.style.display = 'none';
 
       if (this.mode === 'signin') {
+        // First authenticate
+        await window.tripPortierAuth.signInWithEmail(email, password);
+
         // Check if 2FA is enabled for this user
         try {
-          const checkTwoFactorStatus = firebase.functions().httpsCallable('checkTwoFactorStatus');
-          const result = await checkTwoFactorStatus({ email });
+          const result = await window.callEdgeFunction('two-factor', { action: 'status' });
 
-          if (result.data.twoFactorEnabled) {
-            // 2FA is enabled - authenticate first, then verify OTP
-            await window.tripPortierAuth.signInWithEmail(email, password);
-
-            // Sign out temporarily - user needs to complete 2FA
+          if (result.enabled) {
+            // 2FA is enabled - sign out temporarily, user needs to complete 2FA
             await window.tripPortierAuth.auth.signOut();
 
             // Store credentials temporarily (will be used after OTP verification)
             this.pendingAuth = { email, password };
 
             // Send 2FA code
-            const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
-            await sendTwoFactorCode({ email });
+            await window.callEdgeFunction('two-factor', { action: 'send', email });
 
             // Show OTP verification modal
             this.showOtpModal(email);
             return;
           }
         } catch (twoFactorError) {
-          // If 2FA check fails, proceed with normal login
-          console.warn('2FA check failed, proceeding with normal login:', twoFactorError);
+          // If 2FA check fails, user is already logged in - continue
+          console.warn('2FA check failed, proceeding with login:', twoFactorError);
         }
 
-        // Normal login (no 2FA)
-        await window.tripPortierAuth.signInWithEmail(email, password);
+        // Normal login complete (no 2FA or 2FA check failed)
         this.hideModal();
       } else {
         const name = document.getElementById('auth-name').value;
@@ -391,7 +389,21 @@ class AuthUI {
   }
 
   getErrorMessage(code) {
+    // Supabase error codes
     const messages = {
+      // Supabase Auth error codes
+      'invalid_credentials': 'Invalid email or password.',
+      'email_not_confirmed': 'Please verify your email address.',
+      'user_not_found': 'No account found with this email.',
+      'invalid_email': 'Invalid email address.',
+      'weak_password': 'Password should be at least 6 characters.',
+      'email_exists': 'An account with this email already exists.',
+      'user_already_exists': 'An account with this email already exists.',
+      'signup_disabled': 'Sign up is currently disabled.',
+      'email_provider_disabled': 'Email sign-in is not enabled.',
+      'over_request_rate_limit': 'Too many attempts. Please try again later.',
+      'over_email_send_rate_limit': 'Too many emails sent. Please try again later.',
+      // Legacy Firebase codes for backward compatibility
       'auth/invalid-email': 'Invalid email address.',
       'auth/user-disabled': 'This account has been disabled.',
       'auth/user-not-found': 'No account found with this email.',
@@ -555,13 +567,13 @@ class AuthUI {
       errorEl.style.display = 'none';
 
       // Verify OTP code
-      const verifyTwoFactorCode = firebase.functions().httpsCallable('verifyTwoFactorCode');
-      const result = await verifyTwoFactorCode({
+      const result = await window.callEdgeFunction('two-factor', {
+        action: 'verify',
         email: this.pendingAuth.email,
         code: code
       });
 
-      if (result.data.success) {
+      if (result.success) {
         // OTP verified - now complete the sign in
         await window.tripPortierAuth.signInWithEmail(
           this.pendingAuth.email,
@@ -578,12 +590,10 @@ class AuthUI {
       console.error('OTP verification error:', error);
 
       let errorMessage = 'Invalid verification code. Please try again.';
-      if (error.code === 'functions/deadline-exceeded') {
-        errorMessage = 'Code expired. Please request a new one.';
-      } else if (error.code === 'functions/resource-exhausted') {
-        errorMessage = 'Too many attempts. Please request a new code.';
-      } else if (error.code === 'functions/not-found') {
-        errorMessage = 'No code found. Please request a new one.';
+      if (error.code === 'INVALID_CODE') {
+        errorMessage = 'Invalid or expired code. Please try again.';
+      } else if (error.code === 'MISSING_CODE') {
+        errorMessage = 'Please enter the verification code.';
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -608,8 +618,7 @@ class AuthUI {
       resendLink.style.pointerEvents = 'none';
       errorEl.style.display = 'none';
 
-      const sendTwoFactorCode = firebase.functions().httpsCallable('sendTwoFactorCode');
-      await sendTwoFactorCode({ email: this.pendingAuth.email });
+      await window.callEdgeFunction('two-factor', { action: 'send', email: this.pendingAuth.email });
 
       resendLink.textContent = 'Sent!';
 
@@ -648,7 +657,7 @@ class AuthUI {
     // Request notification permission when user logs in (only once per session)
     if (user && !this._notificationPromptShown) {
       this._notificationPromptShown = true;
-      this.promptForNotifications(user.uid);
+      this.promptForNotifications(user.id);
     }
 
     // Remove existing auth element
@@ -694,7 +703,7 @@ class AuthUI {
       }
 
       // Check subscription status and hide TripPortier+ for premium users
-      this.checkAndHidePremiumNav(user.uid);
+      this.checkAndHidePremiumNav(user.id);
     } else {
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
       // Show TripPortier+ for logged out users
@@ -908,12 +917,16 @@ class AuthUI {
     if (!premiumNav) return;
 
     try {
-      const db = window.firebaseDb;
-      if (!db) return;
+      const supabase = window.supabaseClient;
+      if (!supabase) return;
 
-      const subscriptionDoc = await db.collection('subscriptions').doc(userId).get();
-      if (subscriptionDoc.exists) {
-        const data = subscriptionDoc.data();
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', userId)
+        .single();
+
+      if (!error && data) {
         const isPremium = data.status === 'active' || data.status === 'trialing';
         if (isPremium) {
           premiumNav.style.display = 'none';

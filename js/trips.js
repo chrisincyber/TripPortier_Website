@@ -1,6 +1,6 @@
 /**
  * TripPortier Trips Manager
- * Fetches and displays trips from Firebase Firestore
+ * Fetches and displays trips from Supabase
  */
 
 class TripsManager {
@@ -10,6 +10,7 @@ class TripsManager {
     this.imageCache = new Map();
     this.currentUser = null;
     this.currentView = 'trips'; // 'trips' or 'flights'
+    this.tripsSubscription = null; // Supabase real-time subscription
 
     // User preferences for AI personalization
     this.userPreferences = {
@@ -139,6 +140,12 @@ class TripsManager {
     this.currentUser = user;
 
     if (!user) {
+      // Clean up real-time subscription when signing out
+      if (this.tripsSubscription) {
+        supabaseClient.removeChannel(this.tripsSubscription);
+        this.tripsSubscription = null;
+      }
+      this.trips = [];
       this.showNotSignedIn();
       // Hide controls when not signed in
       if (this.tripsControlsEl) {
@@ -168,9 +175,9 @@ class TripsManager {
       // Check premium status, load user preferences, and load trips/flights
       await Promise.all([
         this.checkPremiumStatus(),
-        this.loadUserPreferences(user.uid),
-        this.loadTrips(user.uid),
-        this.loadFlights(user.uid)
+        this.loadUserPreferences(user.id),
+        this.loadTrips(user.id),
+        this.loadFlights(user.id)
       ]);
 
       // Render based on current view
@@ -193,16 +200,19 @@ class TripsManager {
 
     try {
       if (window.subscriptionManager) {
-        const { isSubscribed } = await window.subscriptionManager.getSubscriptionStatus(this.currentUser.uid);
+        const { isSubscribed } = await window.subscriptionManager.getSubscriptionStatus(this.currentUser.id);
         this.isPremium = isSubscribed;
       } else {
-        // Fallback: check Firestore directly
-        const db = firebase.firestore();
-        const subDoc = await db.collection('subscriptions').doc(this.currentUser.uid).get();
-        if (subDoc.exists) {
-          const data = subDoc.data();
-          const expirationDate = data.expirationDate?.toDate();
-          this.isPremium = data.status === 'active' && expirationDate && expirationDate > new Date();
+        // Fallback: check Supabase directly
+        const { data: subData, error } = await supabaseClient
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', this.currentUser.id)
+          .single();
+
+        if (subData && !error) {
+          const expirationDate = subData.expiration_date ? new Date(subData.expiration_date) : null;
+          this.isPremium = subData.status === 'active' && expirationDate && expirationDate > new Date();
         } else {
           this.isPremium = false;
         }
@@ -215,30 +225,31 @@ class TripsManager {
 
   async loadUserPreferences(userId) {
     try {
-      const db = firebase.firestore();
-      const userDoc = await db.collection('users').doc(userId).get();
+      const { data: userData, error } = await supabaseClient
+        .from('users')
+        .select('*')
+        .eq('id', userId)
+        .single();
 
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-
+      if (userData && !error) {
         // Load interests (for activity recommendations)
         if (userData.interests && Array.isArray(userData.interests)) {
           this.userPreferences.interests = userData.interests;
         }
 
         // Load dietary preferences (for restaurant/food recommendations)
-        if (userData.dietaryPreferences && Array.isArray(userData.dietaryPreferences)) {
-          this.userPreferences.dietaryPreferences = userData.dietaryPreferences;
+        if (userData.dietary_preferences && Array.isArray(userData.dietary_preferences)) {
+          this.userPreferences.dietaryPreferences = userData.dietary_preferences;
         }
 
         // Load travel style preference
-        if (userData.travelStyle) {
-          this.userPreferences.travelStyle = userData.travelStyle;
+        if (userData.travel_style) {
+          this.userPreferences.travelStyle = userData.travel_style;
         }
 
         // Load budget preference
-        if (userData.budgetPreference) {
-          this.userPreferences.budgetPreference = userData.budgetPreference;
+        if (userData.budget_preference) {
+          this.userPreferences.budgetPreference = userData.budget_preference;
         }
 
         // User preferences loaded for AI personalization
@@ -250,64 +261,132 @@ class TripsManager {
   }
 
   async loadTrips(userId) {
-    const db = firebase.firestore();
+    // Clean up existing subscription before setting up new one
+    if (this.tripsSubscription) {
+      supabaseClient.removeChannel(this.tripsSubscription);
+      this.tripsSubscription = null;
+    }
 
-    // Fetch trips from user's collection
-    const snapshot = await db
-      .collection('users')
-      .doc(userId)
-      .collection('trips')
-      .get();
+    // Return a promise that resolves after first fetch
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Initial fetch
+        const { data, error } = await supabaseClient
+          .from('trips')
+          .select('*')
+          .eq('user_id', userId)
+          .order('start_date', { ascending: true });
 
-    this.trips = [];
+        if (error) {
+          reject(error);
+          return;
+        }
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
+        this.trips = [];
 
-      // Parse dates - handle both Timestamp and string formats
-      const startDate = this.parseDate(data.startDate);
-      const endDate = this.parseDate(data.endDate);
+        (data || []).forEach(row => {
+          // Parse dates - handle both ISO string and Date formats
+          const startDate = this.parseDate(row.start_date);
+          const endDate = this.parseDate(row.end_date);
 
-      if (!startDate || !endDate) {
-        console.warn('Trip missing valid dates:', doc.id);
-        return;
+          if (!startDate || !endDate) {
+            console.warn('Trip missing valid dates:', row.id);
+            return;
+          }
+
+          this.trips.push({
+            id: row.id,
+            name: row.name || 'Untitled Trip',
+            destination: row.destination || '',
+            startDate: startDate,
+            endDate: endDate,
+            context: row.context || null,
+            customImageURL: row.custom_image_url || null,
+            isArchived: row.is_archived || false,
+            isSomedayTrip: row.is_someday_trip || false,
+            latitude: row.latitude || null,
+            longitude: row.longitude || null,
+            createdAt: row.created_at ? new Date(row.created_at) : null
+          });
+        });
+
+        // Sort by start date (newest first for upcoming, oldest first for past)
+        this.trips.sort((a, b) => a.startDate - b.startDate);
+
+        // Log loaded trips for debugging
+        console.log(`🔄 Trips loaded (${this.trips.length} trips):`, this.trips.map(t => ({
+          id: t.id,
+          name: t.name,
+          destination: t.destination
+        })));
+
+        // Set up real-time subscription for subsequent updates
+        this.tripsSubscription = supabaseClient
+          .channel(`trips_${userId}`)
+          .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'trips',
+            filter: `user_id=eq.${userId}`
+          }, async (payload) => {
+            // Re-fetch all data on any change
+            const { data: updatedData } = await supabaseClient
+              .from('trips')
+              .select('*')
+              .eq('user_id', userId)
+              .order('start_date', { ascending: true });
+
+            this.trips = [];
+
+            (updatedData || []).forEach(row => {
+              const startDate = this.parseDate(row.start_date);
+              const endDate = this.parseDate(row.end_date);
+
+              if (!startDate || !endDate) {
+                return;
+              }
+
+              this.trips.push({
+                id: row.id,
+                name: row.name || 'Untitled Trip',
+                destination: row.destination || '',
+                startDate: startDate,
+                endDate: endDate,
+                context: row.context || null,
+                customImageURL: row.custom_image_url || null,
+                isArchived: row.is_archived || false,
+                isSomedayTrip: row.is_someday_trip || false,
+                latitude: row.latitude || null,
+                longitude: row.longitude || null,
+                createdAt: row.created_at ? new Date(row.created_at) : null
+              });
+            });
+
+            this.trips.sort((a, b) => a.startDate - b.startDate);
+
+            console.log(`🔄 Trips updated (${this.trips.length} trips):`, this.trips.map(t => ({
+              id: t.id,
+              name: t.name,
+              destination: t.destination
+            })));
+
+            // Re-render on updates (real-time sync)
+            if (this.currentView === 'trips') {
+              this.renderTrips();
+            }
+          })
+          .subscribe();
+
+        resolve();
+      } catch (error) {
+        console.error('Error listening to trips:', error);
+        reject(error);
       }
-
-      this.trips.push({
-        id: doc.id,
-        name: data.name || 'Untitled Trip',
-        destination: data.destination || '',
-        startDate: startDate,
-        endDate: endDate,
-        context: data.context || null,
-        customImageURL: data.customImageURL || null,
-        isArchived: data.isArchived || false,
-        isSomedayTrip: data.isSomedayTrip || false,
-        latitude: data.latitude || null,
-        longitude: data.longitude || null
-      });
     });
-
-    // Sort by start date (newest first for upcoming, oldest first for past)
-    this.trips.sort((a, b) => a.startDate - b.startDate);
-
-    // Log loaded trips for debugging
-    console.log(`Loaded ${this.trips.length} trips from Firebase:`, this.trips.map(t => ({
-      id: t.id,
-      name: t.name,
-      destination: t.destination,
-      startDate: t.startDate.toLocaleDateString(),
-      endDate: t.endDate.toLocaleDateString()
-    })));
   }
 
   parseDate(value) {
     if (!value) return null;
-
-    // Firebase Timestamp
-    if (value.toDate && typeof value.toDate === 'function') {
-      return value.toDate();
-    }
 
     // ISO string or other date format
     if (typeof value === 'string') {
@@ -612,14 +691,13 @@ class TripsManager {
     }
 
     try {
-      // Use Firebase Function to fetch Pexels image (keeps API key secure)
+      // Use Edge Function to fetch Pexels image (keeps API key secure)
       const searchQuery = `${query} travel landscape`;
-      const getPexelsImage = firebase.functions().httpsCallable('getPexelsImage');
-      const result = await getPexelsImage({ query: searchQuery });
+      const result = await window.callEdgeFunction('pexels-image', { query: searchQuery });
 
-      if (result.data.success && result.data.image) {
+      if (result.success && result.image) {
         // Use large2x for better quality (same as iOS app)
-        const imageUrl = result.data.image.src.large2x || result.data.image.src.large;
+        const imageUrl = result.image.src.large2x || result.image.src.large;
         this.imageCache.set(query, imageUrl);
         this.setCardImage(card, imageUrl);
       }
@@ -1498,15 +1576,14 @@ class TripsManager {
         return date.toISOString().split('T')[0];
       };
 
-      // Call the aiPlanTrip Firebase function
-      const aiPlanTrip = firebase.functions().httpsCallable('aiPlanTrip');
+      // Call the aiPlanTrip Edge function
       // Combine trip-specific travel styles with user's saved interests
       const combinedInterests = [
         ...this.newTrip.travelStyles,
         ...this.userPreferences.interests.filter(i => !this.newTrip.travelStyles.includes(i))
       ];
 
-      const result = await aiPlanTrip({
+      const result = await window.callEdgeFunction('ai-plan-trip', {
         destination: this.newTrip.destination,
         startDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.startDate),
         endDate: this.newTrip.isSomedayTrip ? null : formatDate(this.newTrip.endDate),
@@ -1519,7 +1596,7 @@ class TripsManager {
         userTravelStyle: this.userPreferences.travelStyle
       });
 
-      const itinerary = result.data;
+      const itinerary = result;
 
       // Store itinerary
       this.newTrip.aiItinerary = itinerary.days || [];
@@ -1625,8 +1702,6 @@ class TripsManager {
     }
 
     try {
-      const db = firebase.firestore();
-
       // Generate unique ID (must be UUID format for iOS compatibility)
       const tripId = crypto.randomUUID();
 
@@ -1649,40 +1724,44 @@ class TripsManager {
         }
       }
 
-      // Build trip document matching iOS app structure
+      // Handle dates based on trip type
+      let startDateISO, endDateISO;
+      if (this.newTrip.isSomedayTrip) {
+        // Wishlist trip - use placeholder dates far in future
+        const placeholderDate = new Date('2099-01-01');
+        startDateISO = placeholderDate.toISOString();
+        endDateISO = placeholderDate.toISOString();
+      } else {
+        startDateISO = this.newTrip.startDate.toISOString();
+        endDateISO = this.newTrip.endDate.toISOString();
+      }
+
+      // Build trip document matching database schema (snake_case)
       const tripData = {
         id: tripId,
+        user_id: this.currentUser.id,
         name: this.newTrip.name,
         destination: this.newTrip.destination,
         context: derivedContext,
         latitude: this.newTrip.latitude,
         longitude: this.newTrip.longitude,
-        countryCodes: this.newTrip.countryCode ? [this.newTrip.countryCode] : [],
-        customImageURL: null,
-        isArchived: false,
-        isSomedayTrip: this.newTrip.isSomedayTrip,
-        tripLength: this.newTrip.tripLength,
-        travelStyles: this.newTrip.travelStyles,
-        travelCompanion: this.newTrip.travelCompanion,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        country_codes: this.newTrip.countryCode ? [this.newTrip.countryCode] : [],
+        custom_image_url: null,
+        is_archived: false,
+        is_someday_trip: this.newTrip.isSomedayTrip,
+        trip_length: this.newTrip.tripLength,
+        travel_styles: this.newTrip.travelStyles,
+        travel_companion: this.newTrip.travelCompanion,
+        start_date: startDateISO,
+        end_date: endDateISO,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
         // Initialize arrays for cross-device sync
-        packingItems: [],
-        todoItems: [],
+        packing_items: [],
+        todo_items: [],
         documents: [],
         legs: []
       };
-
-      // Handle dates based on trip type
-      if (this.newTrip.isSomedayTrip) {
-        // Wishlist trip - use placeholder dates far in future
-        const placeholderDate = new Date('2099-01-01');
-        tripData.startDate = firebase.firestore.Timestamp.fromDate(placeholderDate);
-        tripData.endDate = firebase.firestore.Timestamp.fromDate(placeholderDate);
-      } else {
-        tripData.startDate = firebase.firestore.Timestamp.fromDate(this.newTrip.startDate);
-        tripData.endDate = firebase.firestore.Timestamp.fromDate(this.newTrip.endDate);
-      }
 
       // Build itinerary items from AI suggestions if used
       const itineraryItems = [];
@@ -1718,33 +1797,34 @@ class TripsManager {
                 type: itemType,
                 title: activity.title || activity.name || 'Activity',
                 notes: activity.description || null,
-                date: itemDate ? firebase.firestore.Timestamp.fromDate(itemDate) : null,
-                isStarred: false,
+                date: itemDate ? itemDate.toISOString() : null,
+                is_starred: false,
                 tasks: [],
                 attachments: [],
-                backgroundImageURL: null,
-                currencyAmount: activity.estimatedCost || null,
+                background_image_url: null,
+                currency_amount: activity.estimatedCost || null,
                 currency: null,
-                homeCurrencyAmount: null,
-                conversionRate: null,
+                home_currency_amount: null,
+                conversion_rate: null,
                 location: activity.location || null,
-                websiteURL: null,
-                phoneNumber: null,
-                flightTrackingId: null
+                website_url: null,
+                phone_number: null,
+                flight_tracking_id: null
               });
             }
           });
         });
       }
-      tripData.itineraryItems = itineraryItems;
+      tripData.itinerary_items = itineraryItems;
 
-      // Save to Firestore
-      await db
-        .collection('users')
-        .doc(this.currentUser.uid)
-        .collection('trips')
-        .doc(tripId)
-        .set(tripData);
+      // Save to Supabase
+      const { error } = await supabaseClient
+        .from('trips')
+        .insert(tripData);
+
+      if (error) {
+        throw error;
+      }
 
       this.createdTripId = tripId;
 
@@ -1759,7 +1839,7 @@ class TripsManager {
       this.showStep('step-success');
 
       // Reload trips list
-      await this.loadTrips(this.currentUser.uid);
+      await this.loadTrips(this.currentUser.id);
       this.renderTrips();
 
     } catch (error) {
@@ -1825,26 +1905,52 @@ class TripsManager {
   // ============================================
 
   async loadFlights(userId) {
-    const db = firebase.firestore();
+    // Fetch flights from flights table using Supabase
+    const { data, error } = await supabaseClient
+      .from('flights')
+      .select('*')
+      .eq('user_id', userId)
+      .order('departure_date', { ascending: true });
 
-    // Fetch flights from flights collection
-    const snapshot = await db
-      .collection('flights')
-      .where('userId', '==', userId)
-      .orderBy('departureDate', 'asc')
-      .get();
+    if (error) {
+      console.error('Error loading flights:', error);
+      this.flights = [];
+      return;
+    }
 
-    this.flights = [];
+    this.flights = (data || []).map(row => ({
+      id: row.id,
+      flightNumber: row.flight_number,
+      flightIata: row.flight_iata,
+      airlineIata: row.airline_iata,
+      departureAirportIata: row.departure_airport_iata,
+      arrivalAirportIata: row.arrival_airport_iata,
+      departureCity: row.departure_city,
+      arrivalCity: row.arrival_city,
+      departureDate: row.departure_date,
+      depTime: row.dep_time,
+      arrTime: row.arr_time,
+      std: row.std,
+      sta: row.sta,
+      depEstimated: row.dep_estimated,
+      arrEstimated: row.arr_estimated,
+      depActual: row.dep_actual,
+      arrActual: row.arr_actual,
+      depDelayed: row.dep_delayed || 0,
+      arrDelayed: row.arr_delayed || 0,
+      depTerminal: row.dep_terminal,
+      depGate: row.dep_gate,
+      arrTerminal: row.arr_terminal,
+      arrGate: row.arr_gate,
+      arrBaggage: row.arr_baggage,
+      status: row.status,
+      duration: row.duration,
+      // Legacy field mappings for backwards compatibility
+      depIata: row.departure_airport_iata,
+      arrIata: row.arrival_airport_iata
+    }));
 
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      this.flights.push({
-        id: doc.id,
-        ...data
-      });
-    });
-
-    console.log(`Loaded ${this.flights.length} flights from Firebase`);
+    console.log(`Loaded ${this.flights.length} flights from Supabase`);
   }
 
   renderFlights() {
@@ -2235,7 +2341,7 @@ class TripsManager {
     }
 
     // Check premium status
-    const isPremium = await this.checkPremiumStatus();
+    const isPremium = await this.checkPremiumStatusForFlight();
 
     if (!isPremium) {
       // Show upgrade prompt
@@ -2250,25 +2356,20 @@ class TripsManager {
     submitBtn.textContent = 'Searching...';
 
     try {
-      // Call Firebase function to search and add flight
-      const functions = firebase.functions();
-      const getFlightStatusFn = functions.httpsCallable('getFlightStatusFn');
-
-      const result = await getFlightStatusFn({
+      // Call Edge function to search and add flight
+      const flightData = await window.callEdgeFunction('flight-status', {
         flightNumber: flightNumber,
         date: flightDate
       });
 
-      const flightData = result.data;
-
-      // Add flight to Firestore
-      await this.addFlightToFirestore(flightData, flightDate);
+      // Add flight to Supabase
+      await this.addFlightToSupabase(flightData, flightDate);
 
       // Check if we should auto-add to trip itinerary
       await this.autoAddFlightToTrip(flightData, flightDate);
 
       // Success! Reload flights and close modal
-      await this.loadFlights(this.currentUser.uid);
+      await this.loadFlights(this.currentUser.id);
       this.renderFlights();
       this.closeAddFlightModal();
 
@@ -2284,18 +2385,22 @@ class TripsManager {
     }
   }
 
-  async checkPremiumStatus() {
+  async checkPremiumStatusForFlight() {
     // Check premium status from auth profile
     if (window.tripPortierAuth && window.tripPortierAuth.profile) {
       return window.tripPortierAuth.profile.isPremium || false;
     }
 
-    // Fallback: check Firestore directly
+    // Fallback: check Supabase directly
     try {
-      const db = firebase.firestore();
-      const userDoc = await db.collection('users').doc(this.currentUser.uid).get();
-      if (userDoc.exists) {
-        return userDoc.data().isPremium || false;
+      const { data: userData, error } = await supabaseClient
+        .from('users')
+        .select('is_premium')
+        .eq('id', this.currentUser.id)
+        .single();
+
+      if (userData && !error) {
+        return userData.is_premium || false;
       }
     } catch (error) {
       console.error('Error checking premium status:', error);
@@ -2304,43 +2409,47 @@ class TripsManager {
     return false;
   }
 
-  async addFlightToFirestore(flightData, departureDate) {
-    const db = firebase.firestore();
-
-    // Build flight document matching iOS app structure
+  async addFlightToSupabase(flightData, departureDate) {
+    // Build flight document matching database schema (snake_case)
     const flightDoc = {
-      userId: this.currentUser.uid,
-      flightNumber: flightData.flight_iata || flightData.flightNumber,
-      flightIata: flightData.flight_iata,
-      airlineIata: flightData.airline_iata,
-      departureAirportIata: flightData.dep_iata,
-      arrivalAirportIata: flightData.arr_iata,
-      departureCity: flightData.dep_city || '',
-      arrivalCity: flightData.arr_city || '',
-      departureDate: departureDate,
-      depTime: flightData.dep_time || flightData.std,
-      arrTime: flightData.arr_time || flightData.sta,
+      user_id: this.currentUser.id,
+      flight_number: flightData.flight_iata || flightData.flightNumber,
+      flight_iata: flightData.flight_iata,
+      airline_iata: flightData.airline_iata,
+      departure_airport_iata: flightData.dep_iata,
+      arrival_airport_iata: flightData.arr_iata,
+      departure_city: flightData.dep_city || '',
+      arrival_city: flightData.arr_city || '',
+      departure_date: departureDate,
+      dep_time: flightData.dep_time || flightData.std,
+      arr_time: flightData.arr_time || flightData.sta,
       std: flightData.std,
       sta: flightData.sta,
-      depEstimated: flightData.dep_estimated,
-      arrEstimated: flightData.arr_estimated,
-      depActual: flightData.dep_actual,
-      arrActual: flightData.arr_actual,
-      depDelayed: flightData.dep_delayed || 0,
-      arrDelayed: flightData.arr_delayed || 0,
-      depTerminal: flightData.dep_terminal || null,
-      depGate: flightData.dep_gate || null,
-      arrTerminal: flightData.arr_terminal || null,
-      arrGate: flightData.arr_gate || null,
-      arrBaggage: flightData.arr_baggage || null,
+      dep_estimated: flightData.dep_estimated,
+      arr_estimated: flightData.arr_estimated,
+      dep_actual: flightData.dep_actual,
+      arr_actual: flightData.arr_actual,
+      dep_delayed: flightData.dep_delayed || 0,
+      arr_delayed: flightData.arr_delayed || 0,
+      dep_terminal: flightData.dep_terminal || null,
+      dep_gate: flightData.dep_gate || null,
+      arr_terminal: flightData.arr_terminal || null,
+      arr_gate: flightData.arr_gate || null,
+      arr_baggage: flightData.arr_baggage || null,
       status: flightData.status || 'Scheduled',
       duration: flightData.duration || null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
 
-    // Add to flights collection
-    await db.collection('flights').add(flightDoc);
+    // Add to flights table
+    const { error } = await supabaseClient
+      .from('flights')
+      .insert(flightDoc);
+
+    if (error) {
+      throw error;
+    }
   }
 
   async autoAddFlightToTrip(flightData, departureDate) {
@@ -2362,60 +2471,75 @@ class TripsManager {
   }
 
   async addFlightToTripItinerary(trip, flightData, departureDate) {
-    const db = firebase.firestore();
-
-    // Create itinerary item for the flight (matching iOS ItineraryItem structure)
+    // Create itinerary item for the flight (matching database schema)
     const itineraryItem = {
       id: crypto.randomUUID(),
       type: 'travel',
       title: `${flightData.dep_iata} → ${flightData.arr_iata}`,
       notes: `Flight ${flightData.flight_iata || flightData.flightNumber}`,
-      date: firebase.firestore.Timestamp.fromDate(new Date(departureDate)),
-      isStarred: false,
+      date: new Date(departureDate).toISOString(),
+      is_starred: false,
       tasks: [],
       attachments: [],
-      backgroundImageURL: null,
-      currencyAmount: null,
+      background_image_url: null,
+      currency_amount: null,
       currency: null,
-      homeCurrencyAmount: null,
-      conversionRate: null,
+      home_currency_amount: null,
+      conversion_rate: null,
       location: null,
-      websiteURL: null,
-      phoneNumber: null,
-      flightTrackingId: null,
-      // Travel-specific details (matching iOS TravelDetails structure)
-      travelDetails: {
-        travelMode: 'Flight',
-        fromLocation: flightData.dep_city || flightData.dep_iata || null,
-        toLocation: flightData.arr_city || flightData.arr_iata || null,
-        departureTime: null,
-        arrivalTime: null,
-        bookingReference: null,
-        bookingStatus: null,
-        flightNumber: flightData.flight_iata || flightData.flightNumber || null,
+      website_url: null,
+      phone_number: null,
+      flight_tracking_id: null,
+      // Travel-specific details
+      travel_details: {
+        travel_mode: 'Flight',
+        from_location: flightData.dep_city || flightData.dep_iata || null,
+        to_location: flightData.arr_city || flightData.arr_iata || null,
+        departure_time: null,
+        arrival_time: null,
+        booking_reference: null,
+        booking_status: null,
+        flight_number: flightData.flight_iata || flightData.flightNumber || null,
         airline: flightData.airline_iata || null,
         flight: null,
-        flightClass: null,
-        seatNumbers: null,
-        trainNumber: null,
-        trainClass: null,
-        carRentalCompany: null,
-        vehicleType: null,
-        pickupLocation: null,
-        dropoffLocation: null
+        flight_class: null,
+        seat_numbers: null,
+        train_number: null,
+        train_class: null,
+        car_rental_company: null,
+        vehicle_type: null,
+        pickup_location: null,
+        dropoff_location: null
       }
     };
 
-    // Add to trip's itineraryItems array
-    await db
-      .collection('users')
-      .doc(this.currentUser.uid)
-      .collection('trips')
-      .doc(trip.id)
+    // Get current itinerary items and append the new one
+    const { data: tripData, error: fetchError } = await supabaseClient
+      .from('trips')
+      .select('itinerary_items')
+      .eq('id', trip.id)
+      .single();
+
+    if (fetchError) {
+      console.error('Error fetching trip for itinerary update:', fetchError);
+      return;
+    }
+
+    const currentItems = tripData?.itinerary_items || [];
+    currentItems.push(itineraryItem);
+
+    // Update trip's itinerary_items array
+    const { error: updateError } = await supabaseClient
+      .from('trips')
       .update({
-        itineraryItems: firebase.firestore.FieldValue.arrayUnion(itineraryItem),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
+        itinerary_items: currentItems,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', trip.id);
+
+    if (updateError) {
+      console.error('Error updating trip itinerary:', updateError);
+    }
   }
 
   showAddFlightError(message) {
@@ -2449,15 +2573,16 @@ class TripsManager {
     }
 
     try {
-      const db = firebase.firestore();
+      // Delete from Supabase
+      const { error } = await supabaseClient
+        .from('trips')
+        .delete()
+        .eq('id', tripId)
+        .eq('user_id', this.currentUser.id);
 
-      // Delete from Firestore
-      await db
-        .collection('users')
-        .doc(this.currentUser.uid)
-        .collection('trips')
-        .doc(tripId)
-        .delete();
+      if (error) {
+        throw error;
+      }
 
       // Remove from local array
       this.trips = this.trips.filter(t => t.id !== tripId);

@@ -1,10 +1,10 @@
 /**
  * TripPortier Trip Detail Page
  * Displays full trip information with tabs matching iOS app
- * Loads real data from Firestore for cross-device sync
+ * Loads real data from Supabase for cross-device sync
  */
 
-console.log('🚀 trip-detail.js loaded');
+console.log('trip-detail.js loaded');
 
 class TripDetailManager {
   constructor() {
@@ -216,18 +216,20 @@ class TripDetailManager {
     if (!premiumNotice) return;
 
     try {
-      const user = firebase.auth().currentUser;
-      if (!user) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session?.user) {
         premiumNotice.style.display = 'flex';
         return;
       }
 
-      const db = firebase.firestore();
-      const subscriptionDoc = await db.collection('subscriptions').doc(user.uid).get();
+      const { data: subscription, error } = await supabaseClient
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', session.user.id)
+        .single();
 
-      if (subscriptionDoc.exists) {
-        const data = subscriptionDoc.data();
-        const isPremium = data.status === 'active' || data.status === 'trialing';
+      if (!error && subscription) {
+        const isPremium = subscription.status === 'active' || subscription.status === 'trialing';
         premiumNotice.style.display = isPremium ? 'none' : 'flex';
       } else {
         premiumNotice.style.display = 'flex';
@@ -268,9 +270,8 @@ class TripDetailManager {
     }
 
     try {
-      // Call Firebase function
-      const aiChat = firebase.functions().httpsCallable('aiChat');
-      const result = await aiChat({
+      // Call Edge function
+      const result = await window.callEdgeFunction('ai-chat', {
         message: message,
         destination: this.trip?.destination || 'your destination',
         tripContext: {
@@ -286,9 +287,9 @@ class TripDetailManager {
       // Remove loading indicator
       loadingEl.remove();
 
-      if (result.data?.success && result.data?.response) {
-        this.addAIChatMessage(result.data.response, 'assistant');
-        this.aiConversationHistory.push({ role: 'assistant', content: result.data.response });
+      if (result?.success && result?.response) {
+        this.addAIChatMessage(result.response, 'assistant');
+        this.aiConversationHistory.push({ role: 'assistant', content: result.response });
       } else {
         this.addAIChatMessage('Sorry, I couldn\'t process your request. Please try again.', 'assistant');
       }
@@ -350,86 +351,115 @@ class TripDetailManager {
   }
 
   async loadTrip(userId, tripId) {
-    console.log('📂 loadTrip called with userId:', userId, 'tripId:', tripId);
+    console.log('loadTrip called with userId:', userId, 'tripId:', tripId);
     try {
-      const db = firebase.firestore();
+      // First, load the trip to check if it's a shared trip
+      const { data: tripData, error: tripError } = await supabaseClient
+        .from('trips')
+        .select('*')
+        .eq('id', tripId)
+        .eq('user_id', userId)
+        .single();
 
-      // First, load from user's collection to check if it's a shared trip
-      const userDoc = await db
-        .collection('users')
-        .doc(userId)
-        .collection('trips')
-        .doc(tripId)
-        .get();
-
-      if (!userDoc.exists) {
+      if (tripError || !tripData) {
         this.showError();
         return;
       }
 
-      const userData = userDoc.data();
+      // Check if this is a shared trip (snake_case from Supabase)
+      this.isSharedTrip = tripData.is_shared_trip || false;
+      const sharedFromUserId = tripData.shared_from_user_id || null;
 
-      // Check if this is a shared trip
-      this.isSharedTrip = userData.isSharedTrip || false;
-      const sharedFromUserId = userData.sharedFromUserId || null;
-
-      // Determine which collection to read from
+      // Determine which trip to read from
       let data;
       if (this.isSharedTrip && sharedFromUserId) {
-        console.log('🔗 This is a shared trip, loading from owner:', sharedFromUserId);
+        console.log('This is a shared trip, loading from owner:', sharedFromUserId);
         this.ownerUserId = sharedFromUserId;
 
-        // Load the actual trip data from the owner's collection
-        const ownerDoc = await db
-          .collection('users')
-          .doc(sharedFromUserId)
-          .collection('trips')
-          .doc(tripId)
-          .get();
+        // Load the actual trip data from the owner
+        const { data: ownerTripData, error: ownerError } = await supabaseClient
+          .from('trips')
+          .select('*')
+          .eq('id', tripId)
+          .eq('user_id', sharedFromUserId)
+          .single();
 
-        if (!ownerDoc.exists) {
-          console.warn('⚠️ Owner trip not found, falling back to user copy');
-          data = userData;
+        if (ownerError || !ownerTripData) {
+          console.warn('Owner trip not found, falling back to user copy');
+          data = tripData;
           this.ownerUserId = userId; // Fall back to user's copy
         } else {
-          data = ownerDoc.data();
-          console.log('✅ Loaded trip from owner collection');
+          data = ownerTripData;
+          console.log('Loaded trip from owner');
         }
       } else {
         // Regular trip - user owns it
         this.ownerUserId = userId;
-        data = userData;
+        data = tripData;
       }
 
-      // Debug: Log raw itinerary items from Firestore
-      console.log('🔍 Raw itineraryItems from Firestore:', data.itineraryItems);
-      console.log('🔍 itineraryItems count:', data.itineraryItems?.length || 0);
-      if (data.itineraryItems?.length > 0) {
-        console.log('🔍 First item structure:', JSON.stringify(data.itineraryItems[0], null, 2));
+      // Load itinerary items separately (they are in a separate table in Supabase)
+      const { data: itineraryItems, error: itinError } = await supabaseClient
+        .from('itinerary_items')
+        .select('*')
+        .eq('trip_id', tripId)
+        .order('start_date', { ascending: true });
+
+      // Load packing items
+      const { data: packingItems, error: packError } = await supabaseClient
+        .from('packing_items')
+        .select('*')
+        .eq('trip_id', tripId);
+
+      // Load todos
+      const { data: todos, error: todosError } = await supabaseClient
+        .from('todos')
+        .select('*')
+        .eq('trip_id', tripId);
+
+      // Load expenses
+      const { data: expenses, error: expError } = await supabaseClient
+        .from('expenses')
+        .select('*')
+        .eq('trip_id', tripId);
+
+      // Load trip legs for multi-destination trips
+      const { data: legs, error: legsError } = await supabaseClient
+        .from('trip_legs')
+        .select('*')
+        .eq('trip_id', tripId)
+        .order('start_date', { ascending: true });
+
+      // Debug: Log raw itinerary items from Supabase
+      console.log('Raw itineraryItems from Supabase:', itineraryItems);
+      console.log('itineraryItems count:', itineraryItems?.length || 0);
+      if (itineraryItems?.length > 0) {
+        console.log('First item structure:', JSON.stringify(itineraryItems[0], null, 2));
       }
 
+      // Map snake_case to camelCase for compatibility
       this.trip = {
-        id: userDoc.id,
+        id: data.id,
         name: data.name || 'Untitled Trip',
         destination: data.destination || '',
-        startDate: this.parseDate(data.startDate),
-        endDate: this.parseDate(data.endDate),
-        isSomedayTrip: data.isSomedayTrip || false,
-        tripLength: data.tripLength || 7,
+        startDate: this.parseDate(data.start_date),
+        endDate: this.parseDate(data.end_date),
+        isSomedayTrip: data.is_someday_trip || false,
+        tripLength: data.trip_length || 7,
         context: data.context || null,
-        customImageURL: data.customImageURL || null,
+        customImageURL: data.custom_image_url || null,
         latitude: data.latitude || null,
         longitude: data.longitude || null,
-        // Trip data for tabs
-        itineraryItems: data.itineraryItems || [],
-        packingItems: data.packingItems || [],
-        todos: data.todos || [],
+        // Trip data for tabs - map snake_case to camelCase
+        itineraryItems: (itineraryItems || []).map(item => this.mapItineraryItem(item)),
+        packingItems: (packingItems || []).map(item => this.mapPackingItem(item)),
+        todos: (todos || []).map(item => this.mapTodo(item)),
         documents: data.documents || [],
-        expenses: data.expenses || [],
+        expenses: (expenses || []).map(item => this.mapExpense(item)),
         budget: data.budget || null,
-        budgetSpent: data.budgetSpent || 0,
+        budgetSpent: data.budget_spent || 0,
         currency: data.currency || 'USD',
-        legs: data.legs || [] // Multi-destination trip legs
+        legs: (legs || []).map(leg => this.mapTripLeg(leg))
       };
 
       // Trip data loaded successfully
@@ -453,6 +483,79 @@ class TripDetailManager {
       console.error('Error loading trip:', error);
       this.showError();
     }
+  }
+
+  // Helper methods to map Supabase snake_case to camelCase
+  mapItineraryItem(item) {
+    return {
+      id: item.id,
+      name: item.name || item.title,
+      title: item.title || item.name,
+      category: item.category,
+      type: item.type || item.category,
+      startDate: item.start_date,
+      date: item.start_date,
+      endDate: item.end_date,
+      location: item.location,
+      notes: item.notes,
+      latitude: item.latitude,
+      longitude: item.longitude,
+      homeCurrencyAmount: item.home_currency_amount,
+      currencyAmount: item.currency_amount,
+      currency: item.currency,
+      bookingStatus: item.booking_status,
+      paymentStatus: item.payment_status,
+      confirmationNumber: item.confirmation_number,
+      createdAt: item.created_at,
+      updatedAt: item.updated_at
+    };
+  }
+
+  mapPackingItem(item) {
+    return {
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      quantity: item.quantity || 1,
+      isPacked: item.is_packed || false,
+      createdAt: item.created_at
+    };
+  }
+
+  mapTodo(item) {
+    return {
+      id: item.id,
+      title: item.title || item.name,
+      name: item.name || item.title,
+      notes: item.notes,
+      dueDate: item.due_date,
+      isCompleted: item.is_completed || false,
+      createdAt: item.created_at
+    };
+  }
+
+  mapExpense(item) {
+    return {
+      id: item.id,
+      name: item.name,
+      category: item.category,
+      homeCurrencyAmount: item.home_currency_amount,
+      currencyAmount: item.currency_amount,
+      currency: item.currency,
+      date: item.date,
+      createdAt: item.created_at
+    };
+  }
+
+  mapTripLeg(leg) {
+    return {
+      id: leg.id,
+      destinationName: leg.destination_name,
+      startDate: leg.start_date,
+      endDate: leg.end_date,
+      latitude: leg.latitude,
+      longitude: leg.longitude
+    };
   }
 
   parseDate(value) {
@@ -2004,7 +2107,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderPackingList();
 
-    // Save to Firestore
+    // Save to database
     await this.savePackingItemsToFirestore();
   }
 
@@ -2012,18 +2115,34 @@ class TripDetailManager {
     if (!this.ownerUserId || !this.tripId) return;
 
     try {
-      const db = firebase.firestore();
-      // Use ownerUserId for shared trips to write to owner's collection
-      await db
-        .collection('users')
-        .doc(this.ownerUserId)
-        .collection('trips')
-        .doc(this.tripId)
-        .update({
-          packingItems: this.trip.packingItems,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      console.log('Packing items saved to Firestore');
+      // Delete existing packing items and insert new ones
+      // First, get all current packing item IDs to upsert
+      const packingItemsToSave = this.trip.packingItems.map(item => ({
+        id: item.id || this.generateUUID(),
+        trip_id: this.tripId,
+        name: item.name,
+        category: item.category,
+        quantity: item.quantity || 1,
+        is_packed: item.isPacked || false,
+        updated_at: new Date().toISOString()
+      }));
+
+      // Upsert packing items
+      if (packingItemsToSave.length > 0) {
+        const { error } = await supabaseClient
+          .from('packing_items')
+          .upsert(packingItemsToSave, { onConflict: 'id' });
+
+        if (error) throw error;
+      }
+
+      // Update trip's updated_at timestamp
+      await supabaseClient
+        .from('trips')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', this.tripId);
+
+      console.log('Packing items saved to Supabase');
     } catch (error) {
       console.error('Error saving packing items:', error);
     }
@@ -2038,7 +2157,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderPackingList();
 
-    // Save to Firestore
+    // Save to database
     await this.savePackingItemsToFirestore();
 
     this.showToast('Item removed');
@@ -2055,7 +2174,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderPackingList();
 
-    // Save to Firestore
+    // Save to database
     await this.savePackingItemsToFirestore();
   }
 
@@ -2151,7 +2270,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderTodos();
 
-    // Save to Firestore
+    // Save to database
     await this.saveTodosToFirestore();
   }
 
@@ -2159,18 +2278,34 @@ class TripDetailManager {
     if (!this.ownerUserId || !this.tripId) return;
 
     try {
-      const db = firebase.firestore();
-      // Use ownerUserId for shared trips to write to owner's collection
-      await db
-        .collection('users')
-        .doc(this.ownerUserId)
-        .collection('trips')
-        .doc(this.tripId)
-        .update({
-          todos: this.trip.todos,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      console.log('Todos saved to Firestore');
+      // Map todos to Supabase format with snake_case
+      const todosToSave = this.trip.todos.map(item => ({
+        id: item.id || this.generateUUID(),
+        trip_id: this.tripId,
+        title: item.title || item.name,
+        name: item.name || item.title,
+        notes: item.notes || null,
+        due_date: item.dueDate || null,
+        is_completed: item.isCompleted || false,
+        updated_at: new Date().toISOString()
+      }));
+
+      // Upsert todos
+      if (todosToSave.length > 0) {
+        const { error } = await supabaseClient
+          .from('todos')
+          .upsert(todosToSave, { onConflict: 'id' });
+
+        if (error) throw error;
+      }
+
+      // Update trip's updated_at timestamp
+      await supabaseClient
+        .from('trips')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', this.tripId);
+
+      console.log('Todos saved to Supabase');
     } catch (error) {
       console.error('Error saving todos:', error);
     }
@@ -2185,7 +2320,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderTodos();
 
-    // Save to Firestore
+    // Save to database
     await this.saveTodosToFirestore();
 
     this.showToast('To-do removed');
@@ -2768,24 +2903,34 @@ class TripDetailManager {
     if (!addressEl) return;
 
     try {
-      const user = firebase.auth().currentUser;
-      if (!user) return;
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session?.user) return;
+
+      const userId = session.user.id;
 
       // Get or create unique email address
-      const db = firebase.firestore();
-      const userDoc = await db.collection('users').doc(user.uid).get();
-      const userData = userDoc.data();
+      const { data: userData, error: fetchError } = await supabaseClient
+        .from('users')
+        .select('forwarding_email')
+        .eq('id', userId)
+        .single();
 
-      let forwardingEmail = userData?.forwardingEmail;
+      let forwardingEmail = userData?.forwarding_email;
       if (!forwardingEmail) {
         // Generate unique email
-        const uniqueId = user.uid.substring(0, 8);
+        const uniqueId = userId.substring(0, 8);
         forwardingEmail = `${uniqueId}@bookings.tripportier.com`;
 
         // Save to user document
-        await db.collection('users').doc(user.uid).set({
-          forwardingEmail: forwardingEmail
-        }, { merge: true });
+        const { error: updateError } = await supabaseClient
+          .from('users')
+          .upsert({
+            id: userId,
+            forwarding_email: forwardingEmail,
+            updated_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+
+        if (updateError) throw updateError;
       }
 
       // Display email with copy button
@@ -2864,15 +3009,17 @@ class TripDetailManager {
 
   async checkPremiumStatus() {
     try {
-      const user = firebase.auth().currentUser;
-      if (!user) return false;
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session?.user) return false;
 
-      const db = firebase.firestore();
-      const subscriptionDoc = await db.collection('subscriptions').doc(user.uid).get();
+      const { data: subscription, error } = await supabaseClient
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', session.user.id)
+        .single();
 
-      if (subscriptionDoc.exists) {
-        const data = subscriptionDoc.data();
-        return data.status === 'active' || data.status === 'trialing';
+      if (!error && subscription) {
+        return subscription.status === 'active' || subscription.status === 'trialing';
       }
       return false;
     } catch (error) {
@@ -3021,12 +3168,11 @@ class TripDetailManager {
       const query = this.trip.destination || this.trip.name;
       const searchQuery = `${query} travel landscape`;
 
-      // Use Firebase Function to fetch Pexels image (keeps API key secure)
-      const getPexelsImage = firebase.functions().httpsCallable('getPexelsImage');
-      const result = await getPexelsImage({ query: searchQuery });
+      // Use Edge Function to fetch Pexels image (keeps API key secure)
+      const result = await window.callEdgeFunction('pexels-image', { query: searchQuery });
 
-      if (result.data.success && result.data.image) {
-        const imageUrl = result.data.image.src.large2x || result.data.image.src.large;
+      if (result.success && result.image) {
+        const imageUrl = result.image.src.large2x || result.image.src.large;
 
         const img = new Image();
         img.onload = () => {
@@ -3122,7 +3268,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderPackingList();
 
-    // Save to Firestore
+    // Save to database
     await this.savePackingItemsToFirestore();
   }
 
@@ -3152,7 +3298,7 @@ class TripDetailManager {
     // Re-render the list
     this.renderTodos();
 
-    // Save to Firestore
+    // Save to database
     await this.saveTodosToFirestore();
   }
 
@@ -3217,7 +3363,7 @@ class TripDetailManager {
     // Re-render the budget
     this.renderBudget();
 
-    // Save to Firestore
+    // Save to database
     await this.saveExpensesToFirestore();
 
     this.showToast('Expense added');
@@ -3227,18 +3373,35 @@ class TripDetailManager {
     if (!this.ownerUserId || !this.tripId || !this.trip) return;
 
     try {
-      const db = firebase.firestore();
-      // Use ownerUserId for shared trips to write to owner's collection
-      await db
-        .collection('users')
-        .doc(this.ownerUserId)
-        .collection('trips')
-        .doc(this.tripId)
-        .update({
-          expenses: this.trip.expenses,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      console.log('Expenses saved to Firestore');
+      // Map expenses to Supabase format with snake_case
+      const expensesToSave = this.trip.expenses.map(item => ({
+        id: item.id || this.generateUUID(),
+        trip_id: this.tripId,
+        name: item.name,
+        category: item.category,
+        home_currency_amount: item.homeCurrencyAmount || item.currencyAmount,
+        currency_amount: item.currencyAmount,
+        currency: item.currency || this.trip.currency || 'USD',
+        date: item.date || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }));
+
+      // Upsert expenses
+      if (expensesToSave.length > 0) {
+        const { error } = await supabaseClient
+          .from('expenses')
+          .upsert(expensesToSave, { onConflict: 'id' });
+
+        if (error) throw error;
+      }
+
+      // Update trip's updated_at timestamp
+      await supabaseClient
+        .from('trips')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', this.tripId);
+
+      console.log('Expenses saved to Supabase');
     } catch (error) {
       console.error('Error saving expenses:', error);
     }
@@ -3256,7 +3419,7 @@ class TripDetailManager {
     // Re-render the budget
     this.renderBudget();
 
-    // Save to Firestore
+    // Save to database
     await this.saveExpensesToFirestore();
 
     this.showToast('Expense removed');
@@ -4325,16 +4488,15 @@ class TripDetailManager {
     if (errorEl) errorEl.style.display = 'none';
 
     try {
-      const getFlightStatus = firebase.functions().httpsCallable('getFlightStatusFn');
-      const result = await getFlightStatus({
+      const result = await window.callEdgeFunction('flight-status', {
         flightNumber: flightNumber,
         date: flightDate
       });
 
-      if (result.data && result.data.success && result.data.flight) {
-        this.displayFlightSearchResult(result.data.flight);
+      if (result && result.success && result.flight) {
+        this.displayFlightSearchResult(result.flight);
       } else {
-        this.showFlightSearchError(result.data?.error || 'Flight not found. Try entering details manually.');
+        this.showFlightSearchError(result?.error || 'Flight not found. Try entering details manually.');
       }
     } catch (error) {
       console.error('Flight search error:', error);
@@ -4769,7 +4931,7 @@ class TripDetailManager {
     this.closeAddItemModal();
     this.renderItinerary();
 
-    // Save to Firestore
+    // Save to database
     await this.saveItineraryToFirestore();
 
     this.showToast(`${title} added to itinerary`);
@@ -4808,7 +4970,7 @@ class TripDetailManager {
     // Re-render the itinerary
     this.renderItinerary();
 
-    // Save to Firestore
+    // Save to database
     await this.saveItineraryToFirestore();
 
     this.showToast('Event added to itinerary');
@@ -4838,7 +5000,7 @@ class TripDetailManager {
     // Re-render the itinerary
     this.renderItinerary();
 
-    // Save to Firestore
+    // Save to database
     await this.saveItineraryToFirestore();
 
     this.showToast('Event removed from itinerary');
@@ -4848,18 +5010,45 @@ class TripDetailManager {
     if (!this.ownerUserId || !this.tripId || !this.trip) return;
 
     try {
-      const db = firebase.firestore();
-      // Use ownerUserId for shared trips to write to owner's collection
-      await db
-        .collection('users')
-        .doc(this.ownerUserId)
-        .collection('trips')
-        .doc(this.tripId)
-        .update({
-          itineraryItems: this.trip.itineraryItems,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      console.log('Itinerary saved to Firestore');
+      // Map itinerary items to Supabase format with snake_case
+      const itemsToSave = this.trip.itineraryItems.map(item => ({
+        id: item.id || this.generateUUID(),
+        trip_id: this.tripId,
+        name: item.name || item.title,
+        title: item.title || item.name,
+        category: item.category,
+        type: item.type || item.category,
+        start_date: item.startDate || item.date,
+        end_date: item.endDate || null,
+        location: item.location || null,
+        notes: item.notes || null,
+        latitude: item.latitude || null,
+        longitude: item.longitude || null,
+        home_currency_amount: item.homeCurrencyAmount || null,
+        currency_amount: item.currencyAmount || null,
+        currency: item.currency || null,
+        booking_status: item.bookingStatus || null,
+        payment_status: item.paymentStatus || null,
+        confirmation_number: item.confirmationNumber || null,
+        updated_at: new Date().toISOString()
+      }));
+
+      // Upsert itinerary items
+      if (itemsToSave.length > 0) {
+        const { error } = await supabaseClient
+          .from('itinerary_items')
+          .upsert(itemsToSave, { onConflict: 'id' });
+
+        if (error) throw error;
+      }
+
+      // Update trip's updated_at timestamp
+      await supabaseClient
+        .from('trips')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', this.tripId);
+
+      console.log('Itinerary saved to Supabase');
     } catch (error) {
       console.error('Error saving itinerary:', error);
     }
@@ -5083,21 +5272,19 @@ class TripDetailManager {
     return checkDate.getTime() === start.getTime();
   }
 
-  // Load user's temperature unit preference from Firestore
+  // Load user's temperature unit preference from Supabase
   async loadTemperaturePreference() {
     if (!this.userId) return;
 
     try {
-      const userDoc = await firebase.firestore()
-        .collection('users')
-        .doc(this.userId)
-        .get();
+      const { data: userData, error } = await supabaseClient
+        .from('users')
+        .select('temperature_unit')
+        .eq('id', this.userId)
+        .single();
 
-      if (userDoc.exists) {
-        const userData = userDoc.data();
-        if (userData.temperatureUnit) {
-          this.temperatureUnit = userData.temperatureUnit;
-        }
+      if (!error && userData?.temperature_unit) {
+        this.temperatureUnit = userData.temperature_unit;
       }
     } catch (error) {
       console.warn('Failed to load temperature preference:', error);
@@ -5340,21 +5527,20 @@ class TripDetailManager {
     saveBtn.textContent = 'Saving...';
 
     try {
-      const db = firebase.firestore();
-      // Use ownerUserId for shared trips to write to owner's collection
-      await db
-        .collection('users')
-        .doc(this.ownerUserId)
-        .collection('trips')
-        .doc(this.tripId)
+      // Update trip in Supabase with snake_case column names
+      const { error } = await supabaseClient
+        .from('trips')
         .update({
           name: name,
           destination: destination,
-          startDate: firebase.firestore.Timestamp.fromDate(startDate),
-          endDate: firebase.firestore.Timestamp.fromDate(endDate),
+          start_date: startDate.toISOString(),
+          end_date: endDate.toISOString(),
           context: context || null,
-          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', this.tripId);
+
+      if (error) throw error;
 
       // Update local trip data
       this.trip.name = name;
@@ -5396,13 +5582,21 @@ class TripDetailManager {
     confirmBtn.textContent = 'Deleting...';
 
     try {
-      const db = firebase.firestore();
-      await db
-        .collection('users')
-        .doc(this.userId)
-        .collection('trips')
-        .doc(this.tripId)
-        .delete();
+      // Delete related records first (foreign key constraints)
+      await supabaseClient.from('itinerary_items').delete().eq('trip_id', this.tripId);
+      await supabaseClient.from('packing_items').delete().eq('trip_id', this.tripId);
+      await supabaseClient.from('todos').delete().eq('trip_id', this.tripId);
+      await supabaseClient.from('expenses').delete().eq('trip_id', this.tripId);
+      await supabaseClient.from('trip_legs').delete().eq('trip_id', this.tripId);
+
+      // Delete the trip
+      const { error } = await supabaseClient
+        .from('trips')
+        .delete()
+        .eq('id', this.tripId)
+        .eq('user_id', this.userId);
+
+      if (error) throw error;
 
       // Redirect to trips page
       window.location.href = '/trips.html';
@@ -5807,7 +6001,7 @@ class TripDetailManager {
         // Cache expires after 30 days
         const expiryMs = 30 * 24 * 60 * 60 * 1000;
         if (Date.now() - cachedAt < expiryMs) {
-          console.log('✅ Using cached essentials for:', destination);
+          console.log('Using cached essentials for:', destination);
           return data;
         }
       } catch (e) {
@@ -5815,51 +6009,52 @@ class TripDetailManager {
       }
     }
 
-    // Fetch from Gemini via Firebase Cloud Function (API key stays server-side)
-    console.log('🔄 Fetching essentials via Firebase Function for:', destination);
+    // Fetch from Gemini via Edge Function (API key stays server-side)
+    console.log('Fetching essentials via Edge Function for:', destination);
 
     try {
-      const user = firebase.auth().currentUser;
-      if (!user) {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session?.user) {
         console.warn('User not authenticated, using fallback data');
         return this.getFallbackEssentialsData();
       }
 
       // Get country code
       const countryCode = await this.getCountryCodeFromDestination(destination);
-      console.log('📍 Country code:', countryCode);
+      console.log('Country code:', countryCode);
 
       // Get user's home country from profile if available
       let userHomeCountry = 'Switzerland';
       let userNationalities = [];
 
       try {
-        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
-        if (userDoc.exists) {
-          const userData = userDoc.data();
-          userHomeCountry = userData.homeCountry || userData.country || 'Switzerland';
+        const { data: userData, error } = await supabaseClient
+          .from('users')
+          .select('home_country, country, nationalities')
+          .eq('id', session.user.id)
+          .single();
+
+        if (!error && userData) {
+          userHomeCountry = userData.home_country || userData.country || 'Switzerland';
           userNationalities = userData.nationalities || [];
         }
       } catch (e) {
         console.warn('Could not fetch user profile, using defaults');
       }
 
-      // Call Firebase Function (API key is secure on server)
-      const functions = firebase.functions();
-      const fetchEssentials = functions.httpsCallable('fetchTravelEssentials');
-
-      console.log('📡 Calling fetchTravelEssentials Firebase Function...');
-      const result = await fetchEssentials({
+      // Call Edge Function (API key is secure on server)
+      console.log('Calling travel-essentials Edge Function...');
+      const result = await window.callEdgeFunction('travel-essentials', {
         destination: destination,
         countryCode: countryCode || 'US',
         userHomeCountry: userHomeCountry,
         userNationalities: userNationalities
       });
 
-      console.log('📦 Function result:', result.data);
+      console.log('Function result:', result);
 
-      if (result.data && result.data.success) {
-        const essentialsData = result.data.essentials;
+      if (result && result.success) {
+        const essentialsData = result.essentials;
 
         // Cache the result
         localStorage.setItem(cacheKey, JSON.stringify({
@@ -5867,14 +6062,14 @@ class TripDetailManager {
           cachedAt: Date.now()
         }));
 
-        console.log('✅ Essentials data cached successfully');
+        console.log('Essentials data cached successfully');
         return essentialsData;
       } else {
         console.error('Function returned error:', result.data?.error);
         throw new Error(result.data?.error || 'Failed to fetch essentials');
       }
     } catch (error) {
-      console.error('❌ Error fetching essentials:', error);
+      console.error('Error fetching essentials:', error);
 
       // Return fallback data for timezone at least
       return this.getFallbackEssentialsData();

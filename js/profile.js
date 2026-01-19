@@ -1,4 +1,5 @@
 // TripPortier Profile Page Manager
+// Migrated to Supabase
 
 class ProfileManager {
     constructor() {
@@ -112,11 +113,22 @@ class ProfileManager {
 
     async loadUserProfile() {
         try {
-            const db = firebase.firestore();
-            const userDoc = await db.collection('users').doc(this.user.uid).get();
+            const { data, error } = await window.supabaseClient
+                .from('users')
+                .select('*')
+                .eq('id', this.user.id)
+                .single();
 
-            if (userDoc.exists) {
-                this.userProfile = userDoc.data();
+            if (error) throw error;
+
+            if (data) {
+                // Map snake_case to camelCase for compatibility
+                this.userProfile = {
+                    ...data,
+                    displayName: data.display_name,
+                    photoURL: data.profile_image_url,
+                    profileImageURL: data.profile_image_url
+                };
             } else {
                 this.userProfile = {};
             }
@@ -128,15 +140,21 @@ class ProfileManager {
 
     async loadTrips() {
         try {
-            const db = firebase.firestore();
-            const tripsSnapshot = await db.collection('users').doc(this.user.uid)
-                .collection('trips')
-                .orderBy('startDate', 'desc')
-                .get();
+            const { data, error } = await window.supabaseClient
+                .from('trips')
+                .select('*')
+                .eq('user_id', this.user.id)
+                .order('start_date', { ascending: false });
 
-            this.trips = tripsSnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
+            if (error) throw error;
+
+            // Map snake_case to camelCase for compatibility
+            this.trips = (data || []).map(trip => ({
+                id: trip.id,
+                ...trip,
+                startDate: trip.start_date,
+                endDate: trip.end_date,
+                tripType: trip.trip_type
             }));
         } catch (error) {
             console.error('Error loading trips:', error);
@@ -151,10 +169,12 @@ class ProfileManager {
         const avatarEl = document.getElementById('profile-avatar');
 
         // Set name
-        if (this.user.displayName) {
-            nameEl.textContent = this.user.displayName;
-        } else if (this.userProfile?.name) {
-            nameEl.textContent = this.userProfile.name;
+        if (this.user.user_metadata?.display_name) {
+            nameEl.textContent = this.user.user_metadata.display_name;
+        } else if (this.userProfile?.display_name) {
+            nameEl.textContent = this.userProfile.display_name;
+        } else if (this.userProfile?.displayName) {
+            nameEl.textContent = this.userProfile.displayName;
         } else {
             nameEl.textContent = 'Traveler';
         }
@@ -163,15 +183,17 @@ class ProfileManager {
         emailEl.textContent = this.user.email || '';
 
         // Set member since
-        if (this.user.metadata?.creationTime) {
-            const createdDate = new Date(this.user.metadata.creationTime);
+        if (this.user.created_at) {
+            const createdDate = new Date(this.user.created_at);
             const monthYear = createdDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
             memberSinceEl.textContent = `Member since ${monthYear}`;
         }
 
         // Set avatar
-        if (this.user.photoURL) {
-            avatarEl.innerHTML = `<img src="${this.user.photoURL}" alt="Profile">`;
+        if (this.user.user_metadata?.avatar_url) {
+            avatarEl.innerHTML = `<img src="${this.user.user_metadata.avatar_url}" alt="Profile">`;
+        } else if (this.userProfile?.profile_image_url) {
+            avatarEl.innerHTML = `<img src="${this.userProfile.profile_image_url}" alt="Profile">`;
         } else if (this.userProfile?.photoURL) {
             avatarEl.innerHTML = `<img src="${this.userProfile.photoURL}" alt="Profile">`;
         }
@@ -193,8 +215,10 @@ class ProfileManager {
         };
 
         this.trips.forEach(trip => {
-            const startDate = trip.startDate?.toDate ? trip.startDate.toDate() : new Date(trip.startDate);
-            const endDate = trip.endDate?.toDate ? trip.endDate.toDate() : new Date(trip.endDate);
+            const startDate = trip.startDate ? new Date(trip.startDate) : null;
+            const endDate = trip.endDate ? new Date(trip.endDate) : null;
+
+            if (!startDate || !endDate) return;
 
             // Calculate trip duration
             const duration = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -221,8 +245,8 @@ class ProfileManager {
             }
 
             // Check trip types
-            if (trip.tripType === 'solo') stats.hasSoloTrip = true;
-            if (trip.tripType === 'family') stats.hasFamilyTrip = true;
+            if (trip.tripType === 'solo' || trip.trip_type === 'solo') stats.hasSoloTrip = true;
+            if (trip.tripType === 'family' || trip.trip_type === 'family') stats.hasFamilyTrip = true;
 
             // Estimate distance (rough calculation based on international travel)
             if (stats.countries.size > 1) {
@@ -352,8 +376,10 @@ class ProfileManager {
         const now = new Date();
 
         const html = recentTrips.map(trip => {
-            const startDate = trip.startDate?.toDate ? trip.startDate.toDate() : new Date(trip.startDate);
-            const endDate = trip.endDate?.toDate ? trip.endDate.toDate() : new Date(trip.endDate);
+            const startDate = trip.startDate ? new Date(trip.startDate) : null;
+            const endDate = trip.endDate ? new Date(trip.endDate) : null;
+
+            if (!startDate || !endDate) return '';
 
             let status, statusClass;
             if (endDate < now) {
@@ -372,7 +398,7 @@ class ProfileManager {
             return `
                 <a href="trip-detail.html?id=${trip.id}" class="profile-trip-card">
                     <div class="profile-trip-icon">
-                        ${this.getTripIcon(trip.tripType)}
+                        ${this.getTripIcon(trip.tripType || trip.trip_type)}
                     </div>
                     <div class="profile-trip-info">
                         <div class="profile-trip-name">${trip.name || 'Untitled Trip'}</div>
@@ -469,20 +495,28 @@ class ProfileManager {
         saveBtn.textContent = 'Saving...';
 
         try {
-            // Upload to Firebase Storage
-            const storage = firebase.storage();
-            const ref = storage.ref(`avatars/${this.user.uid}`);
-            await ref.put(this.selectedAvatarFile);
-            const photoURL = await ref.getDownloadURL();
+            // Upload to Supabase Storage
+            const fileName = `${this.user.id}/avatar`;
+            const { data: uploadData, error: uploadError } = await window.supabaseClient.storage
+                .from('profile-pictures')
+                .upload(fileName, this.selectedAvatarFile, { upsert: true });
 
-            // Update user profile
-            await this.user.updateProfile({ photoURL });
+            if (uploadError) throw uploadError;
 
-            // Update Firestore
-            const db = firebase.firestore();
-            await db.collection('users').doc(this.user.uid).set({
-                photoURL
-            }, { merge: true });
+            // Get public URL
+            const { data: { publicUrl } } = window.supabaseClient.storage
+                .from('profile-pictures')
+                .getPublicUrl(fileName);
+
+            const photoURL = publicUrl;
+
+            // Update user profile in database
+            const { error: updateError } = await window.supabaseClient
+                .from('users')
+                .update({ profile_image_url: photoURL, updated_at: new Date().toISOString() })
+                .eq('id', this.user.id);
+
+            if (updateError) throw updateError;
 
             // Update UI
             const avatarEl = document.getElementById('profile-avatar');
@@ -526,13 +560,11 @@ class ProfileManager {
         emptyEl.style.display = 'none';
 
         try {
-            // Call Firebase function to get orders
-            const functions = firebase.functions();
-            const getUserEsimOrders = functions.httpsCallable('getUserEsimOrders');
-            const result = await getUserEsimOrders();
+            // Call Edge function to get orders
+            const result = await window.callEdgeFunction('get-user-esim-orders', {});
 
-            if (result.data?.success && result.data.orders) {
-                this.esimOrders = result.data.orders;
+            if (result?.success && result.orders) {
+                this.esimOrders = result.orders;
                 this.renderEsimOrders();
             } else {
                 this.esimOrders = [];
@@ -564,15 +596,17 @@ class ProfileManager {
         const now = new Date();
 
         const html = this.esimOrders.map((order, index) => {
-            const countryCode = order.countryCode || '';
-            const countryTitle = order.countryTitle || 'eSIM';
+            const countryCode = order.country_code || order.countryCode || '';
+            const countryTitle = order.country_title || order.countryTitle || 'eSIM';
             const flag = this.getCountryFlagFromCode(countryCode);
-            const packageName = order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
-            const price = order.price || (order.amountPaid ? order.amountPaid / 100 : 0);
+            const packageName = order.package_name || order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
+            const price = order.price || (order.amount_paid ? order.amount_paid / 100 : (order.amountPaid ? order.amountPaid / 100 : 0));
 
             // Calculate status based on validity
             const days = parseInt(order.days) || 30;
-            const createdAt = order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000) :
+            const createdAt = order.created_at ? new Date(order.created_at) :
+                              order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000) :
+                              order.ordered_at ? new Date(order.ordered_at) :
                               order.orderedAt?.seconds ? new Date(order.orderedAt.seconds * 1000) :
                               new Date();
             const expirationDate = new Date(createdAt.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -614,20 +648,22 @@ class ProfileManager {
         const order = this.esimOrders[index];
         if (!order) return;
 
-        // Get QR code URL
-        const qrCodeUrl = order.esimDetails?.qrCodeUrl ||
-                          order.esims?.[0]?.qrcodeUrl ||
+        // Get QR code URL (handle both snake_case and camelCase)
+        const qrCodeUrl = order.esim_details?.qr_code_url ||
+                          order.esimDetails?.qrCodeUrl ||
                           order.esims?.[0]?.qrcode_url ||
+                          order.esims?.[0]?.qrcodeUrl ||
                           null;
 
-        const iccid = order.esimDetails?.iccid ||
+        const iccid = order.esim_details?.iccid ||
+                      order.esimDetails?.iccid ||
                       order.esims?.[0]?.iccid ||
                       '-';
 
-        const countryTitle = order.countryTitle || 'eSIM';
-        const packageName = order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
-        const orderCode = order.orderCode || order.airaloOrderCode || '-';
-        const price = order.price || (order.amountPaid ? order.amountPaid / 100 : 0);
+        const countryTitle = order.country_title || order.countryTitle || 'eSIM';
+        const packageName = order.package_name || order.packageName || `${order.data || ''} - ${order.days || ''} Days`;
+        const orderCode = order.order_code || order.orderCode || order.airalo_order_code || order.airaloOrderCode || '-';
+        const price = order.price || (order.amount_paid ? order.amount_paid / 100 : (order.amountPaid ? order.amountPaid / 100 : 0));
 
         const modal = document.createElement('div');
         modal.className = 'order-detail-modal active';
@@ -699,31 +735,41 @@ class ProfileManager {
         if (!this.user) return;
 
         try {
-            const docRef = window.firebaseDb.collection('esimRewards').doc(this.user.uid);
-            const doc = await docRef.get();
+            const { data, error } = await window.supabaseClient
+                .from('esim_rewards')
+                .select('*')
+                .eq('id', this.user.id)
+                .single();
+
             const referralCodeEl = document.getElementById('referral-code');
 
-            if (doc.exists && doc.data().referralCode) {
+            if (data && data.referral_code) {
                 // Display existing referral code (from iOS or previous web visit)
-                referralCodeEl.textContent = doc.data().referralCode;
+                referralCodeEl.textContent = data.referral_code;
             } else {
                 // No referral code yet - create one for web-only users
                 const newReferralCode = this.generateReferralCode();
                 const newRewardsProfile = {
-                    totalCredits: 0,
-                    totalSpend: 0,
+                    id: this.user.id,
+                    total_credits: 0,
+                    total_spend: 0,
                     level: 'Explorer',
-                    referralCode: newReferralCode,
-                    referralCount: 0,
-                    referredBy: null,
-                    hasReceivedReferralBonus: false,
-                    creditsHistory: [],
-                    preferredCurrency: 'USD',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    referral_code: newReferralCode,
+                    referral_count: 0,
+                    referred_by: null,
+                    has_received_referral_bonus: false,
+                    credits_history: [],
+                    preferred_currency: 'USD',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
                 };
 
-                await docRef.set(newRewardsProfile);
+                const { error: upsertError } = await window.supabaseClient
+                    .from('esim_rewards')
+                    .upsert(newRewardsProfile);
+
+                if (upsertError) throw upsertError;
+
                 referralCodeEl.textContent = newReferralCode;
             }
         } catch (error) {
@@ -765,13 +811,14 @@ class ProfileManager {
         const friendsCountBadge = document.getElementById('friends-count-badge');
 
         try {
-            const snapshot = await window.firebaseDb
-                .collection('users')
-                .doc(this.user.uid)
-                .collection('friends')
-                .get();
+            const { data, error } = await window.supabaseClient
+                .from('friends')
+                .select('*')
+                .eq('user_id', this.user.id);
 
-            if (snapshot.empty) {
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
                 friendsList.innerHTML = '';
                 friendsEmpty.style.display = 'block';
                 friendsCountBadge.style.display = 'none';
@@ -780,18 +827,17 @@ class ProfileManager {
 
             friendsEmpty.style.display = 'none';
             friendsCountBadge.style.display = 'inline';
-            friendsCountBadge.textContent = snapshot.size;
+            friendsCountBadge.textContent = data.length;
 
             let html = '';
-            for (const doc of snapshot.docs) {
-                const friend = doc.data();
-                const friendId = doc.id;
+            for (const friend of data) {
+                const friendId = friend.friend_id;
 
                 // Get friend's profile
                 const friendProfile = await this.getFriendProfile(friendId);
-                const displayName = friendProfile?.displayName || friend.displayName || 'Friend';
+                const displayName = friendProfile?.display_name || friend.display_name || 'Friend';
                 const username = friendProfile?.username || friend.username || '';
-                const avatar = friendProfile?.profileImageURL || friendProfile?.photoURL;
+                const avatar = friendProfile?.profile_image_url || friendProfile?.photo_url;
                 const initials = displayName.charAt(0).toUpperCase();
 
                 html += `
@@ -821,8 +867,14 @@ class ProfileManager {
 
     async getFriendProfile(friendId) {
         try {
-            const doc = await window.firebaseDb.collection('users').doc(friendId).get();
-            return doc.exists ? doc.data() : null;
+            const { data, error } = await window.supabaseClient
+                .from('users')
+                .select('*')
+                .eq('id', friendId)
+                .single();
+
+            if (error) throw error;
+            return data;
         } catch (error) {
             console.error('Error getting friend profile:', error);
             return null;
@@ -888,51 +940,57 @@ class ProfileManager {
 
         try {
             // Search for user by username
-            const snapshot = await window.firebaseDb
-                .collection('users')
-                .where('username', '==', username)
-                .limit(1)
-                .get();
+            const { data: users, error: searchError } = await window.supabaseClient
+                .from('users')
+                .select('*')
+                .eq('username', username)
+                .limit(1);
 
-            if (snapshot.empty) {
+            if (searchError) throw searchError;
+
+            if (!users || users.length === 0) {
                 errorEl.textContent = 'User not found';
                 errorEl.style.display = 'block';
                 return;
             }
 
-            const targetUser = snapshot.docs[0];
+            const targetUser = users[0];
             const targetUserId = targetUser.id;
 
-            if (targetUserId === this.user.uid) {
+            if (targetUserId === this.user.id) {
                 errorEl.textContent = "You can't add yourself as a friend";
                 errorEl.style.display = 'block';
                 return;
             }
 
             // Check if already friends
-            const existingFriend = await window.firebaseDb
-                .collection('users')
-                .doc(this.user.uid)
-                .collection('friends')
-                .doc(targetUserId)
-                .get();
+            const { data: existingFriend, error: friendCheckError } = await window.supabaseClient
+                .from('friends')
+                .select('*')
+                .eq('user_id', this.user.id)
+                .eq('friend_id', targetUserId)
+                .single();
 
-            if (existingFriend.exists) {
+            if (existingFriend) {
                 errorEl.textContent = 'Already friends with this user';
                 errorEl.style.display = 'block';
                 return;
             }
 
             // Create friend request
-            await window.firebaseDb.collection('friendRequests').add({
-                fromUserId: this.user.uid,
-                fromUsername: this.userProfile?.username || '',
-                fromDisplayName: this.userProfile?.displayName || this.user.displayName || '',
-                toUserId: targetUserId,
-                toUsername: targetUser.data().username,
-                status: 'pending',
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
+            const { error: insertError } = await window.supabaseClient
+                .from('friend_requests')
+                .insert({
+                    from_user_id: this.user.id,
+                    from_username: this.userProfile?.username || '',
+                    from_display_name: this.userProfile?.display_name || this.user.user_metadata?.display_name || '',
+                    to_user_id: targetUserId,
+                    to_username: targetUser.username,
+                    status: 'pending',
+                    created_at: new Date().toISOString()
+                });
+
+            if (insertError) throw insertError;
 
             this.closeAddFriendModal();
             this.showToast('Friend request sent!');
@@ -950,19 +1008,21 @@ class ProfileManager {
 
         try {
             // Remove from both users' friends lists
-            await window.firebaseDb
-                .collection('users')
-                .doc(this.user.uid)
-                .collection('friends')
-                .doc(friendId)
-                .delete();
+            const { error: error1 } = await window.supabaseClient
+                .from('friends')
+                .delete()
+                .eq('user_id', this.user.id)
+                .eq('friend_id', friendId);
 
-            await window.firebaseDb
-                .collection('users')
-                .doc(friendId)
-                .collection('friends')
-                .doc(this.user.uid)
-                .delete();
+            if (error1) throw error1;
+
+            const { error: error2 } = await window.supabaseClient
+                .from('friends')
+                .delete()
+                .eq('user_id', friendId)
+                .eq('friend_id', this.user.id);
+
+            if (error2) throw error2;
 
             // Reload friends list
             this.loadFriends();

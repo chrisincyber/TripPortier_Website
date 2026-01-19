@@ -92,12 +92,10 @@ class MyEsimsManager {
         listEl.style.display = 'none';
 
         try {
-            const functions = firebase.functions();
-            const getUserEsimOrders = functions.httpsCallable('getUserEsimOrders');
-            const result = await getUserEsimOrders();
+            const result = await window.callEdgeFunction('get-user-esim-orders', {});
 
-            if (result.data?.success && result.data.orders) {
-                this.orders = result.data.orders;
+            if (result?.success && result.orders) {
+                this.orders = result.orders;
             } else {
                 this.orders = [];
             }
@@ -444,12 +442,10 @@ class MyEsimsManager {
             lookupBtn.textContent = 'Searching...';
             errorEl.style.display = 'none';
 
-            const functions = firebase.functions();
-            const lookupEsimOrdersByEmail = functions.httpsCallable('lookupEsimOrdersByEmail');
-            const result = await lookupEsimOrdersByEmail({ email });
+            const result = await window.callEdgeFunction('lookup-esim-orders-by-email', { email });
 
-            if (result.data?.success && result.data.orders && result.data.orders.length > 0) {
-                this.orders = result.data.orders;
+            if (result?.success && result.orders && result.orders.length > 0) {
+                this.orders = result.orders;
 
                 // Hide not signed in, show tabs and list
                 notSignedInEl.style.display = 'none';

@@ -1,6 +1,6 @@
 /**
  * TripPortier Settings Page
- * Manages user preferences with Firebase sync
+ * Manages user preferences with Supabase sync
  */
 
 class SettingsManager {
@@ -25,35 +25,35 @@ class SettingsManager {
 
         this.currencies = [
             { code: 'USD', name: 'US Dollar', symbol: '$' },
-            { code: 'EUR', name: 'Euro', symbol: '€' },
-            { code: 'GBP', name: 'British Pound', symbol: '£' },
-            { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
+            { code: 'EUR', name: 'Euro', symbol: '\u20ac' },
+            { code: 'GBP', name: 'British Pound', symbol: '\u00a3' },
+            { code: 'JPY', name: 'Japanese Yen', symbol: '\u00a5' },
             { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
             { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
             { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
-            { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
-            { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
-            { code: 'KRW', name: 'South Korean Won', symbol: '₩' },
+            { code: 'CNY', name: 'Chinese Yuan', symbol: '\u00a5' },
+            { code: 'INR', name: 'Indian Rupee', symbol: '\u20b9' },
+            { code: 'KRW', name: 'South Korean Won', symbol: '\u20a9' },
             { code: 'SGD', name: 'Singapore Dollar', symbol: 'S$' },
-            { code: 'THB', name: 'Thai Baht', symbol: '฿' },
+            { code: 'THB', name: 'Thai Baht', symbol: '\u0e3f' },
             { code: 'MXN', name: 'Mexican Peso', symbol: '$' },
             { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
             { code: 'ZAR', name: 'South African Rand', symbol: 'R' },
-            { code: 'AED', name: 'UAE Dirham', symbol: 'د.إ' },
+            { code: 'AED', name: 'UAE Dirham', symbol: '\u062f.\u0625' },
             { code: 'SEK', name: 'Swedish Krona', symbol: 'kr' },
             { code: 'NOK', name: 'Norwegian Krone', symbol: 'kr' },
             { code: 'DKK', name: 'Danish Krone', symbol: 'kr' },
             { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
-            { code: 'PLN', name: 'Polish Zloty', symbol: 'zł' },
-            { code: 'TRY', name: 'Turkish Lira', symbol: '₺' },
+            { code: 'PLN', name: 'Polish Zloty', symbol: 'z\u0142' },
+            { code: 'TRY', name: 'Turkish Lira', symbol: '\u20ba' },
             { code: 'HKD', name: 'Hong Kong Dollar', symbol: 'HK$' },
             { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp' },
             { code: 'MYR', name: 'Malaysian Ringgit', symbol: 'RM' },
-            { code: 'PHP', name: 'Philippine Peso', symbol: '₱' },
-            { code: 'VND', name: 'Vietnamese Dong', symbol: '₫' },
-            { code: 'CZK', name: 'Czech Koruna', symbol: 'Kč' },
+            { code: 'PHP', name: 'Philippine Peso', symbol: '\u20b1' },
+            { code: 'VND', name: 'Vietnamese Dong', symbol: '\u20ab' },
+            { code: 'CZK', name: 'Czech Koruna', symbol: 'K\u010d' },
             { code: 'HUF', name: 'Hungarian Forint', symbol: 'Ft' },
-            { code: 'ILS', name: 'Israeli Shekel', symbol: '₪' }
+            { code: 'ILS', name: 'Israeli Shekel', symbol: '\u20aa' }
         ];
 
         this.interests = [
@@ -134,7 +134,7 @@ class SettingsManager {
         if (user) {
             notSignedInEl.style.display = 'none';
             contentEl.style.display = 'flex';
-            this.loadSettingsFromFirebase();
+            this.loadSettingsFromSupabase();
         } else {
             notSignedInEl.style.display = 'block';
             contentEl.style.display = 'none';
@@ -474,64 +474,140 @@ class SettingsManager {
         }
     }
 
-    async loadSettingsFromFirebase() {
+    async loadSettingsFromSupabase() {
         if (!this.user) return;
 
         try {
-            const doc = await window.firebaseDb
-                .collection('users')
-                .doc(this.user.uid)
-                .collection('metadata')
-                .doc('settings')
-                .get();
+            // Load user data from users table (snake_case columns)
+            const { data: userData, error: userError } = await supabaseClient
+                .from('users')
+                .select('home_country, temperature_unit, currency')
+                .eq('id', this.user.id)
+                .single();
 
-            if (doc.exists) {
-                const data = doc.data();
-                this.settings = { ...this.getDefaultSettings(), ...data };
-                this.applySettingsToUI();
-
-                // Also save locally
-                localStorage.setItem('tripportier_settings', JSON.stringify(this.settings));
+            if (userError && userError.code !== 'PGRST116') {
+                throw userError;
             }
+
+            // Load passports from user_passports table
+            const { data: passportsData, error: passportsError } = await supabaseClient
+                .from('user_passports')
+                .select('country_code')
+                .eq('user_id', this.user.id);
+
+            if (passportsError) {
+                console.error('Error loading passports:', passportsError);
+            }
+
+            // Map Supabase data to settings (snake_case to camelCase)
+            if (userData) {
+                this.settings.homeCountry = userData.home_country || '';
+                this.settings.temperatureUnit = userData.temperature_unit || 'celsius';
+                this.settings.homeCurrency = userData.currency || 'USD';
+            }
+
+            // Map passports
+            if (passportsData && passportsData.length > 0) {
+                this.settings.passports = passportsData.map(p => p.country_code);
+            }
+
+            // Extended settings are stored locally (theme, travelStyle, budgetPreference, etc.)
+            // These are loaded from localStorage and saved there as the primary source
+            // This keeps the database schema simple while still syncing core settings
+
+            this.applySettingsToUI();
+
+            // Also save locally for offline access
+            localStorage.setItem('tripportier_settings', JSON.stringify(this.settings));
         } catch (error) {
-            console.error('Error loading settings from Firebase:', error);
+            console.error('Error loading settings from Supabase:', error);
         }
     }
 
     async saveSettings() {
-        // Save locally
+        // Save locally first (includes all settings)
         localStorage.setItem('tripportier_settings', JSON.stringify(this.settings));
 
-        // Save to Firebase if logged in
+        // Save to Supabase if logged in
         if (this.user) {
             try {
-                await window.firebaseDb
-                    .collection('users')
-                    .doc(this.user.uid)
-                    .collection('metadata')
-                    .doc('settings')
-                    .set(this.settings, { merge: true });
+                // Update users table (snake_case columns)
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .update({
+                        home_country: this.settings.homeCountry || null,
+                        temperature_unit: this.settings.temperatureUnit || 'celsius',
+                        currency: this.settings.homeCurrency || 'USD',
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', this.user.id);
 
-                // Also update key fields in main user doc
-                await window.firebaseDb
-                    .collection('users')
-                    .doc(this.user.uid)
-                    .set({
-                        passports: this.settings.passports || [],
-                        nationalities: this.settings.passports || [],
-                        homeCountry: this.settings.homeCountry,
-                        temperatureUnit: this.settings.temperatureUnit || 'celsius',
-                        friendVisibility: {
-                            showActiveTrips: this.settings.showActiveTripsToFriends,
-                            showUpcomingTrips: this.settings.showUpcomingTripsToFriends
-                        }
-                    }, { merge: true });
+                if (userError) {
+                    throw userError;
+                }
+
+                // Sync passports to user_passports table
+                await this.syncPassportsToSupabase();
 
                 this.showToast('Settings saved');
             } catch (error) {
-                console.error('Error saving settings to Firebase:', error);
+                console.error('Error saving settings to Supabase:', error);
                 this.showToast('Failed to save settings');
             }
+        }
+    }
+
+    async syncPassportsToSupabase() {
+        if (!this.user) return;
+
+        try {
+            // Get current passports from database
+            const { data: existingPassports, error: fetchError } = await supabaseClient
+                .from('user_passports')
+                .select('country_code')
+                .eq('user_id', this.user.id);
+
+            if (fetchError) {
+                throw fetchError;
+            }
+
+            const existingCodes = (existingPassports || []).map(p => p.country_code);
+            const newCodes = this.settings.passports || [];
+
+            // Determine what to add and what to remove
+            const toAdd = newCodes.filter(code => !existingCodes.includes(code));
+            const toRemove = existingCodes.filter(code => !newCodes.includes(code));
+
+            // Remove passports that are no longer selected
+            if (toRemove.length > 0) {
+                const { error: deleteError } = await supabaseClient
+                    .from('user_passports')
+                    .delete()
+                    .eq('user_id', this.user.id)
+                    .in('country_code', toRemove);
+
+                if (deleteError) {
+                    console.error('Error removing passports:', deleteError);
+                }
+            }
+
+            // Add new passports
+            if (toAdd.length > 0) {
+                const passportsToInsert = toAdd.map(code => ({
+                    user_id: this.user.id,
+                    country_code: code
+                }));
+
+                const { error: insertError } = await supabaseClient
+                    .from('user_passports')
+                    .insert(passportsToInsert);
+
+                if (insertError) {
+                    console.error('Error adding passports:', insertError);
+                }
+            }
+        } catch (error) {
+            console.error('Error syncing passports:', error);
         }
     }
 
