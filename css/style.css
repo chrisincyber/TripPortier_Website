@@ -1109,8 +1109,8 @@ h1, h2, h3, h4, h5, h6,
 
     /* Mobile dropdown styles */
     .nav-dropdown .dropdown-menu {
-        position: static;
-        transform: none;
+        position: static !important;
+        transform: none !important;
         background: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
         box-shadow: none;
@@ -1119,10 +1119,29 @@ h1, h2, h3, h4, h5, h6,
         opacity: 1;
         visibility: visible;
         display: none;
+        top: auto !important;
+        left: auto !important;
+    }
+
+    /* Disable hover behavior on mobile - only use click/active */
+    .nav-dropdown:hover .dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        display: none;
     }
 
     .nav-dropdown.active .dropdown-menu {
-        display: block;
+        display: block !important;
+    }
+
+    /* Ensure dropdown items have proper stacking */
+    .nav-dropdown {
+        position: relative;
+        z-index: 1;
+    }
+
+    .nav-dropdown.active {
+        z-index: 10;
     }
 
     .nav-dropdown .dropdown-menu a {
