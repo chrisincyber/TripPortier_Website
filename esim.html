@@ -3438,7 +3438,7 @@
                 }
 
                 // Call Supabase Edge Function to create checkout session
-                const response = await fetch(`${API_URL}/esim-checkout-session`, {
+                const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/esim-checkout-session`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
