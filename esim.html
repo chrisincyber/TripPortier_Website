@@ -2588,6 +2588,8 @@
         // ==========================================
         // Supabase Edge Functions URL (SUPABASE_URL is already defined in supabase-config.js)
         const SUPABASE_FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
+        // Firebase Cloud Functions URL (for checkout)
+        const API_URL = 'https://us-central1-tripportier.cloudfunctions.net';
 
         // Cache for package data
         const packageCache = {};
@@ -3437,8 +3439,8 @@
                     userId = session?.user?.id || null;
                 }
 
-                // Call Supabase Edge Function to create checkout session
-                const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/esim-checkout-session`, {
+                // Call Firebase Cloud Function to create checkout session
+                const response = await fetch(`${API_URL}/createEsimCheckout`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -3447,17 +3449,16 @@
                         email: email,
                         packageId: selectedPackage.id,
                         packageName: `${selectedPackage.data} - ${selectedPackage.days} Days`,
+                        amount: amountInCents,
+                        currency: 'USD',
                         countryCode: countryCode,
                         countryTitle: countryTitle,
                         data: selectedPackage.data,
                         days: selectedPackage.days,
-                        price: selectedPackage.price,
-                        netPrice: selectedPackage.netPrice || selectedPackage.price,
                         operatorTitle: selectedPackage.operatorTitle || 'TripPortier eSIM',
-                        hasVoice: selectedPackage.hasVoice || false,
-                        hasText: selectedPackage.hasText || false,
                         tripcoinsUsed: coinsToUse,
-                        userId: userId,
+                        originalPrice: selectedPackage.price,
+                        language: (navigator.language || 'en').split('-')[0],
                     }),
                 });
 
