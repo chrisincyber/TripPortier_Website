@@ -1183,6 +1183,8 @@
 
         let currentUser = null;
         let currentOrderData = null;
+        let retryCount = 0;
+        const MAX_RETRIES = 20; // Max 60 seconds of polling (20 * 3 seconds)
 
         // Supabase Functions URL
         const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
@@ -1209,6 +1211,12 @@
                 if (data.success && data.order) {
                     showSuccess(data.order);
                 } else if (data.status === 'processing') {
+                    retryCount++;
+                    if (retryCount >= MAX_RETRIES) {
+                        // Stop polling after max retries
+                        showError('Your order is taking longer than expected to process. Please check your email for confirmation, or contact support if you don\'t receive it within a few minutes.');
+                        return;
+                    }
                     // Order still processing, retry after delay
                     setTimeout(fetchOrderDetails, 3000);
                 } else {
