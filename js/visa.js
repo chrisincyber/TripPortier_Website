@@ -844,3 +844,480 @@ function setupFaqAccordion() {
         });
     });
 }
+
+// ============================================
+// Explore Tab Functionality
+// ============================================
+
+// Mock visa data by passport country (similar to iOS app)
+// In production, this would come from an API
+const VISA_DATA = {
+    // Switzerland passport
+    'CHE': {
+        'visa-free': [
+            { code: 'FRA', name: 'France', days: 90 },
+            { code: 'DEU', name: 'Germany', days: 90 },
+            { code: 'ITA', name: 'Italy', days: 90 },
+            { code: 'ESP', name: 'Spain', days: 90 },
+            { code: 'PRT', name: 'Portugal', days: 90 },
+            { code: 'NLD', name: 'Netherlands', days: 90 },
+            { code: 'BEL', name: 'Belgium', days: 90 },
+            { code: 'AUT', name: 'Austria', days: 90 },
+            { code: 'GRC', name: 'Greece', days: 90 },
+            { code: 'SWE', name: 'Sweden', days: 90 },
+            { code: 'NOR', name: 'Norway', days: 90 },
+            { code: 'DNK', name: 'Denmark', days: 90 },
+            { code: 'FIN', name: 'Finland', days: 90 },
+            { code: 'IRL', name: 'Ireland', days: 90 },
+            { code: 'GBR', name: 'United Kingdom', days: 180 },
+            { code: 'USA', name: 'United States', days: 90 },
+            { code: 'CAN', name: 'Canada', days: 180 },
+            { code: 'JPN', name: 'Japan', days: 90 },
+            { code: 'KOR', name: 'South Korea', days: 90 },
+            { code: 'SGP', name: 'Singapore', days: 90 },
+            { code: 'HKG', name: 'Hong Kong', days: 90 },
+            { code: 'NZL', name: 'New Zealand', days: 90 },
+            { code: 'AUS', name: 'Australia', days: 90 },
+            { code: 'ARG', name: 'Argentina', days: 90 },
+            { code: 'BRA', name: 'Brazil', days: 90 },
+            { code: 'CHL', name: 'Chile', days: 90 },
+            { code: 'MEX', name: 'Mexico', days: 180 },
+            { code: 'THA', name: 'Thailand', days: 30 },
+            { code: 'MYS', name: 'Malaysia', days: 90 },
+            { code: 'PHL', name: 'Philippines', days: 30 },
+            { code: 'IDN', name: 'Indonesia', days: 30 },
+            { code: 'ISR', name: 'Israel', days: 90 },
+            { code: 'ARE', name: 'United Arab Emirates', days: 90 },
+            { code: 'QAT', name: 'Qatar', days: 30 },
+            { code: 'ZAF', name: 'South Africa', days: 90 },
+            { code: 'MAR', name: 'Morocco', days: 90 },
+        ],
+        'evisa': [
+            { code: 'TUR', name: 'Turkey', note: 'Quick apply' },
+            { code: 'EGY', name: 'Egypt', note: 'Quick apply' },
+            { code: 'IND', name: 'India', note: 'eVisa' },
+            { code: 'KEN', name: 'Kenya', note: 'eVisa' },
+            { code: 'LKA', name: 'Sri Lanka', note: 'ETA' },
+            { code: 'VNM', name: 'Vietnam', note: 'eVisa' },
+            { code: 'KHM', name: 'Cambodia', note: 'eVisa' },
+            { code: 'MMR', name: 'Myanmar', note: 'eVisa' },
+            { code: 'ETH', name: 'Ethiopia', note: 'eVisa' },
+            { code: 'TZA', name: 'Tanzania', note: 'eVisa' },
+            { code: 'UGA', name: 'Uganda', note: 'eVisa' },
+            { code: 'RWA', name: 'Rwanda', note: 'eVisa' },
+            { code: 'PAK', name: 'Pakistan', note: 'eVisa' },
+            { code: 'AZE', name: 'Azerbaijan', note: 'eVisa' },
+            { code: 'OMN', name: 'Oman', note: 'eVisa' },
+            { code: 'BHR', name: 'Bahrain', note: 'eVisa' },
+        ],
+        'voa': [
+            { code: 'MDV', name: 'Maldives', note: '30 days' },
+            { code: 'NPL', name: 'Nepal', note: '90 days' },
+            { code: 'LAO', name: 'Laos', note: '30 days' },
+            { code: 'TLS', name: 'Timor-Leste', note: '30 days' },
+            { code: 'MDG', name: 'Madagascar', note: '90 days' },
+            { code: 'JOR', name: 'Jordan', note: '30 days' },
+            { code: 'MUS', name: 'Mauritius', note: '90 days' },
+            { code: 'SYC', name: 'Seychelles', note: '90 days' },
+            { code: 'TON', name: 'Tonga', note: '31 days' },
+            { code: 'WSM', name: 'Samoa', note: '60 days' },
+        ],
+        'embassy': [
+            { code: 'CHN', name: 'China' },
+            { code: 'RUS', name: 'Russia' },
+            { code: 'SAU', name: 'Saudi Arabia' },
+            { code: 'IRN', name: 'Iran' },
+            { code: 'IRQ', name: 'Iraq' },
+            { code: 'AFG', name: 'Afghanistan' },
+            { code: 'PRK', name: 'North Korea' },
+            { code: 'TKM', name: 'Turkmenistan' },
+            { code: 'LBY', name: 'Libya' },
+            { code: 'SYR', name: 'Syria' },
+            { code: 'YEM', name: 'Yemen' },
+            { code: 'SOM', name: 'Somalia' },
+            { code: 'SSD', name: 'South Sudan' },
+            { code: 'ERI', name: 'Eritrea' },
+            { code: 'CUB', name: 'Cuba' },
+            { code: 'NGA', name: 'Nigeria' },
+            { code: 'GHA', name: 'Ghana' },
+            { code: 'DZA', name: 'Algeria' },
+        ]
+    },
+    // Default data for other passports (simplified)
+    'DEFAULT': {
+        'visa-free': [
+            { code: 'FRA', name: 'France', days: 90 },
+            { code: 'DEU', name: 'Germany', days: 90 },
+            { code: 'ITA', name: 'Italy', days: 90 },
+            { code: 'ESP', name: 'Spain', days: 90 },
+        ],
+        'evisa': [
+            { code: 'TUR', name: 'Turkey', note: 'Quick apply' },
+            { code: 'EGY', name: 'Egypt', note: 'Quick apply' },
+        ],
+        'voa': [
+            { code: 'MDV', name: 'Maldives', note: '30 days' },
+            { code: 'NPL', name: 'Nepal', note: '90 days' },
+        ],
+        'embassy': [
+            { code: 'CHN', name: 'China' },
+            { code: 'RUS', name: 'Russia' },
+        ]
+    }
+};
+
+// Add more passport data for common passports
+['USA', 'GBR', 'DEU', 'FRA', 'CAN', 'AUS', 'JPN'].forEach(code => {
+    if (!VISA_DATA[code]) {
+        VISA_DATA[code] = VISA_DATA['CHE']; // Use Swiss data as template for strong passports
+    }
+});
+
+// Explore Manager Class
+class ExploreManager {
+    constructor() {
+        this.passportCountry = null;
+        this.activeFilter = 'all';
+        this.searchQuery = '';
+        this.init();
+    }
+
+    init() {
+        this.setupTabSwitching();
+        this.setupPassportSelector();
+        this.setupFilters();
+        this.setupSearch();
+        this.setupCategoryAccordions();
+        this.showEmptyState();
+    }
+
+    setupTabSwitching() {
+        const tabs = document.querySelectorAll('.visa-tab');
+        const tabContents = document.querySelectorAll('.visa-tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.dataset.tab;
+
+                // Update active tab button
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Update active content
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                    if (content.id === `${targetTab}-tab-content`) {
+                        content.classList.add('active');
+                    }
+                });
+            });
+        });
+    }
+
+    setupPassportSelector() {
+        const trigger = document.getElementById('explore-passport-trigger');
+        const dropdown = document.getElementById('explore-passport-dropdown');
+        const list = dropdown?.querySelector('.country-list');
+
+        if (!trigger || !dropdown || !list) return;
+
+        // Populate country list
+        populateCountryList(list, 'explore-passport');
+
+        const searchInput = dropdown.querySelector('.country-search');
+
+        // Toggle dropdown
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // On mobile, use bottom sheet
+            if (window.innerWidth <= 768) {
+                this.openMobilePassportPicker();
+                return;
+            }
+
+            const isOpen = dropdown.classList.contains('open');
+            closeAllDropdowns();
+
+            if (!isOpen) {
+                dropdown.classList.add('open');
+                trigger.setAttribute('aria-expanded', 'true');
+                searchInput?.focus();
+            }
+        });
+
+        // Search functionality
+        searchInput?.addEventListener('input', (e) => {
+            filterCountries(list, e.target.value);
+        });
+
+        // Country selection
+        list.addEventListener('click', (e) => {
+            const li = e.target.closest('li');
+            if (li && !li.classList.contains('no-results')) {
+                this.selectPassport({
+                    code: li.dataset.code,
+                    name: li.dataset.name,
+                    flag: li.dataset.flag
+                });
+                closeAllDropdowns();
+            }
+        });
+    }
+
+    openMobilePassportPicker() {
+        // Use existing bottom sheet mechanism
+        if (!bottomSheet) return;
+
+        state.activeSelector = 'explore-passport';
+
+        if (bottomSheetTitle) {
+            bottomSheetTitle.textContent = 'Select Passport Country';
+        }
+
+        if (bottomSheetSearchInput) {
+            bottomSheetSearchInput.value = '';
+        }
+        filterCountries(bottomSheetList, '');
+
+        // Mark current selection
+        bottomSheetList?.querySelectorAll('li').forEach(li => {
+            li.classList.toggle('selected', this.passportCountry?.code === li.dataset.code);
+        });
+
+        bottomSheet.classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(() => bottomSheetSearchInput?.focus(), 300);
+    }
+
+    selectPassport(country) {
+        this.passportCountry = country;
+
+        // Update trigger display
+        const trigger = document.getElementById('explore-passport-trigger');
+        if (trigger) {
+            updateTriggerDisplay(trigger, country);
+        }
+
+        // Hide empty state, show categories
+        this.hideEmptyState();
+
+        // Load visa data for this passport
+        this.loadVisaData();
+    }
+
+    setupFilters() {
+        const filters = document.querySelectorAll('.filter-chip');
+
+        filters.forEach(filter => {
+            filter.addEventListener('click', () => {
+                // Update active state
+                filters.forEach(f => f.classList.remove('active'));
+                filter.classList.add('active');
+
+                // Update filter
+                this.activeFilter = filter.dataset.filter;
+                this.applyFilters();
+            });
+        });
+    }
+
+    setupSearch() {
+        const searchInput = document.getElementById('explore-search-input');
+
+        searchInput?.addEventListener('input', (e) => {
+            this.searchQuery = e.target.value.toLowerCase().trim();
+            this.applyFilters();
+        });
+    }
+
+    setupCategoryAccordions() {
+        const headers = document.querySelectorAll('.category-header');
+
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const isExpanded = header.classList.contains('expanded');
+                const content = header.nextElementSibling;
+
+                if (isExpanded) {
+                    header.classList.remove('expanded');
+                    header.setAttribute('aria-expanded', 'false');
+                    content?.classList.add('collapsed');
+                } else {
+                    header.classList.add('expanded');
+                    header.setAttribute('aria-expanded', 'true');
+                    content?.classList.remove('collapsed');
+                }
+            });
+        });
+    }
+
+    showEmptyState() {
+        const emptyState = document.getElementById('explore-empty-state');
+        const categories = document.getElementById('explore-categories');
+
+        if (emptyState) emptyState.style.display = 'block';
+        if (categories) categories.style.display = 'none';
+    }
+
+    hideEmptyState() {
+        const emptyState = document.getElementById('explore-empty-state');
+        const categories = document.getElementById('explore-categories');
+
+        if (emptyState) emptyState.style.display = 'none';
+        if (categories) categories.style.display = 'flex';
+    }
+
+    loadVisaData() {
+        if (!this.passportCountry) return;
+
+        const passportCode = this.passportCountry.code;
+        const data = VISA_DATA[passportCode] || VISA_DATA['DEFAULT'];
+
+        // Populate each category
+        this.populateCategory('visa-free', data['visa-free'] || []);
+        this.populateCategory('evisa', data['evisa'] || []);
+        this.populateCategory('voa', data['voa'] || []);
+        this.populateCategory('embassy', data['embassy'] || []);
+
+        // Expand visa-free by default
+        const visaFreeHeader = document.querySelector('[data-category="visa-free"] .category-header');
+        if (visaFreeHeader && !visaFreeHeader.classList.contains('expanded')) {
+            visaFreeHeader.click();
+        }
+    }
+
+    populateCategory(categoryName, countries) {
+        const category = document.querySelector(`[data-category="${categoryName}"]`);
+        if (!category) return;
+
+        const grid = category.querySelector('.country-cards-grid');
+        const countSpan = category.querySelector('.category-count');
+
+        if (grid) {
+            grid.innerHTML = countries.map(country => this.createCountryCard(country, categoryName)).join('');
+
+            // Add click handlers to cards
+            grid.querySelectorAll('.country-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    this.onCountryCardClick(card.dataset.code, card.dataset.name, card.dataset.flag);
+                });
+            });
+        }
+
+        if (countSpan) {
+            countSpan.textContent = `(${countries.length})`;
+        }
+    }
+
+    createCountryCard(country, category) {
+        const countryData = COUNTRIES.find(c => c.code === country.code);
+        const flag = countryData?.flag || '🌍';
+
+        let detailHtml = '';
+        if (category === 'visa-free' && country.days) {
+            detailHtml = `<span class="card-detail visa-free">${country.days} days</span>`;
+        } else if ((category === 'evisa' || category === 'voa') && country.note) {
+            detailHtml = `<span class="card-detail evisa">⚡ ${country.note}</span>`;
+        }
+
+        return `
+            <div class="country-card" data-code="${country.code}" data-name="${country.name}" data-flag="${flag}" data-category="${category}">
+                <span class="card-flag">${flag}</span>
+                <div class="card-info">
+                    <span class="card-name">${country.name}</span>
+                    ${detailHtml}
+                </div>
+            </div>
+        `;
+    }
+
+    onCountryCardClick(code, name, flag) {
+        // Switch to Check tab
+        const checkTab = document.querySelector('.visa-tab[data-tab="check"]');
+        if (checkTab) {
+            checkTab.click();
+        }
+
+        // Pre-fill passport if not already set
+        if (!state.passportCountry && this.passportCountry) {
+            selectCountry('passport', this.passportCountry);
+        }
+
+        // Pre-fill destination
+        selectCountry('destination', { code, name, flag });
+    }
+
+    applyFilters() {
+        const categories = document.querySelectorAll('.explore-category');
+
+        categories.forEach(category => {
+            const categoryType = category.dataset.category;
+            const cards = category.querySelectorAll('.country-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                let visible = true;
+
+                // Apply category filter
+                if (this.activeFilter === 'visa-free') {
+                    visible = categoryType === 'visa-free';
+                } else if (this.activeFilter === 'visa-required') {
+                    visible = categoryType !== 'visa-free';
+                }
+
+                // Apply search filter
+                if (visible && this.searchQuery) {
+                    const name = card.dataset.name.toLowerCase();
+                    visible = name.includes(this.searchQuery);
+                }
+
+                card.style.display = visible ? '' : 'none';
+                if (visible) visibleCount++;
+            });
+
+            // Update count
+            const countSpan = category.querySelector('.category-count');
+            if (countSpan) {
+                countSpan.textContent = `(${visibleCount})`;
+            }
+
+            // Show/hide empty categories
+            if (this.activeFilter !== 'all') {
+                category.style.display = visibleCount > 0 ? '' : 'none';
+            } else {
+                category.style.display = '';
+            }
+        });
+    }
+}
+
+// Initialize Explore Manager
+let exploreManager;
+
+// Modify bottom sheet click handler to support explore passport selection
+const originalBottomSheetClick = bottomSheetList?.onclick;
+if (bottomSheetList) {
+    const originalHandler = bottomSheetList.onclick;
+    bottomSheetList.addEventListener('click', (e) => {
+        if (state.activeSelector === 'explore-passport') {
+            const li = e.target.closest('li');
+            if (li && !li.classList.contains('no-results')) {
+                exploreManager?.selectPassport({
+                    code: li.dataset.code,
+                    name: li.dataset.name,
+                    flag: li.dataset.flag
+                });
+                closeBottomSheet();
+            }
+        }
+    });
+}
+
+// Initialize explore manager after DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+        exploreManager = new ExploreManager();
+    }, 100);
+});

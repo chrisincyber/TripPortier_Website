@@ -73,10 +73,34 @@
     <section class="visa-checker-section" id="check">
         <div class="visa-checker-container">
             <div class="visa-checker-widget">
-                <h2>Check Visa Requirements</h2>
-                <p class="widget-subtitle">Select your passport country and destination to see visa requirements</p>
+                <!-- Tab Navigation -->
+                <div class="visa-tabs">
+                    <button class="visa-tab active" data-tab="check">
+                        <span class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </span>
+                        <span data-i18n="visa.tabs.check">Check</span>
+                    </button>
+                    <button class="visa-tab" data-tab="explore">
+                        <span class="tab-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                            </svg>
+                        </span>
+                        <span data-i18n="visa.tabs.explore">Explore</span>
+                    </button>
+                </div>
 
-                <div class="visa-form">
+                <!-- Check Tab Content -->
+                <div class="visa-tab-content active" id="check-tab-content">
+                    <h2>Check Visa Requirements</h2>
+                    <p class="widget-subtitle">Select your passport country and destination to see visa requirements</p>
+
+                    <div class="visa-form">
                     <!-- Passport Country -->
                     <div class="country-selector-group">
                         <label for="passport-country">Your Passport</label>
@@ -144,9 +168,147 @@
                     </button>
                 </div>
 
-                <!-- Results Area -->
-                <div class="visa-results" id="visa-results" style="display: none;">
-                    <!-- Results populated by JS -->
+                    <!-- Results Area -->
+                    <div class="visa-results" id="visa-results" style="display: none;">
+                        <!-- Results populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Explore Tab Content -->
+                <div class="visa-tab-content" id="explore-tab-content">
+                    <div class="explore-header">
+                        <h2 data-i18n="visa.tabs.explore">Explore Destinations</h2>
+                        <p class="widget-subtitle">Discover visa requirements for all destinations based on your passport</p>
+                    </div>
+
+                    <!-- Passport Selector for Explore -->
+                    <div class="explore-passport-selector">
+                        <label data-i18n="visa.explore.passport">Your Passport</label>
+                        <div class="country-selector" id="explore-passport-selector">
+                            <button type="button" class="country-selector-trigger" id="explore-passport-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="selected-country">
+                                    <span class="country-flag">🌍</span>
+                                    <span class="country-name">Select passport country</span>
+                                </span>
+                                <span class="selector-arrow">▼</span>
+                            </button>
+                            <div class="country-dropdown" id="explore-passport-dropdown" role="listbox" aria-label="Select passport country">
+                                <div class="country-search-wrapper">
+                                    <input type="text" class="country-search" placeholder="Search countries..." aria-label="Search countries">
+                                </div>
+                                <ul class="country-list" role="presentation">
+                                    <!-- Countries populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Chips -->
+                    <div class="explore-filters">
+                        <button class="filter-chip active" data-filter="all" data-i18n="visa.explore.filterAll">All</button>
+                        <button class="filter-chip" data-filter="visa-free">
+                            <span class="filter-icon">✓</span>
+                            <span data-i18n="visa.explore.filterVisaFree">Visa-free</span>
+                        </button>
+                        <button class="filter-chip" data-filter="visa-required" data-i18n="visa.explore.filterVisaRequired">Visa required</button>
+                    </div>
+
+                    <!-- Search Input -->
+                    <div class="explore-search">
+                        <input type="text" id="explore-search-input" placeholder="Search destinations..." data-i18n-placeholder="visa.explore.search">
+                        <span class="search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                            </svg>
+                        </span>
+                    </div>
+
+                    <!-- Destination Categories -->
+                    <div class="explore-categories" id="explore-categories">
+                        <!-- Visa-Free Section -->
+                        <div class="explore-category" data-category="visa-free">
+                            <button class="category-header expanded" aria-expanded="true">
+                                <span class="category-icon">✓</span>
+                                <span class="category-title" data-i18n="visa.explore.categoryVisaFree">Visa-Free</span>
+                                <span class="category-count">(0)</span>
+                                <span class="category-arrow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="category-content">
+                                <div class="country-cards-grid">
+                                    <!-- Country cards populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- eVisa/eTA Section -->
+                        <div class="explore-category" data-category="evisa">
+                            <button class="category-header" aria-expanded="false">
+                                <span class="category-icon">⚡</span>
+                                <span class="category-title" data-i18n="visa.explore.categoryEvisa">eVisa/eTA Available</span>
+                                <span class="category-count">(0)</span>
+                                <span class="category-arrow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="category-content collapsed">
+                                <div class="country-cards-grid">
+                                    <!-- Country cards populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Visa on Arrival Section -->
+                        <div class="explore-category" data-category="voa">
+                            <button class="category-header" aria-expanded="false">
+                                <span class="category-icon">🛬</span>
+                                <span class="category-title" data-i18n="visa.explore.categoryVoa">Visa on Arrival</span>
+                                <span class="category-count">(0)</span>
+                                <span class="category-arrow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="category-content collapsed">
+                                <div class="country-cards-grid">
+                                    <!-- Country cards populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Embassy Visa Section -->
+                        <div class="explore-category" data-category="embassy">
+                            <button class="category-header" aria-expanded="false">
+                                <span class="category-icon">🏛️</span>
+                                <span class="category-title" data-i18n="visa.explore.categoryEmbassy">Embassy Visa Required</span>
+                                <span class="category-count">(0)</span>
+                                <span class="category-arrow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="6 9 12 15 18 9"/>
+                                    </svg>
+                                </span>
+                            </button>
+                            <div class="category-content collapsed">
+                                <div class="country-cards-grid">
+                                    <!-- Country cards populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="explore-empty-state" id="explore-empty-state" style="display: none;">
+                        <div class="empty-icon">🌍</div>
+                        <h3>Select Your Passport</h3>
+                        <p>Choose your passport country above to see visa requirements for all destinations.</p>
+                    </div>
                 </div>
             </div>
         </div>
