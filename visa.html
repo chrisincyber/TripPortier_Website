@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/cookie-consent.css">
+    <script src="js/cookie-consent.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Check visa requirements instantly. Find out if you need a visa, what documents are required, and apply online with TripPortier.">
+    <meta name="keywords" content="visa check, visa requirements, travel visa, visa application, tourist visa, visa free">
+    <meta property="og:title" content="Visa Check - TripPortier">
+    <meta property="og:description" content="Check visa requirements for your destination. Instant results for 195+ countries.">
+    <title>Visa Check - TripPortier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/visa.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logo.png" alt="TripPortier Logo">
+                TripPortier
+            </a>
+            <ul class="nav-links">
+                <li class="nav-dropdown">
+                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">eSIM <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="esim.html">eSIM Plans</a></li>
+                        <li><a href="myesims.html">My Orders</a></li>
+                    </ul>
+                </li>
+                <li class="nav-dropdown">
+                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">Services <span class="dropdown-arrow">▼</span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                        <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                        <li><a href="visa.html" class="active">Visa Check</a></li>
+                    </ul>
+                </li>
+                <li id="mytrips-nav" style="display: none;"><a href="trips.html">My Trips</a></li>
+                <li id="premium-nav"><a href="premium.html">TripPortier+</a></li>
+            </ul>
+
+            <div class="mobile-nav-right">
+                <button class="mobile-signin-btn" id="mobile-signin-btn" onclick="window.authUI.showModal('signin')">Sign In</button>
+                <button class="mobile-menu" onclick="toggleMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="visa-hero">
+        <div class="sandbox-banner">
+            <span class="sandbox-icon">🧪</span>
+            <span>Sandbox Mode - Test data only</span>
+        </div>
+        <h1>Visa Requirements Check</h1>
+        <p>Instantly check if you need a visa for your destination. Get detailed requirements and apply online in minutes.</p>
+        <a href="#check" class="btn btn-primary">Check Your Visa</a>
+    </section>
+
+    <!-- Visa Checker Section -->
+    <section class="visa-checker-section" id="check">
+        <div class="visa-checker-container">
+            <div class="visa-checker-widget">
+                <h2>Check Visa Requirements</h2>
+                <p class="widget-subtitle">Select your passport country and destination to see visa requirements</p>
+
+                <div class="visa-form">
+                    <!-- Passport Country -->
+                    <div class="country-selector-group">
+                        <label for="passport-country">Your Passport</label>
+                        <div class="country-selector" id="passport-selector">
+                            <button type="button" class="country-selector-trigger" id="passport-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="selected-country">
+                                    <span class="country-flag">🌍</span>
+                                    <span class="country-name">Select passport country</span>
+                                </span>
+                                <span class="selector-arrow">▼</span>
+                            </button>
+                            <div class="country-dropdown" id="passport-dropdown" role="listbox" aria-label="Select passport country">
+                                <div class="country-search-wrapper">
+                                    <input type="text" class="country-search" placeholder="Search countries..." aria-label="Search countries">
+                                </div>
+                                <ul class="country-list" role="presentation">
+                                    <!-- Countries populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Destination Country -->
+                    <div class="country-selector-group">
+                        <label for="destination-country">Destination</label>
+                        <div class="country-selector" id="destination-selector">
+                            <button type="button" class="country-selector-trigger" id="destination-trigger" aria-haspopup="listbox" aria-expanded="false">
+                                <span class="selected-country">
+                                    <span class="country-flag">🌍</span>
+                                    <span class="country-name">Select destination</span>
+                                </span>
+                                <span class="selector-arrow">▼</span>
+                            </button>
+                            <div class="country-dropdown" id="destination-dropdown" role="listbox" aria-label="Select destination country">
+                                <div class="country-search-wrapper">
+                                    <input type="text" class="country-search" placeholder="Search countries..." aria-label="Search countries">
+                                </div>
+                                <ul class="country-list" role="presentation">
+                                    <!-- Countries populated by JS -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transit Countries (Optional) -->
+                    <div class="transit-section">
+                        <div class="transit-header">
+                            <label>Transit Countries <span class="optional-tag">(Optional)</span></label>
+                            <button type="button" class="add-transit-btn" id="add-transit-btn" aria-label="Add transit country">
+                                <span>+</span> Add Transit
+                            </button>
+                        </div>
+                        <div class="transit-countries" id="transit-countries">
+                            <!-- Transit country selectors added dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Check Button -->
+                    <button type="button" class="visa-check-btn" id="visa-check-btn">
+                        <span class="btn-text">Check Visa Requirements</span>
+                        <span class="btn-loading" style="display: none;">
+                            <span class="spinner"></span>
+                            Checking...
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Results Area -->
+                <div class="visa-results" id="visa-results" style="display: none;">
+                    <!-- Results populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="visa-benefits-section">
+        <div class="benefits-container">
+            <h2>Why Use Our Visa Checker?</h2>
+            <div class="visa-benefits-grid">
+                <div class="visa-benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Instant Results</h3>
+                    <p>Get visa requirements in seconds. No registration required, just select and check.</p>
+                </div>
+                <div class="visa-benefit-card">
+                    <div class="benefit-icon">🌍</div>
+                    <h3>195+ Countries</h3>
+                    <p>Comprehensive coverage of passport and destination combinations worldwide.</p>
+                </div>
+                <div class="visa-benefit-card">
+                    <div class="benefit-icon">📋</div>
+                    <h3>Easy Application</h3>
+                    <p>Apply for your visa online with our streamlined application process.</p>
+                </div>
+                <div class="visa-benefit-card">
+                    <div class="benefit-icon">✈️</div>
+                    <h3>Transit Support</h3>
+                    <p>Check requirements for layover countries to avoid travel surprises.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works-section">
+        <div class="how-it-works-container">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Select Passport</h3>
+                    <p>Choose your passport country from our searchable dropdown.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Pick Destination</h3>
+                    <p>Select where you're planning to travel to.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Add Transit</h3>
+                    <p>Optionally add any countries you'll transit through.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Get Results</h3>
+                    <p>Instantly see if you need a visa and how to apply.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="visa-faq-section">
+        <div class="faq-container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How accurate is the visa information?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Our visa requirements are sourced from official government databases and updated regularly. However, visa policies can change. We recommend verifying with the embassy or consulate before travel.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Do I need a visa for transit stops?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            It depends on the country and your passport. Some countries require transit visas even for short layovers, while others offer visa-free transit. Use our checker to verify each country you'll pass through.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        How long does visa processing take?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Processing times vary by country and visa type. E-visas typically take 1-5 business days, while traditional visas can take 1-4 weeks. We display estimated processing times in the results.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        What documents do I need to apply?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Common requirements include a valid passport (with 6+ months validity), passport photos, proof of accommodation, travel itinerary, and proof of funds. Specific requirements vary by destination.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        Can I apply for a visa through TripPortier?
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes! For many destinations, we partner with authorized visa services to offer streamlined online applications. Click "Apply for Visa" in your results to start the application process.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- App CTA -->
+    <section class="app-cta">
+        <h2>Get the Full TripPortier Experience</h2>
+        <p>Download the app for smart packing lists, flight tracking, eSIM data, AI travel assistant, and more.</p>
+        <a href="https://apps.apple.com/app/tripportier" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            Download on App Store
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <!-- Trust Bar -->
+        <div class="footer-trust-bar">
+            <div class="trust-bar-container">
+                <div class="trust-item">
+                    <span class="trust-icon">&#128274;</span>
+                    <span>Secure Payments</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#9989;</span>
+                    <span>Verified Provider</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#128176;</span>
+                    <span>Money-Back Guarantee</span>
+                </div>
+                <div class="trust-item">
+                    <span class="trust-icon">&#127760;</span>
+                    <span>200+ Countries</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+                <!-- Language & Currency Selectors -->
+                <div class="footer-selectors">
+                    <div class="selector-group">
+                        <label for="currency-select">&#128176; Currency</label>
+                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
+                            <option value="USD">$ USD</option>
+                            <option value="EUR">€ EUR</option>
+                            <option value="GBP">£ GBP</option>
+                            <option value="CHF">CHF</option>
+                            <option value="JPY">¥ JPY</option>
+                            <option value="CNY">¥ CNY</option>
+                            <option value="KRW">₩ KRW</option>
+                            <option value="AUD">$ AUD</option>
+                            <option value="CAD">$ CAD</option>
+                            <option value="NZD">$ NZD</option>
+                            <option value="SGD">$ SGD</option>
+                            <option value="HKD">$ HKD</option>
+                            <option value="SEK">kr SEK</option>
+                            <option value="NOK">kr NOK</option>
+                            <option value="DKK">kr DKK</option>
+                            <option value="PLN">zł PLN</option>
+                            <option value="CZK">Kč CZK</option>
+                            <option value="THB">฿ THB</option>
+                            <option value="MYR">RM MYR</option>
+                            <option value="INR">₹ INR</option>
+                            <option value="BRL">R$ BRL</option>
+                            <option value="MXN">$ MXN</option>
+                            <option value="AED">د.إ AED</option>
+                            <option value="SAR">﷼ SAR</option>
+                            <option value="TRY">₺ TRY</option>
+                            <option value="ZAR">R ZAR</option>
+                            <option value="ILS">₪ ILS</option>
+                            <option value="TWD">$ TWD</option>
+                            <option value="PHP">₱ PHP</option>
+                            <option value="IDR">Rp IDR</option>
+                            <option value="VND">₫ VND</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="visa.html">Visa Check</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="attributions.html">Attributions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <span>We accept:</span>
+                <img src="images/payment-methods.png" alt="Visa, Mastercard, American Express, PayPal" class="payment-logos">
+            </div>
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Footer JavaScript Functions -->
+    <script>
+        function changeCurrency(currency) {
+            console.log('Currency changed to:', currency);
+            localStorage.setItem('preferredCurrency', currency);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedCurrency = localStorage.getItem('preferredCurrency');
+
+            if (savedCurrency) {
+                const currencySelect = document.getElementById('currency-select');
+                if (currencySelect) currencySelect.value = savedCurrency;
+            }
+        });
+    </script>
+
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+    </a>
+
+    <!-- Mobile Country Picker Bottom Sheet -->
+    <div class="country-bottom-sheet" id="country-bottom-sheet">
+        <div class="bottom-sheet-overlay"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 id="bottom-sheet-title">Select Country</h3>
+                <button type="button" class="bottom-sheet-close" aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="bottom-sheet-search">
+                <input type="text" id="bottom-sheet-search-input" placeholder="Search countries..." aria-label="Search countries">
+            </div>
+            <ul class="bottom-sheet-list" id="bottom-sheet-list" role="listbox">
+                <!-- Countries populated by JS -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- TripPortier Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/visa.js"></script>
+</body>
+</html>

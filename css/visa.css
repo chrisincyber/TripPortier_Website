@@ -1,0 +1,1148 @@
+/* Visa Check Page Styles */
+/* TripPortier 2025 */
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.visa-hero {
+    padding: 8rem 2rem 4rem;
+    background: var(--theme-hero-gradient, linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%));
+    color: white;
+    text-align: center;
+    position: relative;
+}
+
+.visa-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.visa-hero p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+
+/* Sandbox Banner */
+.sandbox-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(251, 191, 36, 0.15);
+    border: 1px solid rgba(251, 191, 36, 0.4);
+    color: #fbbf24;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.sandbox-icon {
+    font-size: 1rem;
+}
+
+/* ============================================
+   Visa Checker Section
+   ============================================ */
+.visa-checker-section {
+    padding: 4rem 2rem;
+    background: white;
+}
+
+.visa-checker-container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.visa-checker-widget {
+    background: var(--light, #f8fafc);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.visa-checker-widget h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark, #0f172a);
+    text-align: center;
+}
+
+.widget-subtitle {
+    color: var(--gray, #64748b);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.visa-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* ============================================
+   Country Selector Component
+   ============================================ */
+.country-selector-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.country-selector-group label {
+    font-weight: 600;
+    color: var(--dark, #0f172a);
+    font-size: 0.9375rem;
+}
+
+.country-selector {
+    position: relative;
+}
+
+.country-selector-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.country-selector-trigger:hover {
+    border-color: #cbd5e1;
+}
+
+.country-selector-trigger:focus {
+    outline: none;
+    border-color: var(--primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.country-selector-trigger[aria-expanded="true"] {
+    border-color: var(--primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.selected-country {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.country-flag {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.country-name {
+    color: var(--dark, #0f172a);
+}
+
+.country-selector-trigger .country-name {
+    color: var(--gray, #64748b);
+}
+
+.country-selector-trigger.has-selection .country-name {
+    color: var(--dark, #0f172a);
+}
+
+.selector-arrow {
+    font-size: 0.75rem;
+    color: var(--gray, #64748b);
+    transition: transform 0.2s;
+}
+
+.country-selector-trigger[aria-expanded="true"] .selector-arrow {
+    transform: rotate(180deg);
+}
+
+/* Country Dropdown */
+.country-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e2e8f0;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    max-height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.country-dropdown.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.country-search-wrapper {
+    padding: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.country-search {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    transition: border-color 0.2s;
+}
+
+.country-search:focus {
+    outline: none;
+    border-color: var(--primary, #6366f1);
+}
+
+.country-search::placeholder {
+    color: #94a3b8;
+}
+
+.country-list {
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.country-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.country-list li:hover,
+.country-list li.highlighted {
+    background: #f1f5f9;
+}
+
+.country-list li.selected {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary, #6366f1);
+}
+
+.country-list li .country-flag {
+    font-size: 1.25rem;
+}
+
+.country-list li .country-name {
+    font-size: 0.9375rem;
+}
+
+.country-list .no-results {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--gray, #64748b);
+}
+
+/* ============================================
+   Transit Countries Section
+   ============================================ */
+.transit-section {
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1.5rem;
+}
+
+.transit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.transit-header label {
+    font-weight: 600;
+    color: var(--dark, #0f172a);
+    font-size: 0.9375rem;
+}
+
+.optional-tag {
+    font-weight: 400;
+    color: var(--gray, #64748b);
+    font-size: 0.8125rem;
+}
+
+.add-transit-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 2px solid var(--primary, #6366f1);
+    color: var(--primary, #6366f1);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-transit-btn:hover {
+    background: var(--primary, #6366f1);
+    color: white;
+}
+
+.add-transit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.transit-countries {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.transit-country-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+}
+
+.transit-country-item .country-selector {
+    flex: 1;
+}
+
+.remove-transit-btn {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fef2f2;
+    border: none;
+    border-radius: 10px;
+    color: #ef4444;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 0.125rem;
+}
+
+.remove-transit-btn:hover {
+    background: #fee2e2;
+}
+
+/* ============================================
+   Check Button
+   ============================================ */
+.visa-check-btn {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 0.5rem;
+}
+
+.visa-check-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.35);
+}
+
+.visa-check-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.visa-check-btn .btn-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Results Section
+   ============================================ */
+.visa-results {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Result Card - Visa Required */
+.result-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 1rem;
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.result-icon {
+    font-size: 1.75rem;
+}
+
+.result-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark, #0f172a);
+}
+
+.result-card.visa-required .result-title {
+    color: #f59e0b;
+}
+
+.result-card.visa-free .result-title {
+    color: #10b981;
+}
+
+.result-route {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
+.result-route .country-flag {
+    font-size: 1.5rem;
+}
+
+.result-route .route-arrow {
+    color: var(--gray, #64748b);
+}
+
+.result-description {
+    color: var(--gray, #64748b);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+/* Visa Program Cards */
+.visa-programs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.visa-program-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: border-color 0.2s;
+}
+
+.visa-program-card:hover {
+    border-color: var(--primary, #6366f1);
+}
+
+.program-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--dark, #0f172a);
+    margin-bottom: 0.25rem;
+}
+
+.program-details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8125rem;
+    color: var(--gray, #64748b);
+}
+
+.program-price {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--primary, #6366f1);
+}
+
+.apply-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.apply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+}
+
+/* Sandbox Disclaimer */
+.sandbox-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: rgba(251, 191, 36, 0.1);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    color: #b45309;
+}
+
+/* Error State */
+.result-error {
+    text-align: center;
+    padding: 2rem;
+}
+
+.result-error .error-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.result-error h3 {
+    font-size: 1.25rem;
+    color: var(--dark, #0f172a);
+    margin-bottom: 0.5rem;
+}
+
+.result-error p {
+    color: var(--gray, #64748b);
+}
+
+/* Loading Skeleton */
+.result-skeleton {
+    padding: 1.5rem;
+}
+
+.skeleton {
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-header {
+    height: 28px;
+    width: 60%;
+    margin-bottom: 1rem;
+}
+
+.skeleton-route {
+    height: 60px;
+    margin-bottom: 1rem;
+}
+
+.skeleton-program {
+    height: 70px;
+    margin-bottom: 0.75rem;
+}
+
+.skeleton-btn {
+    height: 52px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* ============================================
+   Benefits Section
+   ============================================ */
+.visa-benefits-section {
+    padding: 4rem 2rem;
+    background: var(--light, #f8fafc);
+}
+
+.benefits-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.benefits-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    color: var(--dark, #0f172a);
+}
+
+.visa-benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.visa-benefit-card {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.visa-benefit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.visa-benefit-card .benefit-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    font-size: 1.75rem;
+}
+
+.visa-benefit-card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark, #0f172a);
+}
+
+.visa-benefit-card p {
+    color: var(--gray, #64748b);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+
+/* ============================================
+   How It Works Section
+   ============================================ */
+.how-it-works-section {
+    padding: 4rem 2rem;
+    background: white;
+}
+
+.how-it-works-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.how-it-works-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2.5rem;
+    color: var(--dark, #0f172a);
+}
+
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.step-card {
+    text-align: center;
+    position: relative;
+}
+
+.step-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 auto 1rem;
+}
+
+.step-card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: var(--dark, #0f172a);
+}
+
+.step-card p {
+    color: var(--gray, #64748b);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+}
+
+/* ============================================
+   FAQ Section
+   ============================================ */
+.visa-faq-section {
+    padding: 4rem 2rem;
+    background: var(--light, #f8fafc);
+}
+
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.faq-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: var(--dark, #0f172a);
+}
+
+/* ============================================
+   Mobile Bottom Sheet
+   ============================================ */
+.country-bottom-sheet {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+}
+
+.country-bottom-sheet.open {
+    display: block;
+}
+
+.bottom-sheet-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.country-bottom-sheet.open .bottom-sheet-overlay {
+    opacity: 1;
+}
+
+.bottom-sheet-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+}
+
+.country-bottom-sheet.open .bottom-sheet-content {
+    transform: translateY(0);
+}
+
+.bottom-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.bottom-sheet-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--dark, #0f172a);
+}
+
+.bottom-sheet-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.bottom-sheet-close:hover {
+    background: #e2e8f0;
+}
+
+.bottom-sheet-close svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--gray, #64748b);
+}
+
+.bottom-sheet-search {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.bottom-sheet-search input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.bottom-sheet-search input:focus {
+    outline: none;
+    border-color: var(--primary, #6366f1);
+}
+
+.bottom-sheet-list {
+    list-style: none;
+    padding: 0.5rem 0;
+    margin: 0;
+    overflow-y: auto;
+    flex: 1;
+    -webkit-overflow-scrolling: touch;
+}
+
+.bottom-sheet-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.bottom-sheet-list li:active {
+    background: #f1f5f9;
+}
+
+.bottom-sheet-list li.selected {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.bottom-sheet-list li .country-flag {
+    font-size: 1.5rem;
+}
+
+.bottom-sheet-list li .country-name {
+    font-size: 1rem;
+}
+
+/* ============================================
+   App CTA (matching existing site)
+   ============================================ */
+.app-cta {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+    color: white;
+    text-align: center;
+}
+
+.app-cta h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.app-cta p {
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ============================================
+   Responsive Styles
+   ============================================ */
+@media (max-width: 768px) {
+    .visa-hero {
+        padding: 6rem 1.5rem 3rem;
+    }
+
+    .visa-hero h1 {
+        font-size: 2rem;
+    }
+
+    .visa-hero p {
+        font-size: 1rem;
+    }
+
+    .visa-checker-section {
+        padding: 2rem 1rem;
+    }
+
+    .visa-checker-widget {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .visa-checker-widget h2 {
+        font-size: 1.5rem;
+    }
+
+    /* Hide desktop dropdowns, use bottom sheet on mobile */
+    .country-dropdown {
+        display: none !important;
+    }
+
+    .country-selector-trigger {
+        padding: 0.875rem 1rem;
+    }
+
+    .visa-benefits-section,
+    .how-it-works-section,
+    .visa-faq-section {
+        padding: 3rem 1rem;
+    }
+
+    .benefits-container h2,
+    .how-it-works-container h2,
+    .faq-container h2 {
+        font-size: 1.5rem;
+    }
+
+    .visa-benefits-grid,
+    .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .visa-benefit-card,
+    .step-card {
+        padding: 1.5rem 1rem;
+    }
+
+    .visa-benefit-card .benefit-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+
+    .result-route {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .visa-program-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .program-price {
+        align-self: flex-end;
+    }
+}
+
+@media (max-width: 480px) {
+    .visa-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .visa-benefits-grid,
+    .steps-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .transit-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .add-transit-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ============================================
+   Dark Mode Support
+   ============================================ */
+[data-theme="dark"] .visa-checker-section {
+    background: #0f172a;
+}
+
+[data-theme="dark"] .visa-checker-widget {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .visa-checker-widget h2,
+[data-theme="dark"] .country-selector-group label,
+[data-theme="dark"] .transit-header label {
+    color: white;
+}
+
+[data-theme="dark"] .widget-subtitle {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .country-selector-trigger {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .country-selector-trigger .country-name {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .country-selector-trigger.has-selection .country-name {
+    color: white;
+}
+
+[data-theme="dark"] .country-dropdown {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .country-search-wrapper {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .country-search {
+    background: #0f172a;
+    border-color: #334155;
+    color: white;
+}
+
+[data-theme="dark"] .country-list li:hover,
+[data-theme="dark"] .country-list li.highlighted {
+    background: #334155;
+}
+
+[data-theme="dark"] .country-list li .country-name {
+    color: white;
+}
+
+[data-theme="dark"] .transit-section {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .result-card {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .result-title {
+    color: white;
+}
+
+[data-theme="dark"] .result-route {
+    background: #0f172a;
+}
+
+[data-theme="dark"] .visa-program-card {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+[data-theme="dark"] .program-info h4 {
+    color: white;
+}
+
+[data-theme="dark"] .visa-benefits-section,
+[data-theme="dark"] .visa-faq-section {
+    background: #0f172a;
+}
+
+[data-theme="dark"] .how-it-works-section {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .benefits-container h2,
+[data-theme="dark"] .how-it-works-container h2,
+[data-theme="dark"] .faq-container h2,
+[data-theme="dark"] .visa-benefit-card h3,
+[data-theme="dark"] .step-card h3 {
+    color: white;
+}
+
+[data-theme="dark"] .visa-benefit-card {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .visa-benefit-card p,
+[data-theme="dark"] .step-card p {
+    color: #94a3b8;
+}
+
+[data-theme="dark"] .bottom-sheet-content {
+    background: #1e293b;
+}
+
+[data-theme="dark"] .bottom-sheet-header {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .bottom-sheet-header h3 {
+    color: white;
+}
+
+[data-theme="dark"] .bottom-sheet-close {
+    background: #334155;
+}
+
+[data-theme="dark"] .bottom-sheet-search {
+    border-color: #334155;
+}
+
+[data-theme="dark"] .bottom-sheet-search input {
+    background: #0f172a;
+    border-color: #334155;
+    color: white;
+}
+
+[data-theme="dark"] .bottom-sheet-list li:active {
+    background: #334155;
+}
+
+[data-theme="dark"] .bottom-sheet-list li .country-name {
+    color: white;
+}

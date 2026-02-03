@@ -44,6 +44,14 @@
         <priority>0.9</priority>
     </url>
 
+    <!-- Visa Services -->
+    <url>
+        <loc>https://tripportier.com/visa.html</loc>
+        <lastmod>2025-02-03</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
     <!-- Trip Planning -->
     <url>
         <loc>https://tripportier.com/trips.html</loc>
