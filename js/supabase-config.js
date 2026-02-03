@@ -185,6 +185,10 @@ function setupForegroundMessageHandler() {
 // Export for use in other modules
 window.supabaseClient = supabaseClient;
 window.callEdgeFunction = callEdgeFunction;
+window.supabaseConfig = {
+  url: SUPABASE_URL,
+  anonKey: SUPABASE_ANON_KEY
+};
 window.requestNotificationPermission = requestNotificationPermission;
 window.saveWebFcmToken = saveWebFcmToken;
 window.initializeMessaging = initializeMessaging;

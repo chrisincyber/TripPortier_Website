@@ -217,7 +217,7 @@ const state = {
 const MAX_TRANSIT_COUNTRIES = 3;
 const SUPABASE_FUNCTION_URL = window.supabaseConfig?.url
     ? `${window.supabaseConfig.url}/functions/v1/visa-check`
-    : 'https://fxqwnfhsklpwbgiwnrof.supabase.co/functions/v1/visa-check';
+    : 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1/visa-check';
 
 // DOM Elements
 let passportTrigger, passportDropdown, passportList;
