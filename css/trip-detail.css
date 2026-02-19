@@ -6574,7 +6574,18 @@
 
 /* Dark Theme Support */
 [data-theme="dark"] .suggestion-card {
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(30, 58, 50, 0.9);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+/* Specific card backgrounds for better visibility in dark mode */
+[data-theme="dark"] .suggestion-card.companions,
+[data-theme="dark"] .suggestion-card.esim,
+[data-theme="dark"] .suggestion-card.email-import,
+[data-theme="dark"] .suggestion-card.transport,
+[data-theme="dark"] .suggestion-card.transfer {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.5);
 }
 
 [data-theme="dark"] .suggestion-card-title,

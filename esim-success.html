@@ -1173,22 +1173,19 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- TripPortier Scripts -->
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-auth.js"></script>
+    <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Supabase config
-        const SUPABASE_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvbWtkaHVja3Fvc3Z1aGZoeWNpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc0NTY4MjAsImV4cCI6MjA1MzAzMjgyMH0.SRKstB6BFJV6CXGV-IHO7gTsqfC22LCow4HPq7yZsFE';
-
-        // Initialize Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        // Use shared supabaseClient from supabase-config.js
+        const supabase = supabaseClient;
 
         let currentUser = null;
         let currentOrderData = null;
         let retryCount = 0;
         const MAX_RETRIES = 20; // Max 60 seconds of polling (20 * 3 seconds)
-
-        // Supabase Functions URL
-        const FUNCTIONS_URL = `${SUPABASE_URL}/functions/v1`;
 
         // Get session ID from URL
         function getSessionId() {
@@ -1206,7 +1203,27 @@
             }
 
             try {
-                const response = await fetch(`${FUNCTIONS_URL}/esim-order-by-session?session_id=${encodeURIComponent(sessionId)}`);
+                const response = await fetch(`${FUNCTIONS_URL}/esim-order-by-session?session_id=${encodeURIComponent(sessionId)}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                    },
+                });
+
+                if (!response.ok) {
+                    console.error('Edge Function error:', response.status, response.statusText);
+                    // Retry on server errors, give up on client errors (except 429)
+                    if (response.status >= 500 || response.status === 429) {
+                        retryCount++;
+                        if (retryCount < MAX_RETRIES) {
+                            setTimeout(fetchOrderDetails, 3000);
+                            return;
+                        }
+                    }
+                    showError('Failed to load order details. Please try refreshing the page.');
+                    return;
+                }
+
                 const data = await response.json();
 
                 if (data.success && data.order) {
@@ -1225,6 +1242,12 @@
                 }
             } catch (error) {
                 console.error('Error fetching order:', error);
+                // Retry on network errors instead of immediately showing error
+                retryCount++;
+                if (retryCount < MAX_RETRIES) {
+                    setTimeout(fetchOrderDetails, 3000);
+                    return;
+                }
                 showError('Failed to load order details. Please try refreshing the page.');
             }
         }
