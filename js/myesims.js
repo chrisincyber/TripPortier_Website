@@ -417,21 +417,20 @@ class MyEsimsManager {
         }
     }
 
-    async lookupOrdersByEmail(event) {
+    async lookupOrderByCode(event) {
         event.preventDefault();
 
-        const emailInput = document.getElementById('lookup-email');
+        const orderCodeInput = document.getElementById('lookup-order-code');
         const lookupBtn = document.getElementById('lookup-btn');
         const errorEl = document.getElementById('lookup-error');
-        const loadingEl = document.getElementById('esims-loading');
         const notSignedInEl = document.getElementById('esims-not-signed-in');
         const emptyEl = document.getElementById('esims-empty');
         const tabsEl = document.getElementById('esims-tabs');
         const listEl = document.getElementById('esims-list');
 
-        const email = emailInput.value.trim();
-        if (!email) {
-            errorEl.textContent = 'Please enter your email address';
+        const orderCode = orderCodeInput.value.trim();
+        if (!orderCode) {
+            errorEl.textContent = 'Please enter your order number';
             errorEl.style.display = 'block';
             return;
         }
@@ -442,7 +441,7 @@ class MyEsimsManager {
             lookupBtn.textContent = 'Searching...';
             errorEl.style.display = 'none';
 
-            const result = await window.callEdgeFunction('lookup-esim-orders-by-email', { email });
+            const result = await window.callEdgeFunction('lookup-esim-orders-by-email', { orderCode });
 
             if (result?.success && result.orders && result.orders.length > 0) {
                 this.orders = result.orders;
@@ -460,16 +459,16 @@ class MyEsimsManager {
                 this.renderOrders();
             } else {
                 // No orders found
-                errorEl.textContent = 'No eSIM orders found for this email address. Please check and try again.';
+                errorEl.textContent = 'No eSIM order found with this order number. Check your confirmation email and try again.';
                 errorEl.style.display = 'block';
             }
         } catch (error) {
-            console.error('Email lookup error:', error);
-            errorEl.textContent = error.message || 'Failed to find orders. Please try again.';
+            console.error('Order lookup error:', error);
+            errorEl.textContent = error.message || 'Failed to find order. Please try again.';
             errorEl.style.display = 'block';
         } finally {
             lookupBtn.disabled = false;
-            lookupBtn.textContent = 'Find Orders';
+            lookupBtn.textContent = 'Find Order';
         }
     }
 }

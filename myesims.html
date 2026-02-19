@@ -113,12 +113,12 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
                 </svg>
             </div>
-            <h2>Find your eSIM orders</h2>
-            <p>Enter the email address you used when purchasing your eSIM.</p>
-            <form id="email-lookup-form" class="email-lookup-form" onsubmit="window.esimManager.lookupOrdersByEmail(event)">
+            <h2>Find your eSIM order</h2>
+            <p>Enter your order number from the confirmation email.</p>
+            <form id="order-lookup-form" class="email-lookup-form" onsubmit="window.esimManager.lookupOrderByCode(event)">
                 <div class="email-lookup-input-wrapper">
-                    <input type="email" id="lookup-email" placeholder="your@email.com" required>
-                    <button type="submit" class="esims-signin-btn" id="lookup-btn">Find Orders</button>
+                    <input type="text" id="lookup-order-code" placeholder="e.g. ORD-XXXX-XXXX" required>
+                    <button type="submit" class="esims-signin-btn" id="lookup-btn">Find Order</button>
                 </div>
                 <div id="lookup-error" class="lookup-error" style="display: none;"></div>
             </form>
