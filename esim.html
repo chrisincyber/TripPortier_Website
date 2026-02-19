@@ -3550,6 +3550,18 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             renderGrid('popular');
+
+            // Read ?country= URL parameter and auto-open that country
+            var urlParams = new URLSearchParams(window.location.search);
+            var countryParam = urlParams.get('country');
+            if (countryParam) {
+                var match = allCountries.find(function(c) {
+                    return c.code.toLowerCase() === countryParam.toLowerCase();
+                });
+                if (match) {
+                    openCountryModal(match.code, match.name, match.flag);
+                }
+            }
         });
     </script>
 </body>

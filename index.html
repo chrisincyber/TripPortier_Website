@@ -7,9 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Primary Meta Tags -->
-    <title>TripPortier - Travel Smarter | eSIM Cards, Airport Transfers & AI Trip Planner</title>
-    <meta name="title" content="TripPortier - Travel Smarter | eSIM Cards, Airport Transfers & AI Trip Planner">
-    <meta name="description" content="TripPortier is your all-in-one travel platform. Book instant eSIM cards (200+ countries), airport transfers, Asia transport (trains, buses, ferries), and plan trips with AI. Save up to 90% on roaming fees. Download the app or book online.">
+    <title>TripPortier - eSIM Data Plans, Airport Transfers & Visa Check | Book Online</title>
+    <meta name="title" content="TripPortier - eSIM Data Plans, Airport Transfers & Visa Check | Book Online">
+    <meta name="description" content="Book instant eSIM data plans for 200+ countries, airport transfers worldwide, Asia transport tickets, and check visa requirements. Your complete travel booking platform — search, book, and go.">
     <meta name="keywords" content="travel app, esim cards, instant esim, digital sim card, international esim, travel esim, airport transfer, airport taxi, private transfer, asia transport, train tickets asia, bus tickets thailand, vietnam train, malaysia transport, ferry tickets, trip planner, AI itinerary, travel planning app, travel booking, trip organizer, travel concierge, cheap roaming, data roaming, mobile data abroad, travel data, international data plan, global esim, regional esim, country esim, tripportier, trip porter">
     <meta name="author" content="TripPortier">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
@@ -1107,103 +1107,164 @@
         </div>
 </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-new">
-        <div class="hero-container-new">
-            <div class="hero-text">
-                <div class="hero-badge">
-                    <span class="hero-badge-dot"></span>
-                    AI-Powered Travel Platform
+    <!-- Section 1: Hero with Tabbed Search Widget -->
+    <section class="hero-search">
+        <div class="hero-search-container">
+            <h1 class="hero-search-title">Your travel essentials, sorted</h1>
+            <p class="hero-search-subtitle">eSIM data plans, airport transfers, visa checks, and AI trip planning — everything you need in one place.</p>
+            <div class="search-widget">
+                <div class="search-widget-tabs">
+                    <button class="sw-tab active" data-tab="esim">&#128241; eSIM</button>
+                    <button class="sw-tab" data-tab="transfers">&#128663; Transfers</button>
+                    <button class="sw-tab" data-tab="visa">&#128196; Visa Check</button>
                 </div>
-                <h1 class="hero-title">
-                    <span class="hero-title-line">Travel the world</span>
-                    <span class="hero-title-line">like a <span class="typing-container"><span class="typing-text" id="typing-text">Pro</span><span class="typing-cursor">|</span></span></span>
-                </h1>
-                <p class="hero-subtitle">
-                    eSIM data. Airport transfers. Flight tracking. AI planning. Everything you need — one app.
-                </p>
-
-                <!-- Booking Cards - Primary Action -->
-                <div class="booking-cards" id="services">
-                    <a href="airport-transfers.html" class="booking-card">
-                        <div class="booking-card-icon transfers">&#128663;</div>
-                        <div class="booking-card-content">
-                            <h4>Airport Transfers</h4>
-                            <p>Private cars & shuttles worldwide</p>
+                <div class="search-widget-body">
+                    <!-- eSIM Tab -->
+                    <div class="sw-panel active" id="panel-esim">
+                        <label class="sw-label">Where do you need data?</label>
+                        <div class="sw-autocomplete-wrap">
+                            <input type="text" class="sw-input" id="esim-country-input" placeholder="Search country (e.g. Japan, Thailand...)" autocomplete="off">
+                            <div class="sw-dropdown" id="esim-dropdown"></div>
                         </div>
-                        <span class="booking-card-arrow">&#8594;</span>
-                    </a>
-                    <a href="https://asiatransport.tripportier.com" target="_blank" class="booking-card">
-                        <div class="booking-card-icon asia">&#128646;</div>
-                        <div class="booking-card-content">
-                            <h4>Asia Transport</h4>
-                            <p>Trains, buses & ferries across Asia</p>
-                        </div>
-                        <span class="booking-card-arrow">&#8594;</span>
-                    </a>
-                </div>
-
-                <!-- App Download & Web Version -->
-                <div class="app-section">
-                    <a href="https://apps.apple.com/app/tripportier" class="app-download-btn">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                        </svg>
-                        Download App
-                    </a>
-                    <a href="trips.html" class="app-download-btn" style="background: transparent; border: 2px solid rgba(255, 255, 255, 0.3); color: white;">
-                        <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                        </svg>
-                        Use Web Version
-                    </a>
-                </div>
-                <div class="app-info" style="margin-top: 1rem; animation: fadeInUp 0.6s ease 0.45s backwards;">
-                    <span style="color: rgba(255, 255, 255, 0.7); font-size: 0.875rem;">iOS App available on App Store &bull; Android coming soon &bull; <strong style="color: white;">Web version available now</strong></span>
-                </div>
-
-                <!-- Trust Badge -->
-                <div class="trust-badge-section" style="margin-top: 1.5rem; animation: fadeInUp 0.6s ease 0.5s backwards;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem; color: rgba(255, 255, 255, 0.9);">
-                        <div style="display: flex; gap: 2px;">
-                            <span style="color: #fbbf24; font-size: 1.25rem;">&#9733;</span>
-                            <span style="color: #fbbf24; font-size: 1.25rem;">&#9733;</span>
-                            <span style="color: #fbbf24; font-size: 1.25rem;">&#9733;</span>
-                            <span style="color: #fbbf24; font-size: 1.25rem;">&#9733;</span>
-                            <span style="color: #fbbf24; font-size: 1.25rem;">&#9733;</span>
-                        </div>
-                        <span style="font-size: 0.9375rem; font-weight: 500;">Trusted by thousands of travelers</span>
+                        <a href="esim.html" class="sw-btn sw-btn-primary" id="esim-search-btn">Search eSIM Plans</a>
                     </div>
-                </div>
-            </div>
-
-            <div class="hero-visual">
-                <div class="phone-showcase">
-                    <img src="assets/images/phone-left.png" alt="TripPortier App" class="phone phone-left">
-                    <img src="assets/images/phone-center.png" alt="TripPortier App" class="phone phone-center">
-                    <img src="assets/images/phone-right.png" alt="TripPortier App" class="phone phone-right">
-                </div>
-                <div class="float-element float-1">
-                    <span>&#10024;</span> AI Itinerary Ready
-                </div>
-                <div class="float-element float-2">
-                    <span>&#127758;</span> 200+ Countries
-                </div>
-                <div class="float-element float-3">
-                    <span>&#9992;</span> Boarding for your flight starts now
+                    <!-- Transfers Tab -->
+                    <div class="sw-panel" id="panel-transfers">
+                        <label class="sw-label">Book your airport pickup or drop-off</label>
+                        <p class="sw-desc">Private cars and shuttles in 150+ countries. Confirmed driver, fixed price, no surprises.</p>
+                        <a href="airport-transfers.html" class="sw-btn sw-btn-primary">Search Transfers</a>
+                    </div>
+                    <!-- Visa Tab -->
+                    <div class="sw-panel" id="panel-visa">
+                        <label class="sw-label">Check visa requirements</label>
+                        <div class="sw-visa-fields">
+                            <div class="sw-autocomplete-wrap">
+                                <input type="text" class="sw-input" id="visa-passport-input" placeholder="Your passport country" autocomplete="off">
+                                <div class="sw-dropdown" id="visa-passport-dropdown"></div>
+                            </div>
+                            <div class="sw-autocomplete-wrap">
+                                <input type="text" class="sw-input" id="visa-dest-input" placeholder="Destination country" autocomplete="off">
+                                <div class="sw-dropdown" id="visa-dest-dropdown"></div>
+                            </div>
+                        </div>
+                        <a href="visa.html" class="sw-btn sw-btn-primary" id="visa-search-btn">Check Visa Requirements</a>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Social Proof -->
+    <!-- Section 2: Services Showcase -->
+    <section class="services-showcase" id="services">
+        <div class="services-showcase-container">
+            <h2 class="services-showcase-title">Everything you need to travel smarter</h2>
+            <div class="services-grid">
+                <a href="esim.html" class="service-card service-card--esim">
+                    <div class="service-card-icon">&#128241;</div>
+                    <h3>eSIM Data Plans</h3>
+                    <p>Instant mobile data in 200+ countries. No physical SIM needed — activate before you land.</p>
+                    <span class="service-card-link">Browse plans &#8594;</span>
+                </a>
+                <a href="airport-transfers.html" class="service-card service-card--transfers">
+                    <div class="service-card-icon">&#128663;</div>
+                    <h3>Airport Transfers</h3>
+                    <p>Private cars and shuttles worldwide. Fixed price, confirmed driver waiting for you.</p>
+                    <span class="service-card-link">Book a transfer &#8594;</span>
+                </a>
+                <a href="https://asiatransport.tripportier.com" target="_blank" class="service-card service-card--asia">
+                    <div class="service-card-icon">&#128646;</div>
+                    <h3>Asia Transport</h3>
+                    <p>Trains, buses, and ferries across Asia. Compare routes and book tickets online.</p>
+                    <span class="service-card-link">Explore routes &#8594;</span>
+                </a>
+                <a href="visa.html" class="service-card service-card--visa">
+                    <div class="service-card-icon">&#128196;</div>
+                    <h3>Visa Check</h3>
+                    <p>Check visa requirements for your passport. Know before you go — visa-free, eVisa, or visa required.</p>
+                    <span class="service-card-link">Check now &#8594;</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Popular eSIM Destinations -->
+    <section class="popular-destinations">
+        <div class="popular-destinations-container">
+            <h2 class="popular-destinations-title">Popular eSIM destinations</h2>
+            <div class="destinations-grid">
+                <a href="esim.html?country=JP" class="dest-card">
+                    <span class="dest-flag">&#127471;&#127477;</span>
+                    <span class="dest-name">Japan</span>
+                </a>
+                <a href="esim.html?country=TH" class="dest-card">
+                    <span class="dest-flag">&#127481;&#127469;</span>
+                    <span class="dest-name">Thailand</span>
+                </a>
+                <a href="esim.html?country=KR" class="dest-card">
+                    <span class="dest-flag">&#127472;&#127479;</span>
+                    <span class="dest-name">South Korea</span>
+                </a>
+                <a href="esim.html?country=US" class="dest-card">
+                    <span class="dest-flag">&#127482;&#127480;</span>
+                    <span class="dest-name">USA</span>
+                </a>
+                <a href="esim.html?country=GB" class="dest-card">
+                    <span class="dest-flag">&#127468;&#127463;</span>
+                    <span class="dest-name">United Kingdom</span>
+                </a>
+                <a href="esim.html?country=SG" class="dest-card">
+                    <span class="dest-flag">&#127480;&#127468;</span>
+                    <span class="dest-name">Singapore</span>
+                </a>
+                <a href="esim.html?country=AU" class="dest-card">
+                    <span class="dest-flag">&#127462;&#127482;</span>
+                    <span class="dest-name">Australia</span>
+                </a>
+                <a href="esim.html?country=TR" class="dest-card">
+                    <span class="dest-flag">&#127481;&#127479;</span>
+                    <span class="dest-name">Turkey</span>
+                </a>
+            </div>
+            <div class="popular-destinations-footer">
+                <a href="esim.html" class="view-all-link">View all 200+ countries &#8594;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: How It Works -->
+    <section class="how-it-works">
+        <div class="how-it-works-container">
+            <h2 class="how-it-works-title">How it works</h2>
+            <div class="steps-row">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Search</h3>
+                    <p>Pick your destination and find the service you need — eSIM, transfer, or visa info.</p>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Book &amp; Pay</h3>
+                    <p>Secure checkout with instant confirmation sent to your email.</p>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Travel</h3>
+                    <p>eSIM activates instantly, transfer confirmed, you're ready to go.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: Social Proof -->
     <section class="social-proof">
         <div class="social-proof-container">
-            <p class="social-proof-title">Loved by travelers worldwide</p>
+            <p class="social-proof-title">What travelers are saying</p>
             <div class="testimonials">
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <p class="testimonial-text">"The AI itinerary feature saved me hours of planning. It knew exactly what I wanted to see in Tokyo!"</p>
+                    <p class="testimonial-text">"Bought my Japan eSIM right on the website before my flight. Landed in Tokyo and had data instantly — no hunting for SIM cards at the airport!"</p>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">S</div>
                         <div class="testimonial-author-info">
@@ -1214,23 +1275,23 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <p class="testimonial-text">"Booking my airport transfer was so easy. Driver was waiting with my name - perfect start to my vacation!"</p>
+                    <p class="testimonial-text">"Booked my airport transfer online in 2 minutes. Driver was waiting with my name on a sign — stress-free start to the trip!"</p>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">M</div>
                         <div class="testimonial-author-info">
-                            <h5>Michael T.</h5>
-                            <p>Barcelona, Spain</p>
+                            <h5>Marco R.</h5>
+                            <p>Bangkok, Thailand</p>
                         </div>
                     </div>
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <p class="testimonial-text">"The packing list feature is genius. It suggested items based on the weather - never forgot anything!"</p>
+                    <p class="testimonial-text">"The visa checker saved me a panic moment — I didn't know I needed an eVisa for Vietnam. Found out and applied in time!"</p>
                     <div class="testimonial-author">
-                        <div class="testimonial-avatar">E</div>
+                        <div class="testimonial-avatar">A</div>
                         <div class="testimonial-author-info">
-                            <h5>Emma K.</h5>
-                            <p>Switzerland</p>
+                            <h5>Anna K.</h5>
+                            <p>Ho Chi Minh City, Vietnam</p>
                         </div>
                     </div>
                 </div>
@@ -1238,142 +1299,32 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features-compact" id="features">
-        <div class="features-compact-container">
-            <div class="features-compact-header">
-                <h2>Everything for your trip</h2>
-                <p>From planning to packing to booking - TripPortier handles it all with powerful AI assistance.</p>
+    <!-- Section 6: App Promotion Banner -->
+    <section class="app-banner">
+        <div class="app-banner-container">
+            <div class="app-banner-text">
+                <h2>Take TripPortier with you</h2>
+                <p>AI trip planning, flight tracking, packing lists, and more — all in the iOS app.</p>
             </div>
-            <div class="features-grid-new">
-                <div class="feature-card-new">
-                    <div class="icon">&#10024;</div>
-                    <h4>AI Itinerary Planner</h4>
-                    <p>Personalized day-by-day plans with Google Maps, ratings & reviews.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#127890;</div>
-                    <h4>Smart Packing Lists</h4>
-                    <p>AI suggestions based on destination, weather & trip type.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">✈️</div>
-                    <h4>Flight Tracking</h4>
-                    <p>Real-time status, gate changes, delays & departure alerts.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128241;</div>
-                    <h4>eSIM</h4>
-                    <p>Instant mobile data in 200+ countries directly from the app.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128663;</div>
-                    <h4>Airport Transfers</h4>
-                    <p>Book private cars & shuttles with professional drivers.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#129302;</div>
-                    <h4>AI Travel Assistant</h4>
-                    <p>Chat with AI for local insights, tips & recommendations.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128231;</div>
-                    <h4>AI Email Import</h4>
-                    <p>Forward booking emails and auto-create itinerary items.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#127758;</div>
-                    <h4>Multi-Destination</h4>
-                    <p>Plan complex trips with multiple stops in one place.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#9728;&#65039;</div>
-                    <h4>Weather Forecasts</h4>
-                    <p>14-day forecasts for all destinations to pack smart.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128181;</div>
-                    <h4>Budget Tracking</h4>
-                    <p>Set trip budgets and track expenses per item.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128101;</div>
-                    <h4>Trip Sharing</h4>
-                    <p>Share trips with friends and collaborate on planning.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128197;</div>
-                    <h4>Calendar Sync</h4>
-                    <p>Sync trips to your calendar with departure reminders.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128193;</div>
-                    <h4>Document Storage</h4>
-                    <p>Store boarding passes, reservations & travel docs.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">✅</div>
-                    <h4>Travel To-Do Lists</h4>
-                    <p>Checklists for pre-trip tasks and things to book.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128274;</div>
-                    <h4>Offline Access</h4>
-                    <p>Access packing lists and trip details without internet.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128176;</div>
-                    <h4>Currency Info</h4>
-                    <p>Local currency and power outlet info for destinations.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#128161;</div>
-                    <h4>Local Insights</h4>
-                    <p>Hidden gems, restaurants & attractions with AI.</p>
-                </div>
-                <div class="feature-card-new">
-                    <div class="icon">&#127760;</div>
-                    <h4>18 Languages</h4>
-                    <p>Available in English, German, French, Spanish & more.</p>
-                </div>
-                <!-- Something Missing Card -->
-                <a href="feature-request.html" class="feature-card-new something-missing-card" style="text-decoration: none; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); cursor: pointer; border: 2px solid rgba(255,255,255,0.3); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);">
-                    <div class="icon" style="background: rgba(255,255,255,0.2); font-size: 2rem;">💡</div>
-                    <h4 style="color: white; font-size: 1.25rem; font-weight: 700;">Something missing?</h4>
-                    <p style="color: rgba(255,255,255,0.95); font-weight: 500;">Suggest a feature and vote on ideas from other travelers →</p>
+            <div class="app-banner-actions">
+                <a href="https://apps.apple.com/app/tripportier" class="sw-btn sw-btn-white">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    Download iOS App
                 </a>
-            </div>
-            <!-- Request a Feature Button -->
-            <div style="text-align: center; margin-top: 3rem;">
-                <a href="feature-request.html" class="request-feature-btn" style="display: inline-flex; align-items: center; gap: 10px; padding: 1rem 2rem; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; border-radius: 12px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);">
-                    <span style="font-size: 1.25rem;">&#128161;</span>
-                    Request a Feature
-                </a>
+                <a href="esim.html" class="app-banner-web-link">Or continue on the web</a>
             </div>
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="cta-container">
-            <h2 class="cta-title">Start your next adventure</h2>
-            <p class="cta-subtitle">Book transfers, plan with AI, and travel smarter with TripPortier — on any device.</p>
-            <div class="cta-buttons">
-                <a href="https://apps.apple.com/app/tripportier" class="cta-btn-primary">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                    </svg>
-                    Download iOS App
-                </a>
-                <a href="trips.html" class="cta-btn-primary" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
-                    <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                    </svg>
-                    Use Web Version
-                </a>
-                <a href="airport-transfers.html" class="cta-btn-secondary">
-                    Book a Transfer &#8594;
-                </a>
+    <!-- Section 7: Final CTA -->
+    <section class="cta-final">
+        <div class="cta-final-container">
+            <h2>Ready to plan your next trip?</h2>
+            <p>Search, book, and go — it only takes a few minutes.</p>
+            <div class="cta-final-buttons">
+                <a href="esim.html" class="sw-btn sw-btn-primary">Browse eSIM Plans</a>
+                <a href="airport-transfers.html" class="sw-btn sw-btn-outline">Book a Transfer</a>
+                <a href="trips.html" class="sw-btn sw-btn-outline">Plan a Trip</a>
             </div>
         </div>
     </section>
@@ -1523,41 +1474,6 @@
     <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
     <script>
-        // Typing Animation
-        const words = ['Pro', 'Local', 'VIP', 'Explorer', 'Adventurer'];
-        let wordIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-        const typingElement = document.getElementById('typing-text');
-
-        function type() {
-            const currentWord = words[wordIndex];
-
-            if (isDeleting) {
-                typingElement.textContent = currentWord.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typingElement.textContent = currentWord.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            let typeSpeed = isDeleting ? 80 : 120;
-
-            if (!isDeleting && charIndex === currentWord.length) {
-                typeSpeed = 2000; // Pause at end
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                typeSpeed = 500; // Pause before next word
-            }
-
-            setTimeout(type, typeSpeed);
-        }
-
-        // Start typing animation
-        setTimeout(type, 1000);
-
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -1567,6 +1483,117 @@
                 navbar.classList.remove('scrolled');
             }
         });
+
+        // === Search Widget: Tab Switching ===
+        document.querySelectorAll('.sw-tab').forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.sw-tab').forEach(function(t) { t.classList.remove('active'); });
+                document.querySelectorAll('.sw-panel').forEach(function(p) { p.classList.remove('active'); });
+                tab.classList.add('active');
+                document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+            });
+        });
+
+        // === Country Data (30 popular countries) ===
+        var swCountries = [
+            { name: 'Japan', code: 'JP', flag: '\u{1F1EF}\u{1F1F5}' },
+            { name: 'Thailand', code: 'TH', flag: '\u{1F1F9}\u{1F1ED}' },
+            { name: 'South Korea', code: 'KR', flag: '\u{1F1F0}\u{1F1F7}' },
+            { name: 'United States', code: 'US', flag: '\u{1F1FA}\u{1F1F8}' },
+            { name: 'United Kingdom', code: 'GB', flag: '\u{1F1EC}\u{1F1E7}' },
+            { name: 'Singapore', code: 'SG', flag: '\u{1F1F8}\u{1F1EC}' },
+            { name: 'Australia', code: 'AU', flag: '\u{1F1E6}\u{1F1FA}' },
+            { name: 'Turkey', code: 'TR', flag: '\u{1F1F9}\u{1F1F7}' },
+            { name: 'France', code: 'FR', flag: '\u{1F1EB}\u{1F1F7}' },
+            { name: 'Germany', code: 'DE', flag: '\u{1F1E9}\u{1F1EA}' },
+            { name: 'Italy', code: 'IT', flag: '\u{1F1EE}\u{1F1F9}' },
+            { name: 'Spain', code: 'ES', flag: '\u{1F1EA}\u{1F1F8}' },
+            { name: 'Indonesia', code: 'ID', flag: '\u{1F1EE}\u{1F1E9}' },
+            { name: 'Vietnam', code: 'VN', flag: '\u{1F1FB}\u{1F1F3}' },
+            { name: 'Malaysia', code: 'MY', flag: '\u{1F1F2}\u{1F1FE}' },
+            { name: 'Philippines', code: 'PH', flag: '\u{1F1F5}\u{1F1ED}' },
+            { name: 'India', code: 'IN', flag: '\u{1F1EE}\u{1F1F3}' },
+            { name: 'China', code: 'CN', flag: '\u{1F1E8}\u{1F1F3}' },
+            { name: 'Taiwan', code: 'TW', flag: '\u{1F1F9}\u{1F1FC}' },
+            { name: 'Hong Kong', code: 'HK', flag: '\u{1F1ED}\u{1F1F0}' },
+            { name: 'Mexico', code: 'MX', flag: '\u{1F1F2}\u{1F1FD}' },
+            { name: 'Brazil', code: 'BR', flag: '\u{1F1E7}\u{1F1F7}' },
+            { name: 'Canada', code: 'CA', flag: '\u{1F1E8}\u{1F1E6}' },
+            { name: 'New Zealand', code: 'NZ', flag: '\u{1F1F3}\u{1F1FF}' },
+            { name: 'Portugal', code: 'PT', flag: '\u{1F1F5}\u{1F1F9}' },
+            { name: 'Netherlands', code: 'NL', flag: '\u{1F1F3}\u{1F1F1}' },
+            { name: 'Switzerland', code: 'CH', flag: '\u{1F1E8}\u{1F1ED}' },
+            { name: 'Greece', code: 'GR', flag: '\u{1F1EC}\u{1F1F7}' },
+            { name: 'Egypt', code: 'EG', flag: '\u{1F1EA}\u{1F1EC}' },
+            { name: 'UAE', code: 'AE', flag: '\u{1F1E6}\u{1F1EA}' }
+        ];
+
+        // === Autocomplete Helper ===
+        function setupAutocomplete(inputId, dropdownId, onSelect) {
+            var input = document.getElementById(inputId);
+            var dropdown = document.getElementById(dropdownId);
+            if (!input || !dropdown) return;
+
+            input.addEventListener('input', function() {
+                var q = this.value.toLowerCase().trim();
+                if (q.length < 1) { dropdown.classList.remove('show'); return; }
+                var matches = swCountries.filter(function(c) {
+                    return c.name.toLowerCase().includes(q) || c.code.toLowerCase() === q;
+                }).slice(0, 8);
+                if (matches.length > 0) {
+                    dropdown.innerHTML = matches.map(function(c) {
+                        return '<div class="sw-dropdown-item" data-code="' + c.code + '" data-name="' + c.name + '">' + c.flag + ' ' + c.name + '</div>';
+                    }).join('');
+                    dropdown.classList.add('show');
+                    dropdown.querySelectorAll('.sw-dropdown-item').forEach(function(item) {
+                        item.addEventListener('click', function() {
+                            input.value = this.dataset.name;
+                            dropdown.classList.remove('show');
+                            onSelect(this.dataset.code, this.dataset.name);
+                        });
+                    });
+                } else {
+                    dropdown.classList.remove('show');
+                }
+            });
+
+            input.addEventListener('focus', function() {
+                if (this.value.length >= 1) this.dispatchEvent(new Event('input'));
+            });
+
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#' + inputId) && !e.target.closest('#' + dropdownId)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+
+        // === eSIM Autocomplete ===
+        var selectedEsimCode = '';
+        setupAutocomplete('esim-country-input', 'esim-dropdown', function(code) {
+            selectedEsimCode = code;
+            document.getElementById('esim-search-btn').href = 'esim.html?country=' + code;
+        });
+
+        // === Visa Autocomplete ===
+        var selectedPassport = '';
+        var selectedDest = '';
+        setupAutocomplete('visa-passport-input', 'visa-passport-dropdown', function(code) {
+            selectedPassport = code;
+            updateVisaLink();
+        });
+        setupAutocomplete('visa-dest-input', 'visa-dest-dropdown', function(code) {
+            selectedDest = code;
+            updateVisaLink();
+        });
+        function updateVisaLink() {
+            var params = [];
+            if (selectedPassport) params.push('passport=' + selectedPassport);
+            if (selectedDest) params.push('destination=' + selectedDest);
+            var href = 'visa.html';
+            if (params.length > 0) href += '?' + params.join('&');
+            document.getElementById('visa-search-btn').href = href;
+        }
     </script>
 </body>
 </html>
