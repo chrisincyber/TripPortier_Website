@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/cookie-consent.css">
+    <script src="js/cookie-consent.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book transport services with TripPortier. Airport transfers worldwide and Asia transport including trains, buses, and ferries.">
+    <meta name="keywords" content="transport, airport transfer, airport taxi, asia transport, train tickets, bus tickets, ferry tickets, thailand transport, vietnam train">
+    <meta property="og:title" content="Transport - TripPortier">
+    <meta property="og:description" content="Book airport transfers worldwide and Asia transport tickets. Trains, buses, ferries and more.">
+    <title>Transport - TripPortier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <style>
+        .transport-hero {
+            padding: 8rem 2rem 4rem;
+            background: var(--theme-hero-gradient);
+            color: white;
+            text-align: center;
+        }
+        .transport-hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .transport-hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .transport-cards-section {
+            padding: 4rem 2rem;
+            background: white;
+        }
+        .transport-cards-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .transport-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid #e2e8f0;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        .transport-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+        }
+        .transport-card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        .transport-card-icon.transfers {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        }
+        .transport-card-icon.asia {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 182, 212, 0.1));
+        }
+        .transport-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+        }
+        .transport-card p {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+        .transport-card .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #6366f1;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            margin-top: 0.5rem;
+        }
+        .transport-card:hover .card-link {
+            gap: 0.75rem;
+        }
+        @media (max-width: 768px) {
+            .transport-hero {
+                padding: 7rem 1.5rem 3rem;
+            }
+            .transport-hero h1 {
+                font-size: 2rem;
+            }
+            .transport-cards-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+      <div class="nav-row-top">
+        <div class="nav-row-container">
+          <div class="nav-top-left">
+            <a href="index.html" class="logo">
+              <img src="assets/images/logo.png" alt="TripPortier Logo">
+              TripPortier
+            </a>
+            <div class="nav-separator"></div>
+            <div class="nav-currency-selector" id="navCurrencySelector">
+              <button class="nav-selector-btn" id="currencyBtn" onclick="NavSelectors.toggleCurrency()">
+                <span id="currencySymbol">$</span>
+                <span id="currencyLabel">USD</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="currencyDropdown"></div>
+            </div>
+            <div class="nav-language-selector" id="navLanguageSelector">
+              <button class="nav-selector-btn" id="languageBtn" onclick="NavSelectors.toggleLanguage()">
+                <span id="languageFlag">🇬🇧</span>
+                <span id="languageLabel">EN</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="languageDropdown"></div>
+            </div>
+          </div>
+          <div class="nav-top-right" id="navAuthArea"></div>
+        </div>
+      </div>
+      <div class="nav-row-main">
+        <div class="nav-row-container">
+          <ul class="nav-main-links">
+            <li><a href="app.html" class="nav-main-link">📱 TripPortier App</a></li>
+            <li><a href="esim.html" class="nav-main-link">📶 eSIM</a></li>
+            <li><a href="transport.html" class="nav-main-link active">🚗 Transport</a></li>
+            <li><a href="visa.html" class="nav-main-link">📋 Visa Check</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nav-mobile-toggle">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+      <div class="mobile-nav-panel" id="mobileNavPanel">
+        <ul class="mobile-nav-links">
+          <li><a href="app.html">📱 TripPortier App</a></li>
+          <li><a href="esim.html">📶 eSIM</a></li>
+          <li><a href="transport.html">🚗 Transport</a></li>
+          <li><a href="visa.html">📋 Visa Check</a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-selectors">
+          <select id="mobileCurrencySelect" onchange="NavSelectors.setCurrency(this.value)"></select>
+          <select id="mobileLanguageSelect" onchange="NavSelectors.setLanguage(this.value)"></select>
+        </div>
+        <div class="mobile-nav-divider"></div>
+        <div id="mobileAuthSection"></div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="transport-hero">
+        <h1>Transport Services</h1>
+        <p>Airport transfers worldwide and Asia transport tickets — trains, buses, ferries and more, all in one place.</p>
+    </section>
+
+    <!-- Transport Cards -->
+    <section class="transport-cards-section">
+        <div class="transport-cards-container">
+            <a href="airport-transfers.html" class="transport-card">
+                <div class="transport-card-icon transfers">&#128663;</div>
+                <h2>Airport Transfers</h2>
+                <p>Private cars, shared shuttles, and taxi services from airport to hotel. Available in 150+ countries with confirmed drivers and fixed prices.</p>
+                <span class="card-link">Book a transfer &rarr;</span>
+            </a>
+            <a href="https://asiatransport.tripportier.com" target="_blank" class="transport-card">
+                <div class="transport-card-icon asia">&#128646;</div>
+                <h2>Asia Transport</h2>
+                <p>Train, bus, and ferry tickets across Southeast Asia. Thailand, Vietnam, Malaysia, Cambodia, Laos, and more — book online in minutes.</p>
+                <span class="card-link">Browse routes &rarr;</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+    <script>
+        fetch('footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer-placeholder').innerHTML = html;
+            });
+    </script>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/supabase-auth.js"></script>
+    <script src="js/auth-ui.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/nav-selectors.js"></script>
+</body>
+</html>

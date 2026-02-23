@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="css/cookie-consent.css">
+    <script src="js/cookie-consent.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TripPortier App — eSIM data plans, airport transfers, visa checks, AI trip planning, and more. Available on iOS and the web.">
+    <meta name="keywords" content="tripportier app, travel app, esim app, trip planner, AI trip planning, airport transfer app, visa check app, ios travel app">
+    <meta property="og:title" content="TripPortier App - Your Complete Travel Companion">
+    <meta property="og:description" content="eSIM data, airport transfers, visa checks, AI trip planning, and more. Download on iOS or use on the web.">
+    <title>TripPortier App - Your Travel Companion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <style>
+
+        .app-hero {
+            padding: 8rem 2rem 3rem;
+            background: var(--theme-hero-gradient);
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-hero h1 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+        .app-hero p {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 560px;
+            margin: 0 auto 2rem;
+        }
+        .app-hero-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .app-hero-actions .btn-ios {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            background: white;
+            color: #0f172a;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .app-hero-actions .btn-ios:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        .app-hero-actions .btn-ios svg {
+            width: 22px;
+            height: 22px;
+        }
+        .app-hero-actions .btn-register {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.75rem;
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .app-hero-actions .btn-register:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.7);
+        }
+
+        /* Phone Showcase */
+        .phone-showcase-wrap {
+            display: flex;
+            justify-content: center;
+            margin-top: 3rem;
+        }
+        .phone-showcase {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            height: 580px;
+        }
+        .phone-showcase .phone {
+            position: absolute;
+            width: 240px;
+            height: auto;
+            border-radius: 36px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .phone-showcase .phone-left {
+            left: 0;
+            top: 80px;
+            transform: rotate(-12deg) translateZ(0);
+            z-index: 1;
+            opacity: 0.9;
+        }
+        .phone-showcase .phone-center {
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%) translateZ(0);
+            z-index: 3;
+            width: 280px;
+        }
+        .phone-showcase .phone-right {
+            right: 0;
+            top: 80px;
+            transform: rotate(12deg) translateZ(0);
+            z-index: 2;
+            opacity: 0.9;
+        }
+        .phone-showcase:hover .phone-left {
+            transform: rotate(-15deg) translateX(-20px) translateZ(0);
+        }
+        .phone-showcase:hover .phone-right {
+            transform: rotate(15deg) translateX(20px) translateZ(0);
+        }
+        .phone-showcase:hover .phone-center {
+            transform: translateX(-50%) translateY(-15px) translateZ(0);
+            box-shadow: 0 70px 140px rgba(0, 0, 0, 0.6);
+        }
+        .phone-showcase-labels {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .phone-label {
+            font-size: 0.8125rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+        }
+
+        @media (max-width: 1024px) {
+            .phone-showcase {
+                height: 450px;
+                max-width: 400px;
+            }
+            .phone-showcase .phone {
+                width: 180px;
+            }
+            .phone-showcase .phone-center {
+                width: 220px;
+            }
+        }
+        @media (max-width: 600px) {
+            .phone-showcase {
+                height: 340px;
+                max-width: 300px;
+            }
+            .phone-showcase .phone {
+                width: 140px;
+            }
+            .phone-showcase .phone-center {
+                width: 170px;
+            }
+            .phone-showcase .phone-left,
+            .phone-showcase .phone-right {
+                top: 60px;
+            }
+            .phone-showcase-labels {
+                gap: 1.5rem;
+            }
+        }
+
+        .app-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        .app-section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            text-align: left;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+        .app-section-subtitle {
+            text-align: left;
+            color: #64748b;
+            max-width: 560px;
+            margin: 0 0 3rem;
+            font-size: 1rem;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.2s ease;
+        }
+        .feature-card:hover {
+            border-color: #c7d2fe;
+            box-shadow: 0 4px 20px rgba(99,102,241,0.08);
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .feature-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card p {
+            color: #64748b;
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+        .feature-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.75rem;
+        }
+        .badge-web { background: #dbeafe; color: #1d4ed8; }
+        .badge-ios { background: #ffffff; color: #334155; }
+        .badge-both { background: #ede9fe; color: #6d28d9; }
+
+        /* Platform Comparison */
+        .platforms-section {
+            padding: 4rem 2rem;
+            background: #ffffff;
+        }
+        .platforms-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .platform-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+        .platform-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .platform-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.75rem;
+        }
+        .platform-card ul {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 1.5rem;
+            text-align: left;
+        }
+        .platform-card li {
+            padding: 0.5rem 0;
+            color: #475569;
+            font-size: 0.9375rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .platform-card li:last-child {
+            border-bottom: none;
+        }
+        .platform-card li::before {
+            content: "\2713 ";
+            color: #10b981;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+        .platform-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .platform-cta-ios {
+            background: #0f0f23;
+            color: white;
+        }
+        .platform-cta-ios:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-1px);
+        }
+        .platform-cta-web {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+        .platform-cta-web:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+        }
+
+        /* CTA Banner */
+        .app-cta-banner {
+            padding: 4rem 2rem;
+            background: var(--theme-hero-gradient);
+            color: white;
+            text-align: center;
+        }
+        .app-cta-banner h2 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .app-cta-banner p {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+        .app-cta-banner .app-hero-actions {
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .platforms-grid {
+                grid-template-columns: 1fr;
+            }
+            .app-hero {
+                padding: 7rem 1.5rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-transparent" id="navbar">
+      <div class="nav-row-top">
+        <div class="nav-row-container">
+          <div class="nav-top-left">
+            <a href="index.html" class="logo">
+              <img src="assets/images/logo.png" alt="TripPortier Logo">
+              TripPortier
+            </a>
+            <div class="nav-separator"></div>
+            <div class="nav-currency-selector" id="navCurrencySelector">
+              <button class="nav-selector-btn" id="currencyBtn" onclick="NavSelectors.toggleCurrency()">
+                <span id="currencySymbol">$</span>
+                <span id="currencyLabel">USD</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="currencyDropdown"></div>
+            </div>
+            <div class="nav-language-selector" id="navLanguageSelector">
+              <button class="nav-selector-btn" id="languageBtn" onclick="NavSelectors.toggleLanguage()">
+                <span id="languageFlag">🇬🇧</span>
+                <span id="languageLabel">EN</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="languageDropdown"></div>
+            </div>
+          </div>
+          <div class="nav-top-right" id="navAuthArea"></div>
+        </div>
+      </div>
+      <div class="nav-row-main">
+        <div class="nav-row-container">
+          <ul class="nav-main-links">
+            <li><a href="app.html" class="nav-main-link active">📱 TripPortier App</a></li>
+            <li><a href="esim.html" class="nav-main-link">📶 eSIM</a></li>
+            <li><a href="transport.html" class="nav-main-link">🚗 Transport</a></li>
+            <li><a href="visa.html" class="nav-main-link">📋 Visa Check</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="nav-mobile-toggle">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+      <div class="mobile-nav-panel" id="mobileNavPanel">
+        <ul class="mobile-nav-links">
+          <li><a href="app.html">📱 TripPortier App</a></li>
+          <li><a href="esim.html">📶 eSIM</a></li>
+          <li><a href="transport.html">🚗 Transport</a></li>
+          <li><a href="visa.html">📋 Visa Check</a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-selectors">
+          <select id="mobileCurrencySelect" onchange="NavSelectors.setCurrency(this.value)"></select>
+          <select id="mobileLanguageSelect" onchange="NavSelectors.setLanguage(this.value)"></select>
+        </div>
+        <div class="mobile-nav-divider"></div>
+        <div id="mobileAuthSection"></div>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="app-hero">
+        <h1>Your complete travel companion</h1>
+        <p>Book eSIM data, airport transfers, check visa requirements, plan trips with AI, and more — on the web or the iOS app.</p>
+        <div class="app-hero-actions">
+            <a href="https://apps.apple.com/app/tripportier" class="btn-ios">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download for iOS
+            </a>
+            <button class="btn-register" onclick="if(typeof AuthUI!=='undefined') AuthUI.openModal('register')">
+                Register for Free
+            </button>
+        </div>
+        <div class="phone-showcase-wrap">
+            <div class="phone-showcase">
+                <img src="assets/images/phone-left.png" alt="TripPortier Travel Stats" class="phone phone-left">
+                <img src="assets/images/phone-center.png" alt="TripPortier Trip Hub" class="phone phone-center">
+                <img src="assets/images/phone-right.png" alt="TripPortier Itinerary" class="phone phone-right">
+            </div>
+        </div>
+        <div class="phone-showcase-labels">
+            <span class="phone-label">Travel Stats</span>
+            <span class="phone-label">Trip Hub</span>
+            <span class="phone-label">Itinerary</span>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <div class="app-content">
+        <h2 class="app-section-title">What you can do with TripPortier</h2>
+        <p class="app-section-subtitle">Everything you need for stress-free travel, available on the web and iOS.</p>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📶</div>
+                <h3>eSIM Data Plans</h3>
+                <p>Instant mobile data in 200+ countries. No physical SIM needed — activate before you land. Save up to 90% on roaming.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚗</div>
+                <h3>Airport Transfers</h3>
+                <p>Private cars and shuttles worldwide. Fixed price, confirmed driver waiting for you at arrivals.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Visa Check</h3>
+                <p>Check visa requirements for your passport. Know before you go — visa-free, eVisa, or visa required.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🚆</div>
+                <h3>Asia Transport</h3>
+                <p>Trains, buses, and ferries across Asia. Compare routes and book tickets for Thailand, Vietnam, Malaysia, and more.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>AI Trip Planning</h3>
+                <p>Generate smart itineraries with AI. Get personalized recommendations for activities, restaurants, and attractions.</p>
+                <span class="feature-badge badge-ios">iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧳</div>
+                <h3>Packing Lists</h3>
+                <p>Smart packing lists tailored to your destination and trip duration. Never forget essentials again.</p>
+                <span class="feature-badge badge-ios">iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🪙</div>
+                <h3>TripCoins Rewards</h3>
+                <p>Earn TripCoins on every purchase and redeem them for discounts on future bookings. The more you travel, the more you save.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>TripPortier+</h3>
+                <p>Premium membership with higher cashback, priority support, exclusive deals, and early access to new features.</p>
+                <span class="feature-badge badge-both">Web + iOS</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Comparison -->
+    <section class="platforms-section">
+        <h2 class="app-section-title">Choose your platform</h2>
+        <p class="app-section-subtitle">Use TripPortier wherever works best for you.</p>
+
+        <div class="platforms-grid">
+            <div class="platform-card">
+                <div class="platform-icon">🍎</div>
+                <h3>iOS App</h3>
+                <ul>
+                    <li>eSIM, transfers, visa check</li>
+                    <li>AI trip planning</li>
+                    <li>Smart packing lists</li>
+                    <li>Push notifications</li>
+                    <li>Offline access</li>
+                    <li>TripCoins rewards</li>
+                </ul>
+                <a href="https://apps.apple.com/app/tripportier" class="platform-cta platform-cta-ios">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                    Download on App Store
+                </a>
+            </div>
+            <div class="platform-card">
+                <div class="platform-icon">🌐</div>
+                <h3>Web App</h3>
+                <ul>
+                    <li>eSIM, transfers, visa check</li>
+                    <li>Manage your eSIMs</li>
+                    <li>Trip management</li>
+                    <li>Account & settings</li>
+                    <li>Works on any device</li>
+                    <li>TripCoins rewards</li>
+                </ul>
+                <button onclick="if(typeof AuthUI!=='undefined') AuthUI.openModal('register')" class="platform-cta platform-cta-web">
+                    Register for Free
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="app-cta-banner">
+        <h2>Ready to travel smarter?</h2>
+        <p>Join 50,000+ travelers who use TripPortier to save time and money.</p>
+        <div class="app-hero-actions">
+            <a href="https://apps.apple.com/app/tripportier" class="btn-ios">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download for iOS
+            </a>
+            <button class="btn-register" onclick="if(typeof AuthUI!=='undefined') AuthUI.openModal('register')">
+                Register for Free
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>TripPortier</h4>
+                <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Services</h4>
+                <ul>
+                    <li><a href="esim.html">eSIM</a></li>
+                    <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="visa.html">Visa Check</a></li>
+                    <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
+                    <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="feature-request.html">Request Feature</a></li>
+                    <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                    <li><a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Review us on Trustpilot</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="attributions.html">Attributions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="payment-methods">
+                <span>We accept:</span>
+                <img src="images/payment-methods.png" alt="Visa, Mastercard, American Express, PayPal" class="payment-logos">
+            </div>
+            <p>&copy; 2025 TripPortier. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/41765125678" class="whatsapp-float" target="_blank" aria-label="Contact us on WhatsApp">
+        <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+
+    <script src="js/main.js"></script>
+    <script src="js/nav-selectors.js"></script>
+    <script src="js/auth-ui.js"></script>
+</body>
+</html>

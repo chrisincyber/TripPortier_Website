@@ -1,75 +1,16 @@
     <!-- Footer -->
     <footer class="footer">
-        <!-- Trust Bar -->
-        <div class="footer-trust-bar">
-            <div class="trust-bar-container">
-                <div class="trust-item">
-                    <span class="trust-icon">&#128274;</span>
-                    <span>Secure Payments</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#9989;</span>
-                    <span>Verified Provider</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#128176;</span>
-                    <span>Money-Back Guarantee</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#127760;</span>
-                    <span>200+ Countries</span>
-                </div>
-            </div>
-        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
-                <!-- Language & Currency Selectors -->
-                <div class="footer-selectors">
-                    <div class="selector-group">
-                        <label for="currency-select">&#128176; Currency</label>
-                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="GBP">£ GBP</option>
-                            <option value="CHF">CHF</option>
-                            <option value="JPY">¥ JPY</option>
-                            <option value="CNY">¥ CNY</option>
-                            <option value="KRW">₩ KRW</option>
-                            <option value="AUD">$ AUD</option>
-                            <option value="CAD">$ CAD</option>
-                            <option value="NZD">$ NZD</option>
-                            <option value="SGD">$ SGD</option>
-                            <option value="HKD">$ HKD</option>
-                            <option value="SEK">kr SEK</option>
-                            <option value="NOK">kr NOK</option>
-                            <option value="DKK">kr DKK</option>
-                            <option value="PLN">zł PLN</option>
-                            <option value="CZK">Kč CZK</option>
-                            <option value="THB">฿ THB</option>
-                            <option value="MYR">RM MYR</option>
-                            <option value="INR">₹ INR</option>
-                            <option value="BRL">R$ BRL</option>
-                            <option value="MXN">$ MXN</option>
-                            <option value="AED">د.إ AED</option>
-                            <option value="SAR">﷼ SAR</option>
-                            <option value="TRY">₺ TRY</option>
-                            <option value="ZAR">R ZAR</option>
-                            <option value="ILS">₪ ILS</option>
-                            <option value="TWD">$ TWD</option>
-                            <option value="PHP">₱ PHP</option>
-                            <option value="IDR">Rp IDR</option>
-                            <option value="VND">₫ VND</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="footer-section">
                 <h4>Services</h4>
                 <ul>
                     <li><a href="esim.html">eSIM</a></li>
                     <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="visa.html">Visa Check</a></li>
                     <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                     <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
@@ -80,6 +21,7 @@
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                    <li><a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Review us on Trustpilot</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -99,23 +41,3 @@
             <p>&copy; 2025 TripPortier. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Footer JavaScript Functions -->
-    <script>
-        function changeCurrency(currency) {
-            console.log('Currency changed to:', currency);
-            // TODO: Implement currency switching logic
-            // For now, just save preference
-            localStorage.setItem('preferredCurrency', currency);
-        }
-
-        // Load saved preferences on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedCurrency = localStorage.getItem('preferredCurrency');
-
-            if (savedCurrency) {
-                const currencySelect = document.getElementById('currency-select');
-                if (currencySelect) currencySelect.value = savedCurrency;
-            }
-        });
-    </script>

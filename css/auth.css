@@ -71,7 +71,7 @@
 
 .auth-modal-close:hover {
   color: #1e293b;
-  background: #f1f5f9;
+  background: #ffffff;
 }
 
 .auth-modal-close svg {
@@ -86,7 +86,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  background: #f1f5f9;
+  background: #ffffff;
   padding: 0.375rem;
   border-radius: 12px;
 }
@@ -195,7 +195,7 @@
 
 .auth-btn-google:hover:not(:disabled) {
   border-color: #cbd5e1;
-  background: #f8fafc;
+  background: #ffffff;
   transform: translateY(-1px);
 }
 
@@ -386,6 +386,7 @@
    Navbar Authentication Elements
    ============================================ */
 
+/* Old single sign-in button (backward compat) */
 .nav-signin-btn {
   display: inline-flex;
   align-items: center;
@@ -408,6 +409,60 @@
   text-decoration: none;
 }
 
+/* New two-row navbar auth buttons */
+.nav-register-btn,
+.nav-login-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.nav-register-btn {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.nav-register-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  text-decoration: none;
+}
+
+.nav-login-btn {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+}
+
+.nav-login-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  color: white;
+  text-decoration: none;
+}
+
+/* Transparent navbar: register button white text */
+.navbar.navbar-transparent:not(.scrolled) .nav-register-btn {
+  color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar.navbar-transparent:not(.scrolled) .nav-register-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: white;
+}
+
 /* User Dropdown */
 .nav-user-dropdown {
   position: relative;
@@ -423,10 +478,11 @@
   padding: 0.375rem 0.5rem;
   border-radius: 50px;
   transition: background 0.2s ease;
+  color: white;
 }
 
 .nav-user-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .nav-user-avatar {
@@ -468,25 +524,46 @@
 }
 
 /* Transparent navbar state - white text for user button */
-.navbar:not(.scrolled) .nav-user-btn {
+.navbar.navbar-transparent:not(.scrolled) .nav-user-btn {
   color: rgba(255, 255, 255, 0.9);
 }
 
-.navbar:not(.scrolled) .nav-user-btn:hover {
+.navbar.navbar-transparent:not(.scrolled) .nav-user-btn:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-.navbar:not(.scrolled) .nav-user-chevron {
+.navbar.navbar-transparent:not(.scrolled) .nav-user-chevron {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Scrolled navbar state - white text for user button */
+/* Solid/scrolled navbar - white text for dark navbar */
+.navbar:not(.navbar-transparent) .nav-user-btn,
 .navbar.scrolled .nav-user-btn {
   color: rgba(255, 255, 255, 0.9);
 }
 
+.navbar:not(.navbar-transparent) .nav-user-chevron,
 .navbar.scrolled .nav-user-chevron {
   color: rgba(255, 255, 255, 0.9);
+}
+
+/* User dropdown inside #navAuthArea (two-row navbar) */
+#navAuthArea .nav-user-dropdown {
+  position: relative;
+}
+
+#navAuthArea .nav-user-btn {
+  padding: 0.25rem 0.5rem;
+}
+
+#navAuthArea .nav-user-avatar,
+#navAuthArea .nav-user-avatar-placeholder {
+  width: 32px;
+  height: 32px;
+}
+
+#navAuthArea .nav-user-btn span {
+  font-size: 0.8125rem;
 }
 
 .nav-user-menu {

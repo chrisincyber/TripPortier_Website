@@ -8,7 +8,7 @@
    ============================================ */
 
 .trips-header {
-  background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+  background: #0f0f23;
   padding: 8rem 2rem 3rem;
   color: white;
   text-align: center;
@@ -33,7 +33,7 @@
 .trips-main {
   min-height: 60vh;
   padding: 2rem;
-  background: #f8fafc;
+  background: #ffffff;
 }
 
 .trips-container {
@@ -210,7 +210,7 @@
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  background: #1e293b;
+  background: #0f0f23;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -294,7 +294,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #4c1d95 0%, #6366f1 50%, #0ea5e9 100%);
+  background: #0f0f23;
 }
 
 /* Dark overlay for text readability */
@@ -557,7 +557,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
@@ -711,7 +711,7 @@
 }
 
 .destination-suggestion:hover {
-  background: #f8fafc;
+  background: #ffffff;
 }
 
 .destination-suggestion-icon {
@@ -790,7 +790,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem 0.5rem;
-  background: #f8fafc;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   cursor: pointer;
@@ -798,7 +798,7 @@
 }
 
 .context-option:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -828,7 +828,7 @@
 
 .suggested-name {
   padding: 0.5rem 1rem;
-  background: #f1f5f9;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 20px;
   font-size: 0.875rem;
@@ -883,7 +883,7 @@
 }
 
 .create-trip-back:hover {
-  background: #f8fafc;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -1012,7 +1012,7 @@
 .add-flight-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
-  background: #f8fafc;
+  background: #ffffff;
 }
 
 .create-trip-btn svg,
@@ -1320,7 +1320,7 @@
 .flight-card-detail-icon {
   width: 32px;
   height: 32px;
-  background: #f1f5f9;
+  background: #ffffff;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1602,7 +1602,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
@@ -1653,7 +1653,7 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  background: #f8fafc;
+  background: #ffffff;
   border-radius: 12px;
 }
 
@@ -1730,7 +1730,7 @@
 }
 
 .beta-modal-btn-secondary:hover {
-  background: #f8fafc;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -1820,7 +1820,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #ffffff;
   border: none;
   cursor: pointer;
   display: flex;
@@ -2008,7 +2008,7 @@
 }
 
 .add-flight-buttons .add-flight-btn-secondary:hover {
-  background: #f8fafc;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -2071,7 +2071,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: #f8fafc;
+  background: #ffffff;
   border-radius: 8px;
 }
 
@@ -2127,7 +2127,7 @@
 }
 
 .add-flight-upgrade-buttons .add-flight-btn-secondary:hover {
-  background: #f8fafc;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -2215,14 +2215,14 @@
   gap: 0.75rem;
   cursor: pointer;
   padding: 1rem;
-  background: #f8fafc;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   transition: all 0.2s;
 }
 
 .someday-toggle-label:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -2292,7 +2292,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #f1f5f9;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   font-size: 1.5rem;
   font-weight: 600;
@@ -2345,7 +2345,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1.5rem;
-  background: #f8fafc;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 16px;
   cursor: pointer;
@@ -2354,7 +2354,7 @@
 }
 
 .ai-prompt-option:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
   transform: translateY(-2px);
 }
@@ -2412,7 +2412,7 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.75rem 0.5rem;
-  background: #f8fafc;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 10px;
   cursor: pointer;
@@ -2420,7 +2420,7 @@
 }
 
 .travel-style-option:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
 }
 
@@ -2474,7 +2474,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1.25rem 0.75rem;
-  background: #f8fafc;
+  background: #ffffff;
   border: 2px solid #e2e8f0;
   border-radius: 14px;
   cursor: pointer;
@@ -2482,7 +2482,7 @@
 }
 
 .companion-option:hover {
-  background: #f1f5f9;
+  background: #ffffff;
   border-color: #cbd5e1;
   transform: translateY(-2px);
 }
@@ -2532,7 +2532,7 @@
   align-items: center;
   gap: 0.375rem;
   padding: 0.5rem 1rem;
-  background: #f1f5f9;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   font-size: 0.875rem;
@@ -2619,7 +2619,7 @@
 }
 
 .ai-day {
-  background: #f8fafc;
+  background: #ffffff;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -2664,7 +2664,7 @@
 
 .ai-activity.excluded {
   opacity: 0.5;
-  background: #f1f5f9;
+  background: #ffffff;
 }
 
 .ai-activity-toggle {

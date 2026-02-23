@@ -1,46 +1,32 @@
 // TripPortier Website JavaScript
 
-// Theme initialization - apply saved theme on page load
+// Theme initialization - always use light mode
 (function() {
-    const savedTheme = localStorage.getItem('theme') || 'system';
-
-    if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-    } else if (savedTheme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-        // System preference
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'dark');
-        }
-    }
-
-    // Listen for system theme changes
-    if (savedTheme === 'system' && window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (localStorage.getItem('theme') === 'system') {
-                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-            }
-        });
-    }
+    document.documentElement.setAttribute('data-theme', 'light');
 })();
 
-// Mobile Menu Toggle
+// Mobile Menu Toggle — supports both new mobile-nav-panel and old nav-links
 function toggleMenu() {
+    // New two-row navbar mobile panel
+    const mobilePanel = document.getElementById('mobileNavPanel');
+    if (mobilePanel) {
+        mobilePanel.classList.toggle('active');
+        return;
+    }
+    // Fallback: old nav-links
     const navLinks = document.querySelector('.nav-links');
-    navLinks.classList.toggle('active');
-
-    // Close all dropdowns when menu closes
-    if (!navLinks.classList.contains('active')) {
-        document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
-            dropdown.classList.remove('active');
-        });
+    if (navLinks) {
+        navLinks.classList.toggle('active');
+        if (!navLinks.classList.contains('active')) {
+            document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        }
     }
 }
 
-// Mobile Dropdown Toggle
+// Mobile Dropdown Toggle (old navbar compat)
 function toggleMobileDropdown(element, event) {
-    // Only toggle on mobile
     if (window.innerWidth <= 768) {
         event.preventDefault();
         const dropdown = element.closest('.nav-dropdown');
@@ -50,12 +36,20 @@ function toggleMobileDropdown(element, event) {
 
 // Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
+    // New mobile panel
+    const mobilePanel = document.getElementById('mobileNavPanel');
+    const mobileToggle = document.querySelector('.nav-mobile-toggle');
+    if (mobilePanel && mobilePanel.classList.contains('active') &&
+        !mobilePanel.contains(e.target) &&
+        (!mobileToggle || !mobileToggle.contains(e.target))) {
+        mobilePanel.classList.remove('active');
+    }
+    // Old nav-links
     const navLinks = document.querySelector('.nav-links');
-    const mobileMenu = document.querySelector('.mobile-menu');
-
+    const mobileMenuBtn = document.querySelector('.mobile-menu');
     if (navLinks && navLinks.classList.contains('active') &&
         !navLinks.contains(e.target) &&
-        !mobileMenu.contains(e.target)) {
+        mobileMenuBtn && !mobileMenuBtn.contains(e.target)) {
         navLinks.classList.remove('active');
     }
 });
@@ -171,16 +165,27 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Navbar scroll effect
+// Navbar scroll effect — centralized .scrolled class for all navbar-transparent pages
 let lastScroll = 0;
 window.addEventListener('scroll', () => {
     const navbar = document.querySelector('.navbar');
+    if (!navbar) return;
     const currentScroll = window.pageYOffset;
 
+    // Toggle .scrolled class for transparent navbar pages
+    if (navbar.classList.contains('navbar-transparent')) {
+        if (currentScroll > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    }
+
+    // Box-shadow effect for all navbars
     if (currentScroll > 100) {
         navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
     } else {
-        navbar.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+        navbar.style.boxShadow = '';
     }
 
     lastScroll = currentScroll;
@@ -416,3 +421,44 @@ if (!prefersReducedMotion) {
         });
     });
 }
+
+// ============================================
+// Trustpilot Review Nudge (slide-in card)
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Skip on esim-success page (already has a dedicated Trustpilot card)
+    if (window.location.pathname.includes('esim-success')) return;
+
+    // Skip if already dismissed this session
+    if (sessionStorage.getItem('trustpilot_nudge_dismissed')) return;
+
+    setTimeout(function() {
+        var nudge = document.createElement('div');
+        nudge.className = 'trustpilot-nudge';
+        nudge.innerHTML =
+            '<div class="trustpilot-nudge-icon">' +
+                '<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
+            '</div>' +
+            '<div class="trustpilot-nudge-body">' +
+                '<a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Check out our reviews on Trustpilot</a>' +
+                '<div class="trustpilot-nudge-sub">See what travelers say about us</div>' +
+            '</div>' +
+            '<button class="trustpilot-nudge-dismiss" aria-label="Dismiss">&times;</button>';
+
+        document.body.appendChild(nudge);
+
+        // Trigger slide-in on next frame
+        requestAnimationFrame(function() {
+            nudge.classList.add('show');
+        });
+
+        // Dismiss handler
+        nudge.querySelector('.trustpilot-nudge-dismiss').addEventListener('click', function() {
+            nudge.classList.remove('show');
+            sessionStorage.setItem('trustpilot_nudge_dismissed', '1');
+            nudge.addEventListener('transitionend', function() {
+                nudge.remove();
+            }, { once: true });
+        });
+    }, 8000);
+});

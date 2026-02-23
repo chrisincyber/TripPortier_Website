@@ -22,7 +22,7 @@
         /* Region Hero */
         .region-hero {
             padding: 8rem 2rem 4rem;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            background: #0f0f23;
             color: white;
             text-align: center;
             position: relative;
@@ -88,7 +88,7 @@
         /* Countries Covered */
         .countries-covered {
             padding: 2rem 2rem 0;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .countries-covered-container {
@@ -120,7 +120,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            background: #f8fafc;
+            background: #ffffff;
             padding: 0.5rem 1rem;
             border-radius: 50px;
             font-size: 0.875rem;
@@ -155,7 +155,7 @@
         /* Packages Section */
         .packages-section {
             padding: 3rem 2rem 4rem;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .packages-container {
@@ -164,7 +164,7 @@
         }
 
         .packages-header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 2rem;
         }
 
@@ -278,7 +278,7 @@
         .package-btn {
             width: 100%;
             padding: 1rem;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            background: #0f0f23;
             color: white;
             border: none;
             border-radius: 12px;
@@ -305,7 +305,7 @@
         }
 
         .benefits-header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 3rem;
         }
 
@@ -353,9 +353,9 @@
         /* App CTA */
         .app-cta {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            background: #0f0f23;
             color: white;
-            text-align: center;
+            text-align: left;
         }
 
         .app-cta h2 {
@@ -430,7 +430,7 @@
             width: 40px;
             height: 40px;
             border: none;
-            background: #f1f5f9;
+            background: #ffffff;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1.25rem;
@@ -448,7 +448,7 @@
         }
 
         .modal-package-summary {
-            background: #f8fafc;
+            background: #ffffff;
             border-radius: 16px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -571,42 +571,67 @@
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-transparent" id="navbar">
-        <div class="nav-container">
+      <!-- Row 1: Utility Bar -->
+      <div class="nav-row-top">
+        <div class="nav-row-container">
+          <div class="nav-top-left">
             <a href="index.html" class="logo">
-                <img src="assets/images/logo.png" alt="TripPortier Logo">
-                TripPortier
+              <img src="assets/images/logo.png" alt="TripPortier Logo">
+              TripPortier
             </a>
-            <ul class="nav-links">
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle active" onclick="toggleMobileDropdown(this, event)">eSIM <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="esim.html">eSIM Plans</a></li>
-                        <li><a href="myesims.html">My Orders</a></li>
-                    </ul>
-                </li>
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">Services <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="airport-transfers.html">Airport Transfers</a></li>
-                        <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
-                        <li><a href="visa.html">Visa Check</a></li>
-                    </ul>
-                </li>
-                <li id="mytrips-nav" style="display: none;"><a href="trips.html">My Trips</a></li>
-                <li id="premium-nav"><a href="premium.html">TripPortier+</a></li>
-            </ul>
-
-
-            <div class="mobile-nav-right">
-                <button class="mobile-signin-btn" id="mobile-signin-btn" onclick="window.authUI.showModal('signin')">Sign In</button>
-                <button class="mobile-menu" onclick="toggleMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
+            <div class="nav-separator"></div>
+            <div class="nav-currency-selector" id="navCurrencySelector">
+              <button class="nav-selector-btn" id="currencyBtn" onclick="NavSelectors.toggleCurrency()">
+                <span id="currencySymbol">$</span>
+                <span id="currencyLabel">USD</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="currencyDropdown"></div>
             </div>
+            <div class="nav-language-selector" id="navLanguageSelector">
+              <button class="nav-selector-btn" id="languageBtn" onclick="NavSelectors.toggleLanguage()">
+                <span id="languageFlag">🇬🇧</span>
+                <span id="languageLabel">EN</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="languageDropdown"></div>
+            </div>
+          </div>
+          <div class="nav-top-right" id="navAuthArea"></div>
         </div>
-</nav>
+      </div>
+      <!-- Row 2: Main Navigation -->
+      <div class="nav-row-main">
+        <div class="nav-row-container">
+          <ul class="nav-main-links">
+            <li><a href="app.html" class="nav-main-link">📱 TripPortier App</a></li>
+            <li><a href="esim.html" class="nav-main-link active">📶 eSIM</a></li>
+            <li><a href="transport.html" class="nav-main-link">🚗 Transport</a></li>
+            <li><a href="visa.html" class="nav-main-link">📋 Visa Check</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Mobile: hamburger -->
+      <div class="nav-mobile-toggle">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+      <!-- Mobile: slide-down panel -->
+      <div class="mobile-nav-panel" id="mobileNavPanel">
+        <ul class="mobile-nav-links">
+          <li><a href="app.html">📱 TripPortier App</a></li>
+          <li><a href="esim.html">📶 eSIM</a></li>
+          <li><a href="transport.html">🚗 Transport</a></li>
+          <li><a href="visa.html">📋 Visa Check</a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-selectors">
+          <select id="mobileCurrencySelect" onchange="NavSelectors.setCurrency(this.value)"></select>
+          <select id="mobileLanguageSelect" onchange="NavSelectors.setLanguage(this.value)"></select>
+        </div>
+        <div class="mobile-nav-divider"></div>
+        <div id="mobileAuthSection"></div>
+      </div>
+    </nav>
 
     <!-- Region Hero -->
     <section class="region-hero">
@@ -694,76 +719,17 @@
     <!-- Footer -->
     <!-- Footer -->
     <footer class="footer">
-        <!-- Trust Bar -->
-        <div class="footer-trust-bar">
-            <div class="trust-bar-container">
-                <div class="trust-item">
-                    <span class="trust-icon">&#128274;</span>
-                    <span>Secure Payments</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#9989;</span>
-                    <span>Verified Provider</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#128176;</span>
-                    <span>Money-Back Guarantee</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#127760;</span>
-                    <span>200+ Countries</span>
-                </div>
-            </div>
-        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
-                <!-- Language & Currency Selectors -->
-                <div class="footer-selectors">
-                    <div class="selector-group">
-                        <label for="currency-select">&#128176; Currency</label>
-                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="GBP">£ GBP</option>
-                            <option value="CHF">CHF</option>
-                            <option value="JPY">¥ JPY</option>
-                            <option value="CNY">¥ CNY</option>
-                            <option value="KRW">₩ KRW</option>
-                            <option value="AUD">$ AUD</option>
-                            <option value="CAD">$ CAD</option>
-                            <option value="NZD">$ NZD</option>
-                            <option value="SGD">$ SGD</option>
-                            <option value="HKD">$ HKD</option>
-                            <option value="SEK">kr SEK</option>
-                            <option value="NOK">kr NOK</option>
-                            <option value="DKK">kr DKK</option>
-                            <option value="PLN">zł PLN</option>
-                            <option value="CZK">Kč CZK</option>
-                            <option value="THB">฿ THB</option>
-                            <option value="MYR">RM MYR</option>
-                            <option value="INR">₹ INR</option>
-                            <option value="BRL">R$ BRL</option>
-                            <option value="MXN">$ MXN</option>
-                            <option value="AED">د.إ AED</option>
-                            <option value="SAR">﷼ SAR</option>
-                            <option value="TRY">₺ TRY</option>
-                            <option value="ZAR">R ZAR</option>
-                            <option value="ILS">₪ ILS</option>
-                            <option value="TWD">$ TWD</option>
-                            <option value="PHP">₱ PHP</option>
-                            <option value="IDR">Rp IDR</option>
-                            <option value="VND">₫ VND</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="footer-section">
                 <h4>Services</h4>
                 <ul>
                     <li><a href="esim.html">eSIM</a></li>
                     <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="visa.html">Visa Check</a></li>
                     <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                     <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
@@ -774,6 +740,7 @@
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                    <li><a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Review us on Trustpilot</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -822,6 +789,9 @@
                 <h3>Purchase eSIM</h3>
             </div>
             <div class="modal-body">
+                <div class="modal-popular-indicator" id="modalPopularIndicator" style="display:none">
+                    &#11088; Popular choice among travelers
+                </div>
                 <div class="modal-package-summary">
                     <h4 id="modalPackageName">5GB - 30 Days</h4>
                     <p id="modalPackageRegion">Europe</p>
@@ -836,6 +806,17 @@
                 <button class="modal-btn" onclick="proceedToCheckout()">
                     Continue to Payment
                 </button>
+
+                <div class="checkout-trust-badges">
+                    <div class="checkout-trust-badge"><span class="icon">&#128274;</span><span>Secure SSL</span></div>
+                    <div class="checkout-trust-badge"><span class="icon">&#128179;</span><span>Stripe Payments</span></div>
+                    <div class="checkout-trust-badge"><span class="icon">&#128176;</span><span>Money-Back</span></div>
+                </div>
+
+                <div class="modal-payment-methods">
+                    <span>We accept:</span>
+                    <img src="images/payment-methods.png" alt="Visa, Mastercard, Amex, PayPal" class="modal-payment-logos">
+                </div>
 
                 <div class="modal-divider">or</div>
 
@@ -873,6 +854,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/nav-selectors.js"></script>
     <script>
         // Regional display data (countries list for UI)
         const regionDisplayData = {
@@ -1104,8 +1086,21 @@
             const grid = document.getElementById('packagesGrid');
             // Mark the middle package as popular
             const popularIndex = Math.floor(packages.length / 2);
+            // Find best value (lowest price per GB, skip unlimited)
+            let bestValueIndex = -1;
+            let bestRatio = Infinity;
+            packages.forEach((pkg, i) => {
+                if (pkg.isUnlimited) return;
+                const gb = parseFloat(pkg.data);
+                if (gb > 0 && pkg.price / gb < bestRatio) {
+                    bestRatio = pkg.price / gb;
+                    bestValueIndex = i;
+                }
+            });
+            if (bestValueIndex === popularIndex) bestValueIndex = -1;
             grid.innerHTML = packages.map((pkg, index) => `
-                <div class="package-card ${index === popularIndex ? 'popular' : ''}" onclick="selectPackage('${pkg.id}')">
+                <div class="package-card ${index === popularIndex ? 'popular' : ''}${index === bestValueIndex ? ' best-value' : ''}" onclick="selectPackage('${pkg.id}')">
+                    ${index === bestValueIndex ? '<div class="value-badge">&#128170; Best Value</div>' : ''}
                     <div class="package-data">${pkg.data}</div>
                     <div class="package-validity">${pkg.days} days validity</div>
                     ${pkg.networkProvider ? `<div class="package-network" style="display: flex; align-items: center; gap: 6px; margin-bottom: 1rem; padding: 8px 12px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 8px; font-size: 0.875rem; color: #0369a1;">
@@ -1125,10 +1120,14 @@
                         ${pkg.hasText ? '<li>SMS included</li>' : ''}
                     </ul>
                     <div class="package-price">
-                        <span class="package-price-amount">$${pkg.price.toFixed(2)}</span>
-                        <span class="package-price-currency">USD</span>
+                        <span class="package-price-amount">${NavSelectors.formatPrice(pkg.price)}</span>
                     </div>
                     <button class="package-btn">Select Plan</button>
+                    <div class="package-trust-line">
+                        <span>&#128274; Secure</span>
+                        <span>&#128176; Money-back</span>
+                        <span>&#10003; Instant delivery</span>
+                    </div>
                 </div>
             `).join('');
         }
@@ -1156,11 +1155,23 @@
         function selectPackage(packageId) {
             selectedPackage = loadedPackages.find(p => p.id == packageId);
             if (selectedPackage && currentRegion) {
+                // Store for sticky CTA
+                window._lastSelectedPkgId = packageId;
+                window._lastSelectedData = selectedPackage.data;
+                window._lastSelectedPrice = NavSelectors.formatPrice(selectedPackage.price);
+
                 document.getElementById('modalPackageName').textContent =
                     `${selectedPackage.data} - ${selectedPackage.days} Days`;
                 document.getElementById('modalPackageRegion').textContent = currentRegion.name;
                 document.getElementById('modalPackagePrice').textContent =
-                    `$${selectedPackage.price.toFixed(2)}`;
+                    NavSelectors.formatPrice(selectedPackage.price);
+
+                // Show popular choice indicator
+                const popularIndex = Math.floor(loadedPackages.length / 2);
+                const selectedIndex = loadedPackages.indexOf(selectedPackage);
+                const popIndicator = document.getElementById('modalPopularIndicator');
+                popIndicator.style.display = selectedIndex === popularIndex ? 'flex' : 'none';
+
                 openModal();
             }
         }
@@ -1169,11 +1180,20 @@
         function openModal() {
             document.getElementById('purchaseModal').classList.add('show');
             document.body.style.overflow = 'hidden';
+            document.getElementById('stickyMobileCta').classList.remove('visible');
         }
 
         function closeModal() {
             document.getElementById('purchaseModal').classList.remove('show');
             document.body.style.overflow = '';
+            // Show sticky CTA on mobile if a package was selected
+            if (window._lastSelectedPkgId && window.innerWidth <= 768) {
+                document.getElementById('stickyCtaData').textContent = window._lastSelectedData;
+                document.getElementById('stickyCtaPrice').textContent = window._lastSelectedPrice;
+                document.getElementById('stickyMobileCta').classList.add('visible');
+                const waFloat = document.querySelector('.whatsapp-float');
+                if (waFloat) waFloat.style.bottom = '80px';
+            }
         }
 
         // Close modals on outside click
@@ -1245,6 +1265,23 @@
 
         // Initialize on load
         document.addEventListener('DOMContentLoaded', initPage);
+
+        // Hide sticky CTA on desktop resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('stickyMobileCta').classList.remove('visible');
+                const waFloat = document.querySelector('.whatsapp-float');
+                if (waFloat) waFloat.style.bottom = '';
+            }
+        });
     </script>
+
+    <div class="sticky-mobile-cta" id="stickyMobileCta">
+        <div class="sticky-cta-info">
+            <span class="sticky-cta-data" id="stickyCtaData"></span>
+            <span class="sticky-cta-price" id="stickyCtaPrice"></span>
+        </div>
+        <button class="sticky-cta-btn" onclick="document.getElementById('stickyMobileCta').classList.remove('visible'); selectPackage(window._lastSelectedPkgId);">Continue</button>
+    </div>
 </body>
 </html>

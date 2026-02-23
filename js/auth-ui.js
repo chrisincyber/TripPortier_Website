@@ -650,9 +650,10 @@ class AuthUI {
   }
 
   // Update navbar based on auth state
+  // Supports both new two-row navbar (#navAuthArea) and old single-row (.nav-links)
   updateNavbar(user, profile) {
+    const navAuthArea = document.getElementById('navAuthArea');
     const navLinks = document.querySelector('.nav-links');
-    if (!navLinks) return;
 
     // Request notification permission when user logs in (only once per session)
     if (user && !this._notificationPromptShown) {
@@ -660,35 +661,117 @@ class AuthUI {
       this.promptForNotifications(user.id);
     }
 
-    // Remove existing auth element
-    const existingAuth = navLinks.querySelector('.nav-auth');
-    if (existingAuth) existingAuth.remove();
-
-    // Handle My Trips nav link visibility - only show when logged in
-    const existingMyTripsNav = document.getElementById('mytrips-nav');
-    const existingTripsLink = navLinks.querySelector('.nav-trips-link');
-    if (existingTripsLink && !existingMyTripsNav) existingTripsLink.remove();
-
-    // Skip adding Sign In button on account page (it has its own Sign In UI)
+    // Skip adding auth on account page for logged-out users
     const isAccountPage = window.location.pathname.includes('account.html');
-    if (!user && isAccountPage) {
-      // Hide My Trips if exists
-      if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
-      // Also update mobile menu
+
+    // === New two-row navbar ===
+    if (navAuthArea) {
+      navAuthArea.innerHTML = '';
+
+      if (!user && isAccountPage) {
+        this.updateMobileMenu(user, profile);
+        return;
+      }
+
+      if (user) {
+        const displayName = profile?.displayName || user.displayName || user.email.split('@')[0];
+        const avatarURL = profile?.profileImageURL || user.photoURL;
+        const email = user.email;
+        const initial = displayName.charAt(0).toUpperCase();
+
+        navAuthArea.innerHTML = `
+          <div class="nav-user-dropdown">
+            <button class="nav-user-btn" onclick="this.parentElement.classList.toggle('open')">
+              ${avatarURL ?
+                `<img src="${avatarURL}" alt="${displayName}" class="nav-user-avatar">` :
+                `<div class="nav-user-avatar-placeholder">${initial}</div>`
+              }
+              <span>${displayName}</span>
+              <svg class="nav-user-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="nav-user-menu">
+              <div class="nav-user-menu-header">
+                <div class="nav-user-menu-name">${displayName}</div>
+                <div class="nav-user-menu-email">${email}</div>
+              </div>
+              <a href="/trips.html">
+                <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"></path>
+                </svg>
+                My Trips
+              </a>
+              <a href="/premium.html" id="premium-dropdown-link">
+                <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                TripPortier+
+              </a>
+              <a href="/account.html">
+                <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"></path>
+                </svg>
+                My Account
+              </a>
+              <a href="/settings.html">
+                <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                Settings
+              </a>
+              <div class="nav-user-menu-divider"></div>
+              <button class="signout" onclick="window.tripPortierAuth.signOut(); this.closest('.nav-user-dropdown').classList.remove('open');">
+                <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                Sign Out
+              </button>
+            </div>
+          </div>
+        `;
+
+        // Check subscription and hide TripPortier+ link for premium users
+        this.checkAndHidePremiumNav(user.id);
+      } else {
+        navAuthArea.innerHTML = `
+          <button class="nav-register-btn" onclick="window.authUI.showModal('signup')">Register</button>
+          <button class="nav-login-btn" onclick="window.authUI.showModal('signin')">Log In</button>
+        `;
+      }
+
       this.updateMobileMenu(user, profile);
       return;
     }
 
-    // Show/hide My Trips nav link based on login state
+    // === Fallback: Old single-row navbar ===
+    if (!navLinks) return;
+
+    // Remove existing auth element
+    const existingAuth = navLinks.querySelector('.nav-auth');
+    if (existingAuth) existingAuth.remove();
+
+    // Handle My Trips nav link visibility
+    const existingMyTripsNav = document.getElementById('mytrips-nav');
+    const existingTripsLink = navLinks.querySelector('.nav-trips-link');
+    if (existingTripsLink && !existingMyTripsNav) existingTripsLink.remove();
+
+    if (!user && isAccountPage) {
+      if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
+      this.updateMobileMenu(user, profile);
+      return;
+    }
+
     if (user) {
-      // Show My Trips nav when logged in
       if (existingMyTripsNav) {
         existingMyTripsNav.style.display = '';
         const isTripsPage = window.location.pathname.includes('trips.html');
         const tripsLink = existingMyTripsNav.querySelector('a');
         if (tripsLink && isTripsPage) tripsLink.classList.add('active');
       } else if (!existingTripsLink) {
-        // Create dynamically if not found
         const premiumNav = document.getElementById('premium-nav');
         const tripsLi = document.createElement('li');
         tripsLi.className = 'nav-trips-link';
@@ -701,17 +784,13 @@ class AuthUI {
           navLinks.appendChild(tripsLi);
         }
       }
-
-      // Check subscription status and hide TripPortier+ for premium users
       this.checkAndHidePremiumNav(user.id);
     } else {
       if (existingMyTripsNav) existingMyTripsNav.style.display = 'none';
-      // Show TripPortier+ for logged out users
       const premiumNav = document.getElementById('premium-nav');
       if (premiumNav) premiumNav.style.display = '';
     }
 
-    // Create new auth element
     const authLi = document.createElement('li');
     authLi.className = 'nav-auth';
 
@@ -743,6 +822,12 @@ class AuthUI {
                 <path d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z"></path>
               </svg>
               My Trips
+            </a>
+            <a href="/premium.html" id="premium-dropdown-link">
+              <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              TripPortier+
             </a>
             <a href="/account.html">
               <svg class="nav-user-menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -777,7 +862,7 @@ class AuthUI {
 
     navLinks.appendChild(authLi);
 
-    // Also update mobile menu if it exists
+    // Also update mobile menu
     this.updateMobileMenu(user, profile);
   }
 
@@ -913,9 +998,6 @@ class AuthUI {
 
   // Check subscription status and hide TripPortier+ nav for premium users
   async checkAndHidePremiumNav(userId) {
-    const premiumNav = document.getElementById('premium-nav');
-    if (!premiumNav) return;
-
     try {
       const supabase = window.supabaseClient;
       if (!supabase) return;
@@ -928,10 +1010,17 @@ class AuthUI {
 
       if (!error && data) {
         const isPremium = data.status === 'active' || data.status === 'trialing';
-        if (isPremium) {
-          premiumNav.style.display = 'none';
-        } else {
-          premiumNav.style.display = '';
+
+        // Hide/show old nav premium link
+        const premiumNav = document.getElementById('premium-nav');
+        if (premiumNav) {
+          premiumNav.style.display = isPremium ? 'none' : '';
+        }
+
+        // Hide/show new dropdown premium link
+        const premiumDropdownLink = document.getElementById('premium-dropdown-link');
+        if (premiumDropdownLink) {
+          premiumDropdownLink.style.display = isPremium ? 'none' : '';
         }
       }
     } catch (error) {
@@ -940,14 +1029,48 @@ class AuthUI {
   }
 
   updateMobileMenu(user, profile) {
-    // Update mobile navigation bar elements (booking.com style tabs)
+    // Update old-style mobile nav bar elements
     this.updateMobileNavBar(user, profile);
 
-    // Check if there's a mobile menu section
+    // === New mobile nav panel (#mobileAuthSection) ===
+    const mobileAuthSection = document.getElementById('mobileAuthSection');
+    if (mobileAuthSection) {
+      mobileAuthSection.innerHTML = '';
+      if (user) {
+        const displayName = profile?.displayName || user.displayName || user.email.split('@')[0];
+        const avatarURL = profile?.profileImageURL || user.photoURL;
+        const email = user.email;
+
+        mobileAuthSection.innerHTML = `
+          <div class="mobile-user-info" style="margin-bottom: 0.75rem;">
+            ${avatarURL ?
+              `<img src="${avatarURL}" alt="${displayName}" class="mobile-user-avatar">` :
+              `<div class="nav-user-avatar-placeholder">${displayName.charAt(0).toUpperCase()}</div>`
+            }
+            <div class="mobile-user-details">
+              <div class="mobile-user-name" style="color: white;">${displayName}</div>
+              <div class="mobile-user-email" style="color: rgba(255,255,255,0.6);">${email}</div>
+            </div>
+          </div>
+          <a href="/trips.html" class="mobile-signin-btn" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; margin-bottom: 0.5rem;">My Trips</a>
+          <a href="/premium.html" class="mobile-signin-btn" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); margin-bottom: 0.5rem; border: 1px solid rgba(255,255,255,0.15);">TripPortier+</a>
+          <a href="/account.html" class="mobile-signin-btn" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); margin-bottom: 0.5rem; border: 1px solid rgba(255,255,255,0.15);">My Account</a>
+          <a href="/settings.html" class="mobile-signin-btn" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); margin-bottom: 0.5rem; border: 1px solid rgba(255,255,255,0.15);">Settings</a>
+          <button class="mobile-signout-btn" onclick="window.tripPortierAuth.signOut()" style="background: rgba(220,38,38,0.15); color: #fca5a5;">Sign Out</button>
+        `;
+      } else {
+        mobileAuthSection.innerHTML = `
+          <button class="mobile-signin-btn" onclick="window.authUI.showModal('signup'); toggleMenu();" style="background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.9); margin-bottom: 0.5rem; border: 1px solid rgba(255,255,255,0.15);">Register</button>
+          <button class="mobile-signin-btn" onclick="window.authUI.showModal('signin'); toggleMenu();" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white;">Log In</button>
+        `;
+      }
+      return; // New panel handled, skip old style
+    }
+
+    // === Fallback: Old mobile menu (.mobile-nav-links) ===
     const mobileMenu = document.querySelector('.mobile-nav-links');
     if (!mobileMenu) return;
 
-    // Remove existing mobile auth section
     const existingAuth = mobileMenu.querySelector('.mobile-auth-section');
     if (existingAuth) existingAuth.remove();
 

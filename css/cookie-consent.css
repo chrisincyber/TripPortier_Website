@@ -8,7 +8,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #0f0f23;
     color: white;
     padding: 1.5rem;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
@@ -132,7 +132,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .cookie-consent-banner {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        background: #0f0f23;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
 }

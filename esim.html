@@ -33,19 +33,7 @@
         }
 
         .esim-hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(2%, 2%); }
+            display: none;
         }
 
         .esim-hero-content {
@@ -133,7 +121,7 @@
         /* Category Tabs */
         .categories-section {
             padding: 3rem 2rem 2rem;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .categories-container {
@@ -175,7 +163,7 @@
         /* Countries Grid */
         .countries-section {
             padding: 2rem 2rem 4rem;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .countries-container {
@@ -203,7 +191,7 @@
         }
 
         .country-card {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            background: #0f0f23;
             border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
@@ -213,6 +201,7 @@
             transition: all 0.3s;
             cursor: pointer;
             border: 2px solid transparent;
+            position: relative;
         }
 
         .country-card:hover {
@@ -305,88 +294,7 @@
             transform: scale(1.05);
         }
 
-        /* Language Selector */
-        .language-selector {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 999;
-        }
-
-        .language-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 16px;
-            background: white;
-            border: 2px solid #e2e8f0;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .language-btn:hover {
-            border-color: #6366f1;
-            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.2);
-        }
-
-        .language-dropdown {
-            position: absolute;
-            bottom: 100%;
-            right: 0;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            padding: 8px;
-            margin-bottom: 8px;
-            display: none;
-            max-height: 400px;
-            overflow-y: auto;
-            min-width: 180px;
-        }
-
-        .language-dropdown.show {
-            display: block;
-        }
-
-        .language-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-size: 14px;
-        }
-
-        .language-option:hover {
-            background: #f1f5f9;
-        }
-
-        .language-option.active {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
-            color: #6366f1;
-            font-weight: 600;
-        }
-
-        .language-option .flag {
-            font-size: 18px;
-        }
-
-        @media (max-width: 768px) {
-            .language-selector {
-                bottom: 90px;
-                right: 15px;
-            }
-            .language-btn {
-                padding: 10px 14px;
-                font-size: 13px;
-            }
-        }
+        /* (Old floating language selector CSS removed — now in navbar) */
 
         /* Loading State */
         .loading-grid {
@@ -444,7 +352,7 @@
         }
 
         .faq-header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 3rem;
         }
 
@@ -460,7 +368,7 @@
         }
 
         .faq-item {
-            background: #f8fafc;
+            background: #ffffff;
             border-radius: 16px;
             margin-bottom: 1rem;
             overflow: hidden;
@@ -478,7 +386,7 @@
         }
 
         .faq-question:hover {
-            background: #f1f5f9;
+            background: #ffffff;
         }
 
         .faq-icon {
@@ -505,7 +413,7 @@
         }
 
         .faq-more {
-            text-align: center;
+            text-align: left;
             margin-top: 2rem;
         }
 
@@ -522,7 +430,7 @@
         /* Benefits Section */
         .benefits-section {
             padding: 4rem 2rem;
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .benefits-container {
@@ -531,7 +439,7 @@
         }
 
         .benefits-header {
-            text-align: center;
+            text-align: left;
             margin-bottom: 3rem;
         }
 
@@ -583,7 +491,7 @@
         /* Cashback Rewards Section */
         .cashback-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            background: #0f0f23;
             color: white;
             position: relative;
             overflow: hidden;
@@ -770,7 +678,7 @@
             padding: 4rem 2rem;
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
-            text-align: center;
+            text-align: left;
         }
 
         .app-cta h2 {
@@ -864,7 +772,7 @@
 
             .worldwide-card {
                 flex-direction: column;
-                text-align: center;
+                text-align: left;
             }
 
             .worldwide-info {
@@ -902,7 +810,7 @@
         }
 
         .search-result-item:hover {
-            background: #f8fafc;
+            background: #ffffff;
         }
 
         .search-result-item img {
@@ -1065,7 +973,7 @@
             width: 36px;
             height: 36px;
             border: none;
-            background: #f1f5f9;
+            background: #ffffff;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1.25rem;
@@ -1268,7 +1176,7 @@
             font-size: 0.6875rem;
             font-weight: 600;
             padding: 0.25rem 0.5rem;
-            background: #f1f5f9;
+            background: #ffffff;
             border-radius: 4px;
             color: #64748b;
             text-transform: uppercase;
@@ -1316,7 +1224,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0.625rem 0;
-            border-bottom: 1px solid #f8fafc;
+            border-bottom: 1px solid #ffffff;
         }
 
         .package-detail-row:last-of-type {
@@ -1397,7 +1305,7 @@
         .buy-now-btn {
             width: 100%;
             padding: 1rem;
-            background: #0f172a;
+            background: #0f0f23;
             color: white;
             border: none;
             border-radius: 12px;
@@ -1408,7 +1316,7 @@
         }
 
         .buy-now-btn:hover:not(:disabled) {
-            background: #1e293b;
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .buy-now-btn:disabled {
@@ -1461,7 +1369,7 @@
             flex-wrap: wrap;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            background: #f8fafc;
+            background: #ffffff;
             align-items: center;
             flex-shrink: 0;
         }
@@ -1491,9 +1399,9 @@
         }
 
         .filter-tab.active {
-            background: #0f172a;
+            background: #0f0f23;
             color: white;
-            border-color: #0f172a;
+            border-color: #0f0f23;
         }
 
         .sort-select {
@@ -1675,7 +1583,7 @@
             width: 36px;
             height: 36px;
             border: none;
-            background: #f1f5f9;
+            background: #ffffff;
             border-radius: 50%;
             cursor: pointer;
             font-size: 1.25rem;
@@ -1779,168 +1687,81 @@
             }
         }
 
-        /* Language Selector Styles */
-        .language-selector {
-            position: relative;
-            margin-left: 16px;
-        }
-
-        .language-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .language-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .language-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            margin-top: 8px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            min-width: 200px;
-            max-height: 400px;
-            overflow-y: auto;
-            display: none;
-            z-index: 1000;
-        }
-
-        .language-dropdown.show {
-            display: block;
-        }
-
-        .language-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        .language-option:hover {
-            background: #f3f4f6;
-        }
-
-        .language-option.active {
-            background: #ede9fe;
-            color: #7c3aed;
-        }
-
-        .language-option:first-child {
-            border-radius: 12px 12px 0 0;
-        }
-
-        .language-option:last-child {
-            border-radius: 0 0 12px 12px;
-        }
-
-        .language-option .flag {
-            font-size: 20px;
-        }
-
-        .language-option .name {
-            flex: 1;
-        }
-
         /* RTL Support for Arabic */
         [dir="rtl"] {
             text-align: right;
         }
 
-        [dir="rtl"] .nav-container,
         [dir="rtl"] .benefits-grid,
         [dir="rtl"] .countries-grid {
             direction: rtl;
-        }
-
-        @media (max-width: 768px) {
-            .language-selector {
-                margin-left: 8px;
-            }
-
-            .language-btn {
-                padding: 6px 10px;
-            }
-
-            #currentLanguageName {
-                display: none;
-            }
-
-            .language-dropdown {
-                right: -50px;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-transparent" id="navbar">
-        <div class="nav-container">
+      <!-- Row 1: Utility Bar -->
+      <div class="nav-row-top">
+        <div class="nav-row-container">
+          <div class="nav-top-left">
             <a href="index.html" class="logo">
-                <img src="assets/images/logo.png" alt="TripPortier Logo">
-                TripPortier
+              <img src="assets/images/logo.png" alt="TripPortier Logo">
+              TripPortier
             </a>
-            <ul class="nav-links">
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle active" onclick="toggleMobileDropdown(this, event)">eSIM <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="esim.html">eSIM Plans</a></li>
-                        <li><a href="myesims.html">My Orders</a></li>
-                    </ul>
-                </li>
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">Services <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="airport-transfers.html">Airport Transfers</a></li>
-                        <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
-                        <li><a href="visa.html">Visa Check</a></li>
-                    </ul>
-                </li>
-                <li id="mytrips-nav" style="display: none;"><a href="trips.html">My Trips</a></li>
-                <li id="premium-nav"><a href="premium.html">TripPortier+</a></li>
-            </ul>
-
-            <!-- Language Selector -->
-            <div class="language-selector" id="languageSelector">
-                <button class="language-btn" onclick="toggleLanguageDropdown()">
-                    <span id="currentLanguageFlag">🇬🇧</span>
-                    <span id="currentLanguageName">EN</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M6 9l6 6 6-6"/>
-                    </svg>
-                </button>
-                <div class="language-dropdown" id="languageDropdown"></div>
+            <div class="nav-separator"></div>
+            <div class="nav-currency-selector" id="navCurrencySelector">
+              <button class="nav-selector-btn" id="currencyBtn" onclick="NavSelectors.toggleCurrency()">
+                <span id="currencySymbol">$</span>
+                <span id="currencyLabel">USD</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="currencyDropdown"></div>
             </div>
-
-            <div class="mobile-nav-right">
-                <button class="mobile-signin-btn" id="mobile-signin-btn" onclick="window.authUI.showModal('signin')">Sign In</button>
-                <button class="mobile-menu" onclick="toggleMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
+            <div class="nav-language-selector" id="navLanguageSelector">
+              <button class="nav-selector-btn" id="languageBtn" onclick="NavSelectors.toggleLanguage()">
+                <span id="languageFlag">🇬🇧</span>
+                <span id="languageLabel">EN</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="languageDropdown"></div>
             </div>
+          </div>
+          <div class="nav-top-right" id="navAuthArea"></div>
         </div>
-</nav>
+      </div>
+      <!-- Row 2: Main Navigation -->
+      <div class="nav-row-main">
+        <div class="nav-row-container">
+          <ul class="nav-main-links">
+            <li><a href="app.html" class="nav-main-link">📱 TripPortier App</a></li>
+            <li><a href="esim.html" class="nav-main-link active">📶 eSIM</a></li>
+            <li><a href="transport.html" class="nav-main-link">🚗 Transport</a></li>
+            <li><a href="visa.html" class="nav-main-link">📋 Visa Check</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Mobile: hamburger -->
+      <div class="nav-mobile-toggle">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+      <!-- Mobile: slide-down panel -->
+      <div class="mobile-nav-panel" id="mobileNavPanel">
+        <ul class="mobile-nav-links">
+          <li><a href="app.html">📱 TripPortier App</a></li>
+          <li><a href="esim.html">📶 eSIM</a></li>
+          <li><a href="transport.html">🚗 Transport</a></li>
+          <li><a href="visa.html">📋 Visa Check</a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-selectors">
+          <select id="mobileCurrencySelect" onchange="NavSelectors.setCurrency(this.value)"></select>
+          <select id="mobileLanguageSelect" onchange="NavSelectors.setLanguage(this.value)"></select>
+        </div>
+        <div class="mobile-nav-divider"></div>
+        <div id="mobileAuthSection"></div>
+      </div>
+    </nav>
 
     <!-- Hero Section -->
     <section class="esim-hero">
@@ -2175,76 +1996,17 @@
     <!-- Footer -->
     <!-- Footer -->
     <footer class="footer">
-        <!-- Trust Bar -->
-        <div class="footer-trust-bar">
-            <div class="trust-bar-container">
-                <div class="trust-item">
-                    <span class="trust-icon">&#128274;</span>
-                    <span>Secure Payments</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#9989;</span>
-                    <span>Verified Provider</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#128176;</span>
-                    <span>Money-Back Guarantee</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#127760;</span>
-                    <span>200+ Countries</span>
-                </div>
-            </div>
-        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
-                <!-- Language & Currency Selectors -->
-                <div class="footer-selectors">
-                    <div class="selector-group">
-                        <label for="currency-select">&#128176; Currency</label>
-                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="GBP">£ GBP</option>
-                            <option value="CHF">CHF</option>
-                            <option value="JPY">¥ JPY</option>
-                            <option value="CNY">¥ CNY</option>
-                            <option value="KRW">₩ KRW</option>
-                            <option value="AUD">$ AUD</option>
-                            <option value="CAD">$ CAD</option>
-                            <option value="NZD">$ NZD</option>
-                            <option value="SGD">$ SGD</option>
-                            <option value="HKD">$ HKD</option>
-                            <option value="SEK">kr SEK</option>
-                            <option value="NOK">kr NOK</option>
-                            <option value="DKK">kr DKK</option>
-                            <option value="PLN">zł PLN</option>
-                            <option value="CZK">Kč CZK</option>
-                            <option value="THB">฿ THB</option>
-                            <option value="MYR">RM MYR</option>
-                            <option value="INR">₹ INR</option>
-                            <option value="BRL">R$ BRL</option>
-                            <option value="MXN">$ MXN</option>
-                            <option value="AED">د.إ AED</option>
-                            <option value="SAR">﷼ SAR</option>
-                            <option value="TRY">₺ TRY</option>
-                            <option value="ZAR">R ZAR</option>
-                            <option value="ILS">₪ ILS</option>
-                            <option value="TWD">$ TWD</option>
-                            <option value="PHP">₱ PHP</option>
-                            <option value="IDR">Rp IDR</option>
-                            <option value="VND">₫ VND</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="footer-section">
                 <h4>Services</h4>
                 <ul>
                     <li><a href="esim.html">eSIM</a></li>
                     <li><a href="airport-transfers.html">Airport Transfers</a></li>
+                    <li><a href="visa.html">Visa Check</a></li>
                     <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
                     <li><a href="https://apps.apple.com/app/tripportier">Download App</a></li>
                 </ul>
@@ -2255,6 +2017,7 @@
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                    <li><a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Review us on Trustpilot</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -2452,6 +2215,11 @@
                         <span>Money-Back</span>
                     </div>
                 </div>
+
+                <div class="modal-payment-methods">
+                    <span>We accept:</span>
+                    <img src="images/payment-methods.png" alt="Visa, Mastercard, Amex, PayPal" class="modal-payment-logos">
+                </div>
             </div>
         </div>
     </div>
@@ -2472,62 +2240,14 @@
     <script src="js/supabase-auth.js"></script>
     <script src="js/auth-ui.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/nav-selectors.js"></script>
 
     <script>
         // ==========================================
         // Language & Translation System
+        // Language selection now handled by NavSelectors (nav-selectors.js)
         // ==========================================
-        let currentLanguage = localStorage.getItem('esimLanguage') || 'en';
-
-        // Initialize language dropdown
-        function initLanguageDropdown() {
-            const dropdown = document.getElementById('languageDropdown');
-            if (!dropdown || typeof languages === 'undefined') return;
-
-            dropdown.innerHTML = languages.map(lang => `
-                <button class="language-option ${lang.code === currentLanguage ? 'active' : ''}"
-                        onclick="setLanguage('${lang.code}')">
-                    <span class="flag">${lang.flag}</span>
-                    <span class="name">${lang.nativeName}</span>
-                </button>
-            `).join('');
-        }
-
-        // Toggle language dropdown
-        function toggleLanguageDropdown() {
-            const dropdown = document.getElementById('languageDropdown');
-            dropdown.classList.toggle('show');
-        }
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.language-selector')) {
-                document.getElementById('languageDropdown')?.classList.remove('show');
-            }
-        });
-
-        // Set language
-        function setLanguage(langCode) {
-            currentLanguage = langCode;
-            localStorage.setItem('esimLanguage', langCode);
-
-            // Update UI
-            const lang = languages.find(l => l.code === langCode);
-            if (lang) {
-                document.getElementById('currentLanguageFlag').textContent = lang.flag;
-                document.getElementById('currentLanguageName').textContent = langCode.toUpperCase().split('-')[0];
-                document.body.dir = lang.dir || 'ltr';
-            }
-
-            // Update dropdown active state
-            document.querySelectorAll('.language-option').forEach(opt => {
-                opt.classList.toggle('active', opt.querySelector('.name')?.textContent === lang?.nativeName);
-            });
-
-            // Apply translations
-            applyTranslations();
-            document.getElementById('languageDropdown')?.classList.remove('show');
-        }
+        let currentLanguage = localStorage.getItem('tripportier-lang') || localStorage.getItem('esimLanguage') || 'en';
 
         // Apply translations to all elements with data-i18n
         function applyTranslations() {
@@ -2569,15 +2289,25 @@
             }
         }
 
-        // Initialize language system on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            initLanguageDropdown();
-            // Set initial language from storage (guard against missing languages array)
+        // Listen for language changes from navbar selector
+        window.addEventListener('languageChanged', (e) => {
+            currentLanguage = e.detail.language;
+            // Update RTL direction
             if (typeof languages !== 'undefined') {
                 const lang = languages.find(l => l.code === currentLanguage);
                 if (lang) {
-                    document.getElementById('currentLanguageFlag').textContent = lang.flag;
-                    document.getElementById('currentLanguageName').textContent = currentLanguage.toUpperCase().split('-')[0];
+                    document.body.dir = lang.dir || 'ltr';
+                }
+            }
+            applyTranslations();
+        });
+
+        // Initialize language system on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial RTL direction
+            if (typeof languages !== 'undefined') {
+                const lang = languages.find(l => l.code === currentLanguage);
+                if (lang) {
                     document.body.dir = lang.dir || 'ltr';
                 }
             }
@@ -2814,10 +2544,24 @@
             }
         }
 
+        // Trending destinations map
+        const trendingDestinations = {
+            'TH': { label: 'Trending', count: '120+ bought today' },
+            'JP': { label: 'Popular', count: '200+ bought today' },
+            'US': { label: 'Popular', count: '350+ bought today' },
+            'KR': { label: 'Trending', count: '90+ bought today' },
+            'VN': { label: 'Trending', count: '80+ bought today' },
+            'GB': { label: 'Popular', count: '150+ bought today' },
+            'TR': { label: 'Trending', count: '110+ bought today' },
+            'ID': { label: 'Trending', count: '95+ bought today' }
+        };
+
         // Create country card with feature badges
         function createCountryCard(country) {
+            const trending = trendingDestinations[country.code];
             return `
                 <div class="country-card" onclick="openCountryModal('${country.code}', '${country.name}', '${country.flag}')">
+                    ${trending ? `<div class="trending-badge">${trending.label}</div>` : ''}
                     <img src="${country.flag}" alt="${country.name}" class="country-flag" onerror="this.style.display='none'">
                     <div class="country-name">${country.name}</div>
                     <div class="country-features" id="features-${country.code}">
@@ -2826,6 +2570,7 @@
                         <span class="feature-badge" id="calls-${country.code}"><span class="cross">&#10007;</span> Calls</span>
                     </div>
                     <div class="country-price" id="price-${country.code}">From <span class="price-loading"></span></div>
+                    ${trending ? `<div class="trending-count">${trending.count}</div>` : ''}
                 </div>
             `;
         }
@@ -2878,7 +2623,7 @@
                 const callsEl = document.getElementById(`calls-${country.code}`);
 
                 if (priceEl && cheapest) {
-                    priceEl.innerHTML = `From <strong>$${cheapest.price.toFixed(2)}</strong>`;
+                    priceEl.innerHTML = `From <strong>${NavSelectors.formatPrice(cheapest.price)}</strong>`;
                 } else if (priceEl) {
                     priceEl.innerHTML = `<span style="color:#94a3b8">No packages</span>`;
                 }
@@ -2906,7 +2651,7 @@
                 const callsEl = document.getElementById(`calls-region-${region.code}`);
 
                 if (priceEl && cheapest) {
-                    priceEl.innerHTML = `From <strong>$${cheapest.price.toFixed(2)}</strong>`;
+                    priceEl.innerHTML = `From <strong>${NavSelectors.formatPrice(cheapest.price)}</strong>`;
                 } else if (priceEl) {
                     priceEl.innerHTML = `<span style="color:rgba(255,255,255,0.6)">No packages</span>`;
                 }
@@ -2933,7 +2678,7 @@
             const callsEl = document.getElementById('calls-global');
 
             if (priceEl && cheapest) {
-                priceEl.innerHTML = `From <strong>$${cheapest.price.toFixed(2)}</strong>`;
+                priceEl.innerHTML = `From <strong>${NavSelectors.formatPrice(cheapest.price)}</strong>`;
             }
 
             if (smsEl && features.hasText) {
@@ -3070,9 +2815,9 @@
             if (!selectedPackage) return;
             const finalPrice = Math.max(0, selectedPackage.price - tripcoinsToUse);
             if (tripcoinsToUse > 0) {
-                document.getElementById('buyNowBtn').innerHTML = `Buy Now - <s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                document.getElementById('buyNowBtn').innerHTML = `Buy Now - <s style="opacity:0.6">${NavSelectors.formatPrice(selectedPackage.price)}</s> ${NavSelectors.formatPrice(finalPrice)}`;
             } else {
-                document.getElementById('buyNowBtn').textContent = `Buy Now - $${selectedPackage.price.toFixed(2)}`;
+                document.getElementById('buyNowBtn').textContent = `Buy Now - ${NavSelectors.formatPrice(selectedPackage.price)}`;
             }
 
             // Also update the proceed button in expanded card
@@ -3081,9 +2826,9 @@
                 const proceedBtn = expandedCard.querySelector('.proceed-btn');
                 if (proceedBtn) {
                     if (tripcoinsToUse > 0) {
-                        proceedBtn.innerHTML = `Proceed to Checkout - <s style="opacity:0.6">$${selectedPackage.price.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                        proceedBtn.innerHTML = `Proceed to Checkout - <s style="opacity:0.6">${NavSelectors.formatPrice(selectedPackage.price)}</s> ${NavSelectors.formatPrice(finalPrice)}`;
                     } else {
-                        proceedBtn.textContent = `Proceed to Checkout - $${selectedPackage.price.toFixed(2)}`;
+                        proceedBtn.textContent = `Proceed to Checkout - ${NavSelectors.formatPrice(selectedPackage.price)}`;
                     }
                 }
             }
@@ -3179,7 +2924,7 @@
                                         ${pkg.networkProvider ? `<span class="network-badge">${pkg.networkProvider}</span>` : ''}
                                     </div>
                                 </div>
-                                <div class="package-price-tag">$${pkg.price.toFixed(2)}</div>
+                                <div class="package-price-tag">${NavSelectors.formatPrice(pkg.price)}</div>
                             </div>
                             <div class="package-details-expanded">
                                 <div class="package-detail-row">
@@ -3210,7 +2955,7 @@
                                     <p>&#9989; <strong>Activation:</strong> Your ${pkg.days}-day plan starts when you first connect to a network at your destination - not when you install the eSIM.</p>
                                 </div>
                                 <button class="proceed-btn" onclick="event.stopPropagation(); proceedToPurchase();">
-                                    Proceed to Checkout - $${pkg.price.toFixed(2)}
+                                    Proceed to Checkout - ${NavSelectors.formatPrice(pkg.price)}
                                 </button>
                             </div>
                         </div>
@@ -3335,13 +3080,13 @@
             // Show TripCoins discount if applicable
             if (coinsToUse > 0) {
                 document.getElementById('checkoutPackagePrice').innerHTML =
-                    `<s style="opacity:0.6">$${originalPrice.toFixed(2)}</s> $${finalPrice.toFixed(2)}`;
+                    `<s style="opacity:0.6">${NavSelectors.formatPrice(originalPrice)}</s> ${NavSelectors.formatPrice(finalPrice)}`;
                 document.getElementById('checkoutTripcoinsAmount').textContent = coinsToUse.toFixed(0);
-                document.getElementById('checkoutOriginalPrice').textContent = originalPrice.toFixed(2);
-                document.getElementById('checkoutFinalPrice').textContent = finalPrice.toFixed(2);
+                document.getElementById('checkoutOriginalPrice').textContent = NavSelectors.formatPrice(originalPrice);
+                document.getElementById('checkoutFinalPrice').textContent = NavSelectors.formatPrice(finalPrice);
                 document.getElementById('checkoutTripcoinsDiscount').style.display = 'block';
             } else {
-                document.getElementById('checkoutPackagePrice').textContent = `$${originalPrice.toFixed(2)}`;
+                document.getElementById('checkoutPackagePrice').textContent = NavSelectors.formatPrice(originalPrice);
                 document.getElementById('checkoutTripcoinsDiscount').style.display = 'none';
             }
 

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="css/cookie-consent.css">
-    <script src="js/cookie-consent.js" defer></script>
+    <link rel="stylesheet" href="css/cookie-consent.css?v=2">
+    <script src="js/cookie-consent.js?v=2" defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -65,13 +65,13 @@
     <link rel="alternate" hreflang="tr" href="https://tripportier.com/tr/">
     <link rel="alternate" hreflang="x-default" href="https://tripportier.com/en/">
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/theme.css">
-    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link rel="stylesheet" href="css/theme.css?v=3">
+    <link rel="stylesheet" href="css/auth.css?v=3">
     <link rel="icon" type="image/png" href="assets/images/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Modern Font System */
         body {
@@ -84,859 +84,6 @@
             letter-spacing: -0.02em;
         }
 
-        /* Animated Gradient Background */
-        .hero-new {
-            min-height: 100vh;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
-        }
-
-        .hero-new::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.2) 0%, transparent 50%);
-            animation: aurora 15s ease-in-out infinite;
-        }
-
-        @keyframes aurora {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(2%, 2%) rotate(1deg); }
-            66% { transform: translate(-1%, 1%) rotate(-1deg); }
-        }
-
-        .hero-container-new {
-            position: relative;
-            z-index: 2;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 120px 2rem 80px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .hero-text {
-            color: white;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.6s ease;
-        }
-
-        .hero-badge-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .hero-title {
-            font-size: 4rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            animation: fadeInUp 0.6s ease 0.1s backwards;
-        }
-
-        .hero-title-line {
-            display: block;
-        }
-
-        .hero-title-gradient {
-            background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fb923c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* Typing Animation */
-        .typing-container {
-            display: inline-flex;
-            align-items: baseline;
-            gap: 0.5rem;
-        }
-
-        .typing-text {
-            display: inline;
-            background: linear-gradient(135deg, #22d3ee 0%, #a78bfa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .typing-cursor {
-            display: inline;
-            color: #a78bfa;
-            animation: blink 1s infinite;
-            margin-left: 2px;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 2.5rem;
-            max-width: 500px;
-            line-height: 1.7;
-            animation: fadeInUp 0.6s ease 0.2s backwards;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Booking Cards - Primary Focus */
-        .booking-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.6s ease 0.3s backwards;
-        }
-
-        .booking-card {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem 1.5rem;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .booking-card:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: translateX(8px);
-        }
-
-        .booking-card-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .booking-card-icon.transfers {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        }
-
-        .booking-card-icon.asia {
-            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
-        }
-
-        .booking-card-icon.esim {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        }
-
-        .booking-card-content {
-            flex: 1;
-        }
-
-        .booking-card-content h4 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .booking-card-content p {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.6);
-            margin: 0;
-        }
-
-        .booking-card-arrow {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .booking-card:hover .booking-card-arrow {
-            color: white;
-            transform: translateX(4px);
-        }
-
-        /* App Download - Secondary */
-        .app-section {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeInUp 0.6s ease 0.4s backwards;
-        }
-
-        .app-download-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 14px 24px;
-            background: white;
-            color: #1a1a3e;
-            border-radius: 12px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .app-download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .app-download-btn svg {
-            width: 22px;
-            height: 22px;
-        }
-
-        .app-info {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.875rem;
-        }
-
-        .app-info strong {
-            color: white;
-            display: block;
-            font-weight: 600;
-        }
-
-        /* Phone Display */
-        .hero-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-
-        .phone-showcase {
-            position: relative;
-            width: 100%;
-            max-width: 500px;
-            height: 600px;
-        }
-
-        .phone-showcase .phone {
-            position: absolute;
-            width: 240px;
-            height: auto;
-            border-radius: 36px;
-            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .phone-showcase .phone-left {
-            left: 0;
-            top: 80px;
-            transform: rotate(-12deg) translateZ(0);
-            z-index: 1;
-            opacity: 0.9;
-        }
-
-        .phone-showcase .phone-center {
-            left: 50%;
-            top: 20px;
-            transform: translateX(-50%) translateZ(0);
-            z-index: 3;
-            width: 280px;
-        }
-
-        .phone-showcase .phone-right {
-            right: 0;
-            top: 80px;
-            transform: rotate(12deg) translateZ(0);
-            z-index: 2;
-            opacity: 0.9;
-        }
-
-        .phone-showcase:hover .phone-left {
-            transform: rotate(-15deg) translateX(-20px) translateZ(0);
-        }
-
-        .phone-showcase:hover .phone-right {
-            transform: rotate(15deg) translateX(20px) translateZ(0);
-        }
-
-        .phone-showcase:hover .phone-center {
-            transform: translateX(-50%) translateY(-15px) translateZ(0);
-            box-shadow: 0 70px 140px rgba(0, 0, 0, 0.6);
-        }
-
-        /* Floating Elements */
-        .float-element {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: white;
-            font-size: 0.875rem;
-            font-weight: 500;
-            z-index: 10;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .float-element.float-1 {
-            top: 10%;
-            right: 5%;
-            animation-delay: 0s;
-        }
-
-        .float-element.float-2 {
-            bottom: 20%;
-            left: 0;
-            animation-delay: 1s;
-        }
-
-        .float-element.float-3 {
-            bottom: 5%;
-            right: 10%;
-            animation-delay: 2s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* Social Proof Section */
-        .social-proof {
-            padding: 80px 2rem;
-            background: white;
-        }
-
-        .social-proof-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .social-proof-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #6366f1;
-            margin-bottom: 2rem;
-        }
-
-        .testimonials {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .testimonial-card {
-            background: #f8fafc;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: left;
-            transition: all 0.3s ease;
-        }
-
-        .testimonial-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        }
-
-        .testimonial-stars {
-            color: #fbbf24;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .testimonial-text {
-            font-size: 1rem;
-            color: #475569;
-            line-height: 1.7;
-            margin-bottom: 1.5rem;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .testimonial-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #a78bfa);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        .testimonial-author-info h5 {
-            font-size: 0.9375rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin: 0;
-        }
-
-        .testimonial-author-info p {
-            font-size: 0.8125rem;
-            color: #94a3b8;
-            margin: 0;
-        }
-
-        /* Features Section - Compact */
-        .features-compact {
-            padding: 100px 2rem;
-            background: linear-gradient(180deg, #f8fafc 0%, white 100%);
-        }
-
-        .features-compact-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .features-compact-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-
-        .features-compact-header h2 {
-            font-size: 2.75rem;
-            font-weight: 800;
-            color: #1e293b;
-            margin-bottom: 1rem;
-        }
-
-        .features-compact-header p {
-            font-size: 1.125rem;
-            color: #64748b;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .features-grid-new {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-
-        .feature-card-new {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-
-        .feature-card-new:hover {
-            border-color: #6366f1;
-            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.1);
-            transform: translateY(-5px);
-        }
-
-        .feature-card-new .icon {
-            width: 56px;
-            height: 56px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.25rem;
-            background: linear-gradient(135deg, #ede9fe, #fae8ff);
-        }
-
-        .feature-card-new h4 {
-            font-size: 1.0625rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-card-new p {
-            font-size: 0.9rem;
-            color: #64748b;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        /* CTA Section */
-        .cta-section {
-            padding: 100px 2rem;
-            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.3) 0%, transparent 50%);
-        }
-
-        .cta-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .cta-title {
-            font-size: 3rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta-subtitle {
-            font-size: 1.25rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 2.5rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            background: white;
-            color: #4c1d95;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.0625rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .cta-btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .cta-btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            background: transparent;
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1.0625rem;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .cta-btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .hero-container-new {
-                grid-template-columns: 1fr;
-                text-align: center;
-                padding-top: 100px;
-            }
-
-            .hero-visual {
-                order: -1;
-            }
-
-            .phone-showcase {
-                height: 450px;
-                max-width: 400px;
-            }
-
-            .phone-showcase .phone {
-                width: 180px;
-            }
-
-            .phone-showcase .phone-center {
-                width: 220px;
-            }
-
-            .hero-title {
-                font-size: 3rem;
-            }
-
-            .hero-subtitle {
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .booking-cards {
-                max-width: 400px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .app-section {
-                justify-content: center;
-                flex-wrap: wrap;
-            }
-
-            .float-element,
-            .float-element.float-3 {
-                display: none;
-            }
-
-            .testimonials {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid-new {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .hero-container-new {
-                padding: 80px 1.5rem 60px;
-            }
-
-            .hero-title {
-                font-size: 2.25rem;
-            }
-
-            .phone-showcase {
-                height: 350px;
-                max-width: 300px;
-            }
-
-            .phone-showcase .phone {
-                width: 140px;
-            }
-
-            .phone-showcase .phone-center {
-                width: 170px;
-            }
-
-            .phone-showcase .phone-left,
-            .phone-showcase .phone-right {
-                top: 60px;
-            }
-
-            .booking-card {
-                padding: 1rem;
-            }
-
-            .features-grid-new {
-                grid-template-columns: 1fr;
-            }
-
-            .cta-title {
-                font-size: 2rem;
-            }
-
-            .cta-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-
-        /* Homepage transparent navbar over hero */
-        .navbar {
-            background: transparent;
-            box-shadow: none;
-        }
-
-        /* Scrolled navbar - solid white background */
-        .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Transparent state - white text (over hero gradient) */
-        .navbar:not(.scrolled) .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .navbar:not(.scrolled) .nav-links a:hover {
-            color: white;
-        }
-
-        .navbar:not(.scrolled) .logo {
-            color: white;
-        }
-
-        /* Scrolled state - white text for visibility */
-        .navbar.scrolled .nav-links a {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .navbar.scrolled .nav-links a:hover {
-            color: white;
-        }
-
-        .navbar.scrolled .logo {
-            color: white;
-        }
-
-        /* Navigation Dropdown */
-        .nav-dropdown {
-            position: relative;
-        }
-
-        .nav-dropdown .dropdown-toggle {
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nav-dropdown .dropdown-arrow {
-            font-size: 0.65rem;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-dropdown:hover .dropdown-arrow {
-            transform: rotate(180deg);
-        }
-
-        .nav-dropdown .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            padding: 0.5rem 0;
-            min-width: 180px;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
-            margin-top: 0.5rem;
-            list-style: none;
-        }
-
-        .nav-dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .nav-dropdown .dropdown-menu li {
-            padding: 0;
-        }
-
-        .nav-dropdown .dropdown-menu a {
-            display: block;
-            padding: 0.75rem 1.25rem;
-            color: #1e293b !important;
-            text-decoration: none;
-            transition: background 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .nav-dropdown .dropdown-menu a:hover {
-            background: #f1f5f9;
-            color: #6366f1 !important;
-        }
-
-        /* Transparent navbar state for dropdown */
-        .navbar:not(.scrolled) .nav-dropdown .dropdown-menu {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-        }
-
-        /* Mobile dropdown overrides */
-        @media (max-width: 768px) {
-            .nav-dropdown .dropdown-menu,
-            .navbar:not(.scrolled) .nav-dropdown .dropdown-menu,
-            .navbar.scrolled .nav-dropdown .dropdown-menu {
-                position: static !important;
-                transform: none !important;
-                background: rgba(255, 255, 255, 0.05) !important;
-                backdrop-filter: none !important;
-                border-radius: 8px;
-                box-shadow: none !important;
-                margin-top: 0.5rem;
-                padding: 0.5rem;
-                opacity: 1 !important;
-                visibility: visible !important;
-                display: none;
-            }
-
-            .nav-dropdown.active .dropdown-menu {
-                display: block !important;
-            }
-
-            .nav-dropdown .dropdown-menu a {
-                color: rgba(255, 255, 255, 0.8) !important;
-                padding: 0.5rem 1rem !important;
-                border-bottom: none !important;
-            }
-
-            .nav-dropdown .dropdown-menu a:hover {
-                background: rgba(255, 255, 255, 0.1) !important;
-                color: white !important;
-            }
-        }
     </style>
 
     <!-- Structured Data / Schema.org JSON-LD -->
@@ -1067,51 +214,84 @@
         ]
     }
     </script>
+    <!-- TrustBox script -->
+    <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
+    <!-- End TrustBox script -->
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-transparent" id="navbar">
-        <div class="nav-container">
+      <!-- Row 1: Utility Bar -->
+      <div class="nav-row-top">
+        <div class="nav-row-container">
+          <div class="nav-top-left">
             <a href="index.html" class="logo">
-                <img src="assets/images/logo.png" alt="TripPortier Logo">
-                TripPortier
+              <img src="assets/images/logo.png" alt="TripPortier Logo">
+              TripPortier
             </a>
-            <ul class="nav-links">
-                <li><a href="index.html" class="active">Home</a></li>
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">eSIM <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="esim.html">eSIM Plans</a></li>
-                        <li><a href="myesims.html">My Orders</a></li>
-                    </ul>
-                </li>
-                <li class="nav-dropdown">
-                    <a href="#" class="dropdown-toggle" onclick="toggleMobileDropdown(this, event)">Services <span class="dropdown-arrow">▼</span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="airport-transfers.html">Airport Transfers</a></li>
-                        <li><a href="https://asiatransport.tripportier.com" target="_blank">Asia Transport</a></li>
-                        <li><a href="visa.html">Visa Check</a></li>
-                    </ul>
-                </li>
-                <li id="mytrips-nav" style="display: none;"><a href="trips.html">My Trips</a></li>
-                <li id="premium-nav"><a href="premium.html">TripPortier+</a></li>
-            </ul>
-            <div class="mobile-nav-right">
-                <button class="mobile-signin-btn" id="mobile-signin-btn" onclick="window.authUI.showModal('signin')">Sign In</button>
-                <button class="mobile-menu" onclick="toggleMenu()">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
+            <div class="nav-separator"></div>
+            <div class="nav-currency-selector" id="navCurrencySelector">
+              <button class="nav-selector-btn" id="currencyBtn" onclick="NavSelectors.toggleCurrency()">
+                <span id="currencySymbol">$</span>
+                <span id="currencyLabel">USD</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="currencyDropdown"></div>
             </div>
+            <div class="nav-language-selector" id="navLanguageSelector">
+              <button class="nav-selector-btn" id="languageBtn" onclick="NavSelectors.toggleLanguage()">
+                <span id="languageFlag">🇬🇧</span>
+                <span id="languageLabel">EN</span>
+                <svg class="selector-chevron" width="12" height="12" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="nav-selector-dropdown" id="languageDropdown"></div>
+            </div>
+          </div>
+          <div class="nav-top-right" id="navAuthArea">
+            <!-- JS injects: Register+Login OR profile dropdown -->
+          </div>
         </div>
-</nav>
+      </div>
+      <!-- Row 2: Main Navigation -->
+      <div class="nav-row-main">
+        <div class="nav-row-container">
+          <ul class="nav-main-links">
+            <li><a href="app.html" class="nav-main-link">📱 TripPortier App</a></li>
+            <li><a href="esim.html" class="nav-main-link">📶 eSIM</a></li>
+            <li><a href="transport.html" class="nav-main-link">🚗 Transport</a></li>
+            <li><a href="visa.html" class="nav-main-link">📋 Visa Check</a></li>
+          </ul>
+        </div>
+      </div>
+      <!-- Mobile: hamburger -->
+      <div class="nav-mobile-toggle">
+        <button class="mobile-menu" onclick="toggleMenu()">☰</button>
+      </div>
+      <!-- Mobile: slide-down panel -->
+      <div class="mobile-nav-panel" id="mobileNavPanel">
+        <ul class="mobile-nav-links">
+          <li><a href="app.html">📱 TripPortier App</a></li>
+          <li><a href="esim.html">📶 eSIM</a></li>
+          <li><a href="transport.html">🚗 Transport</a></li>
+          <li><a href="visa.html">📋 Visa Check</a></li>
+        </ul>
+        <div class="mobile-nav-divider"></div>
+        <div class="mobile-selectors">
+          <select id="mobileCurrencySelect" onchange="NavSelectors.setCurrency(this.value)"></select>
+          <select id="mobileLanguageSelect" onchange="NavSelectors.setLanguage(this.value)"></select>
+        </div>
+        <div class="mobile-nav-divider"></div>
+        <div id="mobileAuthSection"></div>
+      </div>
+    </nav>
 
     <!-- Section 1: Hero with Tabbed Search Widget -->
     <section class="hero-search">
         <div class="hero-search-container">
-            <h1 class="hero-search-title">Your travel essentials, sorted</h1>
-            <p class="hero-search-subtitle">eSIM data plans, airport transfers, visa checks, and AI trip planning — everything you need in one place.</p>
+            <h1 class="hero-search-title">
+                Travel smarter with<br>
+                <span class="typing-slot" id="typing-slot">instant data</span>
+            </h1>
             <div class="search-widget">
                 <div class="search-widget-tabs">
                     <button class="sw-tab active" data-tab="esim">&#128241; eSIM</button>
@@ -1151,14 +331,21 @@
                     </div>
                 </div>
             </div>
+            <p class="hero-search-subtitle">eSIM data plans, airport transfers, visa checks, and AI trip planning — everything you need in one place.</p>
+            <div class="hero-trust-line">
+                <span>&#128274; Secure payments</span>
+                <span>&#9989; Verified provider</span>
+                <span>&#128176; Money-back guarantee</span>
+            </div>
+            <a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.85); text-decoration: none; font-size: 0.85rem; font-weight: 600; margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.4rem;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#00b67a" xmlns="http://www.w3.org/2000/svg"><path d="M12 1.5l2.76 6.48L22 8.94l-5.19 4.56L18.18 21 12 17.27 5.82 21l1.37-7.5L2 8.94l7.24-.96L12 1.5z"/></svg> See our reviews on Trustpilot</a>
         </div>
     </section>
 
     <!-- Section 2: Services Showcase -->
-    <section class="services-showcase" id="services">
+    <section class="services-showcase reveal" id="services">
         <div class="services-showcase-container">
             <h2 class="services-showcase-title">Everything you need to travel smarter</h2>
-            <div class="services-grid">
+            <div class="services-grid reveal-stagger">
                 <a href="esim.html" class="service-card service-card--esim">
                     <div class="service-card-icon">&#128241;</div>
                     <h3>eSIM Data Plans</h3>
@@ -1188,41 +375,65 @@
     </section>
 
     <!-- Section 3: Popular eSIM Destinations -->
-    <section class="popular-destinations">
+    <section class="popular-destinations reveal">
         <div class="popular-destinations-container">
             <h2 class="popular-destinations-title">Popular eSIM destinations</h2>
-            <div class="destinations-grid">
-                <a href="esim.html?country=JP" class="dest-card">
+            <div class="destinations-grid reveal-stagger">
+                <a href="esim.html?country=JP" class="dest-card" data-country="JP">
                     <span class="dest-flag">&#127471;&#127477;</span>
-                    <span class="dest-name">Japan</span>
+                    <div class="dest-info">
+                        <span class="dest-name">Japan</span>
+                        <span class="dest-price" id="price-JP">from $4.50</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=TH" class="dest-card">
+                <a href="esim.html?country=TH" class="dest-card" data-country="TH">
                     <span class="dest-flag">&#127481;&#127469;</span>
-                    <span class="dest-name">Thailand</span>
+                    <div class="dest-info">
+                        <span class="dest-name">Thailand</span>
+                        <span class="dest-price" id="price-TH">from $4.50</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=KR" class="dest-card">
+                <a href="esim.html?country=KR" class="dest-card" data-country="KR">
                     <span class="dest-flag">&#127472;&#127479;</span>
-                    <span class="dest-name">South Korea</span>
+                    <div class="dest-info">
+                        <span class="dest-name">South Korea</span>
+                        <span class="dest-price" id="price-KR">from $5.00</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=US" class="dest-card">
+                <a href="esim.html?country=US" class="dest-card" data-country="US">
                     <span class="dest-flag">&#127482;&#127480;</span>
-                    <span class="dest-name">USA</span>
+                    <div class="dest-info">
+                        <span class="dest-name">USA</span>
+                        <span class="dest-price" id="price-US">from $5.00</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=GB" class="dest-card">
+                <a href="esim.html?country=GB" class="dest-card" data-country="GB">
                     <span class="dest-flag">&#127468;&#127463;</span>
-                    <span class="dest-name">United Kingdom</span>
+                    <div class="dest-info">
+                        <span class="dest-name">United Kingdom</span>
+                        <span class="dest-price" id="price-GB">from $4.50</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=SG" class="dest-card">
+                <a href="esim.html?country=SG" class="dest-card" data-country="SG">
                     <span class="dest-flag">&#127480;&#127468;</span>
-                    <span class="dest-name">Singapore</span>
+                    <div class="dest-info">
+                        <span class="dest-name">Singapore</span>
+                        <span class="dest-price" id="price-SG">from $5.00</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=AU" class="dest-card">
+                <a href="esim.html?country=AU" class="dest-card" data-country="AU">
                     <span class="dest-flag">&#127462;&#127482;</span>
-                    <span class="dest-name">Australia</span>
+                    <div class="dest-info">
+                        <span class="dest-name">Australia</span>
+                        <span class="dest-price" id="price-AU">from $6.00</span>
+                    </div>
                 </a>
-                <a href="esim.html?country=TR" class="dest-card">
+                <a href="esim.html?country=TR" class="dest-card" data-country="TR">
                     <span class="dest-flag">&#127481;&#127479;</span>
-                    <span class="dest-name">Turkey</span>
+                    <div class="dest-info">
+                        <span class="dest-name">Turkey</span>
+                        <span class="dest-price" id="price-TR">from $4.50</span>
+                    </div>
                 </a>
             </div>
             <div class="popular-destinations-footer">
@@ -1232,10 +443,10 @@
     </section>
 
     <!-- Section 4: How It Works -->
-    <section class="how-it-works">
+    <section class="how-it-works reveal">
         <div class="how-it-works-container">
             <h2 class="how-it-works-title">How it works</h2>
-            <div class="steps-row">
+            <div class="steps-row reveal-stagger">
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <h3>Search</h3>
@@ -1257,13 +468,59 @@
         </div>
     </section>
 
+    <!-- Section: Why TripPortier -->
+    <section class="why-tripportier reveal">
+        <div class="why-tripportier-container">
+            <h2 class="why-tripportier-title">Why TripPortier</h2>
+            <div class="why-grid reveal-stagger">
+                <div class="why-card">
+                    <div class="why-icon">&#129523;</div>
+                    <h3>All-in-One Platform</h3>
+                    <p>eSIM, transfers, transport, visa checks, and AI trip planning — no more juggling 5 different apps.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">&#129689;</div>
+                    <h3>TripCoins Rewards</h3>
+                    <p>Earn TripCoins on every booking. Redeem them for discounts on your next trip.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">&#127757;</div>
+                    <h3>200+ Countries</h3>
+                    <p>Instant eSIM coverage worldwide. Activate before you land — no SIM swapping.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-icon">&#129302;</div>
+                    <h3>AI Trip Planning</h3>
+                    <p>Get personalized itineraries, packing lists, and smart travel recommendations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Section 5: Social Proof -->
-    <section class="social-proof">
+    <section class="social-proof reveal">
         <div class="social-proof-container">
             <p class="social-proof-title">What travelers are saying</p>
-            <div class="testimonials">
+            <div class="social-proof-stats">
+                <div class="proof-stat">
+                    <span class="proof-stat-value">50,000+</span>
+                    <span class="proof-stat-label">Happy travelers</span>
+                </div>
+                <div class="proof-stat-divider"></div>
+                <div class="proof-stat">
+                    <span class="proof-stat-value">4.8/5</span>
+                    <span class="proof-stat-label">Average rating</span>
+                </div>
+                <div class="proof-stat-divider"></div>
+                <div class="proof-stat">
+                    <span class="proof-stat-value">200+</span>
+                    <span class="proof-stat-label">Countries covered</span>
+                </div>
+            </div>
+            <div class="testimonials reveal-stagger">
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <span class="verified-badge">&#10003; Verified purchase</span>
                     <p class="testimonial-text">"Bought my Japan eSIM right on the website before my flight. Landed in Tokyo and had data instantly — no hunting for SIM cards at the airport!"</p>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">S</div>
@@ -1275,6 +532,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <span class="verified-badge">&#10003; Verified purchase</span>
                     <p class="testimonial-text">"Booked my airport transfer online in 2 minutes. Driver was waiting with my name on a sign — stress-free start to the trip!"</p>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">M</div>
@@ -1286,6 +544,7 @@
                 </div>
                 <div class="testimonial-card">
                     <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <span class="verified-badge">&#10003; Verified purchase</span>
                     <p class="testimonial-text">"The visa checker saved me a panic moment — I didn't know I needed an eVisa for Vietnam. Found out and applied in time!"</p>
                     <div class="testimonial-author">
                         <div class="testimonial-avatar">A</div>
@@ -1296,11 +555,22 @@
                     </div>
                 </div>
             </div>
+            <div class="trustpilot-row">
+                <a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener" class="trustpilot-link">See our reviews on Trustpilot &rarr;</a>
+            </div>
+            <div class="partner-logos">
+                <span class="partner-label">Trusted partners</span>
+                <div class="partner-logo-row">
+                    <span class="partner-text">Airalo</span>
+                    <span class="partner-text">Stripe</span>
+                    <span class="partner-text">12Go</span>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Section 6: App Promotion Banner -->
-    <section class="app-banner">
+    <section class="app-banner reveal">
         <div class="app-banner-container">
             <div class="app-banner-text">
                 <h2>Take TripPortier with you</h2>
@@ -1317,7 +587,7 @@
     </section>
 
     <!-- Section 7: Final CTA -->
-    <section class="cta-final">
+    <section class="cta-final reveal">
         <div class="cta-final-container">
             <h2>Ready to plan your next trip?</h2>
             <p>Search, book, and go — it only takes a few minutes.</p>
@@ -1332,70 +602,10 @@
     <!-- Footer -->
     <!-- Footer -->
     <footer class="footer">
-        <!-- Trust Bar -->
-        <div class="footer-trust-bar">
-            <div class="trust-bar-container">
-                <div class="trust-item">
-                    <span class="trust-icon">&#128274;</span>
-                    <span>Secure Payments</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#9989;</span>
-                    <span>Verified Provider</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#128176;</span>
-                    <span>Money-Back Guarantee</span>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">&#127760;</span>
-                    <span>200+ Countries</span>
-                </div>
-            </div>
-        </div>
         <div class="footer-container">
             <div class="footer-section">
                 <h4>TripPortier</h4>
                 <p style="color: #94a3b8; margin-bottom: 1rem;">Your smart travel companion for stress-free trips.</p>
-                <!-- Language & Currency Selectors -->
-                <div class="footer-selectors">
-                    <div class="selector-group">
-                        <label for="currency-select">&#128176; Currency</label>
-                        <select id="currency-select" class="footer-select" onchange="changeCurrency(this.value)">
-                            <option value="USD">$ USD</option>
-                            <option value="EUR">€ EUR</option>
-                            <option value="GBP">£ GBP</option>
-                            <option value="CHF">CHF</option>
-                            <option value="JPY">¥ JPY</option>
-                            <option value="CNY">¥ CNY</option>
-                            <option value="KRW">₩ KRW</option>
-                            <option value="AUD">$ AUD</option>
-                            <option value="CAD">$ CAD</option>
-                            <option value="NZD">$ NZD</option>
-                            <option value="SGD">$ SGD</option>
-                            <option value="HKD">$ HKD</option>
-                            <option value="SEK">kr SEK</option>
-                            <option value="NOK">kr NOK</option>
-                            <option value="DKK">kr DKK</option>
-                            <option value="PLN">zł PLN</option>
-                            <option value="CZK">Kč CZK</option>
-                            <option value="THB">฿ THB</option>
-                            <option value="MYR">RM MYR</option>
-                            <option value="INR">₹ INR</option>
-                            <option value="BRL">R$ BRL</option>
-                            <option value="MXN">$ MXN</option>
-                            <option value="AED">د.إ AED</option>
-                            <option value="SAR">﷼ SAR</option>
-                            <option value="TRY">₺ TRY</option>
-                            <option value="ZAR">R ZAR</option>
-                            <option value="ILS">₪ ILS</option>
-                            <option value="TWD">$ TWD</option>
-                            <option value="PHP">₱ PHP</option>
-                            <option value="IDR">Rp IDR</option>
-                            <option value="VND">₫ VND</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             <div class="footer-section">
                 <h4>Services</h4>
@@ -1413,6 +623,7 @@
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="feature-request.html">Request Feature</a></li>
                     <li><a href="https://wa.me/41765125678">Contact Us</a></li>
+                    <li><a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener">Review us on Trustpilot</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1471,18 +682,160 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/supabase-subscription.js"></script>
     <script src="js/supabase-auth.js"></script>
-    <script src="js/auth-ui.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/auth-ui.js?v=2"></script>
+    <script src="js/main.js?v=2"></script>
+    <script src="js/nav-selectors.js?v=2"></script>
+
+    <!-- Destination Price Loading -->
     <script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
+    (function() {
+        var DEST_COUNTRIES = ['JP', 'TH', 'KR', 'US', 'GB', 'SG', 'AU', 'TR'];
+        var FALLBACK_PRICES = { JP: 4.50, TH: 4.50, KR: 5.00, US: 5.00, GB: 4.50, SG: 5.00, AU: 6.00, TR: 4.50 };
+        var destPricesUSD = Object.assign({}, FALLBACK_PRICES);
+
+        function updatePriceDisplay() {
+            DEST_COUNTRIES.forEach(function(code) {
+                var el = document.getElementById('price-' + code);
+                if (!el) return;
+                var usd = destPricesUSD[code];
+                if (typeof NavSelectors !== 'undefined' && NavSelectors.formatPrice) {
+                    el.textContent = 'from ' + NavSelectors.formatPrice(usd);
+                } else {
+                    el.textContent = 'from $' + usd.toFixed(2);
+                }
+            });
+        }
+
+        function loadDestPrices() {
+            var SUPABASE_FUNCTIONS_URL = 'https://bomkdhuckqosvuhfhyci.supabase.co/functions/v1';
+            var loaded = 0;
+            DEST_COUNTRIES.forEach(function(code) {
+                fetch(SUPABASE_FUNCTIONS_URL + '/airalo-packages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ country_code: code, type: 'local' })
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data && data.data && data.data.length > 0) {
+                        var cheapest = null;
+                        data.data.forEach(function(pkg) {
+                            var price = parseFloat(pkg.price);
+                            if (!isNaN(price) && (cheapest === null || price < cheapest)) {
+                                cheapest = price;
+                            }
+                        });
+                        if (cheapest !== null) {
+                            destPricesUSD[code] = cheapest;
+                        }
+                    }
+                })
+                .catch(function() { /* keep fallback */ })
+                .finally(function() {
+                    loaded++;
+                    if (loaded === DEST_COUNTRIES.length) {
+                        updatePriceDisplay();
+                    }
+                });
+            });
+        }
+
+        // Initial display with fallback prices
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePriceDisplay();
+            loadDestPrices();
         });
+
+        // Re-format when currency changes
+        window.addEventListener('currencyChanged', function() {
+            updatePriceDisplay();
+        });
+    })();
+    </script>
+
+    <script>
+
+        // === Typing Animation ===
+        (function() {
+            var words = ['instant data', 'seamless transfers', 'visa checks', 'AI planning'];
+            var slot = document.getElementById('typing-slot');
+            if (!slot) return;
+
+            // Respect reduced motion
+            var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+                slot.textContent = words[0];
+                return;
+            }
+
+            var wordIndex = 0;
+            var charIndex = words[0].length;
+            var isDeleting = false;
+            var typingSpeed = 80;
+            var deletingSpeed = 40;
+            var pauseAfterType = 2000;
+            var pauseAfterDelete = 300;
+
+            function tick() {
+                var currentWord = words[wordIndex];
+
+                if (!isDeleting) {
+                    // Typing
+                    charIndex++;
+                    slot.textContent = currentWord.substring(0, charIndex);
+
+                    if (charIndex === currentWord.length) {
+                        // Finished typing, pause then delete
+                        isDeleting = true;
+                        setTimeout(tick, pauseAfterType);
+                        return;
+                    }
+                    setTimeout(tick, typingSpeed);
+                } else {
+                    // Deleting
+                    charIndex--;
+                    slot.textContent = currentWord.substring(0, charIndex);
+
+                    if (charIndex === 0) {
+                        // Finished deleting, move to next word
+                        isDeleting = false;
+                        wordIndex = (wordIndex + 1) % words.length;
+                        setTimeout(tick, pauseAfterDelete);
+                        return;
+                    }
+                    setTimeout(tick, deletingSpeed);
+                }
+            }
+
+            // Start after initial pause
+            setTimeout(function() {
+                isDeleting = true;
+                tick();
+            }, pauseAfterType);
+        })();
+
+        // === Scroll Reveal (IntersectionObserver) ===
+        (function() {
+            var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) {
+                // Show everything immediately
+                document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+                return;
+            }
+
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            document.querySelectorAll('.reveal').forEach(function(el) {
+                observer.observe(el);
+            });
+        })();
 
         // === Search Widget: Tab Switching ===
         document.querySelectorAll('.sw-tab').forEach(function(tab) {

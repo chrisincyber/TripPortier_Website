@@ -19,7 +19,7 @@
     left: 0;
     right: 0;
     height: 200px;
-    background: linear-gradient(135deg, var(--primary) 0%, #818cf8 50%, #a78bfa 100%);
+    background: #0f0f23;
     z-index: 0;
 }
 
@@ -417,7 +417,7 @@
 .profile-trip-icon {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+    background: #0f0f23;
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -538,7 +538,7 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0f0f23, #2d1b4e);
+    background: #0f0f23;
     display: flex;
     align-items: center;
     justify-content: center;
