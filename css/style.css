@@ -1899,7 +1899,7 @@ h1, h2, h3, h4, h5, h6,
 .hero-search-container {
     position: relative;
     z-index: 2;
-    max-width: 720px;
+    max-width: 780px;
     margin: 0 auto;
 }
 
@@ -1949,6 +1949,7 @@ h1, h2, h3, h4, h5, h6,
     cursor: pointer;
     transition: color var(--transition-fast), box-shadow var(--transition-fast);
     border-bottom: 3px solid transparent;
+    white-space: nowrap;
 }
 
 .sw-tab:hover {
@@ -2556,7 +2557,11 @@ h1, h2, h3, h4, h5, h6,
     .how-it-works,
     .why-tripportier,
     .social-proof,
-    .cta-final {
+    .cta-final,
+    .pain-points,
+    .guarantee-section,
+    .homepage-faq,
+    .about-section {
         padding: 60px 1rem;
     }
 }
@@ -3526,5 +3531,324 @@ h1, h2, h3, h4, h5, h6,
 @media (prefers-reduced-motion: reduce) {
     .trustpilot-nudge {
         transition: none;
+    }
+}
+
+/* ============================================
+   Homepage New Sections
+   ============================================ */
+
+/* --- Hero Trust Badges --- */
+.hero-trust-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* --- Pain Points Section --- */
+.pain-points {
+    padding: var(--space-4xl) var(--space-xl);
+    background: #f8fafc;
+}
+
+.pain-points-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.pain-points-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.pain-points-solution {
+    text-align: center;
+    margin-top: var(--space-3xl);
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: -0.02em;
+}
+
+.pain-points-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-xl);
+}
+
+.pain-point-card {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    background: #ffffff;
+    padding: var(--space-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.pain-point-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.pain-point-icon {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.pain-point-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.pain-point-card p {
+    font-size: var(--text-small);
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+}
+
+/* --- Guarantee Section --- */
+.guarantee-section {
+    padding: var(--space-4xl) var(--space-xl);
+    background: #f8fafc;
+}
+
+.guarantee-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.guarantee-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+.guarantee-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-xl);
+}
+
+.guarantee-item {
+    text-align: center;
+}
+
+.guarantee-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--space-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+}
+
+.guarantee-item h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.guarantee-item p {
+    font-size: var(--text-small);
+    color: var(--text-secondary);
+    line-height: var(--leading-normal);
+}
+
+/* --- About Us Section --- */
+.about-section {
+    padding: var(--space-4xl) var(--space-xl);
+    background: #0f0f23;
+    color: #ffffff;
+}
+
+.about-container {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.about-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-md);
+}
+
+.about-subtitle {
+    font-size: var(--text-body-lg);
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 650px;
+    margin: 0 auto var(--space-3xl);
+    line-height: var(--leading-relaxed);
+}
+
+.about-stats {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3xl);
+    margin-bottom: var(--space-3xl);
+    flex-wrap: wrap;
+}
+
+.about-stat {
+    text-align: center;
+}
+
+.about-stat-value {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--accent-primary);
+    letter-spacing: -0.02em;
+    display: block;
+}
+
+.about-stat-label {
+    font-size: var(--text-small);
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.about-values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-xl);
+}
+
+.about-value {
+    text-align: center;
+}
+
+.about-value h3 {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.about-value p {
+    font-size: var(--text-small);
+    color: rgba(255, 255, 255, 0.6);
+    line-height: var(--leading-normal);
+}
+
+/* --- Homepage Inline FAQ --- */
+.homepage-faq {
+    padding: var(--space-4xl) var(--space-xl);
+    background: var(--bg-primary);
+}
+
+.homepage-faq-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.homepage-faq-title {
+    font-family: var(--font-display);
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: var(--space-3xl);
+}
+
+/* --- Dark Section Text Hierarchy --- */
+.dark-section .text-primary {
+    color: rgba(255, 255, 255, 1);
+}
+
+.dark-section .text-secondary {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.dark-section .text-muted {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* --- Footer Heading Opacity Fix --- */
+.footer .footer-section h4 {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* --- Responsive: New Homepage Sections --- */
+@media (max-width: 768px) {
+    .pain-points-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .guarantee-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-stats {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-xl);
+    }
+
+    .about-values {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-trust-badges {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .guarantee-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pain-points-solution {
+        font-size: 1.25rem;
+    }
+
+    .hero-trust-badges {
+        gap: 0.75rem;
+    }
+
+    .hero-trust-badge {
+        font-size: 0.8rem;
     }
 }

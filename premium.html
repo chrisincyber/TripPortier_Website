@@ -65,7 +65,7 @@
 
         .pricing-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 1.5rem;
         }
 
@@ -223,7 +223,7 @@
             color: white;
             opacity: 0.6;
             cursor: pointer;
-            padding: 0.25rem;
+            padding: 0.5rem;
         }
 
         .web-discount-popup-close:hover {
@@ -472,12 +472,12 @@
         <!-- Header -->
         <header class="premium-header">
             <h1>Upgrade to TripPortier+</h1>
-            <p>Unlock the full power of TripPortier with AI-powered features, flight tracking, and more.</p>
+            <p>AI trip planning, flight tracking, and more. Get the most out of every trip.</p>
             <div class="web-discount-badge">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A2 2 0 013 12V7a4 4 0 014-4z"/>
                 </svg>
-                Use code <strong>TRIPPORTIER10</strong> for 10% off!
+                Limited time: use code <strong>TRIPPORTIER10</strong> for 10% off!
             </div>
         </header>
 
@@ -490,8 +490,53 @@
                 <a href="account.html">View Your Account</a>
             </div>
 
+            <p style="text-align: center; color: var(--theme-text-secondary, #64748b); font-size: 1rem; font-weight: 500; margin-bottom: 1.5rem;">Most travelers choose the Yearly plan and save 22%</p>
+
             <!-- Pricing Cards (shown for non-subscribers) -->
             <div class="pricing-cards" id="pricing-cards">
+                <!-- Free Tier -->
+                <div class="pricing-card">
+                    <div class="pricing-card-header">
+                        <h3>Free</h3>
+                        <div class="price">
+                            <span class="price-amount">$0</span>
+                            <span class="price-period">/forever</span>
+                        </div>
+                        <div class="savings-badge">No credit card needed</div>
+                    </div>
+                    <div class="pricing-card-body">
+                        <ul>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Browse &amp; buy eSIM plans
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Book airport transfers
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Visa requirements check
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                1 trip with basic planning
+                            </li>
+                        </ul>
+                        <a href="esim.html" class="subscribe-btn subscribe-btn-secondary" style="text-align: center; text-decoration: none;">
+                            Get Started Free
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Monthly Plan -->
                 <div class="pricing-card">
                     <div class="pricing-card-header">
@@ -573,7 +618,7 @@
                             </li>
                         </ul>
                         <button class="subscribe-btn subscribe-btn-primary" onclick="subscribeYearly()">
-                            Subscribe Yearly
+                            Save 22% - Go Yearly
                         </button>
                     </div>
                 </div>
@@ -687,7 +732,7 @@
                 </svg>
             </div>
             <div class="web-discount-popup-content">
-                <h4>Use code TRIPPORTIER10 for 10% off!</h4>
+                <h4>Limited time: TRIPPORTIER10 for 10% off!</h4>
                 <p>Enter the promo code at checkout to save.</p>
             </div>
         </div>
