@@ -101,6 +101,37 @@
             font-size: 1rem;
         }
 
+        .loading-subtext {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-progress {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-progress .step {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            transition: background 0.3s ease;
+        }
+
+        .loading-progress .step.active {
+            background: #059669;
+        }
+
+        .loading-progress .step.warning {
+            background: #f59e0b;
+        }
+
         /* eSIM Details Section */
         .esim-section {
             padding: 3rem 2rem 4rem;
@@ -770,7 +801,15 @@
             <!-- Loading State -->
             <div id="loadingState" class="loading-container">
                 <div class="spinner"></div>
-                <p class="loading-text">Loading your eSIM details...</p>
+                <p class="loading-text" id="loadingText">Loading your eSIM details...</p>
+                <p class="loading-subtext" id="loadingSubtext">This usually takes 10-30 seconds</p>
+                <div class="loading-progress">
+                    <div class="step" id="step1"></div>
+                    <div class="step" id="step2"></div>
+                    <div class="step" id="step3"></div>
+                    <div class="step" id="step4"></div>
+                    <div class="step" id="step5"></div>
+                </div>
             </div>
 
             <!-- Error State (hidden by default) -->
@@ -783,7 +822,11 @@
                     </div>
                     <h2 class="error-title">Order Processing</h2>
                     <p class="error-message" id="errorMessage">Your order is still being processed. Please wait a moment and refresh the page.</p>
-                    <button class="btn-primary" onclick="location.reload()">Refresh Page</button>
+                    <p class="error-message" id="errorSessionId" style="font-size: 0.8rem; color: #94a3b8;"></p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn-primary" id="retryBtn" onclick="retryFetch()">Try Again</button>
+                        <button class="btn-primary" style="background: #6366f1;" onclick="window.location.href='mailto:support@tripportier.com?subject=eSIM Order Issue&body=Session ID: ' + encodeURIComponent(getSessionId() || 'unknown')">Contact Support</button>
+                    </div>
                 </div>
             </div>
 
@@ -1180,12 +1223,58 @@
         let currentUser = null;
         let currentOrderData = null;
         let retryCount = 0;
-        const MAX_RETRIES = 20; // Max 60 seconds of polling (20 * 3 seconds)
+        let pollingTimer = null;
+        const MAX_RETRIES = 30; // Max 60 seconds of polling (first 5 at 2s, rest at 3s)
+        const INITIAL_POLL_INTERVAL = 2000; // 2s for first few attempts
+        const POLL_INTERVAL = 3000; // 3s after that
 
         // Get session ID from URL
         function getSessionId() {
             const params = new URLSearchParams(window.location.search);
             return params.get('session_id');
+        }
+
+        // Update loading progress UI
+        function updateLoadingProgress() {
+            const loadingText = document.getElementById('loadingText');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+
+            // Update progress dots
+            const stepsToLight = Math.min(5, Math.ceil(retryCount / 6));
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById('step' + i);
+                if (i <= stepsToLight) {
+                    step.classList.add('active');
+                    if (retryCount > 15) step.classList.add('warning');
+                }
+            }
+
+            // Update messaging based on retry count
+            if (retryCount >= 20) {
+                loadingText.textContent = 'Still working on your eSIM...';
+                loadingSubtext.textContent = 'This is taking longer than usual. We\'ll keep trying for a few more seconds.';
+            } else if (retryCount >= 10) {
+                loadingText.textContent = 'Preparing your eSIM...';
+                loadingSubtext.textContent = 'Your payment was received. eSIM provisioning is in progress.';
+            } else if (retryCount >= 3) {
+                loadingText.textContent = 'Loading your eSIM details...';
+                loadingSubtext.textContent = 'Connecting to eSIM provider...';
+            }
+        }
+
+        // Retry fetch from error state
+        function retryFetch() {
+            retryCount = 0;
+            document.getElementById('errorState').style.display = 'none';
+            document.getElementById('loadingState').style.display = 'flex';
+            // Reset progress dots
+            for (let i = 1; i <= 5; i++) {
+                const step = document.getElementById('step' + i);
+                step.classList.remove('active', 'warning');
+            }
+            document.getElementById('loadingText').textContent = 'Loading your eSIM details...';
+            document.getElementById('loadingSubtext').textContent = 'This usually takes 10-30 seconds';
+            fetchOrderDetails();
         }
 
         // Fetch order details
@@ -1210,12 +1299,14 @@
                     // Retry on server errors, give up on client errors (except 429)
                     if (response.status >= 500 || response.status === 429) {
                         retryCount++;
+                        updateLoadingProgress();
                         if (retryCount < MAX_RETRIES) {
-                            setTimeout(fetchOrderDetails, 3000);
+                            const interval = retryCount <= 5 ? INITIAL_POLL_INTERVAL : POLL_INTERVAL;
+                            pollingTimer = setTimeout(fetchOrderDetails, interval);
                             return;
                         }
                     }
-                    showError('Failed to load order details. Please try refreshing the page.');
+                    showError('Failed to load order details. Please try the "Try Again" button or contact support.');
                     return;
                 }
 
@@ -1225,25 +1316,29 @@
                     showSuccess(data.order);
                 } else if (data.status === 'processing') {
                     retryCount++;
+                    updateLoadingProgress();
                     if (retryCount >= MAX_RETRIES) {
                         // Stop polling after max retries
-                        showError('Your order is taking longer than expected to process. Please check your email for confirmation, or contact support if you don\'t receive it within a few minutes.');
+                        showError('Your eSIM is taking longer than expected to provision. Your payment was received — please contact support@tripportier.com with your session ID so we can resolve this immediately.');
                         return;
                     }
                     // Order still processing, retry after delay
-                    setTimeout(fetchOrderDetails, 3000);
+                    const interval = retryCount <= 5 ? INITIAL_POLL_INTERVAL : POLL_INTERVAL;
+                    pollingTimer = setTimeout(fetchOrderDetails, interval);
                 } else {
-                    showError(data.error || 'Order not found');
+                    showError(data.error || 'Order not found. Please contact support if you completed a payment.');
                 }
             } catch (error) {
                 console.error('Error fetching order:', error);
                 // Retry on network errors instead of immediately showing error
                 retryCount++;
+                updateLoadingProgress();
                 if (retryCount < MAX_RETRIES) {
-                    setTimeout(fetchOrderDetails, 3000);
+                    const interval = retryCount <= 5 ? INITIAL_POLL_INTERVAL : POLL_INTERVAL;
+                    pollingTimer = setTimeout(fetchOrderDetails, interval);
                     return;
                 }
-                showError('Failed to load order details. Please try refreshing the page.');
+                showError('Failed to load order details. Please try the "Try Again" button or contact support.');
             }
         }
 
@@ -1294,10 +1389,18 @@
 
         // Show error state
         function showError(message) {
+            if (pollingTimer) {
+                clearTimeout(pollingTimer);
+                pollingTimer = null;
+            }
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('errorState').style.display = 'block';
             document.getElementById('successState').style.display = 'none';
             document.getElementById('errorMessage').textContent = message;
+            const sessionId = getSessionId();
+            if (sessionId) {
+                document.getElementById('errorSessionId').textContent = 'Session ID: ' + sessionId;
+            }
         }
 
         // Update register prompt visibility based on auth state
