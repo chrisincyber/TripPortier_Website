@@ -1223,8 +1223,12 @@
         let currentUser = null;
         let currentOrderData = null;
         let retryCount = 0;
+        let consecutiveErrors = 0; // Track consecutive server/network errors
+        let manualRetries = 0; // Track how many times user clicked "Try Again"
         let pollingTimer = null;
-        const MAX_RETRIES = 30; // Max 60 seconds of polling (first 5 at 2s, rest at 3s)
+        const MAX_RETRIES = 30; // Max polling attempts for "processing" status
+        const MAX_CONSECUTIVE_ERRORS = 5; // Stop fast if server is clearly broken
+        const MAX_MANUAL_RETRIES = 3; // Limit manual retry cycles
         const INITIAL_POLL_INTERVAL = 2000; // 2s for first few attempts
         const POLL_INTERVAL = 3000; // 3s after that
 
@@ -1264,7 +1268,16 @@
 
         // Retry fetch from error state
         function retryFetch() {
+            manualRetries++;
+            if (manualRetries > MAX_MANUAL_RETRIES) {
+                showError('We\'ve tried multiple times but the server is not responding. Your payment was received — please email support@tripportier.com with your session ID: ' + (getSessionId() || 'unknown'));
+                // Hide the Try Again button after too many manual retries
+                const retryBtn = document.querySelector('#errorState button');
+                if (retryBtn) retryBtn.style.display = 'none';
+                return;
+            }
             retryCount = 0;
+            consecutiveErrors = 0;
             document.getElementById('errorState').style.display = 'none';
             document.getElementById('loadingState').style.display = 'flex';
             // Reset progress dots
@@ -1296,6 +1309,12 @@
 
                 if (!response.ok) {
                     console.error('Edge Function error:', response.status, response.statusText);
+                    consecutiveErrors++;
+                    // Fail fast if server is consistently broken
+                    if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                        showError('Our server is currently experiencing issues. Your payment was received — please email support@tripportier.com with your session ID so we can send your eSIM details directly.');
+                        return;
+                    }
                     // Retry on server errors, give up on client errors (except 429)
                     if (response.status >= 500 || response.status === 429) {
                         retryCount++;
@@ -1310,6 +1329,8 @@
                     return;
                 }
 
+                // Successful response — reset consecutive error counter
+                consecutiveErrors = 0;
                 const data = await response.json();
 
                 if (data.success && data.order) {
@@ -1330,6 +1351,12 @@
                 }
             } catch (error) {
                 console.error('Error fetching order:', error);
+                consecutiveErrors++;
+                // Fail fast if server is consistently unreachable
+                if (consecutiveErrors >= MAX_CONSECUTIVE_ERRORS) {
+                    showError('Unable to reach our server. Your payment was received — please email support@tripportier.com with your session ID so we can send your eSIM details directly.');
+                    return;
+                }
                 // Retry on network errors instead of immediately showing error
                 retryCount++;
                 updateLoadingProgress();
