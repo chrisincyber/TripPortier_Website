@@ -108,7 +108,7 @@ export default function TransportPage() {
           <div className="mt-12 text-center">
             <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
               <MapPin className="w-4 h-4" />
-              More transport options coming soon -Europe rail, Middle East buses, and more.
+              We are expanding to Europe rail, Middle East buses, and more regions.
             </p>
           </div>
         </div>

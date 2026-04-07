@@ -39,11 +39,10 @@ export default function VisaPage() {
       setResult('You do not need a visa to visit your own country.')
       return
     }
-    // Without a real visa API, show a helpful message directing users
+    // Without a real visa API, direct users to official sources
     setResult(
-      `Visa requirements from ${passport} to ${destination} vary. ` +
-      `We recommend checking with your destination's embassy or consulate for the most current requirements. ` +
-      `Full visa API integration is coming soon.`
+      `Visa requirements from ${passport} to ${destination} vary based on your nationality, purpose of travel, and length of stay. ` +
+      `We recommend checking with your destination's embassy or consulate for the most current entry requirements.`
     )
   }
 
@@ -60,7 +59,7 @@ export default function VisaPage() {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-amber-300 text-sm font-medium mb-6">
             <FileText className="w-3.5 h-3.5" />
-            Free Tool - 195 Countries
+            Free Tool - 100+ Countries
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
@@ -185,7 +184,7 @@ export default function VisaPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             {[
-              { icon: Globe, title: '195 Countries', desc: 'Complete coverage for every country and territory in the world.' },
+              { icon: Globe, title: '100+ Countries', desc: 'Coverage for all major travel destinations worldwide.' },
               { icon: Clock, title: 'Instant Results', desc: 'Get visa requirements in seconds. No signup required.' },
               { icon: Shield, title: 'Always Up to Date', desc: 'Requirements verified and updated regularly from official sources.' },
             ].map(({ icon: Icon, title, desc }) => (

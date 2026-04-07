@@ -137,14 +137,17 @@ export default function AirportTransfersPage() {
 
           <div className="flex flex-wrap justify-center gap-2.5">
             {DESTINATIONS.map(({ city, flag }) => (
-              <span
+              <a
                 key={city}
-                className="group inline-flex items-center gap-2 px-4 py-2.5 bg-white rounded-full border border-slate-200 text-sm font-medium text-slate-700 hover:border-emerald-300 hover:text-emerald-700 hover:shadow-sm transition-all cursor-pointer"
+                href={`https://www.welcomepickups.com/airport-transfer-booking/?a_aid=tripportier&destination=${encodeURIComponent(city)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2 px-4 py-2.5 bg-white rounded-full border border-slate-200 text-sm font-medium text-slate-700 hover:border-emerald-300 hover:text-emerald-700 hover:shadow-sm transition-all"
               >
                 <span>{flag}</span>
                 {city}
                 <ArrowRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-emerald-500 transition-colors" />
-              </span>
+              </a>
             ))}
           </div>
         </div>
