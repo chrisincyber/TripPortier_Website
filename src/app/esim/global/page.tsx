@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Loader2, Globe, Wifi, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Clock } from 'lucide-react'
+import { EsimTabs } from '@/components/EsimTabs'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
 
@@ -116,6 +117,7 @@ export default function GlobalEsimPage() {
 
   return (
     <>
+      <EsimTabs />
       {/* Header */}
       <section className="bg-gradient-to-b from-slate-900 to-slate-800 text-white py-10 sm:py-14">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

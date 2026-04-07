@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal, Star } from 'lucide-react'
 import { CountrySearch } from '@/components/CountrySearch'
+import { EsimTabs } from '@/components/EsimTabs'
 
 export const metadata: Metadata = {
   title: 'eSIM Data Plans for 200+ Countries',
@@ -43,6 +44,7 @@ const BENEFITS = [
 export default function EsimPage() {
   return (
     <>
+      <EsimTabs />
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-[#0f0f23] via-indigo-950 to-[#0f0f23] text-white py-20 sm:py-28 overflow-hidden">
         <div className="absolute inset-0 opacity-[0.05]" style={{

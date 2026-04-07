@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Star } from 'lucide-react'
 
 const FOOTER_SECTIONS = [
   {
@@ -17,7 +18,7 @@ const FOOTER_SECTIONS = [
       { label: 'FAQ', href: '/faq' },
       { label: 'Request Feature', href: '/feature-request' },
       { label: 'Contact Us', href: 'https://wa.me/41765125678', external: true },
-      { label: 'Review us on Trustpilot', href: 'https://www.trustpilot.com/review/tripportier.com', external: true },
+      { label: 'Rate us on Trustpilot', href: 'https://www.trustpilot.com/review/tripportier.com', external: true, trustpilot: true },
     ],
   },
   {
@@ -75,8 +76,13 @@ export function Footer() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-slate-400 hover:text-indigo-400 transition-colors"
+                        className={`text-sm transition-colors inline-flex items-center gap-1.5 ${
+                          (link as { trustpilot?: boolean }).trustpilot
+                            ? 'text-emerald-400 hover:text-emerald-300'
+                            : 'text-slate-400 hover:text-indigo-400'
+                        }`}
                       >
+                        {(link as { trustpilot?: boolean }).trustpilot && <Star className="w-3.5 h-3.5 fill-current" />}
                         {link.label}
                       </a>
                     ) : (
