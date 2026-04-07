@@ -43,11 +43,11 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
 
   const handleSearch = () => {
     if (selectedCountry) {
-      router.push(`${targetPath}?${paramName}=${selectedCountry.code}`)
+      router.push(`${targetPath}/${selectedCountry.code}`)
     } else if (query.length > 0) {
       const match = COUNTRIES.find((c) => c.name.toLowerCase().startsWith(query.toLowerCase()))
       if (match) {
-        router.push(`${targetPath}?${paramName}=${match.code}`)
+        router.push(`${targetPath}/${match.code}`)
       } else {
         router.push(targetPath)
       }

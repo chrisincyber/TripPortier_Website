@@ -231,7 +231,7 @@ export default function Home() {
                 transition={{ delay: i * 0.05 }}
               >
                 <Link
-                  href={`/esim?country=${d.code}`}
+                  href={`/esim/${d.code}`}
                   className="relative flex items-center gap-3 p-4 rounded-xl bg-slate-900 text-white hover:shadow-[0_0_30px_rgba(99,102,241,0.25)] hover:ring-1 hover:ring-indigo-500/50 hover:-translate-y-0.5 transition-all duration-300 group"
                 >
                   {'trending' in d && d.trending && (

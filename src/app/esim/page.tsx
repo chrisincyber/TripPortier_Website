@@ -108,7 +108,7 @@ export default function EsimPage() {
             {POPULAR_COUNTRIES.map((c) => (
               <a
                 key={c.code}
-                href={`/esim?country=${c.code}`}
+                href={`/esim/${c.code}`}
                 className="group flex items-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all"
               >
                 <span className="text-3xl shrink-0">{c.flag}</span>
