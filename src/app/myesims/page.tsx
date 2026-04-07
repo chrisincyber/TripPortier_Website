@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { ArrowLeft, Loader2, Wifi, Globe, Clock, AlertCircle } from 'lucide-react'
 import { sanitizeError } from '@/lib/sanitize-error'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
 interface EsimOrder {
   id: string

@@ -111,17 +111,24 @@ export default function PremiumPage() {
                     ))}
                   </ul>
 
-                  <button
-                    className={`w-full py-2.5 rounded-lg font-semibold text-sm transition-colors ${
-                      isPrimary
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
-                        : plan.name === 'Free'
-                          ? 'bg-slate-100 text-slate-400 cursor-default'
+                  {plan.name === 'Free' ? (
+                    <span className="block w-full py-2.5 rounded-lg font-semibold text-sm bg-slate-100 text-slate-400 text-center">
+                      {plan.cta}
+                    </span>
+                  ) : (
+                    <a
+                      href="https://apps.apple.com/app/tripportier"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`block w-full py-2.5 rounded-lg font-semibold text-sm text-center transition-colors ${
+                        isPrimary
+                          ? 'bg-indigo-600 text-white hover:bg-indigo-700'
                           : 'bg-slate-900 text-white hover:bg-slate-800'
-                    }`}
-                  >
-                    {plan.cta}
-                  </button>
+                      }`}
+                    >
+                      {plan.cta}
+                    </a>
+                  )}
                 </div>
               )
             })}
@@ -157,9 +164,14 @@ export default function PremiumPage() {
           <Crown className="w-8 h-8 mx-auto mb-3 opacity-80" />
           <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">Start Your Premium Journey</h2>
           <p className="text-indigo-100 text-sm mb-8">Try TripPortier+ risk-free. Cancel anytime.</p>
-          <button className="px-7 py-3 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
+          <a
+            href="https://apps.apple.com/app/tripportier"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-7 py-3 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm"
+          >
             Get TripPortier+ - $64.99/year
-          </button>
+          </a>
         </div>
       </section>
     </>

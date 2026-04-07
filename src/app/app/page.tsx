@@ -55,10 +55,10 @@ export default function AppPage() {
                   Download for iOS
                 </a>
                 <a
-                  href="/account"
+                  href="/esim"
                   className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 bg-white/[0.08] border border-white/[0.1] text-white font-semibold rounded-lg hover:bg-white/[0.12] transition-colors text-sm"
                 >
-                  Use on Web
+                  Browse eSIM Plans
                 </a>
               </div>
 

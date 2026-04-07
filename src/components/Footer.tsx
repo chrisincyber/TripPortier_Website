@@ -62,15 +62,24 @@ export function Footer() {
               Built for travelers, by travelers.
             </p>
 
-            {/* Social links placeholder */}
+            {/* Social links */}
             <div className="flex items-center gap-3 mt-5">
-              {['X', 'IG', 'TT', 'YT'].map((platform) => (
-                <span
-                  key={platform}
-                  className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-xs text-slate-500 hover:text-white hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer"
+              {[
+                { label: 'X', href: 'https://x.com/tripportier', ariaLabel: 'Follow us on X' },
+                { label: 'IG', href: 'https://instagram.com/tripportier', ariaLabel: 'Follow us on Instagram' },
+                { label: 'TT', href: 'https://tiktok.com/@tripportier', ariaLabel: 'Follow us on TikTok' },
+                { label: 'YT', href: 'https://youtube.com/@tripportier', ariaLabel: 'Subscribe on YouTube' },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.ariaLabel}
+                  className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-xs text-slate-500 hover:text-white hover:bg-white/10 hover:border-white/10 transition-all"
                 >
-                  {platform}
-                </span>
+                  {social.label}
+                </a>
               ))}
             </div>
           </div>

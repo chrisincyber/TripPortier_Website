@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft, Loader2, Globe, Wifi, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Clock } from 'lucide-react'
 import { EsimTabs } from '@/components/EsimTabs'
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
 interface EsimPackage {
   id: string

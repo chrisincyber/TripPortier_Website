@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import { Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal, Star } from 'lucide-react'
 import { CountrySearch } from '@/components/CountrySearch'
 import { EsimTabs } from '@/components/EsimTabs'
@@ -132,9 +133,10 @@ export default function EsimPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {REGIONS.map((r) => (
-              <div
+              <Link
                 key={r.name}
-                className="group flex items-center gap-4 p-5 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer"
+                href="/esim/region"
+                className="group flex items-center gap-4 p-5 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all"
               >
                 <span className="text-3xl shrink-0">{r.emoji}</span>
                 <div className="flex-1 min-w-0">
@@ -145,7 +147,7 @@ export default function EsimPage() {
                   <p className="text-sm font-semibold text-slate-900">From {r.from}</p>
                   <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 ml-auto mt-1 transition-colors" />
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -157,9 +159,9 @@ export default function EsimPage() {
             </div>
             <h3 className="font-display text-xl sm:text-2xl font-bold mb-2">Worldwide eSIM</h3>
             <p className="text-indigo-100 mb-5 max-w-md mx-auto text-sm">One plan, every country. Perfect for multi-destination trips and digital nomads.</p>
-            <button className="px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
+            <Link href="/esim/global" className="inline-block px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
               View Worldwide Plans
-            </button>
+            </Link>
           </div>
         </div>
       </section>

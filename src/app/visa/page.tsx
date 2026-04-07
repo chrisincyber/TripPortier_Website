@@ -2,6 +2,7 @@
 
 import { FileText, Globe, Clock, Shield, CheckCircle, AlertTriangle, BadgeCheck } from 'lucide-react'
 import { useState } from 'react'
+import { COUNTRIES } from '@/lib/countries'
 
 const POPULAR_DESTINATIONS = [
   { name: 'Thailand', flag: '\u{1F1F9}\u{1F1ED}', status: 'free', label: 'Visa-Free (30 days)' },
@@ -25,11 +26,25 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; dot: string }> =
 }
 
 export default function VisaPage() {
-  const [showComingSoon, setShowComingSoon] = useState(false)
+  const [passport, setPassport] = useState('')
+  const [destination, setDestination] = useState('')
+  const [result, setResult] = useState<string | null>(null)
 
   const handleCheckRequirements = () => {
-    setShowComingSoon(true)
-    setTimeout(() => setShowComingSoon(false), 5000)
+    if (!passport || !destination) {
+      setResult('Please select both your passport country and destination.')
+      return
+    }
+    if (passport === destination) {
+      setResult('You do not need a visa to visit your own country.')
+      return
+    }
+    // Without a real visa API, show a helpful message directing users
+    setResult(
+      `Visa requirements from ${passport} to ${destination} vary. ` +
+      `We recommend checking with your destination's embassy or consulate for the most current requirements. ` +
+      `Full visa API integration is coming soon.`
+    )
   }
 
   return (
@@ -73,21 +88,35 @@ export default function VisaPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">Your Passport</label>
-                  <select className="w-full px-3.5 py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white outline-none transition-all">
-                    <option>Select passport country...</option>
+                  <select
+                    value={passport}
+                    onChange={(e) => { setPassport(e.target.value); setResult(null) }}
+                    className="w-full px-3.5 py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white outline-none transition-all"
+                  >
+                    <option value="">Select passport country...</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.name}>{c.flag} {c.name}</option>
+                    ))}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">Destination</label>
-                  <select className="w-full px-3.5 py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white outline-none transition-all">
-                    <option>Select destination...</option>
+                  <select
+                    value={destination}
+                    onChange={(e) => { setDestination(e.target.value); setResult(null) }}
+                    className="w-full px-3.5 py-3 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:bg-white outline-none transition-all"
+                  >
+                    <option value="">Select destination...</option>
+                    {COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.name}>{c.flag} {c.name}</option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              {showComingSoon && (
-                <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800 text-center">
-                  The visa checker is coming soon! We are integrating real-time visa data. Check back shortly.
+              {result && (
+                <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800">
+                  {result}
                 </div>
               )}
 
@@ -130,7 +159,7 @@ export default function VisaPage() {
               return (
                 <div
                   key={d.name}
-                  className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:shadow-sm transition-shadow cursor-pointer"
+                  className="flex items-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:shadow-sm transition-shadow"
                 >
                   <span className="text-2xl shrink-0">{d.flag}</span>
                   <div className="flex-1 min-w-0">

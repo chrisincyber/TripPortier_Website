@@ -6,7 +6,10 @@ import { AlertTriangle, Home, RotateCcw } from 'lucide-react'
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    console.error('App error:', error)
+    // Log error digest only (no sensitive details)
+    if (error?.digest) {
+      console.error('Error:', error.digest)
+    }
   }, [error])
 
   return (
