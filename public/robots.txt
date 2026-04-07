@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Disallow: /account
+Disallow: /profile
+Disallow: /settings
+Disallow: /myesims
+Disallow: /trips
+Disallow: /auth
+
+Sitemap: https://tripportier.com/sitemap.xml

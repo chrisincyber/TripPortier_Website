@@ -66,12 +66,12 @@ export default function AirportTransfersPage() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button className="px-7 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-500/25 text-sm">
+            <a href="https://www.welcomepickups.com/airport-transfer-booking/?a_aid=tripportier" target="_blank" rel="noopener noreferrer" className="px-7 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-500/25 text-sm inline-block">
               Reserve Your Driver
-            </button>
-            <button className="px-7 py-3 bg-white/[0.08] border border-white/[0.1] text-white font-semibold rounded-lg hover:bg-white/[0.12] transition-colors text-sm">
+            </a>
+            <a href="https://www.welcomepickups.com/airport-transfer-booking/?a_aid=tripportier" target="_blank" rel="noopener noreferrer" className="px-7 py-3 bg-white/[0.08] border border-white/[0.1] text-white font-semibold rounded-lg hover:bg-white/[0.12] transition-colors text-sm inline-block">
               See How It Works
-            </button>
+            </a>
           </div>
 
           {/* Trust stats */}
@@ -159,9 +159,9 @@ export default function AirportTransfersPage() {
           </div>
           <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">Book with Confidence</h2>
           <p className="text-emerald-100 mb-6 text-sm">Fixed prices. No surprises. Your driver is always waiting.</p>
-          <button className="px-7 py-3 bg-white text-emerald-700 font-semibold rounded-lg hover:bg-emerald-50 transition-colors text-sm">
+          <a href="https://www.welcomepickups.com/airport-transfer-booking/?a_aid=tripportier" target="_blank" rel="noopener noreferrer" className="px-7 py-3 bg-white text-emerald-700 font-semibold rounded-lg hover:bg-emerald-50 transition-colors text-sm inline-block">
             Reserve Your Transfer
-          </button>
+          </a>
         </div>
       </section>
     </>

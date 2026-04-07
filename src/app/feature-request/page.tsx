@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ThumbsUp, Lightbulb, Send } from 'lucide-react'
 
 const FEATURES = [
@@ -12,8 +12,50 @@ const FEATURES = [
   { id: 6, title: 'Dark Mode', desc: 'Dark theme for the website and app', votes: 38 },
 ]
 
+const STORAGE_KEY = 'tripportier_feature_votes'
+
+function loadVotes(): Set<number> {
+  if (typeof window === 'undefined') return new Set()
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) {
+      return new Set(JSON.parse(stored) as number[])
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return new Set()
+}
+
+function saveVotes(votes: Set<number>) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...votes]))
+  } catch {
+    // ignore storage errors
+  }
+}
+
 export default function FeatureRequestPage() {
   const [voted, setVoted] = useState<Set<number>>(new Set())
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    setVoted(loadVotes())
+    setLoaded(true)
+  }, [])
+
+  const handleVote = (id: number) => {
+    setVoted((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      saveVotes(next)
+      return next
+    })
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
@@ -30,13 +72,13 @@ export default function FeatureRequestPage() {
         {FEATURES.map((f) => (
           <div key={f.id} className="flex items-center gap-4 p-4 rounded-xl border border-slate-200 hover:border-indigo-200 transition-colors">
             <button
-              onClick={() => setVoted((prev) => { const next = new Set(prev); next.has(f.id) ? next.delete(f.id) : next.add(f.id); return next })}
+              onClick={() => handleVote(f.id)}
               className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-lg transition-colors shrink-0 ${
-                voted.has(f.id) ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                loaded && voted.has(f.id) ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
               }`}
             >
               <ThumbsUp className="w-4 h-4" />
-              <span className="text-xs font-bold">{f.votes + (voted.has(f.id) ? 1 : 0)}</span>
+              <span className="text-xs font-bold">{f.votes + (loaded && voted.has(f.id) ? 1 : 0)}</span>
             </button>
             <div>
               <h3 className="font-display font-bold text-slate-900 text-sm">{f.title}</h3>

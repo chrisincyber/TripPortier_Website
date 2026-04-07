@@ -1,28 +1,21 @@
-import type { Metadata } from 'next'
-import { FileText, Globe, Clock, Shield, CheckCircle, AlertTriangle, BadgeCheck } from 'lucide-react'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Visa Requirements Checker - Free Tool',
-  description: 'Instantly check if you need a visa for your destination. Get detailed requirements for your passport. Free tool covering 195 countries.',
-  openGraph: {
-    title: 'Free Visa Requirements Checker | TripPortier',
-    description: 'Check visa requirements for any destination instantly. 195 countries covered.',
-  },
-}
+import { FileText, Globe, Clock, Shield, CheckCircle, AlertTriangle, BadgeCheck } from 'lucide-react'
+import { useState } from 'react'
 
 const POPULAR_DESTINATIONS = [
-  { name: 'Thailand', flag: '🇹🇭', status: 'free', label: 'Visa-Free (30 days)' },
-  { name: 'Japan', flag: '🇯🇵', status: 'free', label: 'Visa-Free (90 days)' },
-  { name: 'Turkey', flag: '🇹🇷', status: 'arrival', label: 'e-Visa / On Arrival' },
-  { name: 'Australia', flag: '🇦🇺', status: 'required', label: 'eTA Required' },
-  { name: 'Vietnam', flag: '🇻🇳', status: 'arrival', label: 'e-Visa Available' },
-  { name: 'India', flag: '🇮🇳', status: 'required', label: 'e-Visa Required' },
-  { name: 'Indonesia', flag: '🇮🇩', status: 'arrival', label: 'Visa on Arrival' },
-  { name: 'United States', flag: '🇺🇸', status: 'required', label: 'ESTA / Visa' },
-  { name: 'UAE', flag: '🇦🇪', status: 'arrival', label: 'Visa on Arrival' },
-  { name: 'Brazil', flag: '🇧🇷', status: 'free', label: 'Visa-Free (90 days)' },
-  { name: 'South Korea', flag: '🇰🇷', status: 'free', label: 'Visa-Free (90 days)' },
-  { name: 'Egypt', flag: '🇪🇬', status: 'arrival', label: 'Visa on Arrival' },
+  { name: 'Thailand', flag: '\u{1F1F9}\u{1F1ED}', status: 'free', label: 'Visa-Free (30 days)' },
+  { name: 'Japan', flag: '\u{1F1EF}\u{1F1F5}', status: 'free', label: 'Visa-Free (90 days)' },
+  { name: 'Turkey', flag: '\u{1F1F9}\u{1F1F7}', status: 'arrival', label: 'e-Visa / On Arrival' },
+  { name: 'Australia', flag: '\u{1F1E6}\u{1F1FA}', status: 'required', label: 'eTA Required' },
+  { name: 'Vietnam', flag: '\u{1F1FB}\u{1F1F3}', status: 'arrival', label: 'e-Visa Available' },
+  { name: 'India', flag: '\u{1F1EE}\u{1F1F3}', status: 'required', label: 'e-Visa Required' },
+  { name: 'Indonesia', flag: '\u{1F1EE}\u{1F1E9}', status: 'arrival', label: 'Visa on Arrival' },
+  { name: 'United States', flag: '\u{1F1FA}\u{1F1F8}', status: 'required', label: 'ESTA / Visa' },
+  { name: 'UAE', flag: '\u{1F1E6}\u{1F1EA}', status: 'arrival', label: 'Visa on Arrival' },
+  { name: 'Brazil', flag: '\u{1F1E7}\u{1F1F7}', status: 'free', label: 'Visa-Free (90 days)' },
+  { name: 'South Korea', flag: '\u{1F1F0}\u{1F1F7}', status: 'free', label: 'Visa-Free (90 days)' },
+  { name: 'Egypt', flag: '\u{1F1EA}\u{1F1EC}', status: 'arrival', label: 'Visa on Arrival' },
 ]
 
 const STATUS_STYLES: Record<string, { bg: string; text: string; dot: string }> = {
@@ -32,6 +25,13 @@ const STATUS_STYLES: Record<string, { bg: string; text: string; dot: string }> =
 }
 
 export default function VisaPage() {
+  const [showComingSoon, setShowComingSoon] = useState(false)
+
+  const handleCheckRequirements = () => {
+    setShowComingSoon(true)
+    setTimeout(() => setShowComingSoon(false), 5000)
+  }
+
   return (
     <>
       {/* Hero with form */}
@@ -85,7 +85,16 @@ export default function VisaPage() {
                 </div>
               </div>
 
-              <button className="w-full px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors text-sm">
+              {showComingSoon && (
+                <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-sm text-amber-800 text-center">
+                  The visa checker is coming soon! We are integrating real-time visa data. Check back shortly.
+                </div>
+              )}
+
+              <button
+                onClick={handleCheckRequirements}
+                className="w-full px-5 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg transition-colors text-sm"
+              >
                 Check Requirements
               </button>
             </div>
