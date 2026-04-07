@@ -109,7 +109,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-base sm:text-lg text-white/60 mb-8 max-w-lg mx-auto"
           >
-            eSIM, airport transfers, and visa check -- all in one place.
+            eSIM, airport transfers, and visa check -all in one place.
           </motion.p>
 
           {/* Booking Widget */}
@@ -406,7 +406,7 @@ export default function Home() {
                 Get the <span className="gradient-text">TripPortier App</span>
               </h2>
               <p className="text-slate-400 mb-6 text-sm leading-relaxed max-w-md">
-                Smart packing lists, flight tracking, trip sharing, and all your bookings -- beautifully organized in one app.
+                Smart packing lists, flight tracking, trip sharing, and all your bookings -beautifully organized in one app.
               </p>
               <div className="flex gap-3 justify-center lg:justify-start">
                 <a

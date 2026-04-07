@@ -158,7 +158,7 @@ export default function PremiumPage() {
           <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">Start Your Premium Journey</h2>
           <p className="text-indigo-100 text-sm mb-8">Try TripPortier+ risk-free. Cancel anytime.</p>
           <button className="px-7 py-3 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
-            Get TripPortier+ -- $29.99/year
+            Get TripPortier+ -$29.99/year
           </button>
         </div>
       </section>

@@ -41,7 +41,7 @@ export default function AppPage() {
               </h1>
 
               <p className="text-base sm:text-lg text-slate-300 mb-8 leading-relaxed">
-                Flight tracking, AI trip planning, eSIM data plans, and more -- all in one beautifully designed app.
+                Flight tracking, AI trip planning, eSIM data plans, and more -all in one beautifully designed app.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">

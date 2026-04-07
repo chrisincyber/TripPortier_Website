@@ -34,7 +34,7 @@ export default function TransportPage() {
           </h1>
 
           <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto">
-            Airport transfers worldwide and Asia transport tickets -- trains, buses, ferries and more, all in one place.
+            Airport transfers worldwide and Asia transport tickets -trains, buses, ferries and more, all in one place.
           </p>
         </div>
       </section>
@@ -87,7 +87,7 @@ export default function TransportPage() {
 
               <h2 className="font-display text-2xl font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">Asia Transport</h2>
               <p className="text-slate-500 text-sm leading-relaxed mb-6 flex-1">
-                Train, bus, and ferry tickets across Southeast Asia. Thailand, Vietnam, Malaysia, Cambodia, Laos, and more -- book online in minutes.
+                Train, bus, and ferry tickets across Southeast Asia. Thailand, Vietnam, Malaysia, Cambodia, Laos, and more -book online in minutes.
               </p>
 
               <div className="flex flex-wrap gap-2 mb-6">
@@ -108,7 +108,7 @@ export default function TransportPage() {
           <div className="mt-12 text-center">
             <p className="text-slate-400 text-sm flex items-center justify-center gap-2">
               <MapPin className="w-4 h-4" />
-              More transport options coming soon -- Europe rail, Middle East buses, and more.
+              More transport options coming soon -Europe rail, Middle East buses, and more.
             </p>
           </div>
         </div>
