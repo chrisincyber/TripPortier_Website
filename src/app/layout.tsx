@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { Plus_Jakarta_Sans, Inter } from 'next/font/google'
 import './globals.css'
 import { Navbar } from '@/components/Navbar'
@@ -57,7 +56,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <WhatsAppButton />
         <CookieConsent />
-        <Script src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" strategy="lazyOnload" />
       </body>
     </html>
   )

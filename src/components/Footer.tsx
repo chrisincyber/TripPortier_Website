@@ -1,7 +1,17 @@
+'use client'
+
 import Link from 'next/link'
 import { Star } from 'lucide-react'
 
-const FOOTER_SECTIONS = [
+interface FooterLink {
+  label: string
+  href: string
+  external?: boolean
+  trustpilot?: boolean
+  cookieSettings?: boolean
+}
+
+const FOOTER_SECTIONS: { title: string; links: FooterLink[] }[] = [
   {
     title: 'Services',
     links: [
@@ -26,6 +36,7 @@ const FOOTER_SECTIONS = [
     links: [
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'Terms of Service', href: '/terms' },
+      { label: 'Cookie Settings', href: '#cookies', cookieSettings: true },
       { label: 'Attributions', href: '/attributions' },
     ],
   },
@@ -71,18 +82,25 @@ export function Footer() {
               <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    {link.external ? (
+                    {link.cookieSettings ? (
+                      <button
+                        onClick={() => window.dispatchEvent(new Event('manage-cookies'))}
+                        className="text-sm text-slate-400 hover:text-indigo-400 transition-colors"
+                      >
+                        {link.label}
+                      </button>
+                    ) : link.external ? (
                       <a
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`text-sm transition-colors inline-flex items-center gap-1.5 ${
-                          (link as { trustpilot?: boolean }).trustpilot
+                          link.trustpilot
                             ? 'text-emerald-400 hover:text-emerald-300'
                             : 'text-slate-400 hover:text-indigo-400'
                         }`}
                       >
-                        {(link as { trustpilot?: boolean }).trustpilot && <Star className="w-3.5 h-3.5 fill-current" />}
+                        {link.trustpilot && <Star className="w-3.5 h-3.5 fill-current" />}
                         {link.label}
                       </a>
                     ) : (
