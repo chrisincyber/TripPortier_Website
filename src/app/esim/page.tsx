@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { Search, Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal } from 'lucide-react'
+import { Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal, Star } from 'lucide-react'
+import { CountrySearch } from '@/components/CountrySearch'
 
 export const metadata: Metadata = {
   title: 'eSIM Data Plans for 200+ Countries',
@@ -10,139 +11,171 @@ export const metadata: Metadata = {
   },
 }
 
+const POPULAR_COUNTRIES = [
+  { name: 'Japan', flag: '🇯🇵', code: 'JP', from: '$3.50', data: '1-20 GB' },
+  { name: 'Thailand', flag: '🇹🇭', code: 'TH', from: '$2.50', data: '1-15 GB' },
+  { name: 'United States', flag: '🇺🇸', code: 'US', from: '$4.50', data: '1-20 GB' },
+  { name: 'United Kingdom', flag: '🇬🇧', code: 'GB', from: '$4.00', data: '1-20 GB' },
+  { name: 'South Korea', flag: '🇰🇷', code: 'KR', from: '$3.50', data: '1-20 GB' },
+  { name: 'Turkey', flag: '🇹🇷', code: 'TR', from: '$4.00', data: '1-10 GB' },
+  { name: 'Singapore', flag: '🇸🇬', code: 'SG', from: '$3.50', data: '1-15 GB' },
+  { name: 'Australia', flag: '🇦🇺', code: 'AU', from: '$5.00', data: '1-20 GB' },
+]
+
 const REGIONS = [
-  { name: 'Europe', emoji: '🇪🇺', countries: '40+ countries', from: '$4.50', gradient: 'from-blue-500 to-indigo-600', glow: 'group-hover:shadow-blue-500/20' },
-  { name: 'Asia', emoji: '🌏', countries: '30+ countries', from: '$3.50', gradient: 'from-rose-500 to-pink-600', glow: 'group-hover:shadow-rose-500/20' },
-  { name: 'Americas', emoji: '🌎', countries: '25+ countries', from: '$5.00', gradient: 'from-emerald-500 to-teal-600', glow: 'group-hover:shadow-emerald-500/20' },
-  { name: 'Middle East', emoji: '🕌', countries: '15+ countries', from: '$5.50', gradient: 'from-amber-500 to-orange-600', glow: 'group-hover:shadow-amber-500/20' },
-  { name: 'Africa', emoji: '🌍', countries: '20+ countries', from: '$6.00', gradient: 'from-violet-500 to-purple-600', glow: 'group-hover:shadow-violet-500/20' },
-  { name: 'Oceania', emoji: '🏝️', countries: '10+ countries', from: '$5.00', gradient: 'from-cyan-500 to-sky-600', glow: 'group-hover:shadow-cyan-500/20' },
+  { name: 'Europe', emoji: '🇪🇺', countries: '40+ countries', from: '$4.50' },
+  { name: 'Asia', emoji: '🌏', countries: '30+ countries', from: '$3.50' },
+  { name: 'Americas', emoji: '🌎', countries: '25+ countries', from: '$5.00' },
+  { name: 'Middle East', emoji: '🕌', countries: '15+ countries', from: '$5.50' },
+  { name: 'Africa', emoji: '🌍', countries: '20+ countries', from: '$6.00' },
+  { name: 'Oceania', emoji: '🏝️', countries: '10+ countries', from: '$5.00' },
 ]
 
 const BENEFITS = [
-  { icon: Zap, title: 'Instant Activation', desc: 'Scan the QR code and connect in seconds. No store visits needed.', gradient: 'from-amber-400 to-orange-500' },
-  { icon: Globe, title: '200+ Countries', desc: 'Coverage across the globe for all your travels and adventures.', gradient: 'from-blue-400 to-indigo-500' },
-  { icon: Shield, title: 'Secure Connection', desc: 'Encrypted data with zero third-party sharing. Your privacy first.', gradient: 'from-emerald-400 to-teal-500' },
-  { icon: Clock, title: 'Flexible Plans', desc: '1GB to unlimited data. 7 to 30 days. Pick what suits you.', gradient: 'from-violet-400 to-purple-500' },
-  { icon: Smartphone, title: 'Keep Your Number', desc: 'Works alongside your main SIM. No need to swap anything.', gradient: 'from-rose-400 to-pink-500' },
-  { icon: Wifi, title: 'High Speed 5G', desc: '4G/5G speeds wherever available. Stream, call, navigate freely.', gradient: 'from-cyan-400 to-sky-500' },
+  { icon: Zap, title: 'Instant Activation', desc: 'Scan the QR code and connect in seconds. No store visits needed.' },
+  { icon: Globe, title: '200+ Countries', desc: 'Coverage across the globe for all your travels and adventures.' },
+  { icon: Shield, title: 'Secure Connection', desc: 'Encrypted data with zero third-party sharing. Your privacy first.' },
+  { icon: Clock, title: 'Flexible Plans', desc: '1GB to unlimited data. 7 to 30 days. Pick what suits you.' },
+  { icon: Smartphone, title: 'Keep Your Number', desc: 'Works alongside your main SIM. No need to swap anything.' },
+  { icon: Wifi, title: 'High Speed 5G', desc: '4G/5G speeds wherever available. Stream, call, navigate freely.' },
 ]
 
 export default function EsimPage() {
   return (
     <>
-      {/* Hero with world map pattern */}
-      <section className="relative bg-gradient-to-br from-[#0f0f23] via-indigo-950 to-[#0f0f23] text-white py-24 sm:py-32 overflow-hidden">
-        {/* World map dot pattern */}
-        <div className="absolute inset-0 opacity-[0.07]" style={{
+      {/* Hero */}
+      <section className="relative bg-gradient-to-br from-[#0f0f23] via-indigo-950 to-[#0f0f23] text-white py-20 sm:py-28 overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.05]" style={{
           backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)`,
           backgroundSize: '24px 24px',
         }} />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(99,102,241,0.25),_transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(139,92,246,0.15),_transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_rgba(99,102,241,0.2),_transparent_50%)]" />
 
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="animate-fade-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-indigo-300 text-sm font-medium mb-8">
-            <Signal className="w-4 h-4" />
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-indigo-300 text-sm font-medium mb-6">
+            <Signal className="w-3.5 h-3.5" />
             Instant Activation — No Physical SIM
           </div>
 
-          <h1 className="animate-fade-up font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6" style={{ animationDelay: '0.1s' }}>
+          <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
             Stay Connected in{' '}
             <span className="gradient-text">200+ Countries</span>
           </h1>
 
-          <p className="animate-fade-up text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto mb-10" style={{ animationDelay: '0.2s' }}>
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-10">
             Buy an eSIM, scan the QR code, and you are online. No store visits, no swapping SIMs, no roaming bills.
           </p>
 
-          {/* Glass search bar */}
-          <div className="animate-fade-up max-w-xl mx-auto" style={{ animationDelay: '0.3s' }}>
-            <div className="glass rounded-2xl p-1.5 glow">
-              <div className="flex items-center">
-                <div className="flex-1 flex items-center gap-3 px-5">
-                  <Search className="w-5 h-5 text-indigo-400" />
-                  <span className="text-slate-400 text-sm">Search country or region...</span>
-                </div>
-                <button className="px-7 py-3 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 text-sm">
-                  Search
-                </button>
+          {/* Search using CountrySearch component */}
+          <div className="max-w-xl mx-auto">
+            <CountrySearch
+              placeholder="Where are you traveling?"
+              targetPath="/esim"
+              paramName="country"
+              buttonLabel="Find Plans"
+            />
+          </div>
+
+          {/* Trust stats */}
+          <div className="mt-12 flex items-center justify-center gap-8 sm:gap-12 text-sm text-slate-400">
+            <div className="flex items-center gap-1.5">
+              <div className="flex -space-x-0.5 text-amber-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                ))}
               </div>
+              <span>4.8/5</span>
             </div>
+            <span className="hidden sm:inline text-slate-600">|</span>
+            <span className="hidden sm:inline">200+ countries</span>
+            <span className="hidden sm:inline text-slate-600">|</span>
+            <span className="hidden sm:inline">Instant delivery</span>
           </div>
         </div>
       </section>
 
-      {/* Region cards */}
-      <section className="py-20 sm:py-24">
+      {/* Popular countries grid */}
+      <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-4">Browse by Region</h2>
-          <p className="text-slate-500 text-center mb-12 max-w-lg mx-auto">Pick your destination and get connected instantly. Plans start from just a few dollars.</p>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900">Popular Destinations</h2>
+              <p className="text-sm text-slate-500 mt-1">Most searched eSIM plans this month</p>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            {POPULAR_COUNTRIES.map((c) => (
+              <a
+                key={c.code}
+                href={`/esim?country=${c.code}`}
+                className="group flex items-center gap-3 p-4 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all"
+              >
+                <span className="text-3xl shrink-0">{c.flag}</span>
+                <div className="min-w-0">
+                  <p className="font-semibold text-sm text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{c.name}</p>
+                  <p className="text-xs text-slate-500">From <span className="font-semibold text-slate-700">{c.from}</span></p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Regional plans */}
+      <section className="py-16 sm:py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900 text-center mb-3">Browse by Region</h2>
+          <p className="text-sm text-slate-500 text-center mb-10 max-w-md mx-auto">Multi-country plans for when you are visiting more than one destination.</p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {REGIONS.map((r) => (
               <div
                 key={r.name}
-                className={`group relative p-6 rounded-2xl border border-slate-200 hover:border-slate-300 hover:shadow-xl ${r.glow} hover:-translate-y-1 transition-all duration-300 cursor-pointer overflow-hidden`}
+                className="group flex items-center gap-4 p-5 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:shadow-md transition-all cursor-pointer"
               >
-                {/* Gradient accent bar at top */}
-                <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${r.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="text-4xl">{r.emoji}</span>
-                  <div>
-                    <h3 className="font-display font-bold text-lg text-slate-900 group-hover:text-indigo-600 transition-colors">{r.name}</h3>
-                    <p className="text-xs text-slate-500">{r.countries}</p>
-                  </div>
+                <span className="text-3xl shrink-0">{r.emoji}</span>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{r.name}</h3>
+                  <p className="text-xs text-slate-500">{r.countries}</p>
                 </div>
-
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-slate-600">
-                    From <span className="font-bold text-lg text-slate-900">{r.from}</span>
-                  </p>
-                  <div className="w-8 h-8 rounded-full bg-slate-100 group-hover:bg-indigo-100 flex items-center justify-center transition-colors">
-                    <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600 transition-colors" />
-                  </div>
+                <div className="text-right shrink-0">
+                  <p className="text-sm font-semibold text-slate-900">From {r.from}</p>
+                  <ArrowRight className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 ml-auto mt-1 transition-colors" />
                 </div>
               </div>
             ))}
           </div>
 
           {/* Worldwide CTA */}
-          <div className="mt-10 p-8 sm:p-10 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 opacity-10" style={{
-              backgroundImage: `radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)`,
-              backgroundSize: '20px 20px',
-            }} />
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sm font-medium mb-4">
-                <Globe className="w-4 h-4" />
-                Multi-Country Plan
-              </div>
-              <h3 className="font-display text-2xl sm:text-3xl font-bold mb-3">Worldwide eSIM</h3>
-              <p className="text-indigo-100 mb-6 max-w-md mx-auto">One plan, every country. Perfect for multi-destination trips and digital nomads.</p>
-              <button className="px-8 py-3 bg-white text-indigo-700 font-semibold rounded-xl hover:bg-indigo-50 transition-all hover:shadow-lg hover:shadow-white/20 hover:-translate-y-0.5">
-                View Worldwide Plans
-              </button>
+          <div className="mt-8 p-6 sm:p-8 rounded-xl bg-indigo-600 text-white text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-sm font-medium mb-3">
+              <Globe className="w-4 h-4" />
+              Multi-Country Plan
             </div>
+            <h3 className="font-display text-xl sm:text-2xl font-bold mb-2">Worldwide eSIM</h3>
+            <p className="text-indigo-100 mb-5 max-w-md mx-auto text-sm">One plan, every country. Perfect for multi-destination trips and digital nomads.</p>
+            <button className="px-6 py-2.5 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
+              View Worldwide Plans
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Benefits with gradient icon backgrounds */}
-      <section className="py-20 bg-slate-50">
+      {/* Benefits */}
+      <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 text-center mb-4">Why Choose TripPortier eSIM?</h2>
-          <p className="text-slate-500 text-center mb-12 max-w-lg mx-auto">Everything you need for seamless connectivity abroad.</p>
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900 text-center mb-3">Why Choose TripPortier eSIM?</h2>
+          <p className="text-sm text-slate-500 text-center mb-10 max-w-md mx-auto">Everything you need for seamless connectivity abroad.</p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {BENEFITS.map(({ icon: Icon, title, desc, gradient }) => (
-              <div key={title} className="group p-6 rounded-2xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${gradient} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className="w-6 h-6 text-white" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {BENEFITS.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="p-5 rounded-xl border border-slate-200 bg-white hover:shadow-md transition-shadow">
+                <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center mb-3">
+                  <Icon className="w-5 h-5 text-indigo-600" />
                 </div>
-                <h3 className="font-display font-bold text-slate-900 mb-2">{title}</h3>
-                <p className="text-sm text-slate-600 leading-relaxed">{desc}</p>
+                <h3 className="font-display font-bold text-slate-900 mb-1.5 text-sm">{title}</h3>
+                <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
