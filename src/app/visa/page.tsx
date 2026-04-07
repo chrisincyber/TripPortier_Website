@@ -45,7 +45,7 @@ export default function VisaPage() {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.08] border border-white/[0.1] text-amber-300 text-sm font-medium mb-6">
             <FileText className="w-3.5 h-3.5" />
-            Free Tool — 195 Countries
+            Free Tool - 195 Countries
           </div>
 
           <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-5">
