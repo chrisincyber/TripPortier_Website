@@ -81,14 +81,31 @@ export default function EsimPage() {
 
           {/* Trust stats */}
           <div className="mt-12 flex items-center justify-center gap-8 sm:gap-12 text-sm text-slate-400">
-            <div className="flex items-center gap-1.5">
-              <div className="flex -space-x-0.5 text-amber-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
-                ))}
+            <a
+              href="https://www.trustpilot.com/review/tripportier.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-white transition-colors"
+            >
+              <div
+                className="trustpilot-widget"
+                data-locale="en-US"
+                data-template-id="5419b6a8b0d04a076446a9ad"
+                data-businessunit-id="tripportier.com"
+                data-style-height="20px"
+                data-style-width="auto"
+                data-theme="dark"
+              >
+                <span className="flex items-center gap-1.5">
+                  <div className="flex -space-x-0.5 text-[#00b67a]">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                    ))}
+                  </div>
+                  Trustpilot
+                </span>
               </div>
-              <span>4.8/5</span>
-            </div>
+            </a>
             <span className="hidden sm:inline text-slate-600">|</span>
             <span className="hidden sm:inline">200+ countries</span>
             <span className="hidden sm:inline text-slate-600">|</span>
