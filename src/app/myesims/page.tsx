@@ -1,15 +1,263 @@
-import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+'use client'
 
-export default function Page() {
+import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
+import Link from 'next/link'
+import { ArrowLeft, Loader2, Wifi, Globe, Clock, AlertCircle } from 'lucide-react'
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
+
+interface EsimOrder {
+  id: string
+  countryCode?: string
+  countryTitle?: string
+  packageName?: string
+  data?: string
+  days?: number
+  validityDays?: number
+  price?: number
+  amountPaid?: number
+  esimStatus?: string
+  isUnlimited?: boolean
+  dataRemaining?: string
+  createdAt?: string | { seconds: number }
+  orderedAt?: string | { seconds: number }
+  created_at?: string
+}
+
+function getFlag(code: string): string {
+  if (!code) return ''
+  const c = code.toUpperCase()
+  return String.fromCodePoint(...[...c].map(ch => 0x1f1e6 + ch.charCodeAt(0) - 65))
+}
+
+function getOrderDate(order: EsimOrder): Date {
+  if (order.created_at) return new Date(order.created_at)
+  if (typeof order.createdAt === 'string') return new Date(order.createdAt)
+  if (order.createdAt && typeof order.createdAt === 'object' && 'seconds' in order.createdAt) {
+    return new Date(order.createdAt.seconds * 1000)
+  }
+  if (typeof order.orderedAt === 'string') return new Date(order.orderedAt)
+  if (order.orderedAt && typeof order.orderedAt === 'object' && 'seconds' in order.orderedAt) {
+    return new Date(order.orderedAt.seconds * 1000)
+  }
+  return new Date()
+}
+
+function getStatusDisplay(status: string): { label: string; color: string } {
+  const s = (status || '').toLowerCase()
+  if (s.includes('active') || s.includes('in_use')) return { label: 'Active', color: 'bg-emerald-50 text-emerald-700' }
+  if (s.includes('installed')) return { label: 'Installed', color: 'bg-blue-50 text-blue-700' }
+  if (s.includes('not_installed') || s.includes('pending')) return { label: 'Pending', color: 'bg-amber-50 text-amber-700' }
+  if (s.includes('expired')) return { label: 'Expired', color: 'bg-slate-100 text-slate-500' }
+  if (s.includes('depleted')) return { label: 'Used Up', color: 'bg-slate-100 text-slate-500' }
+  return { label: status || 'Unknown', color: 'bg-slate-100 text-slate-500' }
+}
+
+const ACTIVE_STATUSES = ['active', 'in_use', 'installed', 'not_installed', 'pending']
+const PAST_STATUSES = ['expired', 'depleted']
+
+function isActiveOrder(order: EsimOrder): boolean {
+  const status = (order.esimStatus || '').toLowerCase()
+  if (status) return ACTIVE_STATUSES.some(s => status.includes(s))
+  const days = order.days || order.validityDays || 30
+  const created = getOrderDate(order)
+  const expiry = new Date(created.getTime() + days * 86400000)
+  return expiry > new Date()
+}
+
+export default function MyEsimsPage() {
+  const [user, setUser] = useState<User | null>(null)
+  const [orders, setOrders] = useState<EsimOrder[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [tab, setTab] = useState<'active' | 'history'>('active')
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+
+      if (!user) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        const res = await fetch(`${SUPABASE_URL}/functions/v1/get-user-esim-orders`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`,
+          },
+          body: JSON.stringify({}),
+        })
+        const data = await res.json()
+        if (data?.success && data.orders) {
+          setOrders(data.orders)
+        } else {
+          setOrders([])
+        }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load eSIM orders'
+        setError(message)
+      }
+      setLoading(false)
+    }
+
+    init()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const activeOrders = orders.filter(isActiveOrder)
+  const pastOrders = orders.filter(o => !isActiveOrder(o))
+  const displayedOrders = tab === 'active' ? activeOrders : pastOrders
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
+        <Wifi className="w-10 h-10 text-slate-300 mx-auto mb-4" />
+        <h1 className="font-display text-2xl font-bold text-slate-900 mb-2">Sign in to view your eSIMs</h1>
+        <p className="text-sm text-slate-500 mb-6">Log in to see your purchased eSIM plans.</p>
+        <Link href="/account" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors">
+          Go to Account
+        </Link>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
-      <Link href="/account" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 mb-6">
+      <Link href="/account" className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" />
         Back to Account
       </Link>
-      <h1 className="font-display text-3xl font-bold text-slate-900 mb-4">Coming Soon</h1>
-      <p className="text-slate-600">This feature is being migrated to the new platform. Check back soon.</p>
+
+      <h1 className="font-display text-3xl font-bold text-slate-900 mb-2">My eSIMs</h1>
+      <p className="text-sm text-slate-500 mb-6">{orders.length} eSIM order{orders.length !== 1 ? 's' : ''}</p>
+
+      {error && (
+        <div className="flex items-center gap-2 p-4 rounded-xl bg-red-50 border border-red-100 text-sm text-red-700 mb-6">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {orders.length === 0 ? (
+        <div className="text-center py-20">
+          <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+            <Wifi className="w-7 h-7 text-indigo-400" />
+          </div>
+          <h2 className="font-display text-xl font-bold text-slate-900 mb-2">No eSIMs yet</h2>
+          <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto">
+            Browse our eSIM plans to stay connected on your next trip.
+          </p>
+          <Link href="/esim" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors">
+            <Globe className="w-4 h-4" />
+            Browse eSIM Plans
+          </Link>
+        </div>
+      ) : (
+        <>
+          {/* Tabs */}
+          <div className="flex gap-1 mb-6 bg-slate-100 p-1 rounded-xl w-fit">
+            <button
+              onClick={() => setTab('active')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                tab === 'active' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              Active ({activeOrders.length})
+            </button>
+            <button
+              onClick={() => setTab('history')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                tab === 'history' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              History ({pastOrders.length})
+            </button>
+          </div>
+
+          {displayedOrders.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-sm text-slate-500">
+                {tab === 'active' ? 'No active eSIMs. Your active plans will appear here.' : 'No expired eSIMs yet.'}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {displayedOrders.map(order => (
+                <EsimCard key={order.id} order={order} />
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
+
+function EsimCard({ order }: { order: EsimOrder }) {
+  const flag = getFlag(order.countryCode || '')
+  const country = order.countryTitle || 'eSIM'
+  const packageName = order.packageName || `${order.data || ''} - ${order.days || order.validityDays || ''} Days`
+  const price = order.price || (order.amountPaid ? order.amountPaid / 100 : 0)
+  const status = getStatusDisplay(order.esimStatus || '')
+  const dataInfo = order.isUnlimited ? 'Unlimited' : order.dataRemaining || order.data || '-'
+  const date = getOrderDate(order)
+  const dateStr = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+  return (
+    <div className="p-5 rounded-2xl border border-slate-200 hover:border-indigo-200 hover:shadow-md transition-all">
+      <div className="flex items-start justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">{flag}</span>
+          <div>
+            <h3 className="font-display font-bold text-slate-900 text-sm">{country}</h3>
+            <p className="text-xs text-slate-500">{packageName}</p>
+          </div>
+        </div>
+        <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${status.color}`}>
+          {status.label}
+        </span>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3 text-center pt-3 border-t border-slate-100">
+        <div>
+          <p className="text-[11px] text-slate-400 mb-0.5">Data</p>
+          <p className="text-xs font-medium text-slate-700">{dataInfo}</p>
+        </div>
+        <div>
+          <p className="text-[11px] text-slate-400 mb-0.5">Validity</p>
+          <p className="text-xs font-medium text-slate-700">{order.validityDays || order.days || '-'} days</p>
+        </div>
+        <div>
+          <p className="text-[11px] text-slate-400 mb-0.5">Price</p>
+          <p className="text-xs font-medium text-slate-700">${price.toFixed(2)}</p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1.5 mt-3 text-[11px] text-slate-400">
+        <Clock className="w-3 h-3" />
+        Purchased {dateStr}
+      </div>
     </div>
   )
 }
