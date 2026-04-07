@@ -9,6 +9,7 @@ import {
   DollarSign, CreditCard, Puzzle, Award, Wifi, Car, FileCheck, MapPin,
   Plane, CheckCircle, AlertTriangle, Sparkles,
 } from 'lucide-react'
+import { CountrySearch } from '@/components/CountrySearch'
 
 /* ───────────────────────── Data ───────────────────────── */
 
@@ -176,15 +177,12 @@ export default function Home() {
                   {activeTab === 'esim' && (
                     <div className="space-y-3">
                       <p className="text-sm text-white/70">Where do you need data?</p>
-                      <div className="flex gap-2">
-                        <div className="flex-1 flex items-center gap-2 px-4 py-3.5 bg-white/[0.06] rounded-xl border border-white/[0.06]">
-                          <Search className="w-4 h-4 text-white/40" />
-                          <span className="text-white/40 text-sm">Search country...</span>
-                        </div>
-                        <Link href="/esim" className="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl transition-all text-sm whitespace-nowrap shadow-lg shadow-indigo-500/25">
-                          Search
-                        </Link>
-                      </div>
+                      <CountrySearch
+                        targetPath="/esim"
+                        paramName="country"
+                        placeholder="Search country (e.g. Japan, Thailand...)"
+                        buttonLabel="Search eSIM Plans"
+                      />
                     </div>
                   )}
                   {activeTab === 'transfers' && (
@@ -192,13 +190,14 @@ export default function Home() {
                       <p className="text-sm text-white/70">Book your airport pickup or drop-off</p>
                       <p className="text-xs text-white/50">Private cars and shuttles in 150+ countries. Fixed price, no surprises.</p>
                       <Link href="/airport-transfers" className="block w-full py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl text-sm text-center shadow-lg shadow-indigo-500/25">
-                        Search Transfers
+                        Search Airport Transfers
                       </Link>
                     </div>
                   )}
                   {activeTab === 'transport' && (
                     <div className="space-y-3">
                       <p className="text-sm text-white/70">Book trains, buses, and ferries across Asia</p>
+                      <p className="text-xs text-white/50">Compare routes for Thailand, Vietnam, Malaysia, Cambodia, and more.</p>
                       <a href="https://asiatransport.tripportier.com" target="_blank" rel="noopener noreferrer" className="block w-full py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl text-sm text-center shadow-lg shadow-indigo-500/25">
                         Search Routes
                       </a>
@@ -206,10 +205,13 @@ export default function Home() {
                   )}
                   {activeTab === 'visa' && (
                     <div className="space-y-3">
-                      <p className="text-sm text-white/70">Check visa requirements</p>
-                      <Link href="/visa" className="block w-full py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl text-sm text-center shadow-lg shadow-indigo-500/25">
-                        Check Requirements
-                      </Link>
+                      <p className="text-sm text-white/70">Check visa requirements for your destination</p>
+                      <CountrySearch
+                        targetPath="/visa"
+                        paramName="destination"
+                        placeholder="Where are you traveling to?"
+                        buttonLabel="Check Visa"
+                      />
                     </div>
                   )}
                 </div>
