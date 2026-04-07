@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: 'Upgrade to TripPortier+ for AI trip planning, flight tracking, calendar sync, and more premium travel features.',
   openGraph: {
     title: 'TripPortier+ Premium | Upgrade Your Travel',
-    description: 'AI trip planning, flight tracking, and more. Plans from $4.99/month.',
+    description: 'AI trip planning, flight tracking, and more. Plans from $6.99/month.',
   },
 }
 
@@ -21,7 +21,7 @@ const PLANS = [
   },
   {
     name: 'Monthly',
-    price: '$4.99',
+    price: '$6.99',
     period: '/month',
     features: ['Unlimited trips', 'AI smart suggestions', 'Flight tracking', 'Calendar sync', 'Extended weather', 'Priority support'],
     cta: 'Subscribe',
@@ -29,9 +29,9 @@ const PLANS = [
   },
   {
     name: 'Yearly',
-    price: '$29.99',
+    price: '$64.99',
     period: '/year',
-    savings: 'Save 50%',
+    savings: 'Save 22%',
     features: ['Everything in Monthly', 'AI trip planning', 'Multi-destination', 'Offline mode', 'All future features'],
     cta: 'Best Value',
     style: 'primary' as const,
@@ -158,7 +158,7 @@ export default function PremiumPage() {
           <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">Start Your Premium Journey</h2>
           <p className="text-indigo-100 text-sm mb-8">Try TripPortier+ risk-free. Cancel anytime.</p>
           <button className="px-7 py-3 bg-white text-indigo-700 font-semibold rounded-lg hover:bg-indigo-50 transition-colors text-sm">
-            Get TripPortier+ -$29.99/year
+            Get TripPortier+ - $64.99/year
           </button>
         </div>
       </section>
