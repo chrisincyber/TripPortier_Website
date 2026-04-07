@@ -32,22 +32,42 @@ const FOOTER_SECTIONS = [
 
 export function Footer() {
   return (
-    <footer className="bg-slate-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+    <footer className="relative bg-slate-950 text-white">
+      {/* Gradient top border */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div>
-            <h4 className="font-display font-bold text-lg mb-3">TripPortier</h4>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h4 className="font-display font-bold text-xl mb-3 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+              TripPortier
+            </h4>
+            <p className="text-slate-400 text-sm leading-relaxed mb-5">
               Your smart travel companion for stress-free trips.
             </p>
+            <p className="text-xs text-slate-500 italic">
+              Built for travelers, by travelers.
+            </p>
+
+            {/* Social links placeholder */}
+            <div className="flex items-center gap-3 mt-5">
+              {['X', 'IG', 'TT', 'YT'].map((platform) => (
+                <span
+                  key={platform}
+                  className="w-8 h-8 rounded-lg bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-xs text-slate-500 hover:text-white hover:bg-white/10 hover:border-white/10 transition-all cursor-pointer"
+                >
+                  {platform}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Link sections */}
           {FOOTER_SECTIONS.map((section) => (
             <div key={section.title}>
-              <h4 className="font-display font-bold text-sm mb-3">{section.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="font-display font-bold text-sm mb-4 text-white/90">{section.title}</h4>
+              <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.label}>
                     {link.external ? (
@@ -55,12 +75,12 @@ export function Footer() {
                         href={link.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm text-slate-400 hover:text-white transition-colors"
+                        className="text-sm text-slate-400 hover:text-indigo-400 transition-colors"
                       >
                         {link.label}
                       </a>
                     ) : (
-                      <Link href={link.href} className="text-sm text-slate-400 hover:text-white transition-colors">
+                      <Link href={link.href} className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">
                         {link.label}
                       </Link>
                     )}
@@ -73,12 +93,14 @@ export function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="border-t border-white/[0.06]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">&copy; {new Date().getFullYear()} TripPortier. All rights reserved.</p>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <span>We accept:</span>
-            <span className="font-medium">Visa, Mastercard, Amex, PayPal</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <span>We accept:</span>
+              <span className="font-medium text-slate-400">Visa, Mastercard, Amex, PayPal</span>
+            </div>
           </div>
         </div>
       </div>
