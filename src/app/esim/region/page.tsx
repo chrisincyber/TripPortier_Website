@@ -319,9 +319,9 @@ export default function RegionalEsimPage() {
 
       {/* Checkout Modal */}
       {checkoutPkg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setCheckoutPkg(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4" onClick={() => setCheckoutPkg(null)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-5 sm:p-6 border-b border-slate-100">
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg font-bold text-slate-900">Complete Your Purchase</h3>
                 <button onClick={() => setCheckoutPkg(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>

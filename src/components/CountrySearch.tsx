@@ -75,7 +75,7 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
         </div>
 
         {showDropdown && filtered.length > 0 && (
-          <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a3e] border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/40 z-50 max-h-64 overflow-y-auto">
+          <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a3e] border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/40 z-50 max-h-48 sm:max-h-64 overflow-y-auto">
             {filtered.map((country) => (
               <button
                 key={country.code}

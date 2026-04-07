@@ -5,6 +5,8 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
+import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
 
@@ -25,7 +27,9 @@ interface EsimPackage {
 
 export default function EsimCountryPage() {
   const params = useParams()
-  const countryCode = (params.country as string)?.toUpperCase()
+  const rawCode = (params.country as string)?.toUpperCase() || ''
+  const codeValidation = countryCodeSchema.safeParse(rawCode)
+  const countryCode = codeValidation.success ? codeValidation.data : ''
   const country = COUNTRIES.find((c) => c.code === countryCode)
   const [packages, setPackages] = useState<EsimPackage[]>([])
   const [loading, setLoading] = useState(true)
@@ -90,6 +94,13 @@ export default function EsimCountryPage() {
 
   const handleBuy = async () => {
     if (!checkoutPkg || !checkoutEmail.trim()) return
+
+    const emailValidation = validate(checkoutEmailSchema, { email: checkoutEmail })
+    if (!emailValidation.success) {
+      setCheckoutError(emailValidation.error)
+      return
+    }
+
     setBuying(checkoutPkg.id)
     setCheckoutError('')
     try {
@@ -97,7 +108,7 @@ export default function EsimCountryPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: checkoutEmail.trim(),
+          email: emailValidation.data.email,
           packageId: checkoutPkg.id,
           packageName: `${checkoutPkg.data} - ${checkoutPkg.days} Days`,
           countryCode,
@@ -119,10 +130,10 @@ export default function EsimCountryPage() {
       } else if (data.url || data.checkoutUrl) {
         window.location.href = data.url || data.checkoutUrl
       } else {
-        setCheckoutError(data.error || 'Failed to create checkout. Please try again.')
+        setCheckoutError(sanitizeError(data.error, 'Failed to create checkout. Please try again.'))
       }
-    } catch {
-      setCheckoutError('An error occurred. Please try again.')
+    } catch (err) {
+      setCheckoutError(sanitizeError(err, 'An error occurred. Please try again.'))
     }
     setBuying(null)
   }
@@ -297,9 +308,9 @@ export default function EsimCountryPage() {
 
       {/* Checkout Modal */}
       {checkoutPkg && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setCheckoutPkg(null)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4" onClick={() => setCheckoutPkg(null)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="p-5 sm:p-6 border-b border-slate-100">
               <div className="flex items-center justify-between">
                 <h3 className="font-display text-lg font-bold text-slate-900">Complete Your Purchase</h3>
                 <button onClick={() => setCheckoutPkg(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>

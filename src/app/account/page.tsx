@@ -5,6 +5,9 @@ import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import { LogOut, Mail, Loader2, MapPin, Plane, Wifi, Settings } from 'lucide-react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { emailAuthSchema, validate } from '@/lib/validation'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 export default function AccountPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -39,13 +42,20 @@ export default function AccountPage() {
     setError('')
     setMessage('')
 
+    const validation = validate(emailAuthSchema, { email, password })
+    if (!validation.success) {
+      setError(validation.error)
+      setAuthLoading(false)
+      return
+    }
+
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({ email, password })
-      if (error) setError(error.message)
+      const { error } = await supabase.auth.signUp({ email: validation.data.email, password: validation.data.password })
+      if (error) setError(sanitizeError(error, 'Failed to create account. Please try again.'))
       else setMessage('Check your email for a confirmation link.')
     } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) setError(error.message)
+      const { error } = await supabase.auth.signInWithPassword({ email: validation.data.email, password: validation.data.password })
+      if (error) setError(sanitizeError(error, 'Failed to sign in. Please try again.'))
     }
     setAuthLoading(false)
   }

@@ -6,6 +6,7 @@ import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Loader2, Settings, Bell, LogOut, Trash2, AlertTriangle, Shield } from 'lucide-react'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 export default function SettingsPage() {
   const [user, setUser] = useState<User | null>(null)
@@ -55,8 +56,7 @@ export default function SettingsPage() {
       await supabase.auth.signOut()
       router.push('/account')
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to delete account. Please contact support.'
-      setDeleteError(message)
+      setDeleteError(sanitizeError(err, 'Failed to delete account. Please contact support.'))
       setDeleting(false)
     }
   }
@@ -174,8 +174,8 @@ export default function SettingsPage() {
 
       {/* Delete confirmation modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setShowDeleteConfirm(false)}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm p-0 sm:p-4" onClick={() => setShowDeleteConfirm(false)}>
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="p-6 text-center">
               <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle className="w-6 h-6 text-red-600" />

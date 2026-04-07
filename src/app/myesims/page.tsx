@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { ArrowLeft, Loader2, Wifi, Globe, Clock, AlertCircle } from 'lucide-react'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://bomkdhuckqosvuhfhyci.supabase.co'
 
@@ -103,8 +104,7 @@ export default function MyEsimsPage() {
           setOrders([])
         }
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Failed to load eSIM orders'
-        setError(message)
+        setError(sanitizeError(err, 'Failed to load eSIM orders.'))
       }
       setLoading(false)
     }

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { ArrowLeft, Loader2, Plane, MapPin, Calendar, Plus, Clock } from 'lucide-react'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 interface Trip {
   id: string
@@ -80,8 +81,7 @@ export default function TripsPage() {
         if (fetchError) throw fetchError
         setTrips(data || [])
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Failed to load trips'
-        setError(message)
+        setError(sanitizeError(err, 'Failed to load trips.'))
       }
       setLoading(false)
     }

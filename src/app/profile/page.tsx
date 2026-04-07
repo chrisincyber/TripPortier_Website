@@ -5,6 +5,8 @@ import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import Link from 'next/link'
 import { ArrowLeft, Loader2, User as UserIcon, Mail, Save, Check, AlertCircle } from 'lucide-react'
+import { profileSchema, validate } from '@/lib/validation'
+import { sanitizeError } from '@/lib/sanitize-error'
 
 interface UserProfile {
   id: string
@@ -56,8 +58,7 @@ export default function ProfilePage() {
           setDisplayName(user.user_metadata?.full_name || user.user_metadata?.name || '')
         }
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Failed to load profile'
-        setError(message)
+        setError(sanitizeError(err, 'Failed to load profile.'))
       }
       setLoading(false)
     }
@@ -76,22 +77,28 @@ export default function ProfilePage() {
     setError('')
     setSaved(false)
 
+    const validation = validate(profileSchema, { displayName })
+    if (!validation.success) {
+      setError(validation.error)
+      setSaving(false)
+      return
+    }
+
     try {
       const { error: upsertError } = await supabase
         .from('users')
         .upsert({
           id: user.id,
           email: user.email,
-          displayName: displayName.trim(),
-          display_name: displayName.trim(),
+          displayName: validation.data.displayName,
+          display_name: validation.data.displayName,
         }, { onConflict: 'id' })
 
       if (upsertError) throw upsertError
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to save profile'
-      setError(message)
+      setError(sanitizeError(err, 'Failed to save profile. Please try again.'))
     }
     setSaving(false)
   }
