@@ -51,7 +51,7 @@ export default function EsimCountryPage() {
         const res = await fetch(`${SUPABASE_URL}/functions/v1/airalo-packages`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'local', country: countryCode }),
+          body: JSON.stringify({ type: 'local', countryCode }),
         })
         const data = await res.json()
         if (data.success && data.packages) {
