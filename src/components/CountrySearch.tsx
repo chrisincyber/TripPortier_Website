@@ -57,7 +57,7 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
   }
 
   return (
-    <div className={`flex gap-2 ${className}`}>
+    <div className={`flex flex-col sm:flex-row gap-2 ${className}`}>
       <div className="relative flex-1">
         <div className="flex items-center gap-2 px-4 py-3.5 bg-white/[0.06] rounded-xl border border-white/[0.08] focus-within:border-indigo-500/50 focus-within:bg-white/[0.1] transition-all">
           <Search className="w-4 h-4 text-white/40 shrink-0" />
@@ -70,7 +70,7 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
             onFocus={() => query.length > 0 && setShowDropdown(true)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder={placeholder}
-            className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/40"
+            className="flex-1 bg-transparent text-white text-sm outline-none placeholder:text-white/40 min-w-0"
           />
         </div>
 
@@ -93,7 +93,7 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
 
       <button
         onClick={handleSearch}
-        className="px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl transition-all text-sm whitespace-nowrap shadow-lg shadow-indigo-500/25"
+        className="w-full sm:w-auto px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 font-semibold rounded-xl transition-all text-sm whitespace-nowrap shadow-lg shadow-indigo-500/25"
       >
         {buttonLabel}
       </button>

@@ -74,7 +74,7 @@ export default function Home() {
   return (
     <>
       {/* ═══════════════════ HERO ═══════════════════ */}
-      <section className="relative min-h-[92dvh] flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[85dvh] sm:min-h-[92dvh] flex items-center justify-center overflow-hidden">
         {/* Gradient background - lighter, not too dark */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900" />
 
@@ -92,13 +92,13 @@ export default function Home() {
         <div className="absolute bottom-1/4 -right-32 w-80 h-80 bg-violet-500/15 rounded-full blur-[120px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/8 rounded-full blur-[180px]" />
 
-        <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 py-20 text-center text-white">
+        <div className="relative z-10 w-full max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-20 text-center text-white">
           {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-3"
+            className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] mb-3"
           >
             Where are you traveling?
           </motion.h1>
@@ -107,7 +107,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-base sm:text-lg text-white/60 mb-8 max-w-lg mx-auto"
+            className="text-sm sm:text-lg text-white/60 mb-6 sm:mb-8 max-w-lg mx-auto"
           >
             eSIM, airport transfers, and visa check -all in one place.
           </motion.p>
