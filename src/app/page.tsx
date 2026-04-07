@@ -206,6 +206,24 @@ export default function Home() {
               <Globe className="w-3.5 h-3.5" /> 200+ countries
             </span>
           </motion.div>
+
+          {/* Trustpilot */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.55 }}
+            className="mt-4"
+          >
+            <a
+              href="https://www.trustpilot.com/review/tripportier.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-white/70 hover:text-white transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#00b67a"><path d="M12 1.5l2.76 6.48L22 8.94l-5.19 4.56L18.18 21 12 17.27 5.82 21l1.37-7.5L2 8.94l7.24-.96L12 1.5z"/></svg>
+              See our reviews on Trustpilot
+            </a>
+          </motion.div>
         </div>
       </section>
 
@@ -426,6 +444,46 @@ export default function Home() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════ TRUSTPILOT ═══════════════════ */}
+      <section className="py-16 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="#00b67a"><path d="M12 1.5l2.76 6.48L22 8.94l-5.19 4.56L18.18 21 12 17.27 5.82 21l1.37-7.5L2 8.94l7.24-.96L12 1.5z"/></svg>
+              <span className="font-display text-lg font-bold text-slate-900">Trustpilot</span>
+            </div>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+              Trusted by 50,000+ travelers
+            </h2>
+            <p className="text-slate-500 mb-6">See what our customers say about TripPortier</p>
+
+            {/* Trustpilot Widget */}
+            <div
+              className="trustpilot-widget mb-6"
+              data-locale="en-US"
+              data-template-id="56278e9abfbbba0bdcd568bc"
+              data-businessunit-id="tripportier.com"
+              data-style-height="52px"
+              data-style-width="100%"
+            >
+              <a href="https://www.trustpilot.com/review/tripportier.com" target="_blank" rel="noopener noreferrer">
+                Trustpilot
+              </a>
+            </div>
+
+            <a
+              href="https://www.trustpilot.com/review/tripportier.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#00b67a] hover:bg-[#00a06a] text-white font-medium text-sm rounded-lg transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.76 6.48L22 8.94l-5.19 4.56L18.18 21 12 17.27 5.82 21l1.37-7.5L2 8.94l7.24-.96L12 1.5z"/></svg>
+              Write a Review
+            </a>
+          </motion.div>
         </div>
       </section>
 
