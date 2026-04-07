@@ -34,6 +34,9 @@ export default function EsimCountryPage() {
   const [filter, setFilter] = useState<'all' | 'standard' | 'unlimited'>('all')
   const [sortBy, setSortBy] = useState('price-asc')
   const [buying, setBuying] = useState<string | null>(null)
+  const [checkoutPkg, setCheckoutPkg] = useState<EsimPackage | null>(null)
+  const [checkoutEmail, setCheckoutEmail] = useState('')
+  const [checkoutError, setCheckoutError] = useState('')
 
   useEffect(() => {
     if (!countryCode) return
@@ -79,20 +82,47 @@ export default function EsimCountryPage() {
     }
   })
 
-  const handleBuy = async (pkg: EsimPackage) => {
-    setBuying(pkg.id)
+  const handleProceedToCheckout = (pkg: EsimPackage) => {
+    setCheckoutPkg(pkg)
+    setCheckoutEmail('')
+    setCheckoutError('')
+  }
+
+  const handleBuy = async () => {
+    if (!checkoutPkg || !checkoutEmail.trim()) return
+    setBuying(checkoutPkg.id)
+    setCheckoutError('')
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/esim-checkout-session`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packageId: pkg.id, countryCode, countryName: country?.name || countryCode }),
+        body: JSON.stringify({
+          email: checkoutEmail.trim(),
+          packageId: checkoutPkg.id,
+          packageName: `${checkoutPkg.data} - ${checkoutPkg.days} Days`,
+          countryCode,
+          countryTitle: country?.name || countryCode,
+          data: checkoutPkg.data,
+          days: checkoutPkg.days,
+          price: checkoutPkg.price,
+          netPrice: checkoutPkg.price,
+          operatorTitle: checkoutPkg.operatorTitle || 'TripPortier eSIM',
+          hasVoice: checkoutPkg.hasVoice || false,
+          hasText: checkoutPkg.hasText || false,
+          tripcoinsUsed: 0,
+          userId: null,
+        }),
       })
       const data = await res.json()
-      if (data.url || data.checkoutUrl) {
+      if (data.success && data.url) {
+        window.location.href = data.url
+      } else if (data.url || data.checkoutUrl) {
         window.location.href = data.url || data.checkoutUrl
+      } else {
+        setCheckoutError(data.error || 'Failed to create checkout. Please try again.')
       }
     } catch {
-      alert('Failed to start checkout. Please try again.')
+      setCheckoutError('An error occurred. Please try again.')
     }
     setBuying(null)
   }
@@ -229,15 +259,10 @@ export default function EsimCountryPage() {
                         </div>
 
                         <button
-                          onClick={() => handleBuy(pkg)}
-                          disabled={buying === pkg.id}
-                          className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                          onClick={() => handleProceedToCheckout(pkg)}
+                          className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
                         >
-                          {buying === pkg.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <>Proceed to Checkout - ${pkg.price.toFixed(2)}</>
-                          )}
+                          Proceed to Checkout - ${pkg.price.toFixed(2)}
                         </button>
                       </div>
                     )}
@@ -269,6 +294,72 @@ export default function EsimCountryPage() {
           </div>
         </div>
       </section>
+
+      {/* Checkout Modal */}
+      {checkoutPkg && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4" onClick={() => setCheckoutPkg(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-slate-100">
+              <div className="flex items-center justify-between">
+                <h3 className="font-display text-lg font-bold text-slate-900">Complete Your Purchase</h3>
+                <button onClick={() => setCheckoutPkg(null)} className="text-slate-400 hover:text-slate-600 text-xl leading-none">&times;</button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-4">
+              {/* Package summary */}
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+                <div className="flex items-center justify-between mb-1">
+                  <h4 className="font-display font-bold text-slate-900">{checkoutPkg.data} - {checkoutPkg.days} Days</h4>
+                  <span className="font-display text-lg font-bold text-indigo-600">${checkoutPkg.price.toFixed(2)}</span>
+                </div>
+                <p className="text-sm text-slate-500">{country?.flag} {country?.name || countryCode}</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <FeatureBadge icon={Wifi} label="Data" available />
+                  <FeatureBadge icon={MessageSquare} label="SMS" available={!!checkoutPkg.hasText} />
+                  <FeatureBadge icon={Phone} label="Calls" available={!!checkoutPkg.hasVoice} />
+                </div>
+              </div>
+
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                <input
+                  type="email"
+                  value={checkoutEmail}
+                  onChange={(e) => setCheckoutEmail(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleBuy()}
+                  placeholder="your@email.com"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                  autoFocus
+                />
+                <p className="text-xs text-slate-400 mt-1">Your eSIM QR code will be sent to this email</p>
+              </div>
+
+              {checkoutError && (
+                <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{checkoutError}</p>
+              )}
+
+              <button
+                onClick={handleBuy}
+                disabled={!checkoutEmail.trim() || buying === checkoutPkg.id}
+                className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {buying === checkoutPkg.id ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>Pay ${checkoutPkg.price.toFixed(2)}</>
+                )}
+              </button>
+
+              <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400">
+                <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Secure checkout</span>
+                <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> Instant delivery</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }
