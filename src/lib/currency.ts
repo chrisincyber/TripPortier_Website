@@ -5,6 +5,36 @@ import { useState, useEffect, useCallback } from 'react'
 const STORAGE_KEY = 'tripportier_currency'
 const FX_BUFFER = 1.03 // 3% buffer for non-USD to cover Stripe FX fees + rate fluctuation
 
+/**
+ * Round converted prices to clean psychological pricing points.
+ * Always rounds UP to ensure we never lose money.
+ */
+function roundPrice(amount: number, code: string): number {
+  switch (code) {
+    case 'USD':
+      return amount // base currency, no rounding
+
+    // Zero-decimal currencies: round up to clean intervals
+    case 'JPY':
+      return Math.ceil(amount / 100) * 100    // nearest 100 up
+    case 'KRW':
+      return Math.ceil(amount / 1000) * 1000   // nearest 1000 up
+
+    // THB: round up to nearest 10
+    case 'THB':
+      return Math.ceil(amount / 10) * 10
+
+    // Decimal currencies: round up to .49 or .99
+    default: {
+      const whole = Math.floor(amount)
+      const decimal = amount - whole
+      if (decimal <= 0) return whole + 0.49
+      if (decimal <= 0.49) return whole + 0.49
+      return whole + 0.99
+    }
+  }
+}
+
 export interface CurrencyInfo {
   code: string
   symbol: string
@@ -72,15 +102,16 @@ export function useCurrency() {
     return () => window.removeEventListener('currency-change', handler)
   }, [])
 
-  /** Format a USD amount in the selected currency (with FX buffer for non-USD) */
+  /** Format a USD amount in the selected currency (with FX buffer + psychological rounding for non-USD) */
   const formatPrice = useCallback(
     (usdAmount: number): string => {
       if (isUSD) return `$${usdAmount.toFixed(2)}`
       const converted = usdAmount * info.rate * FX_BUFFER
+      const rounded = roundPrice(converted, info.code)
       if (info.zeroDecimal) {
-        return `${info.symbol}${Math.round(converted).toLocaleString()}`
+        return `${info.symbol}${rounded.toLocaleString()}`
       }
-      return `${info.symbol}${converted.toFixed(2)}`
+      return `${info.symbol}${rounded.toFixed(2)}`
     },
     [info, isUSD]
   )
@@ -96,15 +127,15 @@ export function useCurrency() {
         }
       }
       const converted = usdAmount * info.rate * FX_BUFFER
+      const rounded = roundPrice(converted, info.code)
       if (info.zeroDecimal) {
-        const amount = Math.round(converted)
         return {
-          amount,
+          amount: rounded,
           currency: info.stripeCode,
-          displayAmount: `${info.symbol}${amount.toLocaleString()}`,
+          displayAmount: `${info.symbol}${rounded.toLocaleString()}`,
         }
       }
-      const amount = Math.round(converted * 100)
+      const amount = Math.round(rounded * 100)
       return {
         amount,
         currency: info.stripeCode,
