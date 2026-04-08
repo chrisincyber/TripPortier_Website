@@ -18,6 +18,7 @@ const FOOTER_SECTIONS: { title: string; links: FooterLink[] }[] = [
       { label: 'eSIM', href: '/esim' },
       { label: 'Airport Transfers', href: '/airport-transfers' },
       { label: 'Visa Check', href: '/visa' },
+      { label: 'TripPortier+', href: '/premium' },
       { label: 'Asia Transport', href: 'https://asiatransport.tripportier.com', external: true },
       { label: 'Download App', href: 'https://apps.apple.com/app/tripportier', external: true },
     ],

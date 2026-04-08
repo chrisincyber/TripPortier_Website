@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Wifi, Car, FileText, Crown, User, ChevronDown, Globe, MapPin } from 'lucide-react'
+import { Menu, X, Wifi, Car, FileText, User, ChevronDown, Globe, MapPin } from 'lucide-react'
 import { CurrencySelector } from '@/components/CurrencySelector'
 
 const ESIM_SUBMENU = [
@@ -16,7 +16,6 @@ const NAV_LINKS = [
   { href: '/esim', label: 'eSIM', icon: Wifi, hasSubmenu: true },
   { href: '/transport', label: 'Transport', icon: Car },
   { href: '/visa', label: 'Visa', icon: FileText },
-  { href: '/premium', label: 'Premium', icon: Crown },
 ]
 
 export function Navbar() {
