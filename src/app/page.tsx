@@ -205,19 +205,7 @@ export default function Home() {
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3.5 py-2 bg-white/[0.06] backdrop-blur-sm rounded-full text-xs font-medium text-white/60 border border-white/[0.06] hover:bg-white/[0.1] transition-colors"
             >
-              <div
-                className="trustpilot-widget"
-                data-locale="en-US"
-                data-template-id="5419b6a8b0d04a076446a9ad"
-                data-businessunit-id="tripportier.com"
-                data-style-height="20px"
-                data-style-width="auto"
-                data-theme="dark"
-              >
-                <span className="flex items-center gap-1.5">
-                  <Star className="w-3.5 h-3.5 fill-[#00b67a] text-[#00b67a]" /> Trustpilot
-                </span>
-              </div>
+              <Star className="w-3.5 h-3.5 fill-[#00b67a] text-[#00b67a]" /> Trustpilot
             </a>
             <span className="flex items-center gap-1.5 px-3.5 py-2 bg-white/[0.06] backdrop-blur-sm rounded-full text-xs font-medium text-white/60 border border-white/[0.06]">
               <Globe className="w-3.5 h-3.5" /> 200+ countries
