@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield } from 'lucide-react'
+import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Gift } from 'lucide-react'
 import { COUNTRIES } from '@/lib/countries'
 import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
+import { createClient } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
@@ -31,6 +33,7 @@ export default function EsimCountryPage() {
   const codeValidation = countryCodeSchema.safeParse(rawCode)
   const countryCode = codeValidation.success ? codeValidation.data : ''
   const country = COUNTRIES.find((c) => c.code === countryCode)
+  const [user, setUser] = useState<User | null>(null)
   const [packages, setPackages] = useState<EsimPackage[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -41,6 +44,11 @@ export default function EsimCountryPage() {
   const [checkoutPkg, setCheckoutPkg] = useState<EsimPackage | null>(null)
   const [checkoutEmail, setCheckoutEmail] = useState('')
   const [checkoutError, setCheckoutError] = useState('')
+
+  useEffect(() => {
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => setUser(data.user))
+  }, [])
 
   useEffect(() => {
     if (!countryCode) return
@@ -354,6 +362,29 @@ export default function EsimCountryPage() {
                 <p className="text-xs text-slate-400 mt-1">Your eSIM QR code will be sent to this email</p>
               </div>
 
+              {/* TripCoin signup prompt for guests */}
+              {!user && (
+                <div className="p-4 rounded-xl bg-amber-50 border border-amber-200">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center shrink-0 mt-0.5">
+                      <Gift className="w-4 h-4 text-amber-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-900 mb-0.5">Earn TripCoins on this purchase</p>
+                      <p className="text-xs text-slate-600 leading-relaxed mb-2.5">
+                        Sign up to earn up to 10% cashback. Redeem your TripCoins on future eSIM purchases.
+                      </p>
+                      <Link
+                        href={`/account?redirect=/esim/${countryCode}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 hover:text-amber-800 transition-colors"
+                      >
+                        Create free account <ArrowLeft className="w-3 h-3 rotate-180" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {checkoutError && (
                 <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{checkoutError}</p>
               )}
@@ -369,6 +400,13 @@ export default function EsimCountryPage() {
                   <>Pay ${checkoutPkg.price.toFixed(2)}</>
                 )}
               </button>
+
+              {user && (
+                <div className="flex items-center gap-2 justify-center text-xs text-amber-600">
+                  <span>🪙</span>
+                  <span>You will earn TripCoins on this purchase</span>
+                </div>
+              )}
 
               <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400">
                 <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Secure checkout</span>
