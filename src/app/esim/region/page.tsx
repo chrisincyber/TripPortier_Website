@@ -23,6 +23,8 @@ interface EsimPackage {
   networkProvider?: string
   coverageCountries?: string[]
   slug?: string
+  countryTitle?: string
+  countryCode?: string
 }
 
 const REGIONS = [
@@ -83,16 +85,28 @@ export default function RegionalEsimPage() {
     return true
   })
 
-  // Filter by selected region if possible (based on title/slug matching)
+  // Map our region names to Airalo region keywords for matching
+  const REGION_KEYWORDS: Record<string, string[]> = {
+    'europe': ['europe', 'eu', 'eu-uk', 'europe-uk'],
+    'asia': ['asia', 'southeast asia', 'south asia', 'east asia', 'central asia'],
+    'americas': ['america', 'americas', 'latin america', 'latam', 'north america', 'caribbean'],
+    'middle east': ['middle east', 'mena', 'middle-east'],
+    'africa': ['africa'],
+    'oceania': ['oceania', 'pacific'],
+  }
+
   const regionFiltered = selectedRegion
     ? typeFiltered.filter(pkg => {
-        const t = (pkg.title || pkg.slug || pkg.operatorTitle || '').toLowerCase()
-        const regionLower = selectedRegion.toLowerCase()
-        return t.includes(regionLower) || regionLower === 'all'
+        const keywords = REGION_KEYWORDS[selectedRegion.toLowerCase()] || [selectedRegion.toLowerCase()]
+        const title = (pkg.countryTitle || '').toLowerCase()
+        const code = (pkg.countryCode || pkg.slug || '').toLowerCase()
+        const pkgTitle = (pkg.title || '').toLowerCase()
+        // Match against countryTitle, countryCode/slug, or package title
+        return keywords.some(kw => title.includes(kw) || code.includes(kw) || pkgTitle.includes(kw))
       })
     : typeFiltered
 
-  // If filtering returned nothing, show all packages
+  // If filtering returned nothing, show all packages for the selected region
   const basePackages = regionFiltered.length > 0 ? regionFiltered : typeFiltered
 
   const useGrouped = sortBy === 'price-asc'
