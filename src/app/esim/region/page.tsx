@@ -39,6 +39,7 @@ export default function RegionalEsimPage() {
   const [error, setError] = useState('')
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [filter, setFilter] = useState<'all' | 'standard' | 'unlimited'>('all')
   const [sortBy, setSortBy] = useState('price-asc')
   const [checkoutPkg, setCheckoutPkg] = useState<EsimPackage | null>(null)
   const [checkoutEmail, setCheckoutEmail] = useState('')
@@ -74,7 +75,14 @@ export default function RegionalEsimPage() {
     }
   }
 
-  const sorted = [...packages].sort((a, b) => {
+  // Apply data type filter (all/standard/unlimited)
+  const typeFiltered = packages.filter(pkg => {
+    if (filter === 'unlimited') return pkg.isUnlimited
+    if (filter === 'standard') return !pkg.isUnlimited
+    return true
+  })
+
+  const sorted = [...typeFiltered].sort((a, b) => {
     switch (sortBy) {
       case 'price-asc': return a.price - b.price
       case 'price-desc': return b.price - a.price
@@ -95,6 +103,9 @@ export default function RegionalEsimPage() {
 
   // If filtering returned nothing, show all packages
   const displayPackages = filteredPackages.length > 0 ? filteredPackages : sorted
+
+  const hasUnlimited = packages.some(p => p.isUnlimited)
+  const hasStandard = packages.some(p => !p.isUnlimited)
 
   const handleBuy = async () => {
     if (!checkoutPkg || !checkoutEmail.trim()) return
@@ -190,21 +201,38 @@ export default function RegionalEsimPage() {
                 <ArrowLeft className="w-4 h-4" /> All regions
               </button>
 
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-display text-lg font-bold text-slate-900">
+              <div className="mb-6">
+                <h2 className="font-display text-lg font-bold text-slate-900 mb-4">
                   {REGIONS.find(r => r.name === selectedRegion)?.emoji} {selectedRegion} Plans
                 </h2>
                 {!loading && displayPackages.length > 0 && (
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-600 bg-white"
-                  >
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="data-desc">Most Data</option>
-                    <option value="days-desc">Longest Validity</option>
-                  </select>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    {(hasStandard && hasUnlimited) && (
+                      <div className="flex gap-1.5">
+                        {(['all', 'standard', 'unlimited'] as const).map((f) => (
+                          <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                              filter === f ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            }`}
+                          >
+                            {f === 'all' ? `All (${packages.length})` : f === 'unlimited' ? 'Unlimited' : 'Standard'}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    <select
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value)}
+                      className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-600 bg-white"
+                    >
+                      <option value="price-asc">Price: Low to High</option>
+                      <option value="price-desc">Price: High to Low</option>
+                      <option value="data-desc">Most Data</option>
+                      <option value="days-desc">Longest Validity</option>
+                    </select>
+                  </div>
                 )}
               </div>
 
