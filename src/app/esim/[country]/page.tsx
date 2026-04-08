@@ -180,7 +180,7 @@ export default function EsimCountryPage() {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+            <p className="text-sm text-slate-600 mb-1">Lasts {pkg.days} days</p>
             {pkg.operatorTitle && (
               <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
             )}
@@ -306,9 +306,26 @@ export default function EsimCountryPage() {
           )}
 
           {loading ? (
-            <div className="flex flex-col items-center py-24">
-              <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
-              <p className="text-sm text-slate-500">Loading eSIM plans for {country?.name || countryCode}...</p>
+            <div className="space-y-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="rounded-2xl border-2 border-slate-100 p-4 sm:p-5 animate-pulse">
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 sm:w-24 shrink-0">
+                      <div className="h-6 w-14 bg-slate-200 rounded" />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-28 bg-slate-200 rounded" />
+                      <div className="h-3 w-20 bg-slate-100 rounded" />
+                      <div className="flex gap-2">
+                        <div className="h-5 w-12 bg-slate-100 rounded" />
+                        <div className="h-5 w-12 bg-slate-100 rounded" />
+                        <div className="h-5 w-12 bg-slate-100 rounded" />
+                      </div>
+                    </div>
+                    <div className="h-6 w-16 bg-slate-200 rounded" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-24">
@@ -337,6 +354,27 @@ export default function EsimCountryPage() {
               )}
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Mini FAQ */}
+      <section className="py-10 border-t border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-display text-base font-bold text-slate-900 mb-4">Common Questions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-xs font-semibold text-slate-900 mb-1">What happens when data runs out?</p>
+              <p className="text-xs text-slate-500">Your connection stops. No surprise charges. You can buy another plan anytime.</p>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-xs font-semibold text-slate-900 mb-1">Can I top up mid-trip?</p>
+              <p className="text-xs text-slate-500">Yes. Just purchase a new eSIM plan and install it. You can have multiple eSIMs active.</p>
+            </div>
+            <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
+              <p className="text-xs font-semibold text-slate-900 mb-1">Does my phone need to be unlocked?</p>
+              <p className="text-xs text-slate-500">Yes. Your device must be carrier-unlocked to use an eSIM from another provider.</p>
+            </div>
+          </div>
         </div>
       </section>
 

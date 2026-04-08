@@ -74,19 +74,29 @@ export function CountrySearch({ placeholder = 'Search country...', targetPath, p
           />
         </div>
 
-        {showDropdown && filtered.length > 0 && (
+        {showDropdown && query.length > 0 && (
           <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-1 bg-[#1a1a3e] border border-white/10 rounded-xl overflow-hidden shadow-2xl shadow-black/40 z-50 max-h-48 sm:max-h-64 overflow-y-auto">
-            {filtered.map((country) => (
+            {filtered.length > 0 ? filtered.map((country) => (
               <button
                 key={country.code}
                 onClick={() => handleSelect(country)}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-white/80 hover:bg-white/10 hover:text-white transition-colors"
               >
-                <span className="text-lg">{country.flag}</span>
+                <span className="text-lg" aria-label={country.name}>{country.flag}</span>
                 <span className="font-medium">{country.name}</span>
                 <span className="text-white/30 text-xs ml-auto">{country.code}</span>
               </button>
-            ))}
+            )) : (
+              <div className="px-4 py-4 text-center">
+                <p className="text-sm text-white/50">No countries found for &quot;{query}&quot;</p>
+                <button
+                  onClick={() => { setShowDropdown(false); router.push(targetPath) }}
+                  className="text-xs text-indigo-400 hover:text-indigo-300 mt-1.5 transition-colors"
+                >
+                  View all destinations
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

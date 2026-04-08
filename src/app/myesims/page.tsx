@@ -133,11 +133,28 @@ export default function MyEsimsPage() {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center">
         <Wifi className="w-10 h-10 text-slate-300 mx-auto mb-4" />
-        <h1 className="font-display text-2xl font-bold text-slate-900 mb-2">Sign in to view your eSIMs</h1>
-        <p className="text-sm text-slate-500 mb-6">Log in to see your purchased eSIM plans.</p>
-        <Link href="/account" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors">
-          Go to Account
-        </Link>
+        <h1 className="font-display text-2xl font-bold text-slate-900 mb-2">Your eSIMs, all in one place</h1>
+        <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto">Sign in to track your eSIM plans, view activation status, and earn TripCoins on every purchase.</p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
+          <Link href="/account" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors">
+            Sign In
+          </Link>
+          <Link href="/esim" className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-slate-200 text-slate-700 text-sm font-medium rounded-xl hover:bg-slate-50 transition-colors">
+            Browse eSIM Plans
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-md sm:max-w-none mx-auto">
+          {[
+            { label: 'Track all your eSIMs', desc: 'See status, data remaining, and expiry' },
+            { label: 'Earn TripCoins', desc: 'Up to 10% cashback on every purchase' },
+            { label: 'Instant reorder', desc: 'Buy the same plan again in one tap' },
+          ].map(({ label, desc }) => (
+            <div key={label} className="p-3 rounded-xl bg-slate-50 border border-slate-100 text-left">
+              <p className="text-xs font-semibold text-slate-900">{label}</p>
+              <p className="text-[11px] text-slate-500 mt-0.5">{desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
@@ -164,9 +181,9 @@ export default function MyEsimsPage() {
           <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
             <Wifi className="w-7 h-7 text-indigo-400" />
           </div>
-          <h2 className="font-display text-xl font-bold text-slate-900 mb-2">No eSIMs yet</h2>
+          <h2 className="font-display text-xl font-bold text-slate-900 mb-2">Ready for your next trip?</h2>
           <p className="text-sm text-slate-500 mb-6 max-w-sm mx-auto">
-            Browse our eSIM plans to stay connected on your next trip.
+            Get an eSIM and stay connected the moment you land. No SIM swapping needed.
           </p>
           <Link href="/esim" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-xl hover:bg-indigo-700 transition-colors">
             <Globe className="w-4 h-4" />

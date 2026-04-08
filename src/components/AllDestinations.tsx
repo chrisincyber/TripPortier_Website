@@ -39,7 +39,7 @@ export function AllDestinations() {
                       href={`/esim/${c.code}`}
                       className="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-indigo-50 transition-colors group"
                     >
-                      <span className="text-lg">{c.flag}</span>
+                      <span className="text-lg" aria-label={c.name}>{c.flag}</span>
                       <span className="text-sm text-slate-700 group-hover:text-indigo-600 transition-colors truncate">{c.name}</span>
                     </Link>
                   ))}

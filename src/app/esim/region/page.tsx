@@ -177,7 +177,7 @@ export default function RegionalEsimPage() {
           </div>
           <div className="flex-1 min-w-0">
             {pkg.title && <p className="text-sm font-medium text-slate-800 mb-0.5">{pkg.title}</p>}
-            <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+            <p className="text-sm text-slate-600 mb-1">Lasts {pkg.days} days</p>
             {pkg.operatorTitle && <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>}
             <div className="flex items-center gap-2 flex-wrap">
               <FeatureBadge icon={Wifi} label="Data" available />

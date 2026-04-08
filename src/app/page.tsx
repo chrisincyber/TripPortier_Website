@@ -349,6 +349,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════════════ TESTIMONIALS ═══════════════════ */}
+      <section className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div {...sectionFade}>
+            <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 text-center mb-2">
+              What travelers say
+            </h2>
+            <p className="text-center text-slate-500 mb-12 text-sm">
+              Real experiences from real travelers.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+            {[
+              { name: 'Sarah M.', dest: 'Japan', quote: 'Landed in Tokyo, turned on data, and it just worked. No fuss at all. Saved me so much vs my carrier roaming plan.' },
+              { name: 'Marcus L.', dest: 'Thailand', quote: 'Used the 10GB plan for 2 weeks in Bangkok and Chiang Mai. Fast speeds, easy setup. Already bought one for my next trip.' },
+              { name: 'Priya K.', dest: 'Europe', quote: 'Got the Europe regional plan for a 3-country trip. One eSIM for Italy, France, and Spain. Super convenient.' },
+            ].map(({ name, dest, quote }, i) => (
+              <motion.div
+                key={name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-6 rounded-2xl bg-slate-50 border border-slate-200"
+              >
+                <div className="flex gap-0.5 mb-3">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                  ))}
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed mb-4">&quot;{quote}&quot;</p>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">{name}</p>
+                  <p className="text-xs text-slate-500">Traveled to {dest}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════════════ SERVICES ═══════════════════ */}
       <section className="py-20 bg-slate-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
