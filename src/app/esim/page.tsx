@@ -4,6 +4,7 @@ import { Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal, Star }
 import { CountrySearch } from '@/components/CountrySearch'
 import { EsimTabs } from '@/components/EsimTabs'
 import { AllDestinations } from '@/components/AllDestinations'
+import { DeviceCompatibility } from '@/components/DeviceCompatibility'
 
 export const metadata: Metadata = {
   title: 'eSIM Data Plans for 200+ Countries',
@@ -100,6 +101,13 @@ export default function EsimPage() {
             <span className="hidden sm:inline text-slate-600">|</span>
             <span className="hidden sm:inline">Instant delivery</span>
           </div>
+        </div>
+      </section>
+
+      {/* Device Compatibility Checker */}
+      <section className="py-12 sm:py-16 border-b border-slate-100">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <DeviceCompatibility />
         </div>
       </section>
 

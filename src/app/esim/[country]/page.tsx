@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Gift } from 'lucide-react'
+import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Gift, Smartphone } from 'lucide-react'
 import { COUNTRIES, REGION_INFO, getUpsellRegion } from '@/lib/countries'
 import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
@@ -257,6 +257,20 @@ export default function EsimCountryPage() {
           </div>
         </div>
       </section>
+
+      {/* Device compatibility banner */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <Link
+          href="/esim#compatibility"
+          className="flex items-center gap-2.5 p-3 rounded-xl bg-indigo-50 border border-indigo-100 hover:bg-indigo-100/70 transition-colors"
+        >
+          <Smartphone className="w-4 h-4 text-indigo-600 shrink-0" />
+          <p className="text-xs text-indigo-800">
+            <span className="font-semibold">Not sure if your device supports eSIM?</span>{' '}
+            <span className="text-indigo-600 underline">Check compatibility</span>
+          </p>
+        </Link>
+      </div>
 
       {/* Packages */}
       <section className="py-8 sm:py-10">
