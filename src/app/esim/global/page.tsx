@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Loader2, Globe, Wifi, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Clock } from 'lucide-react'
 import { EsimTabs } from '@/components/EsimTabs'
+import { groupByData, parseData } from '@/lib/esim-utils'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
@@ -66,13 +67,15 @@ export default function GlobalEsimPage() {
     return true
   })
 
-  const sorted = [...filtered].sort((a, b) => {
+  const useGrouped = sortBy === 'price-asc'
+  const dataGroups = useGrouped ? groupByData(filtered) : []
+
+  const sorted = useGrouped ? [] : [...filtered].sort((a, b) => {
     switch (sortBy) {
-      case 'price-asc': return a.price - b.price
       case 'price-desc': return b.price - a.price
       case 'data-desc': return parseData(b.data) - parseData(a.data)
       case 'days-desc': return (b.days || 0) - (a.days || 0)
-      default: return 0
+      default: return a.price - b.price
     }
   })
 
@@ -113,6 +116,61 @@ export default function GlobalEsimPage() {
       setCheckoutError('An error occurred. Please try again.')
     }
     setBuying(null)
+  }
+
+  const renderCard = (pkg: EsimPackage) => {
+    const isExpanded = expandedId === pkg.id
+    return (
+      <div key={pkg.id} className={`rounded-2xl border-2 overflow-hidden transition-all ${isExpanded ? 'border-indigo-500 shadow-lg shadow-indigo-500/10' : 'border-slate-200 hover:border-slate-300'}`}>
+        <button onClick={() => setExpandedId(isExpanded ? null : pkg.id)} className="w-full flex items-center gap-4 p-4 sm:p-5 text-left">
+          <div className="w-20 sm:w-24 shrink-0">
+            <p className="font-display text-lg sm:text-xl font-bold text-slate-900">{pkg.data}</p>
+            {pkg.isUnlimited && <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">UNLIMITED</span>}
+          </div>
+          <div className="flex-1 min-w-0">
+            {pkg.title && <p className="text-sm font-medium text-slate-800 mb-0.5">{pkg.title}</p>}
+            <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+            {pkg.operatorTitle && <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>}
+            <div className="flex items-center gap-2 flex-wrap">
+              <FeatureBadge icon={Wifi} label="Data" available />
+              <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
+              <FeatureBadge icon={Phone} label="Calls" available={!!pkg.hasVoice} />
+              {pkg.coverageCountries && pkg.coverageCountries.length > 0 && (
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{pkg.coverageCountries.length} countries</span>
+              )}
+            </div>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
+            <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </div>
+        </button>
+        {isExpanded && (
+          <div className="border-t border-slate-100 bg-slate-50/50 p-4 sm:p-5 space-y-3">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <DetailRow icon={Wifi} label="Data" value={`${pkg.data}${pkg.isUnlimited ? ' (Unlimited)' : ''}`} />
+              <DetailRow icon={Calendar} label="Validity" value={`${pkg.days} days`} />
+              <DetailRow icon={Signal} label="Provider" value={pkg.operatorTitle || 'TripPortier eSIM'} />
+              <DetailRow icon={MessageSquare} label="SMS" value={pkg.hasText ? 'Included' : 'Not included'} available={pkg.hasText} />
+              <DetailRow icon={Phone} label="Voice" value={pkg.hasVoice ? 'Included' : 'Not included'} available={pkg.hasVoice} />
+            </div>
+            {pkg.coverageCountries && pkg.coverageCountries.length > 0 && (
+              <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
+                <p className="text-xs font-medium text-blue-800 mb-1">Worldwide Coverage: {pkg.coverageCountries.length} countries</p>
+                <p className="text-xs text-blue-600">{pkg.coverageCountries.slice(0, 10).join(', ')}{pkg.coverageCountries.length > 10 ? ` +${pkg.coverageCountries.length - 10} more` : ''}</p>
+              </div>
+            )}
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+              <Zap className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-emerald-800"><strong>Worldwide:</strong> This plan works in 100+ countries. Your {pkg.days}-day validity starts when you first connect.</p>
+            </div>
+            <button onClick={() => { setCheckoutPkg(pkg); setCheckoutEmail(''); setCheckoutError('') }} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
+              Proceed to Checkout - ${pkg.price.toFixed(2)}
+            </button>
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -177,84 +235,25 @@ export default function GlobalEsimPage() {
               <Link href="/esim" className="text-sm text-indigo-600 font-medium">Browse other destinations</Link>
             </div>
           ) : (
-            <div className="space-y-3">
-              {sorted.map(pkg => {
-                const isExpanded = expandedId === pkg.id
-                return (
-                  <div
-                    key={pkg.id}
-                    className={`rounded-2xl border-2 overflow-hidden transition-all ${
-                      isExpanded ? 'border-indigo-500 shadow-lg shadow-indigo-500/10' : 'border-slate-200 hover:border-slate-300'
-                    }`}
-                  >
-                    <button
-                      onClick={() => setExpandedId(isExpanded ? null : pkg.id)}
-                      className="w-full flex items-center gap-4 p-4 sm:p-5 text-left"
-                    >
-                      <div className="w-20 sm:w-24 shrink-0">
-                        <p className="font-display text-lg sm:text-xl font-bold text-slate-900">{pkg.data}</p>
-                        {pkg.isUnlimited && (
-                          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">UNLIMITED</span>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        {pkg.title && <p className="text-sm font-medium text-slate-800 mb-0.5">{pkg.title}</p>}
-                        <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
-                        {pkg.operatorTitle && (
-                          <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
-                        )}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <FeatureBadge icon={Wifi} label="Data" available />
-                          <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
-                          <FeatureBadge icon={Phone} label="Calls" available={!!pkg.hasVoice} />
-                          {pkg.coverageCountries && pkg.coverageCountries.length > 0 && (
-                            <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
-                              {pkg.coverageCountries.length} countries
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
-                        <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                      </div>
-                    </button>
-
-                    {isExpanded && (
-                      <div className="border-t border-slate-100 bg-slate-50/50 p-4 sm:p-5 space-y-3">
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                          <DetailRow icon={Wifi} label="Data" value={`${pkg.data}${pkg.isUnlimited ? ' (Unlimited)' : ''}`} />
-                          <DetailRow icon={Calendar} label="Validity" value={`${pkg.days} days`} />
-                          <DetailRow icon={Signal} label="Provider" value={pkg.operatorTitle || 'TripPortier eSIM'} />
-                          <DetailRow icon={MessageSquare} label="SMS" value={pkg.hasText ? 'Included' : 'Not included'} available={pkg.hasText} />
-                          <DetailRow icon={Phone} label="Voice" value={pkg.hasVoice ? 'Included' : 'Not included'} available={pkg.hasVoice} />
-                        </div>
-
-                        {pkg.coverageCountries && pkg.coverageCountries.length > 0 && (
-                          <div className="p-3 rounded-xl bg-blue-50 border border-blue-100">
-                            <p className="text-xs font-medium text-blue-800 mb-1">Worldwide Coverage: {pkg.coverageCountries.length} countries</p>
-                            <p className="text-xs text-blue-600">{pkg.coverageCountries.slice(0, 10).join(', ')}{pkg.coverageCountries.length > 10 ? ` +${pkg.coverageCountries.length - 10} more` : ''}</p>
-                          </div>
-                        )}
-
-                        <div className="flex items-start gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                          <Zap className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <p className="text-xs text-emerald-800">
-                            <strong>Worldwide:</strong> This plan works in 100+ countries. Your {pkg.days}-day validity starts when you first connect.
-                          </p>
-                        </div>
-
-                        <button
-                          onClick={() => { setCheckoutPkg(pkg); setCheckoutEmail(''); setCheckoutError('') }}
-                          className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
-                        >
-                          Proceed to Checkout - ${pkg.price.toFixed(2)}
-                        </button>
-                      </div>
-                    )}
+            <div className="space-y-6">
+              {useGrouped ? (
+                dataGroups.map((group) => (
+                  <div key={group.label}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <h3 className="font-display text-sm font-bold text-slate-900">{group.label}</h3>
+                      <div className="flex-1 h-px bg-slate-200" />
+                      <span className="text-xs text-slate-400">{group.packages.length} plan{group.packages.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="space-y-3">
+                      {group.packages.map(pkg => renderCard(pkg))}
+                    </div>
                   </div>
-                )
-              })}
+                ))
+              ) : (
+                <div className="space-y-3">
+                  {sorted.map(pkg => renderCard(pkg))}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -359,15 +358,3 @@ function DetailRow({ icon: Icon, label, value, available }: {
   )
 }
 
-function parseData(dataStr: string): number {
-  if (!dataStr) return 0
-  const lower = dataStr.toLowerCase()
-  if (lower.includes('unlimited')) return 9999
-  const match = lower.match(/(\d+\.?\d*)\s*(gb|mb|tb)/)
-  if (!match) return 0
-  const amount = parseFloat(match[1])
-  if (match[2] === 'tb') return amount * 1000
-  if (match[2] === 'gb') return amount
-  if (match[2] === 'mb') return amount / 1000
-  return 0
-}

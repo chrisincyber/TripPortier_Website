@@ -7,6 +7,7 @@ import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal
 import { COUNTRIES, REGION_INFO, getUpsellRegion } from '@/lib/countries'
 import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
+import { groupByData, parseData } from '@/lib/esim-utils'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
@@ -84,13 +85,15 @@ export default function EsimCountryPage() {
     return true
   })
 
-  const sorted = [...filtered].sort((a, b) => {
+  const useGrouped = sortBy === 'price-asc'
+  const dataGroups = useGrouped ? groupByData(filtered) : []
+
+  const sorted = useGrouped ? [] : [...filtered].sort((a, b) => {
     switch (sortBy) {
-      case 'price-asc': return a.price - b.price
       case 'price-desc': return b.price - a.price
       case 'data-desc': return parseData(b.data) - parseData(a.data)
       case 'days-desc': return (b.days || 0) - (a.days || 0)
-      default: return 0
+      default: return a.price - b.price
     }
   })
 
@@ -144,6 +147,78 @@ export default function EsimCountryPage() {
       setCheckoutError(sanitizeError(err, 'An error occurred. Please try again.'))
     }
     setBuying(null)
+  }
+
+  const renderPackageCard = (pkg: EsimPackage) => {
+    const isExpanded = expandedId === pkg.id
+    return (
+      <div
+        key={pkg.id}
+        className={`rounded-2xl border-2 overflow-hidden transition-all ${
+          isExpanded ? 'border-indigo-500 shadow-lg shadow-indigo-500/10' : 'border-slate-200 hover:border-slate-300'
+        }`}
+      >
+        <button
+          onClick={() => setExpandedId(isExpanded ? null : pkg.id)}
+          className="w-full flex items-center gap-4 p-4 sm:p-5 text-left"
+        >
+          <div className="w-20 sm:w-24 shrink-0">
+            <p className="font-display text-lg sm:text-xl font-bold text-slate-900">{pkg.data}</p>
+            {pkg.isUnlimited && (
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">UNLIMITED</span>
+            )}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+            {pkg.operatorTitle && (
+              <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
+            )}
+            <div className="flex items-center gap-2 flex-wrap">
+              <FeatureBadge icon={Wifi} label="Data" available />
+              <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
+              <FeatureBadge icon={Phone} label="Calls" available={!!pkg.hasVoice} />
+              {pkg.networkProvider && (
+                <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{pkg.networkProvider}</span>
+              )}
+            </div>
+          </div>
+          <div className="text-right shrink-0">
+            <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
+            <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </div>
+        </button>
+        {isExpanded && (
+          <div className="border-t border-slate-100 bg-slate-50/50 p-4 sm:p-5 space-y-3">
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <DetailRow icon={Wifi} label="Data" value={`${pkg.data}${pkg.isUnlimited ? ' (Unlimited)' : ''}`} />
+              <DetailRow icon={Calendar} label="Validity" value={`${pkg.days} days`} />
+              <DetailRow icon={Signal} label="Provider" value={pkg.operatorTitle || 'TripPortier eSIM'} />
+              {pkg.networkProvider && <DetailRow icon={Signal} label="Network" value={pkg.networkProvider} highlight />}
+              <DetailRow icon={MessageSquare} label="SMS" value={pkg.hasText ? 'Included' : 'Not included'} available={pkg.hasText} />
+              <DetailRow icon={Phone} label="Voice Calls" value={pkg.hasVoice ? 'Included' : 'Not included'} available={pkg.hasVoice} />
+            </div>
+            <div className="flex items-start gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
+              <Zap className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="text-xs text-emerald-800">
+                <strong>Activation:</strong> Your {pkg.days}-day plan starts when you first connect to a network at your destination - not when you install the eSIM.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-100">
+              <span className="text-base">🪙</span>
+              <p className="text-xs text-amber-800">
+                Earn up to <strong>10% back</strong> in TripCoins on this purchase
+              </p>
+            </div>
+            <button
+              onClick={() => handleProceedToCheckout(pkg)}
+              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+            >
+              Proceed to Checkout - ${pkg.price.toFixed(2)}
+            </button>
+          </div>
+        )}
+      </div>
+    )
   }
 
   return (
@@ -215,89 +290,25 @@ export default function EsimCountryPage() {
               <Link href="/esim" className="text-sm text-indigo-600 font-medium">Browse other destinations</Link>
             </div>
           ) : (
-            <div className="space-y-3">
-              {sorted.map((pkg) => {
-                const isExpanded = expandedId === pkg.id
-                return (
-                  <div
-                    key={pkg.id}
-                    className={`rounded-2xl border-2 overflow-hidden transition-all ${
-                      isExpanded ? 'border-indigo-500 shadow-lg shadow-indigo-500/10' : 'border-slate-200 hover:border-slate-300'
-                    }`}
-                  >
-                    {/* Collapsed card */}
-                    <button
-                      onClick={() => setExpandedId(isExpanded ? null : pkg.id)}
-                      className="w-full flex items-center gap-4 p-4 sm:p-5 text-left"
-                    >
-                      {/* Data amount */}
-                      <div className="w-20 sm:w-24 shrink-0">
-                        <p className="font-display text-lg sm:text-xl font-bold text-slate-900">{pkg.data}</p>
-                        {pkg.isUnlimited && (
-                          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">UNLIMITED</span>
-                        )}
-                      </div>
-
-                      {/* Features */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
-                        {pkg.operatorTitle && (
-                          <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
-                        )}
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <FeatureBadge icon={Wifi} label="Data" available />
-                          <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
-                          <FeatureBadge icon={Phone} label="Calls" available={!!pkg.hasVoice} />
-                          {pkg.networkProvider && (
-                            <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{pkg.networkProvider}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Price */}
-                      <div className="text-right shrink-0">
-                        <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
-                        <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
-                      </div>
-                    </button>
-
-                    {/* Expanded details */}
-                    {isExpanded && (
-                      <div className="border-t border-slate-100 bg-slate-50/50 p-4 sm:p-5 space-y-3">
-                        <div className="grid grid-cols-2 gap-3 text-sm">
-                          <DetailRow icon={Wifi} label="Data" value={`${pkg.data}${pkg.isUnlimited ? ' (Unlimited)' : ''}`} />
-                          <DetailRow icon={Calendar} label="Validity" value={`${pkg.days} days`} />
-                          <DetailRow icon={Signal} label="Provider" value={pkg.operatorTitle || 'TripPortier eSIM'} />
-                          {pkg.networkProvider && <DetailRow icon={Signal} label="Network" value={pkg.networkProvider} highlight />}
-                          <DetailRow icon={MessageSquare} label="SMS" value={pkg.hasText ? 'Included' : 'Not included'} available={pkg.hasText} />
-                          <DetailRow icon={Phone} label="Voice Calls" value={pkg.hasVoice ? 'Included' : 'Not included'} available={pkg.hasVoice} />
-                        </div>
-
-                        <div className="flex items-start gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100">
-                          <Zap className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <p className="text-xs text-emerald-800">
-                            <strong>Activation:</strong> Your {pkg.days}-day plan starts when you first connect to a network at your destination - not when you install the eSIM.
-                          </p>
-                        </div>
-
-                        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-100">
-                          <span className="text-base">🪙</span>
-                          <p className="text-xs text-amber-800">
-                            Earn up to <strong>10% back</strong> in TripCoins on this purchase
-                          </p>
-                        </div>
-
-                        <button
-                          onClick={() => handleProceedToCheckout(pkg)}
-                          className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
-                        >
-                          Proceed to Checkout - ${pkg.price.toFixed(2)}
-                        </button>
-                      </div>
-                    )}
+            <div className="space-y-6">
+              {useGrouped ? (
+                dataGroups.map((group) => (
+                  <div key={group.label}>
+                    <div className="flex items-center gap-3 mb-3">
+                      <h3 className="font-display text-sm font-bold text-slate-900">{group.label}</h3>
+                      <div className="flex-1 h-px bg-slate-200" />
+                      <span className="text-xs text-slate-400">{group.packages.length} plan{group.packages.length !== 1 ? 's' : ''}</span>
+                    </div>
+                    <div className="space-y-3">
+                      {group.packages.map((pkg) => renderPackageCard(pkg))}
+                    </div>
                   </div>
-                )
-              })}
+                ))
+              ) : (
+                <div className="space-y-3">
+                  {sorted.map((pkg) => renderPackageCard(pkg))}
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -492,15 +503,3 @@ function DetailRow({ icon: Icon, label, value, available, highlight }: {
   )
 }
 
-function parseData(dataStr: string): number {
-  if (!dataStr) return 0
-  const lower = dataStr.toLowerCase()
-  if (lower.includes('unlimited')) return 9999
-  const match = lower.match(/(\d+\.?\d*)\s*(gb|mb|tb)/)
-  if (!match) return 0
-  const amount = parseFloat(match[1])
-  if (match[2] === 'tb') return amount * 1000
-  if (match[2] === 'gb') return amount
-  if (match[2] === 'mb') return amount / 1000
-  return 0
-}
