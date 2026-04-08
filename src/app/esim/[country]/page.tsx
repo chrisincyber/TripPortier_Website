@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Wifi, Clock, Loader2, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Gift } from 'lucide-react'
-import { COUNTRIES } from '@/lib/countries'
+import { COUNTRIES, REGION_INFO, getUpsellRegion } from '@/lib/countries'
 import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
 import { createClient } from '@/lib/supabase/client'
@@ -320,6 +320,47 @@ export default function EsimCountryPage() {
           </div>
         </div>
       </section>
+
+      {/* Regional upsell */}
+      {country && (() => {
+        const upsellKey = getUpsellRegion(country.region)
+        const regionInfo = REGION_INFO[upsellKey]
+        if (!regionInfo) return null
+        return (
+          <section className="py-10 border-t border-slate-100">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="font-display text-lg font-bold text-slate-900 text-center mb-2">Need more coverage?</h2>
+              <p className="text-sm text-slate-500 text-center mb-6">Get a multi-country plan and stay connected across the entire region.</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Link
+                  href="/esim/region"
+                  className="group flex items-center gap-4 p-5 rounded-xl border-2 border-slate-200 bg-white hover:border-indigo-300 hover:shadow-md transition-all"
+                >
+                  <span className="text-3xl">{regionInfo.emoji}</span>
+                  <div className="flex-1">
+                    <h3 className="font-display font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{regionInfo.name} eSIM</h3>
+                    <p className="text-xs text-slate-500">{regionInfo.desc}</p>
+                    <p className="text-xs text-indigo-600 font-medium mt-1">{regionInfo.countries}</p>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/esim/global"
+                  className="group flex items-center gap-4 p-5 rounded-xl border-2 border-slate-200 bg-white hover:border-violet-300 hover:shadow-md transition-all"
+                >
+                  <span className="text-3xl">🌐</span>
+                  <div className="flex-1">
+                    <h3 className="font-display font-bold text-slate-900 group-hover:text-violet-600 transition-colors">Worldwide eSIM</h3>
+                    <p className="text-xs text-slate-500">One plan for every country</p>
+                    <p className="text-xs text-violet-600 font-medium mt-1">100+ countries</p>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </section>
+        )
+      })()}
 
       {/* Checkout Modal */}
       {checkoutPkg && (

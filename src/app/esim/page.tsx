@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Wifi, Globe, Zap, Shield, Clock, Smartphone, ArrowRight, Signal, Star } from 'lucide-react'
 import { CountrySearch } from '@/components/CountrySearch'
 import { EsimTabs } from '@/components/EsimTabs'
+import { AllDestinations } from '@/components/AllDestinations'
 
 export const metadata: Metadata = {
   title: 'eSIM Data Plans for 200+ Countries',
@@ -130,8 +131,17 @@ export default function EsimPage() {
         </div>
       </section>
 
-      {/* Regional plans */}
+      {/* All Destinations */}
       <section className="py-16 sm:py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900 text-center mb-3">All Destinations</h2>
+          <p className="text-sm text-slate-500 text-center mb-10 max-w-md mx-auto">Browse eSIM plans for every country we cover. Tap a region to expand.</p>
+          <AllDestinations />
+        </div>
+      </section>
+
+      {/* Regional plans */}
+      <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900 text-center mb-3">Browse by Region</h2>
           <p className="text-sm text-slate-500 text-center mb-10 max-w-md mx-auto">Multi-country plans for when you are visiting more than one destination.</p>
