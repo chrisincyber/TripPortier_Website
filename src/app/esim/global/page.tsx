@@ -198,12 +198,20 @@ export default function GlobalEsimPage() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        {pkg.title && <p className="text-sm font-medium text-slate-800 mb-1">{pkg.title}</p>}
+                        {pkg.title && <p className="text-sm font-medium text-slate-800 mb-0.5">{pkg.title}</p>}
                         <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+                        {pkg.operatorTitle && (
+                          <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
+                        )}
                         <div className="flex items-center gap-2 flex-wrap">
                           <FeatureBadge icon={Wifi} label="Data" available />
                           <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
                           <FeatureBadge icon={Phone} label="Calls" available={!!pkg.hasVoice} />
+                          {pkg.coverageCountries && pkg.coverageCountries.length > 0 && (
+                            <span className="text-[10px] font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                              {pkg.coverageCountries.length} countries
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="text-right shrink-0">

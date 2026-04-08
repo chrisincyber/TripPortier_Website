@@ -241,6 +241,9 @@ export default function EsimCountryPage() {
                       {/* Features */}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm text-slate-600 mb-1">{pkg.days} days validity</p>
+                        {pkg.operatorTitle && (
+                          <p className="text-xs text-slate-400 mb-1.5">by {pkg.operatorTitle}</p>
+                        )}
                         <div className="flex items-center gap-2 flex-wrap">
                           <FeatureBadge icon={Wifi} label="Data" available />
                           <FeatureBadge icon={MessageSquare} label="SMS" available={!!pkg.hasText} />
