@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { ArrowLeft, Loader2, Globe, Wifi, Check, X, Phone, MessageSquare, Signal, Calendar, Zap, ChevronDown, Shield, Clock } from 'lucide-react'
 import { EsimTabs } from '@/components/EsimTabs'
 import { groupByData, parseData } from '@/lib/esim-utils'
+import { useCurrency } from '@/lib/currency'
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
 
@@ -37,6 +38,7 @@ const REGIONS = [
 ]
 
 export default function RegionalEsimPage() {
+  const { formatPrice, formatUSD, getChargeAmount, isUSD, code: currencyCode } = useCurrency()
   const [packages, setPackages] = useState<EsimPackage[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -187,7 +189,7 @@ export default function RegionalEsimPage() {
             </div>
           </div>
           <div className="text-right shrink-0">
-            <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
+            <p className="font-display text-xl font-bold text-slate-900">{formatPrice(pkg.price)}</p>
             <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </button>
@@ -211,7 +213,7 @@ export default function RegionalEsimPage() {
               <p className="text-xs text-emerald-800"><strong>Activation:</strong> Your {pkg.days}-day plan starts when you first connect to a network.</p>
             </div>
             <button onClick={() => { setCheckoutPkg(pkg); setCheckoutEmail(''); setCheckoutError('') }} className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2">
-              Proceed to Checkout - ${pkg.price.toFixed(2)}
+              Proceed to Checkout - {formatPrice(pkg.price)}
             </button>
           </div>
         )}
@@ -382,7 +384,7 @@ export default function RegionalEsimPage() {
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                 <div className="flex items-center justify-between mb-1">
                   <h4 className="font-display font-bold text-slate-900">{checkoutPkg.title || `${checkoutPkg.data} - ${checkoutPkg.days} Days`}</h4>
-                  <span className="font-display text-lg font-bold text-indigo-600">${checkoutPkg.price.toFixed(2)}</span>
+                  <span className="font-display text-lg font-bold text-indigo-600">{formatPrice(checkoutPkg.price)}</span>
                 </div>
                 <p className="text-sm text-slate-500">{selectedRegion || 'Regional'} Plan</p>
               </div>
@@ -405,7 +407,7 @@ export default function RegionalEsimPage() {
                 disabled={!checkoutEmail.trim() || buying === checkoutPkg.id}
                 className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
               >
-                {buying === checkoutPkg.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Pay ${checkoutPkg.price.toFixed(2)}</>}
+                {buying === checkoutPkg.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <>Pay {formatPrice(checkoutPkg.price)}</>}
               </button>
               <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400">
                 <span className="flex items-center gap-1"><Shield className="w-3 h-3" /> Secure checkout</span>

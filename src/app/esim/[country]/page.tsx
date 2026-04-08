@@ -8,6 +8,7 @@ import { COUNTRIES, REGION_INFO, getUpsellRegion } from '@/lib/countries'
 import { checkoutEmailSchema, countryCodeSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
 import { groupByData, parseData } from '@/lib/esim-utils'
+import { useCurrency } from '@/lib/currency'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 
@@ -34,6 +35,7 @@ export default function EsimCountryPage() {
   const codeValidation = countryCodeSchema.safeParse(rawCode)
   const countryCode = codeValidation.success ? codeValidation.data : ''
   const country = COUNTRIES.find((c) => c.code === countryCode)
+  const { formatPrice, formatUSD, getChargeAmount, isUSD, code: currencyCode } = useCurrency()
   const [user, setUser] = useState<User | null>(null)
   const [packages, setPackages] = useState<EsimPackage[]>([])
   const [loading, setLoading] = useState(true)
@@ -45,6 +47,7 @@ export default function EsimCountryPage() {
   const [checkoutPkg, setCheckoutPkg] = useState<EsimPackage | null>(null)
   const [checkoutEmail, setCheckoutEmail] = useState('')
   const [checkoutError, setCheckoutError] = useState('')
+  const [payInLocal, setPayInLocal] = useState(true)
 
   useEffect(() => {
     const supabase = createClient()
@@ -115,6 +118,11 @@ export default function EsimCountryPage() {
 
     setBuying(checkoutPkg.id)
     setCheckoutError('')
+
+    // Determine charge currency and amount
+    const useLocal = payInLocal && !isUSD
+    const charge = useLocal ? getChargeAmount(checkoutPkg.price) : { amount: Math.round(checkoutPkg.price * 100), currency: 'usd' }
+
     try {
       const res = await fetch(`${SUPABASE_URL}/functions/v1/esim-checkout-session`, {
         method: 'POST',
@@ -134,6 +142,8 @@ export default function EsimCountryPage() {
           hasText: checkoutPkg.hasText || false,
           tripcoinsUsed: 0,
           userId: null,
+          chargeCurrency: charge.currency,
+          chargeAmount: charge.amount,
         }),
       })
       const data = await res.json()
@@ -184,7 +194,7 @@ export default function EsimCountryPage() {
             </div>
           </div>
           <div className="text-right shrink-0">
-            <p className="font-display text-xl font-bold text-slate-900">${pkg.price.toFixed(2)}</p>
+            <p className="font-display text-xl font-bold text-slate-900">{formatPrice(pkg.price)}</p>
             <ChevronDown className={`w-4 h-4 text-slate-400 ml-auto mt-1 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </button>
@@ -214,7 +224,7 @@ export default function EsimCountryPage() {
               onClick={() => handleProceedToCheckout(pkg)}
               className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
             >
-              Proceed to Checkout - ${pkg.price.toFixed(2)}
+              Proceed to Checkout - {formatPrice(pkg.price)}
             </button>
           </div>
         )}
@@ -394,7 +404,7 @@ export default function EsimCountryPage() {
               <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                 <div className="flex items-center justify-between mb-1">
                   <h4 className="font-display font-bold text-slate-900">{checkoutPkg.data} - {checkoutPkg.days} Days</h4>
-                  <span className="font-display text-lg font-bold text-indigo-600">${checkoutPkg.price.toFixed(2)}</span>
+                  <span className="font-display text-lg font-bold text-indigo-600">{formatPrice(checkoutPkg.price)}</span>
                 </div>
                 <p className="text-sm text-slate-500">{country?.flag} {country?.name || countryCode}</p>
                 <div className="flex items-center gap-2 mt-2">
@@ -442,6 +452,28 @@ export default function EsimCountryPage() {
                 </div>
               )}
 
+              {/* Currency toggle (only show if non-USD selected) */}
+              {!isUSD && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPayInLocal(true)}
+                    className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-medium border transition-colors ${
+                      payInLocal ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    Pay in {currencyCode}
+                  </button>
+                  <button
+                    onClick={() => setPayInLocal(false)}
+                    className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-medium border transition-colors ${
+                      !payInLocal ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:border-slate-300'
+                    }`}
+                  >
+                    Pay in USD
+                  </button>
+                </div>
+              )}
+
               {checkoutError && (
                 <p className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">{checkoutError}</p>
               )}
@@ -454,7 +486,7 @@ export default function EsimCountryPage() {
                 {buying === checkoutPkg.id ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
-                  <>Pay ${checkoutPkg.price.toFixed(2)}</>
+                  <>Pay {payInLocal ? formatPrice(checkoutPkg.price) : formatUSD(checkoutPkg.price)}</>
                 )}
               </button>
 
