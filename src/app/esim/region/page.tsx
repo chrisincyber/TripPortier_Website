@@ -115,6 +115,7 @@ export default function RegionalEsimPage() {
   const displayPackages = useGrouped ? basePackages : [...basePackages].sort((a, b) => {
     switch (sortBy) {
       case 'price-desc': return b.price - a.price
+      case 'data-asc': return parseData(a.data) - parseData(b.data)
       case 'data-desc': return parseData(b.data) - parseData(a.data)
       case 'days-desc': return (b.days || 0) - (a.days || 0)
       default: return a.price - b.price
@@ -301,7 +302,8 @@ export default function RegionalEsimPage() {
                     >
                       <option value="price-asc">Price: Low to High</option>
                       <option value="price-desc">Price: High to Low</option>
-                      <option value="data-desc">Most Data</option>
+                      <option value="data-asc">Least Data</option>
+                    <option value="data-desc">Most Data</option>
                       <option value="days-desc">Longest Validity</option>
                     </select>
                   </div>
