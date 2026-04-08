@@ -269,6 +269,13 @@ export default function EsimCountryPage() {
                           </p>
                         </div>
 
+                        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-50 border border-amber-100">
+                          <span className="text-base">🪙</span>
+                          <p className="text-xs text-amber-800">
+                            Earn up to <strong>10% back</strong> in TripCoins on this purchase
+                          </p>
+                        </div>
+
                         <button
                           onClick={() => handleProceedToCheckout(pkg)}
                           className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"

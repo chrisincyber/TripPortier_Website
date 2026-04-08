@@ -171,6 +171,54 @@ export default function EsimPage() {
         </div>
       </section>
 
+      {/* TripCoin Cashback */}
+      <section className="py-16 sm:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-50 via-amber-50 to-orange-50 border border-amber-200/60 p-8 sm:p-10">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-amber-200/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+
+            <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold mb-4">
+                  <span className="text-base">🪙</span> TripCoin Cashback
+                </div>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+                  Earn up to 10% back on every eSIM
+                </h2>
+                <p className="text-sm text-slate-600 leading-relaxed mb-5">
+                  Every purchase earns you TripCoins. Use them as credit on your next eSIM. The more you travel, the more you save.
+                </p>
+                <Link
+                  href="/account"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold rounded-lg transition-colors"
+                >
+                  Start Earning <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { level: 'Explorer', rate: '3%', spend: '$0+' },
+                  { level: 'Adventurer', rate: '5%', spend: '$25+' },
+                  { level: 'Globetrotter', rate: '6%', spend: '$75+' },
+                  { level: 'Ambassador', rate: '10%', spend: '$150+' },
+                ].map((tier) => (
+                  <div key={tier.level} className="p-3.5 rounded-xl bg-white border border-amber-100 text-center">
+                    <p className="font-display text-xl font-bold text-amber-600">{tier.rate}</p>
+                    <p className="text-xs font-semibold text-slate-900 mt-0.5">{tier.level}</p>
+                    <p className="text-[10px] text-slate-400">from {tier.spend} spent</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <p className="relative text-[11px] text-slate-400 mt-6 text-center">
+              TripPortier+ members earn an additional 5% bonus. Credits valid for 18 months.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Benefits */}
       <section className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
