@@ -14,7 +14,7 @@ export default function PrivacyPage() {
       <div className="space-y-8 text-sm text-slate-700 leading-relaxed [&_h2]:font-display [&_h2]:text-base [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mb-3 [&_ul]:space-y-1.5 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:space-y-1.5 [&_ol]:list-decimal [&_ol]:pl-5">
         <p>TripPortier (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your privacy. This policy explains how we collect, use, store, and safeguard your personal information when you use our website at tripportier.com, our iOS app, and related services (collectively, the &quot;Service&quot;).</p>
 
-        <p><strong>Data Controller:</strong> TripPortier, Switzerland. Contact: <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a></p>
+        <p><strong>Data Controller:</strong> TripPortier, Switzerland. Contact: <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a></p>
 
         {/* Section 1 */}
         <section>
@@ -170,7 +170,7 @@ export default function PrivacyPage() {
             <li><strong>Right to Object (Art. 21):</strong> Object to processing based on legitimate interests.</li>
             <li><strong>Right to Withdraw Consent (Art. 7(3)):</strong> Withdraw consent at any time for analytics, marketing, or other consent-based processing. Use the cookie settings or email us.</li>
           </ol>
-          <p className="mt-3">To exercise any of these rights, contact: <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a></p>
+          <p className="mt-3">To exercise any of these rights, contact: <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a></p>
           <p>We will respond within 30 days. If you are not satisfied with our response, you have the right to lodge a complaint with your local data protection supervisory authority (e.g., FDPIC in Switzerland, CNIL in France, ICO in the UK).</p>
         </section>
 
@@ -180,7 +180,7 @@ export default function PrivacyPage() {
           <p>If you are a California resident, the California Consumer Privacy Act (CCPA) as amended by the California Privacy Rights Act (CPRA) provides you with specific rights:</p>
           <ul>
             <li><strong>Right to Know:</strong> You can request details about the categories and specific pieces of personal information we have collected about you in the past 12 months, the sources, purposes, and categories of third parties with whom we shared it.</li>
-            <li><strong>Right to Delete:</strong> You can request deletion of your personal information. Use Settings &gt; Delete Account or email <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a>.</li>
+            <li><strong>Right to Delete:</strong> You can request deletion of your personal information. Use Settings &gt; Delete Account or email <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a>.</li>
             <li><strong>Right to Correct:</strong> You can request correction of inaccurate personal information.</li>
             <li><strong>Right to Opt-Out of Sale/Sharing:</strong> We do not sell or share your personal information for cross-context behavioral advertising. No opt-out is necessary, but we state this explicitly for transparency.</li>
             <li><strong>Right to Non-Discrimination:</strong> We will not discriminate against you for exercising any of your CCPA rights.</li>
@@ -188,13 +188,13 @@ export default function PrivacyPage() {
           </ul>
           <p className="mt-3"><strong>Categories of personal information collected:</strong> Identifiers (name, email), commercial information (purchase history), internet activity (analytics with consent), geolocation (country-level, anonymized).</p>
           <p><strong>Categories of personal information sold:</strong> None. We do not sell personal information.</p>
-          <p>To make a request, email <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a> with subject line &quot;CCPA Request&quot;. We will verify your identity before processing.</p>
+          <p>To make a request, email <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a> with subject line &quot;CCPA Request&quot;. We will verify your identity before processing.</p>
         </section>
 
         {/* Section 10 */}
         <section>
           <h2>10. US State Privacy Rights (Other States)</h2>
-          <p>Residents of Virginia (VCDPA), Colorado (CPA), Connecticut (CTDPA), Utah (UCPA), and other US states with consumer privacy laws have similar rights to access, delete, correct, and opt-out. We honor these rights regardless of your state of residence. Contact <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a> to exercise any data rights.</p>
+          <p>Residents of Virginia (VCDPA), Colorado (CPA), Connecticut (CTDPA), Utah (UCPA), and other US states with consumer privacy laws have similar rights to access, delete, correct, and opt-out. We honor these rights regardless of your state of residence. Contact <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a> to exercise any data rights.</p>
         </section>
 
         {/* Section 11 */}
@@ -213,7 +213,7 @@ export default function PrivacyPage() {
         {/* Section 12 */}
         <section>
           <h2>12. Children&apos;s Privacy</h2>
-          <p>The Service is not directed to individuals under 16 years of age. We do not knowingly collect personal information from children under 16. If we become aware that we have collected personal data from a child under 16, we will take steps to delete that information promptly. If you believe a child under 16 has provided us with personal information, please contact <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a>.</p>
+          <p>The Service is not directed to individuals under 16 years of age. We do not knowingly collect personal information from children under 16. If we become aware that we have collected personal data from a child under 16, we will take steps to delete that information promptly. If you believe a child under 16 has provided us with personal information, please contact <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a>.</p>
         </section>
 
         {/* Section 13 */}
@@ -255,8 +255,8 @@ export default function PrivacyPage() {
           <h2>16. Contact</h2>
           <p>For any privacy-related questions, data requests, or complaints:</p>
           <p className="mt-2">
-            <strong>Email:</strong> <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a><br />
-            <strong>General:</strong> <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a><br />
+            <strong>Email:</strong> <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a><br />
+            <strong>General:</strong> <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a><br />
             <strong>Location:</strong> TripPortier, Switzerland
           </p>
           <p className="mt-2">We aim to respond to all data protection requests within 30 days.</p>

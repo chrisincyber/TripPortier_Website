@@ -46,7 +46,7 @@ export default function TermsPage() {
             <li>All prices are displayed in your selected currency. Currency conversion is approximate and may differ slightly from your bank&apos;s rate.</li>
             <li>Prices are inclusive of applicable taxes unless otherwise stated.</li>
             <li>We reserve the right to change prices at any time. Price changes do not affect already completed purchases.</li>
-            <li>Payment disputes should be directed to <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a> before initiating a chargeback.</li>
+            <li>Payment disputes should be directed to <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a> before initiating a chargeback.</li>
           </ul>
         </section>
 
@@ -136,7 +136,7 @@ export default function TermsPage() {
         <section>
           <h2>12. Account Termination</h2>
           <ul>
-            <li>You may delete your account at any time via Settings &gt; Delete Account or by emailing <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a>.</li>
+            <li>You may delete your account at any time via Settings &gt; Delete Account or by emailing <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a>.</li>
             <li>Upon deletion, your personal data will be removed within 30 days (transaction records may be retained longer per legal requirements).</li>
             <li>We reserve the right to suspend or terminate accounts that violate these Terms, with notice where practicable.</li>
             <li>Termination does not affect any rights or obligations that accrued prior to termination.</li>
@@ -161,13 +161,13 @@ export default function TermsPage() {
             <li><strong>Subscriptions:</strong> No prorated refunds for partial billing periods. Cancel anytime to prevent future charges.</li>
             <li><strong>Airport Transfers:</strong> Full refund for cancellations made 24+ hours before scheduled pickup. Contact support for other cases.</li>
           </ul>
-          <p className="mt-2">Refund requests: <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a></p>
+          <p className="mt-2">Refund requests: <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a></p>
         </section>
 
         <section>
           <h2>15. Dispute Resolution</h2>
           <ul>
-            <li>We encourage you to contact us first to resolve any dispute informally via <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a>.</li>
+            <li>We encourage you to contact us first to resolve any dispute informally via <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a>.</li>
             <li>For EU consumers: You may use the European Commission&apos;s Online Dispute Resolution platform at <a href="https://ec.europa.eu/consumers/odr" className="text-indigo-600 underline" target="_blank" rel="noopener noreferrer">ec.europa.eu/consumers/odr</a>.</li>
             <li>If informal resolution fails, disputes shall be resolved through the competent courts of Switzerland (see Section 17).</li>
           </ul>
@@ -202,8 +202,8 @@ export default function TermsPage() {
         <section>
           <h2>20. Contact</h2>
           <p>
-            <strong>Email:</strong> <a href="mailto:hello@tripportier.com" className="text-indigo-600 underline">hello@tripportier.com</a><br />
-            <strong>Privacy:</strong> <a href="mailto:privacy@tripportier.com" className="text-indigo-600 underline">privacy@tripportier.com</a><br />
+            <strong>Email:</strong> <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a><br />
+            <strong>Privacy:</strong> <a href="mailto:info@tripportier.com" className="text-indigo-600 underline">info@tripportier.com</a><br />
             <strong>Location:</strong> TripPortier, Switzerland
           </p>
         </section>

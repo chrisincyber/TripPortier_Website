@@ -1,5 +1,5 @@
-Contact: mailto:security@tripportier.com
-Contact: mailto:hello@tripportier.com
+Contact: mailto:info@tripportier.com
+Contact: mailto:info@tripportier.com
 Expires: 2027-04-07T00:00:00.000Z
 Preferred-Languages: en, de
 Canonical: https://tripportier.com/.well-known/security.txt

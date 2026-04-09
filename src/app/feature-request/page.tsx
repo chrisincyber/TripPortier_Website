@@ -91,7 +91,7 @@ export default function FeatureRequestPage() {
       <div className="mt-10 p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center">
         <h3 className="font-display font-bold text-slate-900 mb-2">Have a new idea?</h3>
         <p className="text-sm text-slate-600 mb-4">Share your feature request with us directly.</p>
-        <a href="mailto:hello@tripportier.com?subject=Feature%20Request" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-medium text-sm rounded-xl hover:bg-indigo-700 transition-colors">
+        <a href="mailto:info@tripportier.com?subject=Feature%20Request" className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-medium text-sm rounded-xl hover:bg-indigo-700 transition-colors">
           <Send className="w-4 h-4" />
           Submit Idea
         </a>
