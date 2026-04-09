@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
 import { LogOut, Mail, Loader2, MapPin, Plane, Wifi, Settings } from 'lucide-react'
@@ -10,6 +10,14 @@ import { emailAuthSchema, validate } from '@/lib/validation'
 import { sanitizeError } from '@/lib/sanitize-error'
 
 export default function AccountPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-indigo-500" /></div>}>
+      <AccountContent />
+    </Suspense>
+  )
+}
+
+function AccountContent() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [authLoading, setAuthLoading] = useState(false)
@@ -20,21 +28,39 @@ export default function AccountPage() {
   const [message, setMessage] = useState('')
 
   const supabase = createClient()
+  const searchParams = useSearchParams()
+  const redirectPath = searchParams.get('redirect')
+  const authError = searchParams.get('error')
+
+  // Show error from OAuth callback failure
+  useEffect(() => {
+    if (authError === 'auth_failed') {
+      setError('Sign in failed. Please try again.')
+    }
+  }, [authError])
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
       setLoading(false)
+      // If already logged in and there's a redirect, go there
+      if (user && redirectPath) {
+        window.location.href = redirectPath
+      }
     }
     getUser()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      // After successful login, redirect if requested
+      if (session?.user && redirectPath) {
+        window.location.href = redirectPath
+      }
     })
 
     return () => subscription.unsubscribe()
-  }, [])
+  }, [redirectPath])
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,9 +87,11 @@ export default function AccountPage() {
   }
 
   const handleOAuth = async (provider: 'google' | 'apple') => {
+    const callbackUrl = new URL('/auth/callback', window.location.origin)
+    if (redirectPath) callbackUrl.searchParams.set('next', redirectPath)
     await supabase.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
+      options: { redirectTo: callbackUrl.toString() },
     })
   }
 
