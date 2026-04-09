@@ -229,9 +229,20 @@ export default function GlobalEsimPage() {
           )}
 
           {loading ? (
-            <div className="flex flex-col items-center py-24">
-              <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-3" />
-              <p className="text-sm text-slate-500">Loading global eSIM plans...</p>
+            <div className="space-y-3">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="rounded-2xl border-2 border-slate-100 p-4 sm:p-5 animate-pulse">
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 sm:w-24 shrink-0"><div className="h-6 w-14 bg-slate-200 rounded" /></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 w-32 bg-slate-200 rounded" />
+                      <div className="h-3 w-20 bg-slate-100 rounded" />
+                      <div className="flex gap-2"><div className="h-5 w-12 bg-slate-100 rounded" /><div className="h-5 w-12 bg-slate-100 rounded" /><div className="h-5 w-12 bg-slate-100 rounded" /></div>
+                    </div>
+                    <div className="h-6 w-16 bg-slate-200 rounded" />
+                  </div>
+                </div>
+              ))}
             </div>
           ) : error ? (
             <div className="text-center py-24">

@@ -123,8 +123,31 @@ export default function MyEsimsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="h-5 w-24 bg-slate-100 rounded mb-6 animate-pulse" />
+        <div className="h-8 w-40 bg-slate-200 rounded mb-2 animate-pulse" />
+        <div className="h-4 w-28 bg-slate-100 rounded mb-8 animate-pulse" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="p-5 rounded-2xl border border-slate-100 animate-pulse">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-slate-200 rounded" />
+                  <div className="space-y-1.5">
+                    <div className="h-4 w-20 bg-slate-200 rounded" />
+                    <div className="h-3 w-28 bg-slate-100 rounded" />
+                  </div>
+                </div>
+                <div className="h-5 w-14 bg-slate-100 rounded-full" />
+              </div>
+              <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-100">
+                <div className="h-8 bg-slate-100 rounded" />
+                <div className="h-8 bg-slate-100 rounded" />
+                <div className="h-8 bg-slate-100 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     )
   }
